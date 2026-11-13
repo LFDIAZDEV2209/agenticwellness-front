@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Archive as ArchiveGlyph,
@@ -49,11 +49,16 @@ import {
   archiveMediaItem,
   deleteMediaItem,
   fetchMediaItems,
+  getMediaItemById,
+  updateMediaItem,
   formatDuration,
   publishMediaItem,
   unpublishMediaItem,
 } from "../services/media-service";
 import { MediaPlayer } from "./media-player";
+import { MediaQuickEditSheet } from "./media-form-fields";
+import { MediaTags } from "./media-tags";
+import { resolveStorageKeys } from "../services/upload-service";
 import { MediaThumb } from "./media-thumb";
 import { getMediaCategoryMeta, mediaCategoryMeta, mediaStatusMeta } from "./media-meta";
 import { MediaTable } from "./media-table";
@@ -61,7 +66,7 @@ import { type MediaDetailAction } from "./media-detail-dialog";
 import { MediaReferencesDialog } from "./media-references-dialog";
 import { MediaDeleteBlockedDialog } from "./media-delete-blocked-dialog";
 import { MediaCleanupAdminDialog } from "./media-cleanup-admin-dialog";
-import type { MediaFilters, MediaItem, PaginatedResult } from "../types";
+import type { MediaFilters, MediaInput, MediaItem, PaginatedResult } from "../types";
 
 /** Aviso efímero de la biblioteca (resultados de acciones semánticas). */
 interface MediaToast {
@@ -104,6 +109,10 @@ export function MediaPage() {
   const [pageSize, setPageSize] = useState(20);
   // El episodio seleccionado no depende del resultado ni de sus filtros.
   const [currentPodcast, setCurrentPodcast] = useState<MediaItem | null>(null);
+  const [editing, setEditing] = useState<MediaItem | null>(null);
+  const [editSaving, setEditSaving] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
+  const editRequest = useRef(0);
   const podcasts = useMemo(() => (result?.data ?? []).filter(item => item.mediaType === "Podcast"), [result]);
   const categories = Object.entries(mediaCategoryMeta) as Array<
     [MediaItem["category"], { label: string; tone: string }]
@@ -177,8 +186,40 @@ export function MediaPage() {
   const openCreate = () => {
     router.push("/media/new");
   };
-  const openEdit = (media: MediaItem) => {
-    router.push(`/media/${media.id}/edit`);
+  const openEdit = async (media: MediaItem) => {
+    if (!canEdit) return;
+    const request = ++editRequest.current;
+    setEditError(null);
+    try {
+      // El detalle conserva capítulos y puntos clave aunque el listado los omita.
+      const detail = await getMediaItemById(media.id);
+      if (request === editRequest.current) setEditing(detail);
+    } catch (err) {
+      if (request === editRequest.current) {
+        toast(err instanceof Error ? err.message : t("No se pudo cargar el medio"), "error");
+      }
+    }
+  };
+  const saveQuickEdit = async (
+    input: MediaInput,
+    file?: File,
+    thumbnail?: File | null,
+    onProgress?: (percent: number) => void,
+  ) => {
+    if (!editing || !canEdit || editSaving) return;
+    setEditSaving(true);
+    setEditError(null);
+    try {
+      const payload = await resolveStorageKeys(input, file, thumbnail, onProgress);
+      const updated = await updateMediaItem(editing.id, payload);
+      setCurrentPodcast(current => current?.id === updated.id ? updated : current);
+      setEditing(null);
+      retry();
+    } catch (err) {
+      setEditError(err instanceof Error ? err.message : t("No se pudo guardar el medio."));
+    } finally {
+      setEditSaving(false);
+    }
   };
   /**
    * Acción semántica confirmada (REQ-PCA-03): llama al endpoint dedicado,
@@ -574,6 +615,14 @@ export function MediaPage() {
         }}
       />
 
+      {editing && (
+        <MediaQuickEditSheet
+          open media={editing} saving={editSaving} serverError={editError}
+          onOpenChange={open => { if (!open && !editSaving) setEditing(null); }}
+          onSubmit={saveQuickEdit}
+        />
+      )}
+
       {/* Toasts de la biblioteca */}
       {toasts.length > 0 && (
         <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
@@ -656,6 +705,7 @@ function PodcastCard({ item, selected, onPlay, onDetails, onEdit, onDelete }: {
     <div className="flex flex-1 flex-col gap-1">
       <h4 className="line-clamp-2 min-h-10 text-sm leading-5 font-semibold" title={item.title}>{item.title}</h4>
       <p className="truncate text-xs text-muted-foreground" title={item.author}>{item.author}</p>
+      <MediaTags tags={item.tags} />
     </div>
     <div className="flex items-center justify-between gap-2">
       <span className="flex items-center gap-1 text-xs text-muted-foreground"><Clock aria-hidden="true" className="size-3.5" />{formatDuration(item.durationSecs)}</span>

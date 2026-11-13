@@ -5309,5 +5309,10 @@
   "Destino: Rutinas, vídeos e imágenes": "Destino: Rutinas, vídeos e imágenes",
   "Añadir {count}": "Añadir {count}",
   "Podcast": "Podcast",
-  "Mindfulness": "Mindfulness"
+  "Mindfulness": "Mindfulness",
+  "Usa hasta 32 etiquetas de 64 caracteres como máximo.": "Usa hasta 32 etiquetas de 64 caracteres como máximo.",
+  "Escribe una etiqueta y pulsa Enter": "Escribe una etiqueta y pulsa Enter",
+  "Añadir etiqueta": "Añadir etiqueta",
+  "Quitar etiqueta {tag}": "Quitar etiqueta {tag}",
+  "Ver video en el sitio de origen": "Ver video en el sitio de origen"
 }
