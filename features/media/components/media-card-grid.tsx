@@ -25,6 +25,7 @@ import {
 } from "./media-meta";
 import { formatDuration } from "../services/media-service";
 import { MediaThumb } from "./media-thumb";
+import { MediaTags } from "./media-tags";
 import { useT } from "@/providers/i18n-provider";
 
 interface MediaCardGridProps {
@@ -114,6 +115,12 @@ export function MediaCardGrid({
               </p>
             </div>
 
+            <MediaTags tags={item.tags} />
+            {item.source_kind === "external" && item.external_url && (
+              <a href={item.external_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary underline underline-offset-4">
+                {t("Ver video en el sitio de origen")}
+              </a>
+            )}
             <div className="mt-auto flex items-center justify-between gap-2 border-t border-border pt-3">
               <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <Clock className="size-3.5" />

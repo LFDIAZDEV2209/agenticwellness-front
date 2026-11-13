@@ -128,6 +128,9 @@ export function MediaFormFields({
 }: MediaFormFieldsProps) {
   const t = useT();
   const quick = mode === "quick";
+  const [tags, setTags] = useState<string[]>(media?.tags ?? []);
+  const [tagDraft, setTagDraft] = useState("");
+  const tagsHelpId = useId();
   const [form, setForm] = useState(() =>
     media
       ? {
@@ -167,6 +170,24 @@ export function MediaFormFields({
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [thumbnailCleared, setThumbnailCleared] = useState(false);
   const thumbInputRef = useRef<HTMLInputElement>(null);
+
+  const normalizedTags = () => [
+    ...new Set(
+      [...tags, tagDraft].map(tag => tag.trim().toLowerCase()).filter(Boolean),
+    ),
+  ];
+  const validTags = (values: string[]) =>
+    values.length <= 32 && values.every(tag => tag.length <= 64);
+  const addTag = () => {
+    const values = normalizedTags();
+    if (!validTags(values)) {
+      setValidationError(t("Usa hasta 32 etiquetas de 64 caracteres como máximo."));
+      return;
+    }
+    setTags(values);
+    setTagDraft("");
+    setValidationError(null);
+  };
 
   const update = <K extends keyof typeof form>(
     field: K,
@@ -276,6 +297,11 @@ export function MediaFormFields({
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const submittedTags = normalizedTags();
+    if (!validTags(submittedTags)) {
+      setValidationError(t("Usa hasta 32 etiquetas de 64 caracteres como máximo."));
+      return;
+    }
     if (!form.title.trim()) {
       setValidationError(t("El título es obligatorio."));
       return;
@@ -349,7 +375,19 @@ export function MediaFormFields({
           };
 
     try {
-      await onSubmit(input, file ?? undefined, thumbnailFile, setProgress);
+      // Cambiar metadatos conserva el origen; reemplazar el archivo lo convierte en local.
+      await onSubmit(
+        {
+          ...input,
+          tags: submittedTags,
+          source_kind: file ? "file" : media?.source_kind ?? "file",
+          external_url: file ? null : media?.external_url ?? null,
+          provider: file ? null : media?.provider ?? null,
+        },
+        file ?? undefined,
+        thumbnailFile,
+        setProgress,
+      );
     } finally {
       // Una subida fallida debe permitir corregir o reintentar, sin perder el archivo.
       setProgress(null);
@@ -458,11 +496,22 @@ export function MediaFormFields({
             <p className="mb-2 text-xs font-semibold text-muted-foreground">
               {t("Archivo actual")}
             </p>
-            <MediaPlayer
-              storageKey={media.storageKey}
-              mediaType={media.mediaType}
-              className={previewClassName ?? "max-h-48"}
-            />
+            {media.source_kind === "external" ? (
+              <a
+                href={media.external_url ?? undefined}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="break-all text-sm text-primary underline underline-offset-4"
+              >
+                {t("Ver video en el sitio de origen")}
+              </a>
+            ) : (
+              <MediaPlayer
+                storageKey={media.storageKey}
+                mediaType={media.mediaType}
+                className={previewClassName ?? "max-h-48"}
+              />
+            )}
             <p className="mt-2 flex flex-wrap gap-3 text-xs text-muted-foreground">
               <span className="flex items-center gap-1">
                 <Clock className="size-3.5" />
@@ -713,6 +762,55 @@ export function MediaFormFields({
             )}
           </div>
         </fieldset>
+
+        <div className="flex min-w-0 flex-col gap-2">
+          <div className="flex items-end gap-2">
+            <div className="min-w-0 flex-1">
+              <Field label={t("Etiquetas")}>
+                <Input
+                  value={tagDraft}
+                  onChange={event => setTagDraft(event.target.value)}
+                  placeholder={t("Escribe una etiqueta y pulsa Enter")}
+                  aria-describedby={tagsHelpId}
+                  disabled={uploading}
+                  onKeyDown={event => {
+                    if (event.key === "Enter" && !event.nativeEvent.isComposing) {
+                      event.preventDefault();
+                      addTag();
+                    }
+                  }}
+                />
+              </Field>
+            </div>
+            <Button
+              type="button" variant="outline" size="icon"
+              disabled={uploading || !tagDraft.trim()}
+              onClick={addTag} aria-label={t("Añadir etiqueta")}
+            >
+              <Plus />
+            </Button>
+          </div>
+          <p id={tagsHelpId} className="text-xs text-muted-foreground">
+            {t("Usa hasta 32 etiquetas de 64 caracteres como máximo.")}
+          </p>
+          {tags.length > 0 && (
+            <ul aria-label={t("Etiquetas")} className="flex flex-wrap gap-2">
+              {tags.map((tag, index) => (
+                <li key={`${tag}-${index}`} className="flex max-w-full items-center gap-1 rounded-full bg-primary-soft py-1 pr-1 pl-2.5 text-xs text-primary-soft-foreground">
+                  <span className="min-w-0 [overflow-wrap:anywhere]">{tag}</span>
+                  <Button
+                    type="button" variant="ghost" size="icon-sm"
+                    className="shrink-0 rounded-full" disabled={uploading}
+                    aria-label={t("Quitar etiqueta {tag}", { tag })}
+                    onClick={() => setTags(values => values.filter((_, i) => i !== index))}
+                  >
+                    <X />
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
 
         <Field label={t("Descripción")}>
           <textarea

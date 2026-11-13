@@ -51,6 +51,11 @@ export interface MediaItem {
   createdBy: string | null;
   chapters?: MediaChapter[];
   takeaways?: string[];
+  tags?: string[];
+  /** Nombres JSON del contrato 1.8; ausentes en respuestas anteriores. */
+  source_kind?: "file" | "external";
+  external_url?: string | null;
+  provider?: "youtube" | "vimeo" | null;
   /**
    * Número de referencias activas (plantillas/semanas) que el listado
    * server-side resuelve por fila (REQ-PCA-06). Ausente en el detalle.
@@ -75,6 +80,10 @@ export interface MediaInput {
   month: number;
   chapters?: MediaChapter[];
   takeaways?: string[];
+  tags?: string[];
+  source_kind?: "file" | "external";
+  external_url?: string | null;
+  provider?: "youtube" | "vimeo" | null;
 }
 
 /**

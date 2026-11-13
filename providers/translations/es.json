@@ -5333,5 +5333,10 @@
   "Selecciona otro día para intercambiar los podcasts.": "Selecciona otro día para intercambiar los podcasts.",
   "Tarea": "Tarea",
   "Tareas": "Tareas",
-  "Vacío": "Vacío"
+  "Vacío": "Vacío",
+  "Usa hasta 32 etiquetas de 64 caracteres como máximo.": "Usa hasta 32 etiquetas de 64 caracteres como máximo.",
+  "Escribe una etiqueta y pulsa Enter": "Escribe una etiqueta y pulsa Enter",
+  "Añadir etiqueta": "Añadir etiqueta",
+  "Quitar etiqueta {tag}": "Quitar etiqueta {tag}",
+  "Ver video en el sitio de origen": "Ver video en el sitio de origen"
 }
