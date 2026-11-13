@@ -92,8 +92,10 @@ export async function getWeekdayTasks(
 export async function replaceWeekdayTasks(
   id: string,
   tasks: WeeklyDayTaskInput[],
+  weekNumber?: number,
 ): Promise<WeeklyDayTask[]> {
-  return apiFetch<WeeklyDayTask[]>(`${PATH}/${id}/weekday-tasks`, {
+  const query = weekNumber === undefined ? "" : `?weekNumber=${weekNumber}`;
+  return apiFetch<WeeklyDayTask[]>(`${PATH}/${id}/weekday-tasks${query}`, {
     method: "PUT",
     body: JSON.stringify(tasks),
   });

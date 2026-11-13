@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Pencil, Save, X, CalendarRange } from "lucide-react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -19,33 +19,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
-import { ProgramEditorialAgenda } from "./editorial-agenda/program-editorial-agenda";
-import { ProgramBulkAssignDialog } from "./editorial-agenda/program-bulk-assign-dialog";
-import type {
-  ProgramTemplate,
-  WeeklyDayTask,
-  WeeklyDayTaskInput,
-} from "../types";
-import {
-  TEMPLATE_STATUS_LABELS,
-  TASK_CODE_OPTIONS,
-  WEEKDAY_LABELS,
-} from "../services/program-templates-service";
 import { useAuth } from "@/providers/auth-provider";
 import { useT } from "@/providers/i18n-provider";
+import type { ProgramTemplate, WeeklyDayTaskInput } from "../types";
+import {
+  TASK_CODE_OPTIONS,
+  TEMPLATE_STATUS_LABELS,
+  WEEKDAY_LABELS,
+} from "../services/program-templates-service";
+import { ProgramSequenceEditor } from "./program-sequence-editor";
 
 interface ProgramTemplateDetailDialogProps {
   templateId: string | null;
   onClose: () => void;
   getTemplate: (id: string) => Promise<ProgramTemplate | null>;
+  /** Compatibilidad con el contenedor: la secuencia usa el PUT por semana de 1.7b. */
   saveWeekdayTasks: (id: string, tasks: WeeklyDayTaskInput[]) => Promise<void>;
 }
 
@@ -53,401 +41,177 @@ export function ProgramTemplateDetailDialog({
   templateId,
   onClose,
   getTemplate,
-  saveWeekdayTasks,
 }: ProgramTemplateDetailDialogProps) {
-  const { hasPermission } = useAuth();
   const t = useT();
-  const canEdit = hasPermission("Program.Edit");
-
-  const [template, setTemplate] = useState<ProgramTemplate | null>(null);
-  const [loading, setLoading] = useState(Boolean(templateId));
-  const [editing, setEditing] = useState(false);
-  const [editDays, setEditDays] = useState<WeeklyDayTask[]>([]);
-  const [saving, setSaving] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
-  const [bulkPodcastOpen, setBulkPodcastOpen] = useState(false);
-
-  useEffect(() => {
-    if (!templateId) return;
-
-    let cancelled = false;
-
-    getTemplate(templateId).then((data) => {
-      if (!cancelled) {
-        setTemplate(data);
-        setLoading(false);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [templateId, getTemplate]);
-
-  const startEditing = () => {
-    if (template) {
-      setEditDays([...template.days]);
-      setEditing(true);
-    }
-  };
-
-  const cancelEditing = () => {
-    setEditing(false);
-    setSaveError(null);
-    if (template) setEditDays([...template.days]);
-  };
-
-  const persistWeekdayTasks = async () => {
-    if (!template) return;
-    setSaving(true);
-    setSaveError(null);
-    try {
-      const payload: WeeklyDayTaskInput[] = editDays.map((d) => ({
-        weekday: d.weekday,
-        taskCode: d.taskCode,
-        points: d.points,
-        sortOrder: d.sortOrder,
-        mediaId: d.mediaId,
-      }));
-      await saveWeekdayTasks(template.id, payload);
-      // Recargar datos frescos del servidor
-      const refreshed = await getTemplate(template.id);
-      if (refreshed) setTemplate(refreshed);
-      setEditing(false);
-    } catch (err) {
-      setSaveError(
-        err instanceof Error
-          ? err.message
-          : "Error al guardar el horario. Intentá de nuevo.",
-      );
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  /**
-   * Cambia el podcast de un día desde la Agenda Editorial (modo edición):
-   * si el día ya tiene fila de podcast actualiza su mediaId; si no existe,
-   * crea la fila de podcast con puntos y orden por defecto; con mediaId
-   * null elimina la fila (quitar la lección del horario).
-   */
-  const handleAgendaChange = (weekday: number, mediaId: string | null) => {
-    setEditDays((prev) => {
-      const podcastRow = prev.find(
-        (d) => d.taskCode === "podcast" && d.weekday === weekday,
-      );
-      if (mediaId === null) {
-        return podcastRow ? prev.filter((d) => d !== podcastRow) : prev;
-      }
-      if (podcastRow) {
-        return prev.map((d) => (d === podcastRow ? { ...d, mediaId } : d));
-      }
-      // Fila nueva de podcast para ese día (el back asigna id real al guardar).
-      const maxSort = Math.max(0, ...prev.map((d) => d.sortOrder));
-      return [
-        ...prev,
-        {
-          id: `new-podcast-${weekday}`,
-          weekday,
-          taskCode: "podcast",
-          points: 80,
-          sortOrder: maxSort + 1,
-          mediaId,
-          createdAt: new Date().toISOString(),
-        },
-      ];
-    });
-  };
-
-  const updateDay = (
-    index: number,
-    field: keyof WeeklyDayTask,
-    value: string | number,
-  ) => {
-    setEditDays((prev) =>
-      prev.map((d, i) => (i === index ? { ...d, [field]: value } : d)),
-    );
-  };
-
-  const statusColor = (status: string) => {
-    switch (status) {
-      case "Active":
-        return "bg-success-soft text-success-soft-foreground";
-      case "Draft":
-        return "bg-warning-soft text-warning";
-      case "Archived":
-        return "bg-muted text-muted-foreground";
-      default:
-        return "bg-muted text-muted-foreground";
-    }
-  };
-
-  // Agrupar tareas por weekday
-  const groupedByDay = (days: WeeklyDayTask[]) => {
-    const groups: Record<number, WeeklyDayTask[]> = {};
-    for (const d of days) {
-      if (!groups[d.weekday]) groups[d.weekday] = [];
-      groups[d.weekday].push(d);
-    }
-    return groups;
-  };
-
-  const open = Boolean(templateId);
-
+  const [busy, setBusy] = useState(false);
   return (
-    <>
-      <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
-        <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>Detalle de plantilla</DialogTitle>
-            <DialogDescription>
-              Vista de la plantilla y su horario semanal de tareas.
-            </DialogDescription>
-          </DialogHeader>
+    <Dialog
+      open={Boolean(templateId)}
+      onOpenChange={(open) => {
+        if (!open && !busy) onClose();
+      }}
+    >
+      <DialogContent
+        size="xl"
+        showCloseButton={false}
+        className="gap-5 bg-background p-4 sm:max-w-[min(96vw,96rem)] sm:p-6"
+      >
+        <DialogHeader className="flex-row items-center justify-between gap-4 border-0 bg-transparent p-0">
+          <div>
+            <DialogTitle>{t("Plantilla de programa")}</DialogTitle>
+            <DialogDescription>{t("Secuencia de podcasts")}</DialogDescription>
+          </div>
+          <Button
+            variant="outline"
+            className="min-h-11"
+            disabled={busy}
+            onClick={onClose}
+          >
+            {t("Cerrar")}
+          </Button>
+        </DialogHeader>
+        {templateId && (
+          <TemplateContent
+            key={templateId}
+            templateId={templateId}
+            getTemplate={getTemplate}
+            onBusyChange={setBusy}
+          />
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}
 
-          {loading ? (
-            <div className="flex flex-col gap-3 py-4">
-              <Skeleton className="h-5 w-48" />
-              <Skeleton className="h-5 w-32" />
-              <Skeleton className="h-40 w-full" />
-            </div>
-          ) : template ? (
-            <div className="flex flex-col gap-4">
-              {/* Encabezado */}
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-lg font-semibold">{template.name}</span>
-                  <Badge className={statusColor(template.status)}>
-                    {TEMPLATE_STATUS_LABELS[template.status] ?? template.status}
-                  </Badge>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Código: <span className="font-mono">{template.code}</span> ·{" "}
-                  {template.totalWeeks}{" "}
-                  {template.totalWeeks === 1 ? "semana" : "semanas"} (
-                  {template.totalWeeks * 7} días) · v{template.version}
-                </p>
-                {template.description && (
-                  <p className="text-sm text-muted-foreground">
-                    {template.description}
-                  </p>
-                )}
-              </div>
-
-              {/* Horario semanal */}
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold">Horario semanal</h3>
-                {canEdit && template.status === "Draft" && !editing && (
-                  <Button variant="outline" size="sm" onClick={startEditing}>
-                    <Pencil data-icon="inline-start" />
-                    Editar horario
-                  </Button>
-                )}
-                {editing && (
-                  <div className="flex flex-col items-end gap-2">
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={cancelEditing}
-                        disabled={saving}
-                      >
-                        <X data-icon="inline-start" />
-                        Cancelar
-                      </Button>
-                      <Button
-                        size="sm"
-                        onClick={persistWeekdayTasks}
-                        disabled={saving}
-                      >
-                        <Save data-icon="inline-start" />
-                        {saving ? "Guardando…" : "Guardar"}
-                      </Button>
-                    </div>
-                    {saveError && (
-                      <p className="text-xs text-destructive">{saveError}</p>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div className="overflow-x-auto rounded-lg border border-border">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-28">Día</TableHead>
-                      <TableHead>Tarea</TableHead>
-                      <TableHead className="w-24 text-right">Puntos</TableHead>
-                      <TableHead className="w-20 text-right">Orden</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {editing
-                      ? editDays.map((day, idx) => (
-                          <TableRow key={`${day.id}-${idx}`}>
-                            <TableCell className="font-medium">
-                              {WEEKDAY_LABELS[day.weekday - 1] ??
-                                `Día ${day.weekday}`}
-                            </TableCell>
-                            <TableCell>
-                              <Select
-                                value={day.taskCode}
-                                onValueChange={(v) =>
-                                  updateDay(idx, "taskCode", v ?? day.taskCode)
-                                }
-                              >
-                                <SelectTrigger className="h-8 w-full">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {TASK_CODE_OPTIONS.map((opt) => (
-                                    <SelectItem
-                                      key={opt.value}
-                                      value={opt.value}
-                                    >
-                                      {opt.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </TableCell>
-                            <TableCell className="text-right">
-                              <input
-                                type="number"
-                                min={0}
-                                className="h-8 w-16 rounded border border-input bg-background px-2 text-right text-sm"
-                                value={day.points}
-                                onChange={(e) =>
-                                  updateDay(
-                                    idx,
-                                    "points",
-                                    Number(e.target.value),
-                                  )
-                                }
-                              />
-                            </TableCell>
-                            <TableCell className="text-right">
-                              <input
-                                type="number"
-                                min={0}
-                                className="h-8 w-14 rounded border border-input bg-background px-2 text-right text-sm"
-                                value={day.sortOrder}
-                                onChange={(e) =>
-                                  updateDay(
-                                    idx,
-                                    "sortOrder",
-                                    Number(e.target.value),
-                                  )
-                                }
-                              />
-                            </TableCell>
-                          </TableRow>
-                        ))
-                      : Object.entries(groupedByDay(template.days)).map(
-                          ([weekday, days]) => (
-                            <TableRow key={weekday}>
-                              <TableCell className="font-medium">
-                                {WEEKDAY_LABELS[Number(weekday) - 1] ??
-                                  `Día ${weekday}`}
-                              </TableCell>
-                              <TableCell>
-                                <div className="flex flex-col gap-1">
-                                  {days.map((d) => (
-                                    <span key={d.id} className="text-sm">
-                                      {TASK_CODE_OPTIONS.find(
-                                        (o) => o.value === d.taskCode,
-                                      )?.label ?? d.taskCode}
-                                    </span>
-                                  ))}
-                                </div>
-                              </TableCell>
-                              <TableCell className="text-right">
-                                <div className="flex flex-col gap-1 text-sm">
-                                  {days.map((d) => (
-                                    <span key={d.id}>{d.points}</span>
-                                  ))}
-                                </div>
-                              </TableCell>
-                              <TableCell className="text-right">
-                                <div className="flex flex-col gap-1 text-sm text-muted-foreground">
-                                  {days.map((d) => (
-                                    <span key={d.id}>{d.sortOrder}</span>
-                                  ))}
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          ),
-                        )}
-                  </TableBody>
-                </Table>
-              </div>
-
-              {/* Agenda editorial (REQ-PCA-05): parrilla 12 semanas × 7 días */}
-              <ProgramEditorialAgenda
-                days={editing ? editDays : (template.days ?? [])}
-                totalWeeks={template.totalWeeks}
-                editable={editing}
-                onChange={handleAgendaChange}
-                actions={
-                  <>
-                    {canEdit && template.status === "Draft" && !editing && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={startEditing}
-                        className="h-8 text-xs"
-                      >
-                        <Pencil data-icon="inline-start" />
-                        {t("Editar horario")}
-                      </Button>
-                    )}
-                    {canEdit && editing && (
-                      <span className="text-[11px] text-muted-foreground">
-                        {t("Se guarda con el horario al presionar Guardar")}
-                      </span>
-                    )}
-                    {canEdit && !editing && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setBulkPodcastOpen(true)}
-                        className="h-8 text-xs"
-                      >
-                        <CalendarRange data-icon="inline-start" />
-                        {t("Asignación masiva")}
-                      </Button>
-                    )}
-                  </>
-                }
-              />
-            </div>
-          ) : (
-            <p className="py-8 text-center text-sm text-muted-foreground">
-              No se pudo cargar la plantilla.
-            </p>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Asignación masiva de podcasts sobre la plantilla (REQ-PCA-04) */}
-      {template && (
-        <ProgramBulkAssignDialog
-          key={bulkPodcastOpen ? `bulk-${template.id}` : "closed"}
-          open={bulkPodcastOpen}
-          onOpenChange={setBulkPodcastOpen}
-          targetType="Template"
-          targetId={template.id}
-          targetLabel={template.name}
-          totalWeeks={template.totalWeeks}
-          onAssigned={() => {
-            // El backend ya aplicó el cambio: recargar la plantilla para
-            // reflejar los mediaId nuevos en la agenda.
-            void getTemplate(template.id).then((refreshed) => {
-              if (refreshed) setTemplate(refreshed);
-            });
-          }}
+function TemplateContent({
+  templateId,
+  getTemplate,
+  onBusyChange,
+}: {
+  templateId: string;
+  getTemplate: ProgramTemplateDetailDialogProps["getTemplate"];
+  onBusyChange: (busy: boolean) => void;
+}) {
+  const t = useT();
+  const { hasPermission } = useAuth();
+  const [attempt, setAttempt] = useState(0);
+  const [result, setResult] = useState<{
+    attempt: number;
+    template: ProgramTemplate | null;
+  } | null>(null);
+  useEffect(() => {
+    let active = true;
+    void getTemplate(templateId)
+      .then((template) => {
+        if (active) setResult({ attempt, template });
+      })
+      .catch(() => {
+        if (active) setResult({ attempt, template: null });
+      });
+    return () => {
+      active = false;
+    };
+  }, [templateId, getTemplate, attempt]);
+  if (result?.attempt !== attempt)
+    return (
+      <div aria-busy="true" className="flex flex-col gap-4">
+        <Skeleton className="h-8 w-60" />
+        <Skeleton className="h-96 w-full" />
+      </div>
+    );
+  const template = result.template;
+  if (!template)
+    return (
+      <div
+        role="alert"
+        className="flex flex-col items-start gap-3 rounded-xl border border-destructive p-4"
+      >
+        <p>{t("No se pudo cargar la plantilla.")}</p>
+        <Button
+          variant="outline"
+          onClick={() => setAttempt((value) => value + 1)}
+        >
+          {t("Reintentar")}
+        </Button>
+      </div>
+    );
+  const otherTasks = template.days.filter((day) => day.taskCode !== "podcast");
+  return (
+    <div className="flex min-w-0 flex-col gap-5">
+      <header>
+        <div className="flex flex-wrap items-center gap-3">
+          <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
+            {template.name}
+          </h2>
+          <Badge variant="secondary">
+            {t(TEMPLATE_STATUS_LABELS[template.status] ?? template.status)} · v
+            {template.version}
+          </Badge>
+        </div>
+        {template.description && (
+          <p className="mt-2 text-sm text-muted-foreground">
+            {template.description}
+          </p>
+        )}
+      </header>
+      {template.totalWeeks === 12 ? (
+        <ProgramSequenceEditor
+          template={template}
+          canEdit={hasPermission("Program.Edit")}
+          onBusyChange={onBusyChange}
+          onSaved={(days) =>
+            setResult((current) =>
+              current && current.template
+                ? { ...current, template: { ...current.template, days } }
+                : current,
+            )
+          }
         />
+      ) : (
+        <p
+          role="status"
+          className="rounded-xl border border-border bg-card p-4 text-sm"
+        >
+          {t("La secuencia de 83 días requiere una plantilla de 12 semanas.")}
+        </p>
       )}
-    </>
+      {otherTasks.length > 0 && (
+        <details className="min-w-0 rounded-xl border border-border bg-card p-4">
+          <summary className="cursor-pointer text-sm font-semibold">
+            {t("Tareas")}
+          </summary>
+          <div className="mt-3 overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{t("Semana")}</TableHead>
+                  <TableHead>{t("Día")}</TableHead>
+                  <TableHead>{t("Tarea")}</TableHead>
+                  <TableHead>{t("Puntos")}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {otherTasks.map((day) => (
+                  <TableRow key={day.id}>
+                    <TableCell>{day.weekNumber ?? t("Todas")}</TableCell>
+                    <TableCell>
+                      {t(WEEKDAY_LABELS[day.weekday - 1] ?? "Día")}
+                    </TableCell>
+                    <TableCell>
+                      {t(
+                        TASK_CODE_OPTIONS.find(
+                          (option) => option.value === day.taskCode,
+                        )?.label ?? day.taskCode,
+                      )}
+                    </TableCell>
+                    <TableCell>{day.points}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </details>
+      )}
+    </div>
   );
 }

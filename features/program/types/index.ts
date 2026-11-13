@@ -11,6 +11,10 @@ export interface WeeklyDayTask {
   sortOrder: number;
   mediaId: string | null;
   createdAt: string;
+  /** NULL conserva la regla genérica; una semana concreta prevalece sobre ella. */
+  weekNumber?: number | null;
+  routineId?: string | null;
+  nutritionPlanId?: string | null;
 }
 
 /** Plantilla de programa (respuesta de GET /templates/{id}). */
