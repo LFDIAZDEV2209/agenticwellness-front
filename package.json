@@ -15,7 +15,8 @@
     "test:e2e": "playwright test",
     "e2e:ui": "playwright test --ui",
     "e2e:seed": "python3 e2e/seed/seed-e2e.py",
-    "e2e:appointments-hidden": "playwright test --config=playwright.appointments-hidden.config.ts"
+    "e2e:appointments-hidden": "playwright test --config=playwright.appointments-hidden.config.ts",
+    "e2e:program-erp-app": "playwright test --config=playwright.program-erp-app.config.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

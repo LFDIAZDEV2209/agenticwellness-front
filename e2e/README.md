@@ -292,3 +292,41 @@ audio PCM generado en memoria. No necesita seeds ni escribe en un backend real.
 Los conteos de previews toleran StrictMode; las escrituras de confirmación se exigen
 únicas. Se puede apuntar a un servidor aislado mediante `E2E_BASE_URL`.
 
+## Bienestar · ERP y app Fase 2 (2.26)
+
+```powershell
+corepack yarn build
+corepack yarn e2e:program-erp-app
+```
+
+La configuración dedicada arranca el ERP en `127.0.0.1:3053` y Vite de la app
+en `127.0.0.1:5184`. Requiere dependencias instaladas en ambos repos y el checkout
+de app Fase 2 en `../.worktrees/app-f2`; para otra ubicación define `E2E_APP_DIR`.
+Referencia usada: app `5d232b1` (incluye 2.23/2.24). No modifica su código.
+`E2E_BASE_URL` y `E2E_APP_BASE_URL` admiten otros puertos HTTP locales.
+Se reutilizan servidores existentes fuera de CI; la app debe usar
+`VITE_WEB_SAME_ORIGIN=true` para interceptar las APIs en el mismo origen.
+
+`program-erp-app.spec.ts` contiene cuatro recorridos con navegadores separados
+(ERP 1440×900, app 390×844) y un almacén HTTP sintético compartido por test:
+
+- Dos rutinas elegidas desde ERP y un descanso ya existente coinciden con
+  «Lo que viene» de la app; «Hoy» de descanso conserva podcast y no ofrece ejercicio.
+- Una semana pasada no permite elegir rutina, descanso ni restablecer y no emite PUT.
+- Completar ejercicio desde app y editar después el catálogo desde ERP conserva
+  nombre, series y repeticiones históricos; solo se emite una finalización.
+- Una personalización futura sigue visible al activar la semana y cambiar la
+  rutina del programa; el día siguiente muestra el nuevo programa como control.
+
+La captura histórica usa el shape JSON de `CompletedExerciseDetail` de backend
+2.11 (`cbaed6e`); no guarda URLs firmadas. La activación y persistencia están
+simuladas: esta suite acredita consumo y presentación de contratos en ambas
+interfaces, no el motor, la base de datos ni la autorización del backend real.
+Las pruebas de backend de 2.11 siguen siendo la evidencia de `detail_snapshot`.
+No se abre el interruptor de creación de descanso 2.7 ni se necesitan seeds,
+credenciales o datos reales. Métricas, scores y notificaciones auxiliares se
+declaran sin datos mediante 404; las demás APIs de programa desconocidas hacen fallar
+la suite. Las capturas se guardan en `qa-reports/program-erp-app/`.
+La suite general excluye este spec porque necesita los dos servidores.
+No agrega claves i18n ES/EN.
+

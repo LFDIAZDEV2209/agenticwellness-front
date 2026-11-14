@@ -11,8 +11,8 @@ import { defineConfig } from "@playwright/test";
  */
 export default defineConfig({
   testDir: "./e2e",
-  // El módulo conservado se valida activado; la visibilidad por defecto tiene su propia configuración.
-  testIgnore: /appointments-hidden\.spec\.ts/,
+  // Visibilidad de citas y recorrido ERP/app tienen configuraciones dedicadas.
+  testIgnore: [/appointments-hidden\.spec\.ts/, /program-erp-app\.spec\.ts/],
   outputDir: "test-results",
   // Seed único + estado compartido en el backend: una sola corrida a la vez.
   fullyParallel: false,
