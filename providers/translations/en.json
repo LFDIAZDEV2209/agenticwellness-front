@@ -5443,5 +5443,11 @@
   "Enlace único de YouTube o Vimeo": "Single YouTube or Vimeo link",
   "Una sola demostración por ejercicio. El enlace sustituye al archivo al confirmarlo.": "One demonstration per exercise. The link replaces the file when confirmed.",
   "Introduce un enlace HTTPS de un solo vídeo de YouTube o Vimeo.": "Enter an HTTPS link to a single YouTube or Vimeo video.",
-  "Usar este enlace": "Use this link"
+  "Usar este enlace": "Use this link",
+  "Contraindicaciones": "Contraindications",
+  "Revisa estas indicaciones antes de asignar la rutina.": "Review these instructions before assigning the routine.",
+  "No se pudo duplicar la rutina. Revisa si ya se creó antes de reintentar.": "Unable to duplicate the routine. Check whether it was already created before retrying.",
+  "Consultando contraindicaciones...": "Checking contraindications...",
+  "No se pudieron consultar las contraindicaciones.": "Unable to check contraindications.",
+  "Duplicar": "Duplicate"
 }

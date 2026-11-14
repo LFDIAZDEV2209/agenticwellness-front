@@ -1,8 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Dumbbell, Plus, RefreshCw, Trash2, Eye, Pencil } from "lucide-react";
+import {
+  Dumbbell,
+  Plus,
+  RefreshCw,
+  Trash2,
+  Eye,
+  Pencil,
+  Copy,
+} from "lucide-react";
+import { cloneExerciseRoutine } from "../services/exercise-routines-service";
 import { useT } from "@/providers/i18n-provider";
 import { useAppContext } from "@/providers/context-provider";
 import { PageHeader } from "@/components/layout/page-header";
@@ -74,6 +83,27 @@ export function ExerciseRoutinesPage() {
     ExerciseRoutineListItem | undefined
   >();
   const [createdMessage, setCreatedMessage] = useState<string | null>(null);
+  const [cloning, setCloning] = useState(false);
+  const cloneBusy = useRef(false);
+  const [cloneError, setCloneError] = useState(false);
+  const duplicate = async (routine: ExerciseRoutineListItem) => {
+    if (cloneBusy.current || !can("Wellness.Manage")) return;
+    cloneBusy.current = true;
+    setCloning(true);
+    setCloneError(false);
+    try {
+      const copy = await cloneExerciseRoutine(routine.id);
+      setDetails(undefined);
+      setEditing(copy);
+      setFormOpen(true);
+      retry();
+    } catch {
+      setCloneError(true);
+    } finally {
+      cloneBusy.current = false;
+      setCloning(false);
+    }
+  };
 
   // Feedback tras crear en /wellness/exercise-routines/new (query ?creado=1)
   useEffect(() => {
@@ -148,7 +178,9 @@ export function ExerciseRoutinesPage() {
       >
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h2 className="text-sm font-semibold">{t("Rutinas de ejercicio")}</h2>
+            <h2 className="text-sm font-semibold">
+              {t("Rutinas de ejercicio")}
+            </h2>
             <p className="text-xs text-muted-foreground">
               {t("Filtra por categoría, estado o busca por nombre.")}
             </p>
@@ -219,7 +251,9 @@ export function ExerciseRoutinesPage() {
       ) : result && result.data.length > 0 ? (
         <div className="flex flex-col gap-0 overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-xs">
           <SectionHeader
-            title={t("{count} rutinas disponibles", { count: String(result.total) })}
+            title={t("{count} rutinas disponibles", {
+              count: String(result.total),
+            })}
             description={t("Vista de tabla")}
             icon={Dumbbell}
             variant="primary"
@@ -310,6 +344,18 @@ export function ExerciseRoutinesPage() {
                           <Button
                             variant="ghost"
                             size="icon"
+                            className="size-8"
+                            title={t("Duplicar")}
+                            disabled={cloning}
+                            onClick={() => void duplicate(routine)}
+                          >
+                            <Copy className="size-4" aria-hidden />
+                          </Button>
+                        )}
+                        {can("Wellness.Manage") && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             className="size-8 text-destructive"
                             title={t("Eliminar")}
                             onClick={() => setDeleting(routine)}
@@ -333,7 +379,10 @@ export function ExerciseRoutinesPage() {
       {result && result.totalPages > 1 && (
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span>
-            {t("Página {page} de {total}", { page: String(result.page), total: String(result.totalPages) })}
+            {t("Página {page} de {total}", {
+              page: String(result.page),
+              total: String(result.totalPages),
+            })}
           </span>
           <div className="flex items-center gap-3">
             <select
@@ -369,6 +418,16 @@ export function ExerciseRoutinesPage() {
       )}
 
       {/* Dialogs */}
+      {cloneError && !details && (
+        <p
+          role="alert"
+          className="rounded-xl bg-destructive-soft p-4 text-sm text-destructive"
+        >
+          {t(
+            "No se pudo duplicar la rutina. Revisa si ya se creó antes de reintentar.",
+          )}
+        </p>
+      )}
       <ExerciseRoutineFormDialog
         key={`${editing?.id ?? "new"}-${formOpen}`}
         open={formOpen}
@@ -377,7 +436,9 @@ export function ExerciseRoutinesPage() {
         onOpenChange={setFormOpen}
         onSubmit={save}
         onCreated={(patientName) =>
-          setCreatedMessage(t("Rutina creada y asignada a {patientName}", { patientName }))
+          setCreatedMessage(
+            t("Rutina creada y asignada a {patientName}", { patientName }),
+          )
         }
       />
 
@@ -386,8 +447,25 @@ export function ExerciseRoutinesPage() {
         routineId={details?.id ?? null}
         onClose={() => setDetails(undefined)}
         getRoutine={getRoutine}
-        onAssign={can("Wellness.Manage") ? routine => router.push(`/wellness/assignments/new?routineId=${encodeURIComponent(routine.id)}`) : undefined}
-        onEdit={can("Wellness.Manage") ? routine => { setDetails(undefined); void openEdit(routine); } : undefined}
+        onAssign={
+          can("Wellness.Manage")
+            ? (routine) =>
+                router.push(
+                  `/wellness/assignments/new?routineId=${encodeURIComponent(routine.id)}`,
+                )
+            : undefined
+        }
+        onDuplicate={can("Wellness.Manage") ? duplicate : undefined}
+        duplicating={cloning}
+        duplicateError={cloneError}
+        onEdit={
+          can("Wellness.Manage")
+            ? (routine) => {
+                setDetails(undefined);
+                void openEdit(routine);
+              }
+            : undefined
+        }
       />
 
       <AlertDialog
@@ -401,7 +479,10 @@ export function ExerciseRoutinesPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>{t("¿Eliminar rutina?")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t('Se eliminará la rutina "{name}" y todos sus ejercicios. Esta acción no se puede deshacer.', { name: deleting?.name ?? "" })}
+              {t(
+                'Se eliminará la rutina "{name}" y todos sus ejercicios. Esta acción no se puede deshacer.',
+                { name: deleting?.name ?? "" },
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -479,7 +560,9 @@ function RoutinesEmptyState({ onCreate }: { onCreate: () => void }) {
         <Dumbbell className="size-6 text-muted-foreground" />
       </div>
       <div>
-        <p className="text-sm font-semibold">{t("No hay rutinas de ejercicio")}</p>
+        <p className="text-sm font-semibold">
+          {t("No hay rutinas de ejercicio")}
+        </p>
         <p className="text-xs text-muted-foreground">
           {t("Crea tu primera rutina para asignarla a tus pacientes.")}
         </p>

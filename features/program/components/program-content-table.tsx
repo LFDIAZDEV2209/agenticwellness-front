@@ -36,6 +36,7 @@ import {
 import { WeekTasksDialog } from "./program-week-tasks-dialog";
 import { PodcastPickerDialog } from "./podcast-picker-dialog";
 import { useT } from "@/providers/i18n-provider";
+import { RoutineContraindications } from "@/features/wellness/components/routine-contraindications";
 import {
   fetchEnrollmentWeek,
   replaceEnrollmentWeekTasks,
@@ -474,6 +475,12 @@ export function WeekRow({
               ))}
             </SelectContent>
           </Select>
+          <RoutineContraindications
+            text={
+              allRoutines.find((routine) => routine.id === exerciseRoutineId)
+                ?.contraindications
+            }
+          />
         </TableCell>
 
         {/* Podcast del día (solo lectura en edición; el cambio va por el picker) */}
@@ -520,8 +527,14 @@ export function WeekRow({
     <TableRow className="hover:bg-muted/40">
       <TableCell className="font-semibold text-sm tabular-nums">
         {week.weekNumber}
-        <Button variant="ghost" size="sm" onClick={() => setTasksDialogOpen(true)} className="ml-2 min-h-11 gap-1 text-xs">
-          <CalendarDays aria-hidden className="size-3.5" />{t("Ver tareas")}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setTasksDialogOpen(true)}
+          className="ml-2 min-h-11 gap-1 text-xs"
+        >
+          <CalendarDays aria-hidden className="size-3.5" />
+          {t("Ver tareas")}
         </Button>
       </TableCell>
       <TableCell className="text-xs text-muted-foreground whitespace-nowrap">

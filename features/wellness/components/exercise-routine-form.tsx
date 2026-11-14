@@ -134,6 +134,9 @@ export function ExerciseRoutineFormFields({
 
   const [name, setName] = useState(routine?.name ?? "");
   const [description, setDescription] = useState(routine?.description ?? "");
+  const [contraindications, setContraindications] = useState(
+    routine?.contraindications ?? "",
+  );
   const [difficulty, setDifficulty] = useState<RoutineDifficulty>(
     routine?.difficulty ?? "Moderado",
   );
@@ -171,6 +174,7 @@ export function ExerciseRoutineFormFields({
         if (full) {
           setName(full.name);
           setDescription(full.description ?? "");
+          setContraindications(full.contraindications ?? "");
           setDifficulty(full.difficulty);
           setEstimatedMinutes(full.estimatedMinutes?.toString() ?? "");
           setCategory(full.category);
@@ -255,6 +259,7 @@ export function ExerciseRoutineFormFields({
       {
         name: name.trim(),
         description: description.trim() || null,
+        contraindications: contraindications.trim(),
         difficulty,
         estimatedMinutes: estimatedMinutes
           ? parseInt(estimatedMinutes, 10)
@@ -288,157 +293,193 @@ export function ExerciseRoutineFormFields({
         <div
           role="alert"
           className="flex flex-col gap-2 rounded-xl border border-destructive p-4"
-                      >
+        >
           <p className="text-sm text-destructive">
             {t(
               "No se pudo cargar la rutina. Vuelve a intentarlo antes de guardar.",
             )}
           </p>
-                    <Button
-                      type="button"
-                      variant="outline"
+          <Button
+            type="button"
+            variant="outline"
             onClick={() => {
               setLoadingDetail(true);
               setDetailAttempt((value) => value + 1);
             }}
-                    >
+          >
             {t("Reintentar")}
-                    </Button>
-                      </div>
-                    )}
+          </Button>
+        </div>
+      )}
       <div className="flex flex-col gap-4">
-            {/* Datos básicos */}
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="flex flex-col gap-1.5 sm:col-span-2">
-                <Label htmlFor="routine-name">{t("Nombre")} *</Label>
-                <Input
-                  id="routine-name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder={t("Ej: Rutina cardio HIIT principiantes")}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5 sm:col-span-2">
-                <Label htmlFor="routine-desc">{t("Descripción")}</Label>
-                <Textarea
-                  id="routine-desc"
-                  value={description}
-                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                    setDescription(e.target.value)
-                  }
-                  placeholder={t("Descripción de la rutina...")}
-                  rows={2}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <Label>{t("Categoría")}</Label>
-                <Select
-                  value={category}
-                  onValueChange={(v) => setCategory(v as RoutineCategory)}
-                >
-                  <SelectTrigger aria-label={t("Categoría")}>
-                    <SelectValue>{t(CATEGORY_OPTIONS.find((option) => option.value === category)?.label ?? category)}</SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {CATEGORY_OPTIONS.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value}>
-                        {t(opt.label)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <Label>{t("Dificultad")}</Label>
-                <Select
-                  value={difficulty}
-                  onValueChange={(v) => setDifficulty(v as RoutineDifficulty)}
-                >
-                  <SelectTrigger aria-label={t("Dificultad")}>
-                    <SelectValue>{t(DIFFICULTY_OPTIONS.find((option) => option.value === difficulty)?.label ?? difficulty)}</SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {DIFFICULTY_OPTIONS.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value}>
-                        {t(opt.label)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="routine-minutes">{t("Duración estimada (min)")}</Label>
-                <Input
-                  id="routine-minutes"
-                  type="number"
-                  min={0}
-                  value={estimatedMinutes}
-                  onChange={(e) => setEstimatedMinutes(e.target.value)}
-                  placeholder={t("Ej: 30")}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <Label>{t("Estado")}</Label>
-                <Select
-                  value={status}
-                  onValueChange={(v) => setStatus(v as NutritionPlanStatus)}
-                >
-                  <SelectTrigger aria-label={t("Estado")}>
-                    <SelectValue>{t(PLAN_STATUS_LABELS[status])}</SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PLAN_STATUSES.map((s) => (
-                      <SelectItem key={s} value={s}>
-                        {t(PLAN_STATUS_LABELS[s])}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex flex-col gap-1.5 sm:col-span-2">
-                <Label htmlFor="routine-target-muscles">{t("Grupos musculares objetivo")}</Label>
-                <Input
-                  id="routine-target-muscles"
-                  value={targetMuscles}
-                  onChange={(e) => setTargetMuscles(e.target.value)}
-                  placeholder={t("Ej: Piernas, Core, Tren superior")}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5 sm:col-span-2">
-                <Label htmlFor="routine-equipment">{t("Equipamiento necesario")}</Label>
-                <Input
-                  id="routine-equipment"
-                  value={equipment}
-                  onChange={(e) => setEquipment(e.target.value)}
-                  placeholder={t("Ej: Mancuernas, banda elástica, banca")}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5 sm:col-span-2">
-                <Label htmlFor="routine-warmup">{t("Calentamiento")}</Label>
-                <Textarea
-                  id="routine-warmup"
-                  value={warmupNotes}
-                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setWarmupNotes(e.target.value)}
-                  placeholder={t("Instrucciones del calentamiento...")}
-                  rows={2}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5 sm:col-span-2">
-                <Label htmlFor="routine-cooldown">{t("Enfriamiento")}</Label>
-                <Textarea
-                  id="routine-cooldown"
-                  value={cooldownNotes}
-                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setCooldownNotes(e.target.value)}
-                  placeholder={t("Instrucciones del enfriamiento...")}
-                  rows={2}
-                />
-              </div>
-            </div>
+        {/* Datos básicos */}
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="flex flex-col gap-1.5 sm:col-span-2">
+            <Label htmlFor="routine-contraindications">
+              {t("Contraindicaciones")}
+            </Label>
+            <Textarea
+              id="routine-contraindications"
+              value={contraindications}
+              maxLength={4000}
+              rows={3}
+              onChange={(event) => setContraindications(event.target.value)}
+            />
+            <p className="text-xs text-muted-foreground">
+              {t("Revisa estas indicaciones antes de asignar la rutina.")}
+            </p>
+          </div>
+          <div className="flex flex-col gap-1.5 sm:col-span-2">
+            <Label htmlFor="routine-name">{t("Nombre")} *</Label>
+            <Input
+              id="routine-name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={t("Ej: Rutina cardio HIIT principiantes")}
+            />
+          </div>
+          <div className="flex flex-col gap-1.5 sm:col-span-2">
+            <Label htmlFor="routine-desc">{t("Descripción")}</Label>
+            <Textarea
+              id="routine-desc"
+              value={description}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                setDescription(e.target.value)
+              }
+              placeholder={t("Descripción de la rutina...")}
+              rows={2}
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label>{t("Categoría")}</Label>
+            <Select
+              value={category}
+              onValueChange={(v) => setCategory(v as RoutineCategory)}
+            >
+              <SelectTrigger aria-label={t("Categoría")}>
+                <SelectValue>
+                  {t(
+                    CATEGORY_OPTIONS.find((option) => option.value === category)
+                      ?.label ?? category,
+                  )}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {CATEGORY_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {t(opt.label)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label>{t("Dificultad")}</Label>
+            <Select
+              value={difficulty}
+              onValueChange={(v) => setDifficulty(v as RoutineDifficulty)}
+            >
+              <SelectTrigger aria-label={t("Dificultad")}>
+                <SelectValue>
+                  {t(
+                    DIFFICULTY_OPTIONS.find(
+                      (option) => option.value === difficulty,
+                    )?.label ?? difficulty,
+                  )}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {DIFFICULTY_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {t(opt.label)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="routine-minutes">
+              {t("Duración estimada (min)")}
+            </Label>
+            <Input
+              id="routine-minutes"
+              type="number"
+              min={0}
+              value={estimatedMinutes}
+              onChange={(e) => setEstimatedMinutes(e.target.value)}
+              placeholder={t("Ej: 30")}
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label>{t("Estado")}</Label>
+            <Select
+              value={status}
+              onValueChange={(v) => setStatus(v as NutritionPlanStatus)}
+            >
+              <SelectTrigger aria-label={t("Estado")}>
+                <SelectValue>{t(PLAN_STATUS_LABELS[status])}</SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {PLAN_STATUSES.map((s) => (
+                  <SelectItem key={s} value={s}>
+                    {t(PLAN_STATUS_LABELS[s])}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-col gap-1.5 sm:col-span-2">
+            <Label htmlFor="routine-target-muscles">
+              {t("Grupos musculares objetivo")}
+            </Label>
+            <Input
+              id="routine-target-muscles"
+              value={targetMuscles}
+              onChange={(e) => setTargetMuscles(e.target.value)}
+              placeholder={t("Ej: Piernas, Core, Tren superior")}
+            />
+          </div>
+          <div className="flex flex-col gap-1.5 sm:col-span-2">
+            <Label htmlFor="routine-equipment">
+              {t("Equipamiento necesario")}
+            </Label>
+            <Input
+              id="routine-equipment"
+              value={equipment}
+              onChange={(e) => setEquipment(e.target.value)}
+              placeholder={t("Ej: Mancuernas, banda elástica, banca")}
+            />
+          </div>
+          <div className="flex flex-col gap-1.5 sm:col-span-2">
+            <Label htmlFor="routine-warmup">{t("Calentamiento")}</Label>
+            <Textarea
+              id="routine-warmup"
+              value={warmupNotes}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                setWarmupNotes(e.target.value)
+              }
+              placeholder={t("Instrucciones del calentamiento...")}
+              rows={2}
+            />
+          </div>
+          <div className="flex flex-col gap-1.5 sm:col-span-2">
+            <Label htmlFor="routine-cooldown">{t("Enfriamiento")}</Label>
+            <Textarea
+              id="routine-cooldown"
+              value={cooldownNotes}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                setCooldownNotes(e.target.value)
+              }
+              placeholder={t("Instrucciones del enfriamiento...")}
+              rows={2}
+            />
+          </div>
+        </div>
 
-            <Separator />
+        <Separator />
 
-            {/* Ejercicios */}
-            <div className="flex flex-col gap-2">
+        {/* Ejercicios */}
+        <div className="flex flex-col gap-2">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-sm font-semibold">
               {t("Ejercicios ({count})", { count: String(exercises.length) })}
@@ -456,203 +497,215 @@ export function ExerciseRoutineFormFields({
                 <Library data-icon="inline-start" />
                 {t("Elegir de la biblioteca")}
               </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={addExercise}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addExercise}
                 className="min-h-11"
                 disabled={
                   saving || loadingDetail || detailError || mediaUploads > 0
                 }
-                >
-                  <Plus data-icon="inline-start" className="size-3" />
-                  {t("Agregar ejercicio")}
-                </Button>
-              </div>
+              >
+                <Plus data-icon="inline-start" className="size-3" />
+                {t("Agregar ejercicio")}
+              </Button>
+            </div>
           </div>
 
-              {exercises.length === 0 && !loadingDetail && (
-                <p className="text-xs text-muted-foreground text-center py-4">
+          {exercises.length === 0 && !loadingDetail && (
+            <p className="text-xs text-muted-foreground text-center py-4">
               {t(
                 'No hay ejercicios. Haz clic en "Agregar ejercicio" para comenzar.',
               )}
-                </p>
-              )}
+            </p>
+          )}
 
-              {loadingDetail && (
-                <p className="text-xs text-muted-foreground text-center py-4">
-                  {t("Cargando ejercicios...")}
-                </p>
-              )}
+          {loadingDetail && (
+            <p className="text-xs text-muted-foreground text-center py-4">
+              {t("Cargando ejercicios...")}
+            </p>
+          )}
 
-              {exercises.map((exercise, index) => (
-                <div
-                  key={index}
-                  className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 shadow-sm"
-                >
-                  <div className="flex items-center gap-2">
-                    <GripVertical className="size-4 text-muted-foreground" />
-                    <span className="text-xs font-semibold text-muted-foreground">
-                      {t("Ejercicio {index}", { index: String(index + 1) })}
-                    </span>
-                    <div className="ml-auto flex gap-1">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="size-10"
-                        aria-label={t("Mover ejercicio arriba")}
-                        disabled={index === 0 || mediaUploads > 0}
-                        onClick={() => moveExercise(index, -1)}
-                      >
-                        ↑
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="size-10"
-                        aria-label={t("Mover ejercicio abajo")}
-                        disabled={index === exercises.length - 1 || mediaUploads > 0}
-                        onClick={() => moveExercise(index, 1)}
-                      >
-                        ↓
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="size-10 text-destructive"
-                        aria-label={t("Eliminar ejercicio")}
-                        disabled={mediaUploads > 0}
-                        onClick={() => removeExercise(index)}
-                      >
-                        <Trash2 className="size-3" />
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    <Input
-                      aria-label={t("Nombre del ejercicio *")} placeholder={t("Nombre del ejercicio *")}
-                      value={exercise.name}
-                      onChange={(e) =>
-                        updateExercise(index, "name", e.target.value)
-                      }
-                      className="min-h-11 text-sm"
-                    />
-                    <Input
-                      aria-label={t("Descripción")} placeholder={t("Descripción")}
-                      value={exercise.description}
-                      onChange={(e) =>
-                        updateExercise(index, "description", e.target.value)
-                      }
-                      className="min-h-11 text-sm"
-                    />
-                    <Input
-                      type="number"
-                      aria-label={t("Series")} placeholder={t("Series")}
-                      value={exercise.sets}
-                      onChange={(e) =>
-                        updateExercise(index, "sets", e.target.value)
-                      }
-                      className="min-h-11 text-sm"
-                    />
-                    <Input
-                      type="number"
-                      aria-label={t("Repeticiones")} placeholder={t("Repeticiones")}
-                      value={exercise.repetitions}
-                      onChange={(e) =>
-                        updateExercise(index, "repetitions", e.target.value)
-                      }
-                      className="min-h-11 text-sm"
-                    />
-                    <Input
-                      type="number"
-                      aria-label={t("Descanso (seg)")} placeholder={t("Descanso (seg)")}
-                      value={exercise.restSeconds}
-                      onChange={(e) =>
-                        updateExercise(index, "restSeconds", e.target.value)
-                      }
-                      className="min-h-11 text-sm"
-                    />
-                    <Input
-                      type="number"
-                      aria-label={t("Duración (seg)")} placeholder={t("Duración (seg)")}
-                      value={exercise.durationSecs}
-                      onChange={(e) =>
-                        updateExercise(index, "durationSecs", e.target.value)
-                      }
-                      className="min-h-11 text-sm"
-                    />
-                    <Input
-                      type="number"
-                      step="0.5"
-                      aria-label={t("Peso (kg)")} placeholder={t("Peso (kg)")}
-                      value={exercise.weightKg}
-                      onChange={(e) =>
-                        updateExercise(index, "weightKg", e.target.value)
-                      }
-                      className="min-h-11 text-sm"
-                    />
-                    <Input
-                      aria-label={t("Músculo objetivo")} placeholder={t("Músculo objetivo")}
-                      value={exercise.targetMuscle}
-                      onChange={(e) =>
-                        updateExercise(index, "targetMuscle", e.target.value)
-                      }
-                      className="min-h-11 text-sm"
-                    />
-                    <Input
-                      aria-label={t("Equipamiento")} placeholder={t("Equipamiento")}
-                      value={exercise.equipment}
-                      onChange={(e) =>
-                        updateExercise(index, "equipment", e.target.value)
-                      }
-                      className="min-h-11 text-sm"
-                    />
-                    <Input
-                      aria-label={t("Tempo (ej: 2-1-2)")} placeholder={t("Tempo (ej: 2-1-2)")}
-                      value={exercise.tempo}
-                      onChange={(e) =>
-                        updateExercise(index, "tempo", e.target.value)
-                      }
-                      className="min-h-11 text-sm"
-                    />
-                    <Input
-                      type="number"
-                      min={1}
-                      max={10}
-                      aria-label={t("RPE (1-10)")} placeholder={t("RPE (1-10)")}
-                      value={exercise.rpe}
-                      onChange={(e) =>
-                        updateExercise(index, "rpe", e.target.value)
-                      }
-                      className="min-h-11 text-sm"
-                    />
-                    <Input
-                      aria-label={t("Tips de forma")} placeholder={t("Tips de forma")}
-                      value={exercise.tips}
-                      onChange={(e) =>
-                        updateExercise(index, "tips", e.target.value)
-                      }
-                      className="min-h-11 text-sm sm:col-span-2"
-                    />
-                   </div>
+          {exercises.map((exercise, index) => (
+            <div
+              key={index}
+              className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 shadow-sm"
+            >
+              <div className="flex items-center gap-2">
+                <GripVertical className="size-4 text-muted-foreground" />
+                <span className="text-xs font-semibold text-muted-foreground">
+                  {t("Ejercicio {index}", { index: String(index + 1) })}
+                </span>
+                <div className="ml-auto flex gap-1">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="size-10"
+                    aria-label={t("Mover ejercicio arriba")}
+                    disabled={index === 0 || mediaUploads > 0}
+                    onClick={() => moveExercise(index, -1)}
+                  >
+                    ↑
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="size-10"
+                    aria-label={t("Mover ejercicio abajo")}
+                    disabled={
+                      index === exercises.length - 1 || mediaUploads > 0
+                    }
+                    onClick={() => moveExercise(index, 1)}
+                  >
+                    ↓
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="size-10 text-destructive"
+                    aria-label={t("Eliminar ejercicio")}
+                    disabled={mediaUploads > 0}
+                    onClick={() => removeExercise(index)}
+                  >
+                    <Trash2 className="size-3" />
+                  </Button>
+                </div>
+              </div>
+              <div className="grid gap-2 sm:grid-cols-2">
+                <Input
+                  aria-label={t("Nombre del ejercicio *")}
+                  placeholder={t("Nombre del ejercicio *")}
+                  value={exercise.name}
+                  onChange={(e) =>
+                    updateExercise(index, "name", e.target.value)
+                  }
+                  className="min-h-11 text-sm"
+                />
+                <Input
+                  aria-label={t("Descripción")}
+                  placeholder={t("Descripción")}
+                  value={exercise.description}
+                  onChange={(e) =>
+                    updateExercise(index, "description", e.target.value)
+                  }
+                  className="min-h-11 text-sm"
+                />
+                <Input
+                  type="number"
+                  aria-label={t("Series")}
+                  placeholder={t("Series")}
+                  value={exercise.sets}
+                  onChange={(e) =>
+                    updateExercise(index, "sets", e.target.value)
+                  }
+                  className="min-h-11 text-sm"
+                />
+                <Input
+                  type="number"
+                  aria-label={t("Repeticiones")}
+                  placeholder={t("Repeticiones")}
+                  value={exercise.repetitions}
+                  onChange={(e) =>
+                    updateExercise(index, "repetitions", e.target.value)
+                  }
+                  className="min-h-11 text-sm"
+                />
+                <Input
+                  type="number"
+                  aria-label={t("Descanso (seg)")}
+                  placeholder={t("Descanso (seg)")}
+                  value={exercise.restSeconds}
+                  onChange={(e) =>
+                    updateExercise(index, "restSeconds", e.target.value)
+                  }
+                  className="min-h-11 text-sm"
+                />
+                <Input
+                  type="number"
+                  aria-label={t("Duración (seg)")}
+                  placeholder={t("Duración (seg)")}
+                  value={exercise.durationSecs}
+                  onChange={(e) =>
+                    updateExercise(index, "durationSecs", e.target.value)
+                  }
+                  className="min-h-11 text-sm"
+                />
+                <Input
+                  type="number"
+                  step="0.5"
+                  aria-label={t("Peso (kg)")}
+                  placeholder={t("Peso (kg)")}
+                  value={exercise.weightKg}
+                  onChange={(e) =>
+                    updateExercise(index, "weightKg", e.target.value)
+                  }
+                  className="min-h-11 text-sm"
+                />
+                <Input
+                  aria-label={t("Músculo objetivo")}
+                  placeholder={t("Músculo objetivo")}
+                  value={exercise.targetMuscle}
+                  onChange={(e) =>
+                    updateExercise(index, "targetMuscle", e.target.value)
+                  }
+                  className="min-h-11 text-sm"
+                />
+                <Input
+                  aria-label={t("Equipamiento")}
+                  placeholder={t("Equipamiento")}
+                  value={exercise.equipment}
+                  onChange={(e) =>
+                    updateExercise(index, "equipment", e.target.value)
+                  }
+                  className="min-h-11 text-sm"
+                />
+                <Input
+                  aria-label={t("Tempo (ej: 2-1-2)")}
+                  placeholder={t("Tempo (ej: 2-1-2)")}
+                  value={exercise.tempo}
+                  onChange={(e) =>
+                    updateExercise(index, "tempo", e.target.value)
+                  }
+                  className="min-h-11 text-sm"
+                />
+                <Input
+                  type="number"
+                  min={1}
+                  max={10}
+                  aria-label={t("RPE (1-10)")}
+                  placeholder={t("RPE (1-10)")}
+                  value={exercise.rpe}
+                  onChange={(e) => updateExercise(index, "rpe", e.target.value)}
+                  className="min-h-11 text-sm"
+                />
+                <Input
+                  aria-label={t("Tips de forma")}
+                  placeholder={t("Tips de forma")}
+                  value={exercise.tips}
+                  onChange={(e) =>
+                    updateExercise(index, "tips", e.target.value)
+                  }
+                  className="min-h-11 text-sm sm:col-span-2"
+                />
+              </div>
               <ExerciseMediaPicker
                 value={exercise.mediaId}
                 exerciseName={exercise.name}
                 disabled={saving}
-                     onChange={(id) => updateExercise(index, "mediaId", id)}
+                onChange={(id) => updateExercise(index, "mediaId", id)}
                 onBusyChange={(busy) =>
                   setMediaUploads((count) =>
                     Math.max(0, count + (busy ? 1 : -1)),
                   )
                 }
               />
-                 </div>
-               ))}
             </div>
+          ))}
+        </div>
       </div>
 
       <RoutineExerciseCatalog

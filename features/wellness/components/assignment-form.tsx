@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { RoutineContraindications } from "./routine-contraindications";
+import { getExerciseRoutine } from "../services/exercise-routines-service";
 import {
   Select,
   SelectContent,
@@ -99,6 +101,34 @@ export function AssignmentFormFields({
   const [routineResults, setRoutineResults] = useState<PickerItem[]>([]);
   const [loadingPatients, setLoadingPatients] = useState(false);
   const [loadingRoutines, setLoadingRoutines] = useState(false);
+  const [warningAttempt, setWarningAttempt] = useState(0);
+  const [routineWarning, setRoutineWarning] = useState<{
+    id: string;
+    text: string | null;
+    failed: boolean;
+  } | null>(null);
+  useEffect(() => {
+    if (!routineId || assignmentType !== "routine") return;
+    const controller = new AbortController();
+    void getExerciseRoutine(routineId, controller.signal)
+      .then((routine) => {
+        if (!controller.signal.aborted)
+          setRoutineWarning({
+            id: routineId,
+            text: routine.contraindications ?? null,
+            failed: false,
+          });
+      })
+      .catch(() => {
+        if (!controller.signal.aborted)
+          setRoutineWarning({ id: routineId, text: null, failed: true });
+      });
+    return () => controller.abort();
+  }, [routineId, assignmentType, warningAttempt]);
+  const warningReady =
+    assignmentType !== "routine" ||
+    !routineId ||
+    (routineWarning?.id === routineId && !routineWarning.failed);
 
   // Debounced patient search
   useEffect(() => {
@@ -168,7 +198,7 @@ export function AssignmentFormFields({
   }, [routineSearch, assignmentType]);
 
   const handleSubmit = async () => {
-    if (!patientId || !routineId || !startDate) return;
+    if (!patientId || !routineId || !startDate || !warningReady) return;
 
     setSaving(true);
     try {
@@ -213,270 +243,296 @@ export function AssignmentFormFields({
     }
   };
 
-  const canSubmit = patientId && routineId && startDate && !isSaving;
+  const canSubmit =
+    patientId && routineId && startDate && !isSaving && warningReady;
 
   return (
     <div className="flex flex-col gap-5 px-6 py-5">
       <div className="flex flex-col gap-4">
-            {/* Picker de paciente */}
-            <div className="flex flex-col gap-1.5">
-              <Label>{t("Paciente")} *</Label>
-              {patientId && patientLabel ? (
-                <div className="flex min-h-11 items-center gap-3 rounded-md border border-input bg-muted px-3 py-1 text-sm">
-                  {patientLabel}
-                  {!isEditing && (
+        {/* Picker de paciente */}
+        <div className="flex flex-col gap-1.5">
+          <Label>{t("Paciente")} *</Label>
+          {patientId && patientLabel ? (
+            <div className="flex min-h-11 items-center gap-3 rounded-md border border-input bg-muted px-3 py-1 text-sm">
+              {patientLabel}
+              {!isEditing && (
+                <button
+                  type="button"
+                  aria-label={t("Quitar selección")}
+                  className="ml-auto flex size-11 shrink-0 items-center justify-center text-muted-foreground hover:text-foreground"
+                  onClick={() => {
+                    setPatientId(null);
+                    setPatientLabel("");
+                  }}
+                >
+                  ×
+                </button>
+              )}
+            </div>
+          ) : (
+            <>
+              <div className="relative">
+                <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
+                <Input
+                  placeholder={t("Buscar paciente por nombre...")}
+                  value={patientSearch}
+                  onChange={(e) => {
+                    setPatientSearch(e.target.value);
+                    setPatientId(null);
+                    setPatientLabel("");
+                    setPatientResults([]);
+                  }}
+                  className="h-9 pl-8"
+                />
+              </div>
+              {loadingPatients && (
+                <p className="text-xs text-muted-foreground">
+                  {t("Buscando...")}
+                </p>
+              )}
+              {patientResults.length > 0 && (
+                <div className="max-h-40 overflow-y-auto rounded-md border border-border">
+                  {patientResults.map((p) => (
                     <button
+                      key={p.id}
                       type="button"
-                      aria-label={t("Quitar selección")}
-                      className="ml-auto flex size-11 shrink-0 items-center justify-center text-muted-foreground hover:text-foreground"
+                      className={`flex w-full flex-col px-3 py-2 text-left text-sm hover:bg-muted ${
+                        patientId === p.id ? "bg-muted font-medium" : ""
+                      }`}
                       onClick={() => {
-                        setPatientId(null);
-                        setPatientLabel("");
-                      }}
-                    >
-                      ×
-                    </button>
-                  )}
-                </div>
-              ) : (
-                <>
-                  <div className="relative">
-                    <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
-                    <Input
-                      placeholder={t("Buscar paciente por nombre...")}
-                      value={patientSearch}
-                      onChange={(e) => {
-                        setPatientSearch(e.target.value);
-                        setPatientId(null);
-                        setPatientLabel("");
+                        setPatientId(p.id);
+                        setPatientLabel(p.label);
+                        setPatientSearch("");
                         setPatientResults([]);
                       }}
-                      className="h-9 pl-8"
-                    />
-                  </div>
-                  {loadingPatients && (
-                    <p className="text-xs text-muted-foreground">{t("Buscando...")}</p>
-                  )}
-                  {patientResults.length > 0 && (
-                    <div className="max-h-40 overflow-y-auto rounded-md border border-border">
-                      {patientResults.map((p) => (
-                        <button
-                          key={p.id}
-                          type="button"
-                          className={`flex w-full flex-col px-3 py-2 text-left text-sm hover:bg-muted ${
-                            patientId === p.id ? "bg-muted font-medium" : ""
-                          }`}
-                          onClick={() => {
-                            setPatientId(p.id);
-                            setPatientLabel(p.label);
-                            setPatientSearch("");
-                            setPatientResults([]);
-                          }}
-                        >
-                          <span>{p.label}</span>
-                          {p.sublabel && (
-                            <span className="text-xs text-muted-foreground">
-                              {p.sublabel}
-                            </span>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                  {patientSearch.length >= 2 &&
-                    !loadingPatients &&
-                    patientResults.length === 0 && (
-                      <p className="text-xs text-muted-foreground">
-                        {t("No se encontraron pacientes.")}
-                      </p>
-                    )}
-                </>
+                    >
+                      <span>{p.label}</span>
+                      {p.sublabel && (
+                        <span className="text-xs text-muted-foreground">
+                          {p.sublabel}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {patientSearch.length >= 2 &&
+                !loadingPatients &&
+                patientResults.length === 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    {t("No se encontraron pacientes.")}
+                  </p>
+                )}
+            </>
+          )}
+        </div>
+
+        {/* Tipo de asignación */}
+        <div className="flex flex-col gap-1.5">
+          <Label>{t("Tipo de asignación")} *</Label>
+          <Select
+            value={assignmentType}
+            onValueChange={(v: string | null) => {
+              if (!v) return;
+              setAssignmentType(v as "routine" | "nutrition");
+              // Limpiar selección al cambiar tipo
+              setRoutineId(null);
+              setRoutineLabel("");
+              setRoutineSearch("");
+              setRoutineResults([]);
+            }}
+            disabled={isEditing}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="routine">
+                {t("Rutina de ejercicio")}
+              </SelectItem>
+              <SelectItem value="nutrition">
+                {t("Plan de alimentación")}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Picker de rutina o plan */}
+        <div className="flex flex-col gap-1.5">
+          <Label>
+            {assignmentType === "routine"
+              ? t("Rutina de ejercicio *")
+              : t("Plan de alimentación *")}
+          </Label>
+          {routineId && routineLabel ? (
+            <div className="flex min-h-11 items-center gap-3 rounded-md border border-input bg-muted px-3 py-1 text-sm">
+              <span className="min-w-0 break-words">{routineLabel}</span>
+              {!isEditing && (
+                <button
+                  type="button"
+                  aria-label={t("Quitar selección")}
+                  className="ml-auto flex size-11 shrink-0 items-center justify-center text-muted-foreground hover:text-foreground"
+                  onClick={() => {
+                    setRoutineId(null);
+                    setRoutineLabel("");
+                  }}
+                >
+                  ×
+                </button>
               )}
             </div>
-
-            {/* Tipo de asignación */}
-            <div className="flex flex-col gap-1.5">
-              <Label>{t("Tipo de asignación")} *</Label>
-              <Select
-                value={assignmentType}
-                onValueChange={(v: string | null) => {
-                  if (!v) return;
-                  setAssignmentType(v as "routine" | "nutrition");
-                  // Limpiar selección al cambiar tipo
-                  setRoutineId(null);
-                  setRoutineLabel("");
-                  setRoutineSearch("");
-                  setRoutineResults([]);
-                }}
-                disabled={isEditing}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="routine">{t("Rutina de ejercicio")}</SelectItem>
-                  <SelectItem value="nutrition">
-                    {t("Plan de alimentación")}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Picker de rutina o plan */}
-            <div className="flex flex-col gap-1.5">
-              <Label>
-                {assignmentType === "routine"
-                  ? t("Rutina de ejercicio *")
-                  : t("Plan de alimentación *")}
-              </Label>
-              {routineId && routineLabel ? (
-                <div className="flex min-h-11 items-center gap-3 rounded-md border border-input bg-muted px-3 py-1 text-sm">
-                  <span className="min-w-0 break-words">{routineLabel}</span>
-                  {!isEditing && (
+          ) : (
+            <>
+              <div className="relative">
+                <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
+                <Input
+                  placeholder={t("Buscar rutina por nombre...")}
+                  value={routineSearch}
+                  onChange={(e) => {
+                    setRoutineSearch(e.target.value);
+                    setRoutineId(null);
+                    setRoutineLabel("");
+                    setRoutineResults([]);
+                  }}
+                  className="h-9 pl-8"
+                />
+              </div>
+              {loadingRoutines && (
+                <p className="text-xs text-muted-foreground">
+                  {t("Buscando...")}
+                </p>
+              )}
+              {routineResults.length > 0 && (
+                <div className="max-h-40 overflow-y-auto rounded-md border border-border">
+                  {routineResults.map((r) => (
                     <button
+                      key={r.id}
                       type="button"
-                      aria-label={t("Quitar selección")}
-                      className="ml-auto flex size-11 shrink-0 items-center justify-center text-muted-foreground hover:text-foreground"
+                      className={`flex w-full flex-col px-3 py-2 text-left text-sm hover:bg-muted ${
+                        routineId === r.id ? "bg-muted font-medium" : ""
+                      }`}
                       onClick={() => {
-                        setRoutineId(null);
-                        setRoutineLabel("");
-                      }}
-                    >
-                      ×
-                    </button>
-                  )}
-                </div>
-              ) : (
-                <>
-                  <div className="relative">
-                    <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
-                    <Input
-                      placeholder={t("Buscar rutina por nombre...")}
-                      value={routineSearch}
-                      onChange={(e) => {
-                        setRoutineSearch(e.target.value);
-                        setRoutineId(null);
-                        setRoutineLabel("");
+                        setRoutineId(r.id);
+                        setRoutineLabel(r.label);
+                        setRoutineSearch("");
                         setRoutineResults([]);
                       }}
-                      className="h-9 pl-8"
-                    />
-                  </div>
-                  {loadingRoutines && (
-                    <p className="text-xs text-muted-foreground">{t("Buscando...")}</p>
-                  )}
-                  {routineResults.length > 0 && (
-                    <div className="max-h-40 overflow-y-auto rounded-md border border-border">
-                      {routineResults.map((r) => (
-                        <button
-                          key={r.id}
-                          type="button"
-                          className={`flex w-full flex-col px-3 py-2 text-left text-sm hover:bg-muted ${
-                            routineId === r.id ? "bg-muted font-medium" : ""
-                          }`}
-                          onClick={() => {
-                            setRoutineId(r.id);
-                            setRoutineLabel(r.label);
-                            setRoutineSearch("");
-                            setRoutineResults([]);
-                          }}
-                        >
-                          <span>{r.label}</span>
-                          {r.sublabel && (
-                            <span className="text-xs text-muted-foreground">
-                              {r.sublabel}
-                            </span>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                  {routineSearch.length >= 2 &&
-                    !loadingRoutines &&
-                    routineResults.length === 0 && (
-                      <p className="text-xs text-muted-foreground">
-                        {t("No se encontraron rutinas activas.")}
-                      </p>
-                    )}
-                </>
+                    >
+                      <span>{r.label}</span>
+                      {r.sublabel && (
+                        <span className="text-xs text-muted-foreground">
+                          {r.sublabel}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
               )}
-            </div>
+              {routineSearch.length >= 2 &&
+                !loadingRoutines &&
+                routineResults.length === 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    {t("No se encontraron rutinas activas.")}
+                  </p>
+                )}
+            </>
+          )}
+        </div>
 
-            {/* Fechas */}
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="start-date">{t("Fecha de inicio")} *</Label>
-                <Input
-                  id="start-date"
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="end-date">{t("Fecha de fin")}</Label>
-                <Input
-                  id="end-date"
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                />
-              </div>
+        {/* Fechas */}
+        {assignmentType === "routine" &&
+          routineId &&
+          (routineWarning?.id !== routineId ? (
+            <p role="status" className="text-sm text-muted-foreground">
+              {t("Consultando contraindicaciones...")}
+            </p>
+          ) : routineWarning.failed ? (
+            <div role="alert" className="flex flex-col gap-2">
+              <p>{t("No se pudieron consultar las contraindicaciones.")}</p>
+              <Button
+                variant="outline"
+                onClick={() => setWarningAttempt((value) => value + 1)}
+              >
+                {t("Reintentar")}
+              </Button>
             </div>
+          ) : (
+            <RoutineContraindications text={routineWarning.text} />
+          ))}
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="start-date">{t("Fecha de inicio")} *</Label>
+            <Input
+              id="start-date"
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="end-date">{t("Fecha de fin")}</Label>
+            <Input
+              id="end-date"
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+          </div>
+        </div>
 
-            {/* Frecuencia y estado */}
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="flex flex-col gap-1.5">
-                <Label>{t("Frecuencia")}</Label>
-                <Select
-                  value={frequency}
-                  onValueChange={(v) => setFrequency(v as AssignmentFrequency)}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {FREQUENCY_OPTIONS.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <Label>{t("Estado")}</Label>
-                <Select
-                  value={status}
-                  onValueChange={(v) => setStatus(v as AssignmentStatus)}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {ASSIGNMENT_STATUS_OPTIONS.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+        {/* Frecuencia y estado */}
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="flex flex-col gap-1.5">
+            <Label>{t("Frecuencia")}</Label>
+            <Select
+              value={frequency}
+              onValueChange={(v) => setFrequency(v as AssignmentFrequency)}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {FREQUENCY_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label>{t("Estado")}</Label>
+            <Select
+              value={status}
+              onValueChange={(v) => setStatus(v as AssignmentStatus)}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {ASSIGNMENT_STATUS_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
 
-            {/* Notas */}
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="assignment-notes">{t("Notas")}</Label>
-              <Textarea
-                id="assignment-notes"
-                value={notes}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                  setNotes(e.target.value)
-                }
-                placeholder={t("Notas sobre la asignación...")}
-                rows={2}
-              />
-            </div>
+        {/* Notas */}
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="assignment-notes">{t("Notas")}</Label>
+          <Textarea
+            id="assignment-notes"
+            value={notes}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+              setNotes(e.target.value)
+            }
+            placeholder={t("Notas sobre la asignación...")}
+            rows={2}
+          />
+        </div>
       </div>
 
       <div className="flex items-center justify-end gap-2 border-t border-border pt-4">
@@ -488,11 +544,7 @@ export function AssignmentFormFields({
         >
           {t("Cancelar")}
         </Button>
-        <Button
-          type="button"
-          onClick={handleSubmit}
-          disabled={!canSubmit}
-        >
+        <Button type="button" onClick={handleSubmit} disabled={!canSubmit}>
           {saving
             ? t("Guardando...")
             : isEditing

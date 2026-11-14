@@ -179,12 +179,17 @@ export interface RoutineExercise {
   rpe: number | null;
   tips: string | null;
   mediaId: string | null;
-  referenceVideo?: { embedUrl: string; sourceUrl: string; author: string } | null;
+  referenceVideo?: {
+    embedUrl: string;
+    sourceUrl: string;
+    author: string;
+  } | null;
   sortOrder: number;
 }
 
 /** Rutina de ejercicio. */
 export interface ExerciseRoutine {
+  contraindications?: string | null;
   id: string;
   name: string;
   description: string | null;
@@ -206,6 +211,7 @@ export interface ExerciseRoutine {
 
 /** Item del listado de rutinas. */
 export interface ExerciseRoutineListItem {
+  contraindications?: string | null;
   id: string;
   name: string;
   description: string | null;
@@ -238,6 +244,7 @@ export interface RoutineExerciseInput {
 
 /** Payload para crear rutina. */
 export interface CreateExerciseRoutineInput {
+  contraindications?: string | null;
   name: string;
   description: string | null;
   difficulty: RoutineDifficulty;
@@ -255,6 +262,7 @@ export interface CreateExerciseRoutineInput {
 
 /** Payload para actualizar rutina. */
 export interface UpdateExerciseRoutineInput {
+  contraindications?: string | null;
   name: string;
   description: string | null;
   difficulty: RoutineDifficulty;
@@ -278,7 +286,8 @@ export interface ExerciseRoutineFilters {
 
 // --- Routine Assignment Types ---
 
-export type AssignmentFrequency = "Diaria" | "TresVecesSemana" | "Personalizada";
+export type AssignmentFrequency =
+  "Diaria" | "TresVecesSemana" | "Personalizada";
 export type AssignmentStatus = "Active" | "Paused" | "Completed";
 
 /** Asignación de rutina a paciente. */

@@ -5430,5 +5430,11 @@
   "Enlace único de YouTube o Vimeo": "Enlace único de YouTube o Vimeo",
   "Una sola demostración por ejercicio. El enlace sustituye al archivo al confirmarlo.": "Una sola demostración por ejercicio. El enlace sustituye al archivo al confirmarlo.",
   "Introduce un enlace HTTPS de un solo vídeo de YouTube o Vimeo.": "Introduce un enlace HTTPS de un solo vídeo de YouTube o Vimeo.",
-  "Usar este enlace": "Usar este enlace"
+  "Usar este enlace": "Usar este enlace",
+  "Contraindicaciones": "Contraindicaciones",
+  "Revisa estas indicaciones antes de asignar la rutina.": "Revisa estas indicaciones antes de asignar la rutina.",
+  "No se pudo duplicar la rutina. Revisa si ya se creó antes de reintentar.": "No se pudo duplicar la rutina. Revisa si ya se creó antes de reintentar.",
+  "Consultando contraindicaciones...": "Consultando contraindicaciones...",
+  "No se pudieron consultar las contraindicaciones.": "No se pudieron consultar las contraindicaciones.",
+  "Duplicar": "Duplicar"
 }

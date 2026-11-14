@@ -33,8 +33,21 @@ export async function fetchExerciseRoutines(
   );
 }
 
-export async function getExerciseRoutine(id: string): Promise<ExerciseRoutine> {
-  return apiFetch<ExerciseRoutine>(`${PATH}/${id}`);
+export async function getExerciseRoutine(
+  id: string,
+  signal?: AbortSignal,
+): Promise<ExerciseRoutine> {
+  return apiFetch<ExerciseRoutine>(`${PATH}/${id}`, { signal });
+}
+
+/** Copia de catálogo en borrador; no envía patientId ni crea asignaciones. */
+export async function cloneExerciseRoutine(
+  id: string,
+): Promise<ExerciseRoutine> {
+  return apiFetch<ExerciseRoutine>(`${PATH}/${id}/clone`, {
+    method: "POST",
+    body: JSON.stringify({}),
+  });
 }
 
 export async function createExerciseRoutine(
