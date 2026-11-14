@@ -5331,5 +5331,18 @@
   "Mi ejercicio": "Mi ejercicio",
   "Consulta el ejercicio o descanso de hoy": "Consulta el ejercicio o descanso de hoy",
   "Mi progreso": "Mi progreso",
-  "Consulta los registros de progreso, XP y racha": "Consulta los registros de progreso, XP y racha"
+  "Consulta los registros de progreso, XP y racha": "Consulta los registros de progreso, XP y racha",
+  "Asignar agente a un paciente": "Asignar agente a un paciente",
+  "Selecciona un paciente y confirma la asignación a su cuenta vinculada. La disponibilidad en Vita requiere versión activa, sincronización y consentimiento.": "Selecciona un paciente y confirma la asignación a su cuenta vinculada. La disponibilidad en Vita requiere versión activa, sincronización y consentimiento.",
+  "Activa el tipo de agente antes de asignarlo.": "Activa el tipo de agente antes de asignarlo.",
+  "Buscar paciente para asignar": "Buscar paciente para asignar",
+  "No se pudieron buscar pacientes. Reintenta la búsqueda.": "No se pudieron buscar pacientes. Reintenta la búsqueda.",
+  "Este paciente no tiene una cuenta de usuario vinculada. Vincula su cuenta antes de asignar el agente.": "Este paciente no tiene una cuenta de usuario vinculada. Vincula su cuenta antes de asignar el agente.",
+  "Asignar agente": "Asignar agente",
+  "Consultando asignación": "Consultando asignación",
+  "No se pudo consultar la asignación. Reintenta antes de asignar.": "No se pudo consultar la asignación. Reintenta antes de asignar.",
+  "Este paciente ya tiene una asignación de este agente.": "Este paciente ya tiene una asignación de este agente.",
+  "Agente asignado a la cuenta vinculada del paciente.": "Agente asignado a la cuenta vinculada del paciente.",
+  "No se pudo asignar el agente. Revisa los permisos o si ya está asignado e inténtalo de nuevo.": "No se pudo asignar el agente. Revisa los permisos o si ya está asignado e inténtalo de nuevo.",
+  "La asignación se guardó, pero no se pudo actualizar su estado. Vuelve a seleccionar el paciente para consultarlo.": "La asignación se guardó, pero no se pudo actualizar su estado. Vuelve a seleccionar el paciente para consultarlo."
 }

@@ -1,20 +1,41 @@
 import type { Page } from "@playwright/test";
-import type { AgentType, AgentTypeRequest } from "../types";
+import type { AgentInstance, AgentType, AgentTypeRequest } from "../types";
 import { mockPatientsHttp } from "../../../e2e/fixtures/patients-http";
 
 export const agentId = "00000000-0000-4000-8000-000000000901";
+export const linkedUserId = "00000000-0000-4000-8000-000000000902";
+export const linkedPatientId = "00000000-0000-4000-8000-000000000903";
+
+interface AgentHttpOptions {
+  withoutOwnBase?: boolean;
+  missingCreatedBaseId?: boolean;
+  permissions?: string[];
+  activeAgent?: boolean;
+  existingAssignment?: boolean;
+  assignmentFailure?: number;
+}
 
 /** Transporte sintético: ninguna petición API desconocida llega a servicios reales. */
-export async function mockAgentsHttp(page: Page, english = false, options: { withoutOwnBase?: boolean; missingCreatedBaseId?: boolean } = {}) {
-  const base = await mockPatientsHttp(page, { permissions: ["Agents.View", "Agents.Create", "Agents.Update"], english });
+export async function mockAgentsHttp(page: Page, english = false, options: AgentHttpOptions = {}) {
+  const permissions = options.permissions ?? ["Agents.View", "Agents.Create", "Agents.Update"];
+  const base = await mockPatientsHttp(page, { permissions, english });
   const agent: AgentType = {
     id: agentId, name: "Especialista QA", description: "Agente sintético",
-    specialty: "Nutrición", iconKey: "Bot", status: "Borrador",
+    specialty: "Nutrición", iconKey: "Bot", status: options.activeAgent ? "Activo" : "Borrador",
     metadata: JSON.stringify({ slug: "qa", custom: { keep: true }, routing: { topics: ["nutrición"], keywords: ["menú"], channels: ["text"], future: 7 } }),
     activeVersionId: null, activeVersionNumber: null, createdAt: "2026-11-14T12:00:00Z", updatedAt: null,
   };
   const writes: { path: string; method: string; body: Record<string, unknown> }[] = [];
   const errors: string[] = [];
+  const instanceReads: string[] = [];
+  const patientReads: string[] = [];
+  const instances: AgentInstance[] = options.existingAssignment ? [{ id: "instance-qa", userId: linkedUserId, agentTypeId: agentId, agentTypeName: agent.name, status: "Activo", metadata: "{}", createdAt: agent.createdAt, updatedAt: null }] : [];
+  const transport = { assignmentFailure: options.assignmentFailure, lookupFailure: false };
+  const patients = [
+    { id: linkedPatientId, firstName: "Ana", lastName: "Vinculada QA", userId: linkedUserId },
+    { id: "00000000-0000-4000-8000-000000000904", firstName: "Bea", lastName: "Sin Cuenta QA", userId: null },
+    { id: "00000000-0000-4000-8000-000000000905", firstName: "Carlos", lastName: "Legado QA" },
+  ];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.route("**/api/v1/agents**", async (route) => {
     const request = route.request();
@@ -22,6 +43,19 @@ export async function mockAgentsHttp(page: Page, english = false, options: { wit
     const method = request.method();
     const reply = (body: unknown, status = 200) => route.fulfill({ status, contentType: "application/json", body: JSON.stringify(body) });
     if (method !== "GET") writes.push({ path, method, body: method === "PUT" && path.includes("storage") ? {} : request.postDataJSON() });
+    if (path === "/api/v1/agents/instances") {
+      if (method === "GET") {
+        instanceReads.push(new URL(request.url()).searchParams.get("userId") ?? "");
+        if (transport.lookupFailure) return reply({ detail: "Consulta no disponible QA" }, 403);
+        return reply(instances.filter((instance) => instance.userId === new URL(request.url()).searchParams.get("userId")));
+      }
+      if (!permissions.includes("Agents.Update") || transport.assignmentFailure) return reply({ detail: "Asignación rechazada QA" }, transport.assignmentFailure ?? 403);
+      const input = request.postDataJSON();
+      if (instances.some((instance) => instance.userId === input.userId && instance.agentTypeId === input.agentTypeId)) return reply({ detail: "Asignación duplicada QA" }, 409);
+      const instance: AgentInstance = { id: "instance-created-qa", agentTypeName: agent.name, status: "Activo", createdAt: agent.createdAt, updatedAt: null, ...input };
+      instances.push(instance);
+      return reply(instance, 201);
+    }
     if (path === "/api/v1/agents" && method === "GET") return reply({ data: [agent], total: 1, page: 1, pageSize: 12, totalPages: 1 });
     if (path === "/api/v1/agents" && method === "POST") {
       Object.assign(agent, request.postDataJSON() as AgentTypeRequest);
@@ -47,9 +81,16 @@ export async function mockAgentsHttp(page: Page, english = false, options: { wit
     if (path === "/api/v1/agents/executions") return reply({ isAvailable: true, total: 0, items: [] });
     return route.fallback();
   });
+  await page.route("**/api/v1/patients?**", (route) => {
+    const url = new URL(route.request().url());
+    patientReads.push(url.search);
+    const search = (url.searchParams.get("search") ?? "").toLowerCase();
+    const data = patients.filter((patient) => `${patient.firstName} ${patient.lastName}`.toLowerCase().includes(search));
+    return route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ data, total: data.length, page: 1, pageSize: 10, totalPages: 1 }) });
+  });
   await page.route("**/api/v1/storage/**", (route) => {
     writes.push({ path: new URL(route.request().url()).pathname, method: route.request().method(), body: {} });
     return route.fulfill({ status: 204 });
   });
-  return { agent, writes, unknowns: base.unknowns, errors };
+  return { agent, writes, unknowns: base.unknowns, errors, instanceReads, patientReads, instances, transport };
 }

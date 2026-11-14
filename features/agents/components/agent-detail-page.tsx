@@ -26,6 +26,7 @@ import { getAgentIcon, formatDate } from "../services/agents-service";
 import { VersionsTab } from "./versions-tab";
 import { KnowledgeTab } from "./knowledge-tab";
 import { MonitoringTab } from "./monitoring-tab";
+import { AgentAssignmentSection } from "./agent-assignment-section";
 
 const statusVariant: Record<string, "default" | "destructive" | "secondary"> = {
   Activo: "default",
@@ -113,6 +114,8 @@ export function AgentDetailPage({ agentTypeId }: { agentTypeId: string }) {
           </div>
         }
       />
+
+      <AgentAssignmentSection agent={agent} />
 
       <div className="flex flex-col gap-6 lg:flex-row">
         <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 lg:w-72">
