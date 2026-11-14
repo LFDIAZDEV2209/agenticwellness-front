@@ -26,6 +26,7 @@ import type { MediaItem, MediaReferences } from "../types";
 import { MediaLibraryPicker } from "./media-library-picker";
 import { MediaPlayer } from "./media-player";
 import { mediaStatusMeta } from "./media-meta";
+import { getProgramTemplate } from "@/features/program/services/program-templates-service";
 
 export type MediaRetirementAction = "unpublish" | "archive" | "delete";
 interface Impact {
@@ -79,6 +80,10 @@ export function MediaRetirementDialog({
   >(null);
   const [conflictImpact, setConflictImpact] = useState<Impact | null>(null);
   const [deleteBlocked, setDeleteBlocked] = useState(false);
+  const [slow, setSlow] = useState(false);
+  const [templateStates, setTemplateStates] = useState<Record<string, string>>(
+    {},
+  );
   const [completed, setCompleted] = useState<{
     item: MediaItem | null;
     impact: Impact | null;
@@ -94,7 +99,8 @@ export function MediaRetirementDialog({
   const impact = conflictImpact ?? (ready ? preview.impact : null);
   const inUse = Boolean(
     (impact && (impact.pacientes > 0 || impact.plantillas > 0)) ||
-    preview?.references?.totalReferences ||
+    preview?.references?.enrollmentReferences.some((row) => !row.isFrozen) ||
+    preview?.references?.routineReferences?.length ||
     error === "conflict",
   );
   const needsReplacement = inUse || Boolean(conflictImpact);
@@ -145,6 +151,35 @@ export function MediaRetirementDialog({
     return () => controller.abort();
   }, [media.id, permitted, attempt]);
 
+  useEffect(() => {
+    if ((!saving && ready) || previewFailed || !permitted) return;
+    const timer = setTimeout(() => setSlow(true), 4000);
+    return () => clearTimeout(timer);
+  }, [ready, saving, previewFailed, permitted, attempt]);
+  useEffect(() => {
+    if (!preview?.references || !hasPermission("Program.View")) return;
+    let active = true;
+    const ids = [
+      ...new Set(
+        preview.references.templateReferences.map((row) => row.templateId),
+      ),
+    ];
+    void Promise.all(
+      ids.map(async (id) => {
+        try {
+          return [id, (await getProgramTemplate(id)).status] as const;
+        } catch {
+          return [id, "unknown"] as const;
+        }
+      }),
+    ).then((rows) => {
+      if (active) setTemplateStates(Object.fromEntries(rows));
+    });
+    return () => {
+      active = false;
+    };
+  }, [preview, hasPermission]);
+
   const execute = async () => {
     if (
       savingRef.current ||
@@ -165,6 +200,7 @@ export function MediaRetirementDialog({
     }
     savingRef.current = true;
     setSaving(true);
+    setSlow(false);
     setError(null);
     try {
       const base = `${env.apiUrl}/api/v1/media/${media.id}`;
@@ -208,12 +244,17 @@ export function MediaRetirementDialog({
     setDeleteBlocked(false);
     setError(null);
   };
-  const referenceNames = [
-    ...new Set(
-      preview?.references?.templateReferences.map((row) => row.templateName) ??
-        [],
-    ),
+  const templateReferences = [
+    ...new Map(
+      (preview?.references?.templateReferences ?? []).map((row) => [
+        row.templateId,
+        row,
+      ]),
+    ).values(),
   ];
+  const drafts = templateReferences.filter(
+    (row) => templateStates[row.templateId] === "Draft",
+  );
   const routines = preview?.references?.routineReferences ?? [];
   return (
     <>
@@ -303,6 +344,13 @@ export function MediaRetirementDialog({
                     "Las semanas iniciadas y los elementos personalizados se conservan.",
                   )}
                 </p>
+                <p className="text-sm text-warning-soft-foreground">
+                  {t(
+                    "Los borradores no se modifican. Revisa sus referencias antes de publicarlos.",
+                  )}
+                  {drafts.length > 0 &&
+                    ` ${drafts.map((row) => row.templateName).join(", ")}`}
+                </p>
               </div>
             ) : previewFailed ? (
               <div role="alert" className="flex flex-col items-start gap-3 p-6">
@@ -315,6 +363,7 @@ export function MediaRetirementDialog({
                   variant="outline"
                   onClick={() => {
                     setPreviewFailed(false);
+                    setSlow(false);
                     setAttempt((value) => value + 1);
                   }}
                 >
@@ -323,9 +372,27 @@ export function MediaRetirementDialog({
               </div>
             ) : !ready ? (
               <div role="status" className="flex flex-col gap-4 p-6">
-                <span className="sr-only">{t("Cargando...")}</span>
-                <Skeleton className="h-24 w-full" />
-                <Skeleton className="h-36 w-full" />
+                <p className="text-sm text-muted-foreground">
+                  {t("Consultando el impacto y las referencias…")}
+                </p>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <section className="space-y-3 rounded-xl border p-4">
+                    <h3 className="font-semibold">{t("Dónde se usa")}</h3>
+                    <Skeleton className="h-24 w-full" />
+                    <Skeleton className="h-10 w-full" />
+                  </section>
+                  <section className="space-y-3 rounded-xl border p-4">
+                    <h3 className="font-semibold">{t("Medio sustituto")}</h3>
+                    <Skeleton className="h-36 w-full" />
+                  </section>
+                </div>
+                {slow && (
+                  <p className="text-sm text-muted-foreground">
+                    {t(
+                      "La consulta está tardando más de lo habitual. Puedes esperar o cancelar.",
+                    )}
+                  </p>
+                )}
               </div>
             ) : (
               <div className="grid min-w-0 md:grid-cols-2">
@@ -345,22 +412,44 @@ export function MediaRetirementDialog({
                     </div>
                     <div className="flex flex-col">
                       <dt className="order-last text-sm text-muted-foreground">
-                        {t("Plantillas de programa")}
+                        {t("Plantillas activas que se actualizarán")}
                       </dt>
                       <dd className="text-2xl font-semibold tabular-nums">
                         {number(impact?.plantillas ?? 0)}
                       </dd>
                     </div>
                   </dl>
-                  {referenceNames.length > 0 && (
-                    <ul className="flex flex-col gap-2 text-sm">
-                      {referenceNames.map((name) => (
-                        <li key={name} className="break-words">
-                          {name}
-                        </li>
-                      ))}
-                    </ul>
+                  {templateReferences.length > 0 && (
+                    <section className="space-y-2">
+                      <h4 className="text-sm font-medium">
+                        {t("Referencias en plantillas")}
+                      </h4>
+                      <ul className="flex flex-col gap-2 text-sm">
+                        {templateReferences.map((row) => (
+                          <li key={row.templateId} className="break-words">
+                            {row.templateName} ·{" "}
+                            {t(
+                              templateStates[row.templateId] === "Active"
+                                ? "Activa · se actualizará"
+                                : templateStates[row.templateId] === "Draft"
+                                  ? "Borrador · no se modifica"
+                                  : templateStates[row.templateId] ===
+                                      "Archived"
+                                    ? "Archivada · no se modifica"
+                                    : "Estado no disponible",
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
                   )}
+                  <p className="rounded-xl bg-warning-soft p-3 text-sm text-warning-soft-foreground">
+                    {t(
+                      "Los borradores no se modifican. Revisa sus referencias antes de publicarlos.",
+                    )}
+                    {drafts.length > 0 &&
+                      ` ${drafts.map((row) => row.templateName).join(", ")}`}
+                  </p>
                   {routines.length > 0 && (
                     <div className="flex flex-col gap-2">
                       <h4 className="text-sm font-medium">{t("Rutinas")}</h4>

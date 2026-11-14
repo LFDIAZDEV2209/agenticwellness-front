@@ -196,6 +196,9 @@ test("1.19 · cinco audios, fallo parcial, edición y reintento sin repetir los 
     await page
       .getByLabel(`Autor de episodio_${index}.wav`, { exact: true })
       .fill("Autor QA");
+    await page
+      .getByLabel(`Categoría de episodio_${index}.wav`, { exact: true })
+      .selectOption("Nutricion");
   }
   const table = page.getByRole("table", {
     name: "Archivos del lote",
@@ -341,7 +344,7 @@ test("1.18 · el formulario individual no pide día ni mes y enlaza la carga mú
   await expect(page).toHaveURL(/\/media\/new\?mode=bulk$/);
 });
 
-test("1.19 · respuesta de creación perdida reutiliza claves e ids con nombres duplicados", async ({
+test("1.19 · respuesta de creación perdida reutiliza claves e ids con nombres iguales y archivos distintos", async ({
   page,
 }) => {
   const http = await mockBulkHttp(page, true, {
@@ -349,12 +352,20 @@ test("1.19 · respuesta de creación perdida reutiliza claves e ids con nombres 
     loseDraftBatch: true,
   });
   await page.goto("/media/new?mode=bulk");
+  const second = audioFile("igual.wav");
+  second.buffer = Buffer.concat([second.buffer, Buffer.alloc(16)]);
+  second.buffer.writeUInt32LE(second.buffer.length - 8, 4);
+  second.buffer.writeUInt32LE(second.buffer.length - 44, 40);
   await page
     .getByLabel("Seleccionar varios archivos", { exact: true })
-    .setInputFiles([audioFile("igual.wav"), audioFile("igual.wav")]);
+    .setInputFiles([audioFile("igual.wav"), second]);
   const authors = page.getByLabel("Autor de igual.wav", { exact: true });
   await expect(authors).toHaveCount(2);
   for (const author of await authors.all()) await author.fill("Autor QA");
+  for (const category of await page
+    .getByLabel("Categoría de igual.wav", { exact: true })
+    .all())
+    await category.selectOption("Habitos");
   const save = page.getByRole("button", {
     name: "Guardar borradores",
     exact: true,
@@ -400,6 +411,12 @@ test("1.19 · respuesta de publicación perdida recupera los publicados sin repe
     .setInputFiles([audioFile("uno.wav"), audioFile("dos.wav")]);
   await page.getByLabel("Autor de uno.wav", { exact: true }).fill("Autor QA");
   await page.getByLabel("Autor de dos.wav", { exact: true }).fill("Autor QA");
+  await page
+    .getByLabel("Categoría de uno.wav", { exact: true })
+    .selectOption("Habitos");
+  await page
+    .getByLabel("Categoría de dos.wav", { exact: true })
+    .selectOption("Habitos");
   await page
     .getByRole("button", { name: "Guardar borradores", exact: true })
     .click();

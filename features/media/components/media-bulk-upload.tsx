@@ -13,6 +13,8 @@ import {
   runMediaBulkBatches,
   mediaBulkDraftCandidates,
   mediaBulkPublishCandidates,
+  mediaBulkRowIssue,
+  validateMediaBulkFiles,
   type MediaBulkRow,
 } from "../services/media-bulk-queue";
 
@@ -68,11 +70,13 @@ export function MediaBulkUpload({
 
   const addFiles = (files: File[]) => {
     if (!running.current && canCreate)
-      setRows((current) => [...current, ...createMediaBulkRows(files)]);
+      setRows((current) => createMediaBulkRows(files, current));
   };
   const updateRow = (
     key: string,
-    values: Partial<Pick<MediaBulkRow, "title" | "author" | "category">>,
+    values: Partial<
+      Pick<MediaBulkRow, "title" | "author" | "category" | "categoryChosen">
+    >,
   ) => {
     if (running.current) return;
     setRows((current) =>
@@ -108,7 +112,7 @@ export function MediaBulkUpload({
     setBusy(true);
     try {
       await runMediaBulkBatches(
-        candidates,
+        candidates.filter((row) => !mediaBulkRowIssue(row)),
         (batch) =>
           action === "create"
             ? createDrafts(batch, signal, (key, update) => {
@@ -229,6 +233,7 @@ export function MediaBulkUpload({
                       className="px-3 py-3 font-medium"
                     >
                       {t(label)}
+                      {["Título", "Autor", "Categoría"].includes(label) && " *"}
                     </th>
                   ))}
                 </tr>
@@ -252,6 +257,8 @@ export function MediaBulkUpload({
                         <Input
                           className="min-h-11 min-w-44"
                           value={row.title}
+                          aria-required="true"
+                          aria-invalid={!row.title.trim()}
                           disabled={!editable}
                           aria-label={t("Título de {name}", {
                             name: row.file.name,
@@ -268,6 +275,8 @@ export function MediaBulkUpload({
                         <Input
                           className="min-h-11 min-w-36"
                           value={row.author}
+                          aria-required="true"
+                          aria-invalid={!row.author.trim()}
                           disabled={!editable}
                           aria-label={t("Autor de {name}", {
                             name: row.file.name,
@@ -280,7 +289,9 @@ export function MediaBulkUpload({
                       <td className="px-3 py-3">
                         <select
                           className="min-h-11 min-w-36 rounded-lg border border-input bg-background px-3 text-foreground focus-visible:outline-2 focus-visible:outline-ring"
-                          value={row.category}
+                          value={row.categoryChosen ? row.category : ""}
+                          aria-required="true"
+                          aria-invalid={!row.categoryChosen}
                           disabled={!editable}
                           aria-label={t("Categoría de {name}", {
                             name: row.file.name,
@@ -289,9 +300,13 @@ export function MediaBulkUpload({
                             updateRow(row.key, {
                               category: event.target
                                 .value as MediaBulkRow["category"],
+                              categoryChosen: true,
                             })
                           }
                         >
+                          <option value="" disabled>
+                            {t("Elige una categoría.")}
+                          </option>
                           {Object.entries(mediaCategoryMeta).map(
                             ([value, meta]) => (
                               <option key={value} value={value}>
@@ -339,7 +354,15 @@ export function MediaBulkUpload({
                             })}
                           />
                         )}
-                        {row.error && (
+                        {mediaBulkRowIssue(row) && (
+                          <p
+                            role="alert"
+                            className="mt-1 break-words text-destructive"
+                          >
+                            {t(mediaBulkRowIssue(row)!)}
+                          </p>
+                        )}
+                        {row.error && !mediaBulkRowIssue(row) && (
                           <p
                             className="mt-1 break-words text-destructive"
                             role="alert"
@@ -356,7 +379,9 @@ export function MediaBulkUpload({
                               variant="outline"
                               className="min-h-11"
                               disabled={
-                                busy || (row.mediaId ? !canPublish : !canCreate)
+                                busy ||
+                                !!mediaBulkRowIssue(row) ||
+                                (row.mediaId ? !canPublish : !canCreate)
                               }
                               onClick={() =>
                                 void run(row.mediaId ? "publish" : "create", [
@@ -378,8 +403,10 @@ export function MediaBulkUpload({
                               })}
                               onClick={() =>
                                 setRows((current) =>
-                                  current.filter(
-                                    (entry) => entry.key !== row.key,
+                                  validateMediaBulkFiles(
+                                    current.filter(
+                                      (entry) => entry.key !== row.key,
+                                    ),
                                   ),
                                 )
                               }
@@ -428,7 +455,11 @@ export function MediaBulkUpload({
           variant="outline"
           className="min-h-11"
           disabled={
-            busy || !canCreate || !mediaBulkDraftCandidates(rows).length
+            busy ||
+            !canCreate ||
+            !mediaBulkDraftCandidates(rows).some(
+              (row) => !mediaBulkRowIssue(row),
+            )
           }
           onClick={() => void run("create", mediaBulkDraftCandidates(rows))}
         >
@@ -438,12 +469,20 @@ export function MediaBulkUpload({
           type="button"
           className="min-h-11"
           disabled={
-            busy || !canPublish || !mediaBulkPublishCandidates(rows).length
+            busy ||
+            !canPublish ||
+            !mediaBulkPublishCandidates(rows).some(
+              (row) => !mediaBulkRowIssue(row),
+            )
           }
           onClick={() => void run("publish", mediaBulkPublishCandidates(rows))}
         >
           {t("Publicar {count} listos", {
-            count: String(mediaBulkPublishCandidates(rows).length),
+            count: String(
+              mediaBulkPublishCandidates(rows).filter(
+                (row) => !mediaBulkRowIssue(row),
+              ).length,
+            ),
           })}
         </Button>
       </div>

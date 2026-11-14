@@ -39,7 +39,7 @@ export function ProgramTemplateImpactDialog({
   template: ProgramTemplateListItem;
   onClose: () => void;
   onPublish: (id: string) => Promise<void>;
-  onEdit: () => void;
+  onEdit: (gap?: TemplateDayGap) => void;
 }) {
   const t = useT();
   const { lang } = useI18n();
@@ -60,7 +60,10 @@ export function ProgramTemplateImpactDialog({
     const controller = new AbortController();
     void previewProgramTemplateImpact(template.id, controller.signal).then(
       (impact) => {
-        if (!controller.signal.aborted) setPreview({ status: "ready", impact });
+        if (!controller.signal.aborted) {
+          setPreview({ status: "ready", impact });
+          setGaps(impact.huecos ?? []);
+        }
       },
       () => {
         if (!controller.signal.aborted) setPreview({ status: "error" });
@@ -91,6 +94,10 @@ export function ProgramTemplateImpactDialog({
       setSaving(false);
     }
   };
+
+  const gapGroups = [...new Set(gaps.map((gap) => gap.taskCode))].map(
+    (code) => ({ code, gaps: gaps.filter((gap) => gap.taskCode === code) }),
+  );
 
   return (
     <Dialog
@@ -145,7 +152,10 @@ export function ProgramTemplateImpactDialog({
             </div>
           ) : (
             <>
-              <section aria-label={t("A quién llega")} className="flex flex-col gap-4">
+              <section
+                aria-label={t("A quién llega")}
+                className="flex flex-col gap-4"
+              >
                 <h3 className="font-semibold">{t("A quién llega")}</h3>
                 <dl className="flex flex-col gap-3">
                   <div className="flex items-start gap-3">
@@ -224,26 +234,68 @@ export function ProgramTemplateImpactDialog({
                     <p className="font-medium">
                       {t("Completa estos días antes de publicar.")}
                     </p>
-                    <ul className="flex flex-col gap-2">
-                      {gaps.map((gap, index) => (
-                        <li key={`${gap.day}-${gap.taskCode}-${index}`}>
-                          <span className="font-medium">
-                            {t("Día {day} · Semana {week}", {
-                              day: String(gap.day),
-                              week: String(gap.weekNumber),
-                            })}
-                          </span>
-                          {" · "}
-                          {t(WEEKDAY_LABELS[gap.weekday - 1])}
-                          {" · "}
-                          {t(
-                            TASK_CODE_OPTIONS.find(
-                              (option) => option.value === gap.taskCode,
-                            )?.label ?? gap.taskCode,
-                          )}
-                        </li>
+                    <div className="flex flex-col gap-4">
+                      {gapGroups.map((group) => (
+                        <section
+                          key={group.code}
+                          className="rounded-lg border border-destructive/20 bg-background/60 p-3"
+                        >
+                          <h4 className="font-semibold">
+                            {t(
+                              TASK_CODE_OPTIONS.find(
+                                (option) => option.value === group.code,
+                              )?.label ?? group.code,
+                            )}{" "}
+                            · {group.gaps.length}
+                          </h4>
+                          {[...new Set(group.gaps.map((gap) => gap.weekNumber))]
+                            .sort((a, b) => a - b)
+                            .map((week) => (
+                              <details key={week} className="mt-2">
+                                <summary className="min-h-11 cursor-pointer py-3 text-sm">
+                                  {t("Semana {week}", { week: String(week) })} ·{" "}
+                                  {
+                                    group.gaps.filter(
+                                      (gap) => gap.weekNumber === week,
+                                    ).length
+                                  }
+                                </summary>
+                                <ul className="flex flex-col gap-2">
+                                  {group.gaps
+                                    .filter((gap) => gap.weekNumber === week)
+                                    .map((gap, index) => (
+                                      <li
+                                        key={`${gap.day}-${gap.taskCode}-${index}`}
+                                      >
+                                        <Button
+                                          variant="link"
+                                          className="h-auto min-h-11 whitespace-normal p-0 text-left text-destructive"
+                                          onClick={() => onEdit(gap)}
+                                        >
+                                          <span className="font-medium">
+                                            {t("Día {day} · Semana {week}", {
+                                              day: String(gap.day),
+                                              week: String(gap.weekNumber),
+                                            })}
+                                          </span>
+                                          {" · "}
+                                          {t(WEEKDAY_LABELS[gap.weekday - 1])}
+                                          {" · "}
+                                          {t(
+                                            TASK_CODE_OPTIONS.find(
+                                              (option) =>
+                                                option.value === gap.taskCode,
+                                            )?.label ?? gap.taskCode,
+                                          )}
+                                        </Button>
+                                      </li>
+                                    ))}
+                                </ul>
+                              </details>
+                            ))}
+                        </section>
                       ))}
-                    </ul>
+                    </div>
                   </div>
                 ) : (
                   <p className="flex items-start gap-3 text-muted-foreground">
@@ -252,9 +304,11 @@ export function ProgramTemplateImpactDialog({
                       className="mt-0.5 size-4 shrink-0"
                     />
                     <span>
-                      {t(
-                        "Al publicar se comprobará el contenido de los 83 días: podcast, rutina y plan nutricional.",
-                      )}
+                      {preview.impact.huecos
+                        ? t("Los 83 días tienen el contenido requerido.")
+                        : t(
+                            "Al publicar se comprobará el contenido de los 83 días: podcast, rutina y plan nutricional.",
+                          )}
                     </span>
                   </p>
                 )}
@@ -271,7 +325,7 @@ export function ProgramTemplateImpactDialog({
         </DialogBody>
         <DialogFooter className="m-0 rounded-none px-6 py-4">
           {gaps.length > 0 && (
-            <Button variant="outline" onClick={onEdit}>
+            <Button variant="outline" onClick={() => onEdit()}>
               {t("Revisar plantilla")}
             </Button>
           )}

@@ -9,7 +9,6 @@ import {
   FileAudio,
   User,
   Tag,
-  CalendarDays,
   Link2,
   Send,
   Undo2,
@@ -251,11 +250,6 @@ export function MediaDetailContent({
             label={t("Categoría")}
             value={t(category.label)}
             icon={<Tag className="size-3.5" />}
-          />
-          <Detail
-            label={t("Día / Mes")}
-            value={`${media.day} / ${media.month}`}
-            icon={<CalendarDays className="size-3.5" />}
           />
           <Detail
             label={t("Estado")}

@@ -182,6 +182,12 @@ async function choosePodcast(page: Page, english = false) {
     .getByRole("button", { name: english ? "Add 1" : "Añadir 1", exact: true })
     .click();
   await expect(picker).toHaveCount(0);
+  await page
+    .getByLabel(english ? "From week" : "Desde la semana", { exact: true })
+    .selectOption("1");
+  await page
+    .getByLabel(english ? "To week" : "Hasta la semana", { exact: true })
+    .selectOption("12");
 }
 
 async function openReview(page: Page) {
@@ -446,8 +452,21 @@ test("1.24 · un placeholder no permite revisar ni enviar", async ({ page }) => 
   await page
     .getByRole("button", { name: "Asignar podcast", exact: true })
     .click();
-  await choosePodcast(page);
-  await expect(page.getByRole("alert")).toContainText("archivo válido");
+  await page
+    .getByRole("button", { name: "Elegir podcast", exact: true })
+    .click();
+  const picker = page.getByRole("dialog", {
+    name: "Elegir podcast",
+    exact: true,
+  });
+  await expect(
+    picker.getByRole("button", {
+      name: "Seleccionar Respirar y descansar",
+      exact: true,
+    }),
+  ).toBeDisabled();
+  await expect(picker).toContainText("Sin archivo · no se puede elegir");
+  await picker.getByRole("button", { name: "Cancelar", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Revisar asignación", exact: true }),
   ).toBeDisabled();

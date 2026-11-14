@@ -1039,6 +1039,7 @@ export function ClinicalBoardView({
       {canAssign && assigning && (
         <PatientPodcastAssignmentDialog
           patients={assigning}
+          includesOtherPages={assigning.some(patient => !pagePatients.some(visible => visible.patientId === patient.id))}
           onClose={() => setAssigning(null)}
           onApplied={() => {
             setSelected(new Map());

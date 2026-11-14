@@ -177,6 +177,8 @@ test("1.22 · 422 lista todos los huecos del backend y bloquea sin publicar", as
   await expect(publish).toBeEnabled();
   await publish.click();
   const alert = dialog.getByRole("alert");
+  await expect(alert).toBeVisible();
+  for (const summary of await alert.locator("summary").all()) await summary.click();
   await expect(alert).toContainText("Completa estos días antes de publicar.");
   await expect(alert.getByRole("listitem")).toHaveCount(3);
   await expect(alert).toContainText("Día 24 · Semana 4 · Miércoles · Podcast");

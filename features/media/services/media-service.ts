@@ -21,11 +21,21 @@ const PATH = `${env.apiUrl}/api/v1/media`;
  * storage activo (Local hoy, S3 mañana) sin exponer la storageKey.
  */
 export async function getMediaStreamUrl(storageKey: string): Promise<string> {
-  const params = new URLSearchParams({ key: storageKey });
+  const params = new URLSearchParams({ key: mediaObjectKey(storageKey) });
   const data = await apiFetch<{ url: string }>(
     `${env.apiUrl}/api/v1/storage/sign?${params.toString()}`,
   );
   return data.url;
+}
+
+/** Las referencias S3 antiguas se firman por clave con el proveedor configurado. */
+export function mediaObjectKey(value: string): string {
+  if (!/^https?:\/\//i.test(value)) return value;
+  const url = new URL(value);
+  if (url.protocol !== "https:" || !url.hostname.endsWith(".amazonaws.com")) throw new Error("Referencia de archivo no válida.");
+  const segments = url.pathname.split("/").filter(Boolean);
+  if (/^s3[.-]/.test(url.hostname)) segments.shift();
+  return segments.map(segment => decodeURIComponent(segment)).join("/");
 }
 
 /**
@@ -152,6 +162,11 @@ export function isPlaceholderMedia(
   return (
     item.storageKey.trim().toLowerCase() === "media/podcasts/demo-copp.mp3"
   );
+}
+
+/** Validez editorial de la referencia; publicar vuelve a verificar el objeto en storage. */
+export function hasMediaFile(item: Pick<MediaItem, "storageKey">): boolean {
+  return Boolean(item.storageKey.trim()) && !isPlaceholderMedia(item);
 }
 
 export async function createMediaItem(input: MediaInput): Promise<MediaItem> {

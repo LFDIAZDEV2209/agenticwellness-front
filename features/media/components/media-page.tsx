@@ -626,6 +626,7 @@ function PodcastCard({ item, selected, onPlay, onDetails, onEdit, onDelete }: {
       <h4 className="line-clamp-2 min-h-10 text-sm leading-5 font-semibold" title={item.title}>{item.title}</h4>
       <p className="truncate text-xs text-muted-foreground" title={item.author}>{item.author}</p>
       <MediaTags tags={item.tags} />
+      {item.usageCount != null && item.usageCount > 0 && <span className="w-fit rounded-full bg-primary-soft px-2 py-1 text-xs text-primary-soft-foreground" title={t("Usos en plantillas/semanas")}>{t("En uso · {count}", { count: String(item.usageCount) })}</span>}
     </div>
     <div className="flex items-center justify-between gap-2">
       <span className="flex items-center gap-1 text-xs text-muted-foreground"><Clock aria-hidden="true" className="size-3.5" />{formatDuration(item.durationSecs)}</span>

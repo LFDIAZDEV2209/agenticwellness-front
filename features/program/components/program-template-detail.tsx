@@ -26,8 +26,10 @@ import {
   TASK_CODE_OPTIONS,
   TEMPLATE_STATUS_LABELS,
   WEEKDAY_LABELS,
+  type TemplateDayGap,
 } from "../services/program-templates-service";
 import { ProgramSequenceEditor } from "./program-sequence-editor";
+import { TemplateNewVersionAction } from "./template-new-version-action";
 
 interface ProgramTemplateDetailDialogProps {
   templateId: string | null;
@@ -35,12 +37,14 @@ interface ProgramTemplateDetailDialogProps {
   getTemplate: (id: string) => Promise<ProgramTemplate | null>;
   /** Compatibilidad con el contenedor: la secuencia usa el PUT por semana de 1.7b. */
   saveWeekdayTasks: (id: string, tasks: WeeklyDayTaskInput[]) => Promise<void>;
+  initialGap?: TemplateDayGap;
 }
 
 export function ProgramTemplateDetailDialog({
   templateId,
   onClose,
   getTemplate,
+  initialGap,
 }: ProgramTemplateDetailDialogProps) {
   const t = useT();
   const [busy, setBusy] = useState(false);
@@ -76,6 +80,7 @@ export function ProgramTemplateDetailDialog({
             templateId={templateId}
             getTemplate={getTemplate}
             onBusyChange={setBusy}
+            initialGap={initialGap}
           />
         )}
       </DialogContent>
@@ -87,10 +92,12 @@ function TemplateContent({
   templateId,
   getTemplate,
   onBusyChange,
+  initialGap,
 }: {
   templateId: string;
   getTemplate: ProgramTemplateDetailDialogProps["getTemplate"];
   onBusyChange: (busy: boolean) => void;
+  initialGap?: TemplateDayGap;
 }) {
   const t = useT();
   const { hasPermission } = useAuth();
@@ -154,11 +161,30 @@ function TemplateContent({
           </p>
         )}
       </header>
+      {template.status === "Active" && (
+        <section
+          role="note"
+          className="rounded-xl border border-primary/20 bg-primary-soft p-4 text-sm"
+        >
+          <p className="font-semibold">{t("Plantilla activa: solo lectura")}</p>
+          <p className="mt-1">
+            {t(
+              "Crea un borrador con los 83 días de esta plantilla; la versión activa sigue vigente hasta publicar",
+            )}
+          </p>
+          {hasPermission("Program.Edit") && (
+            <div className="mt-3">
+              <TemplateNewVersionAction />
+            </div>
+          )}
+        </section>
+      )}
       {template.totalWeeks === 12 ? (
         <ProgramSequenceEditor
           template={template}
           canEdit={hasPermission("Program.Edit")}
           onBusyChange={onBusyChange}
+          initialDay={initialGap?.day}
           onSaved={(days) =>
             setResult((current) =>
               current && current.template
@@ -176,7 +202,10 @@ function TemplateContent({
         </p>
       )}
       {otherTasks.length > 0 && (
-        <details className="min-w-0 rounded-xl border border-border bg-card p-4">
+        <details
+          open={(initialGap && initialGap.taskCode !== "podcast") || undefined}
+          className="min-w-0 rounded-xl border border-border bg-card p-4"
+        >
           <summary className="cursor-pointer text-sm font-semibold">
             {t("Tareas")}
           </summary>

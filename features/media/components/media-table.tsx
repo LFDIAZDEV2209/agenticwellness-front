@@ -38,6 +38,7 @@ import {
   hasPublishableMetadata,
 } from "../services/media-service";
 import { useT } from "@/providers/i18n-provider";
+import { MediaTags } from "./media-tags";
 
 interface MediaTableProps {
   items: MediaItem[];
@@ -116,6 +117,7 @@ export function MediaTable({
                     </span>
                   </span>
                 </button>
+                <MediaTags tags={item.tags} />
               </TableCell>
               <TableCell className="hidden md:table-cell text-sm">
                 {type.label}

@@ -27,8 +27,19 @@ async function choosePodcast(
   await picker
     .getByRole("button", { name: `Seleccionar ${title}`, exact: true })
     .click();
-  await picker.getByRole("button", { name: "Añadir 1", exact: true }).click();
+  await picker
+    .getByRole("button", {
+      name: label === "Elegir sustituto" ? "Usar como sustituto" : "Añadir 1",
+      exact: true,
+    })
+    .click();
   await expect(picker).toHaveCount(0);
+  if (await page.getByLabel("Desde la semana", { exact: true }).count()) {
+    await page.getByLabel("Desde la semana", { exact: true }).selectOption("1");
+    await page
+      .getByLabel("Hasta la semana", { exact: true })
+      .selectOption("12");
+  }
 }
 
 test("1.25 · publicar con huecos muestra la lista completa y mantiene el borrador", async ({
@@ -49,6 +60,8 @@ test("1.25 · publicar con huecos muestra la lista completa y mantiene el borrad
   await expect(publish).toBeEnabled();
   await publish.click();
   const alert = dialog.getByRole("alert");
+  await expect(alert).toBeVisible();
+  for (const summary of await alert.locator("summary").all()) await summary.click();
   await expect(alert.getByRole("listitem")).toHaveText([
     "Día 24 · Semana 4 · Miércoles · Podcast",
     "Día 24 · Semana 4 · Miércoles · Ejercicio",
@@ -200,10 +213,14 @@ test("1.25 · la carga múltiple conserva los correctos y reintenta solo el arch
   await page
     .getByLabel("Seleccionar varios archivos", { exact: true })
     .setInputFiles(names.map(phase1Audio));
-  for (const name of names)
+  for (const name of names) {
     await page
       .getByLabel(`Autor de ${name}`, { exact: true })
       .fill("Equipo QA");
+    await page
+      .getByLabel(`Categoría de ${name}`, { exact: true })
+      .selectOption("Habitos");
+  }
   await page
     .getByRole("button", { name: "Guardar borradores", exact: true })
     .click();

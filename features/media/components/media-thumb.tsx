@@ -15,6 +15,7 @@ interface MediaThumbProps {
  */
 export function MediaThumb({ storageKey, alt, className }: MediaThumbProps) {
   const [url, setUrl] = useState<string | null>(null);
+  const [broken, setBroken] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -30,8 +31,8 @@ export function MediaThumb({ storageKey, alt, className }: MediaThumbProps) {
     };
   }, [storageKey]);
 
-  if (!url) return null;
+  if (!url || broken === url) return null;
 
   // eslint-disable-next-line @next/next/no-img-element -- La URL es firmada y temporal (exp+sig); el optimizer de next/image la rompería/cachearía mal.
-  return <img src={url} alt={alt} className={className} />;
+  return <img src={url} alt={alt} className={className} onError={() => setBroken(url)} />;
 }

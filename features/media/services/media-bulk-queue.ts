@@ -12,6 +12,8 @@ export interface MediaBulkRow {
   title: string;
   author: string;
   category: MediaCategory;
+  categoryChosen?: boolean;
+  validationError?: string | null;
   state: MediaBulkState;
   mediaId: string | null;
   error: string | null;
@@ -28,13 +30,17 @@ export function mediaTitleFromFilename(name: string): string {
     .trim();
 }
 
-export function createMediaBulkRows(files: readonly File[]): MediaBulkRow[] {
-  return files.map((file) => ({
+export function createMediaBulkRows(
+  files: readonly File[],
+  existing: readonly MediaBulkRow[] = [],
+): MediaBulkRow[] {
+  const added: MediaBulkRow[] = files.map((file) => ({
     key: crypto.randomUUID(),
     file,
     title: mediaTitleFromFilename(file.name),
     author: "",
     category: "Nutricion",
+    categoryChosen: false,
     state: "pendiente",
     mediaId: null,
     error: null,
@@ -42,6 +48,54 @@ export function createMediaBulkRows(files: readonly File[]): MediaBulkRow[] {
     progress: null,
     dirty: false,
   }));
+  return validateMediaBulkFiles([...existing, ...added]);
+}
+
+/** Valida el lote al entrar, también al arrastrar archivos que omiten el accept del input. */
+export function validateMediaBulkFiles(
+  rows: readonly MediaBulkRow[],
+): MediaBulkRow[] {
+  const seen = new Set<string>();
+  return rows.map((row) => {
+    const fingerprint = `${row.file.name.toLocaleLowerCase()}:${row.file.size}`;
+    const audio =
+      row.file.type.startsWith("audio/") ||
+      (!row.file.type &&
+        /\.(mp3|m4a|aac|ogg|wav|flac|webm)$/i.test(row.file.name));
+    const validationError = !audio
+      ? "Selecciona archivos de audio para la biblioteca de podcasts."
+      : row.file.size > 200 * 1024 * 1024
+        ? "El archivo supera 200 MB."
+        : row.file.size === 0
+          ? "El archivo está vacío."
+          : seen.has(fingerprint)
+            ? "Archivo duplicado en este lote."
+            : null;
+    seen.add(fingerprint);
+    return {
+      ...row,
+      validationError,
+      state: validationError
+        ? "error"
+        : row.validationError
+          ? "pendiente"
+          : row.state,
+      error: validationError ? null : row.error,
+    };
+  });
+}
+
+export function mediaBulkRowIssue(row: MediaBulkRow): string | null {
+  return (
+    row.validationError ||
+    (!row.title.trim()
+      ? "El título es obligatorio."
+      : !row.author.trim()
+        ? "El autor es obligatorio."
+        : !row.categoryChosen
+          ? "Elige una categoría."
+          : null)
+  );
 }
 
 export function mediaBulkResult(row: MediaBulkRow): MediaBulkResult | null {

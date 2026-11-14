@@ -14,7 +14,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useT } from "@/providers/i18n-provider";
 import { MediaLibraryPicker } from "@/features/media/components/media-library-picker";
 import { getMediaCategoryMeta } from "@/features/media/components/media-meta";
-import { fetchMediaItems } from "@/features/media/services/media-service";
+import {
+  fetchMediaItems,
+  hasMediaFile,
+} from "@/features/media/services/media-service";
 import type { MediaItem } from "@/features/media/types";
 import type { ProgramTemplate, WeeklyDayTask } from "../types";
 import {
@@ -37,6 +40,7 @@ interface Props {
   canEdit: boolean;
   onSaved: (days: WeeklyDayTask[]) => void;
   onBusyChange: (busy: boolean) => void;
+  initialDay?: number;
 }
 
 /** El catálogo completo se pagina; nunca se interpreta una página incompleta como biblioteca vacía. */
@@ -122,6 +126,7 @@ function SequenceWorkspace({
   canEdit,
   onSaved,
   onBusyChange,
+  initialDay = 1,
 }: Props & { media: MediaItem[] }) {
   const t = useT();
   const [rows, setRows] = useState(template.days);
@@ -132,7 +137,9 @@ function SequenceWorkspace({
     resolvePodcastSequence(template.days),
   );
   const [undo, setUndo] = useState<PodcastSequence | null>(null);
-  const [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState(
+    Math.max(0, Math.min(82, initialDay - 1)),
+  );
   const [swapFrom, setSwapFrom] = useState<number | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -141,7 +148,8 @@ function SequenceWorkspace({
   const savingRef = useRef(false);
   const dragFrom = useRef<number | null>(null);
   const mediaById = new Map(media.map((item) => [item.id, item]));
-  const ids = new Set(mediaById.keys());
+  const availableMedia = media.filter(hasMediaFile);
+  const ids = new Set(availableMedia.map((item) => item.id));
   const stats = sequenceStats(sequence, ids);
   const dirtyWeeks = changedSequenceWeeks(baseline, sequence);
   const editable = canEdit && template.status === "Draft";
@@ -165,7 +173,7 @@ function SequenceWorkspace({
   const autocomplete = (rebuild: boolean) => {
     const next = autocompletePodcasts(
       sequence,
-      media.map((item) => item.id),
+      availableMedia.map((item) => item.id),
       rebuild,
     );
     if (!next) {
@@ -284,9 +292,11 @@ function SequenceWorkspace({
             id="sequence-instructions"
             className="mb-4 text-xs text-muted-foreground"
           >
-            {t(
-              "Arrastra para intercambiar podcasts o selecciona un día y usa Intercambiar.",
-            )}
+            {editable
+              ? t(
+                  "Arrastra para intercambiar podcasts o selecciona un día y usa Intercambiar.",
+                )
+              : t("Consulta el contenido de cada día de esta versión.")}
           </p>
           <div
             role="region"
@@ -339,6 +349,7 @@ function SequenceWorkspace({
                           </td>
                         );
                       const item = mediaById.get(sequence[index] ?? "");
+                      const validFile = item && hasMediaFile(item);
                       const repeated =
                         item && sequence.indexOf(item.id) < index;
                       return (
@@ -346,6 +357,7 @@ function SequenceWorkspace({
                           <button
                             type="button"
                             data-sequence-day={index + 1}
+                            title={item?.title}
                             aria-label={t("Día {day}", {
                               day: String(index + 1),
                             })}
@@ -392,7 +404,7 @@ function SequenceWorkspace({
                               dragFrom.current = null;
                             }}
                             onClick={() => selectDay(index)}
-                            className={`flex min-h-20 w-full min-w-24 flex-col gap-1 rounded-xl border p-2 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:opacity-60 ${selected === index ? "border-primary bg-primary-soft ring-1 ring-primary" : item ? "border-border bg-background hover:bg-muted" : "border-destructive/30 bg-destructive-soft text-destructive"}`}
+                            className={`flex min-h-20 w-full min-w-24 flex-col gap-1 rounded-xl border p-2 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:opacity-60 ${selected === index ? "border-primary bg-primary-soft ring-1 ring-primary" : validFile ? "border-border bg-background hover:bg-muted" : "border-destructive/30 bg-destructive-soft text-destructive"}`}
                           >
                             <span className="flex items-center justify-between gap-1 font-semibold">
                               {t("Día {day}", { day: String(index + 1) })}
@@ -409,6 +421,11 @@ function SequenceWorkspace({
                                   ? t("Podcast no disponible")
                                   : t("Vacío"))}
                             </span>
+                            {item && !validFile && (
+                              <span className="text-[11px] font-semibold text-destructive">
+                                {t("Sin archivo")}
+                              </span>
+                            )}
                             {item && (
                               <span
                                 className={`mt-auto h-1 w-7 rounded-full ${getMediaCategoryMeta(item.category).tone}`}
@@ -471,7 +488,7 @@ function SequenceWorkspace({
               <>
                 <Button
                   className="min-h-11 whitespace-normal"
-                  disabled={saving || media.length < 42 || !stats.gaps}
+                  disabled={saving || availableMedia.length < 42 || !stats.gaps}
                   onClick={() => autocomplete(false)}
                 >
                   <WandSparkles aria-hidden="true" />
@@ -480,12 +497,12 @@ function SequenceWorkspace({
                 <Button
                   variant="outline"
                   className="min-h-11 whitespace-normal"
-                  disabled={saving || media.length < 42}
+                  disabled={saving || availableMedia.length < 42}
                   onClick={() => autocomplete(true)}
                 >
                   {t("Rehacer toda la secuencia")}
                 </Button>
-                {media.length < 42 && (
+                {availableMedia.length < 42 && (
                   <p className="text-xs text-muted-foreground">
                     {t(
                       "Se necesitan al menos 42 podcasts publicados para autocompletar.",
@@ -513,6 +530,11 @@ function SequenceWorkspace({
               {selectedMedia?.title ??
                 (sequence[selected] ? t("Podcast no disponible") : t("Vacío"))}
             </p>
+            {selectedMedia && !hasMediaFile(selectedMedia) && (
+              <p role="status" className="text-sm text-destructive">
+                {t("Sin archivo. Este día se cuenta como hueco.")}
+              </p>
+            )}
             {editable && (
               <>
                 <Button

@@ -52,6 +52,8 @@ import {
 } from "../services/program-templates-service";
 import { ProgramTemplateFormDialog } from "./program-template-form";
 import { ProgramTemplateDetailDialog } from "./program-template-detail";
+import { TemplateNewVersionAction } from "./template-new-version-action";
+import type { TemplateDayGap } from "../services/program-templates-service";
 import type { ProgramTemplateListItem } from "../types";
 import { SEQUENCE_DAYS, SEQUENCE_WEEKS } from "../services/program-sequence";
 
@@ -87,6 +89,7 @@ export function ProgramTemplatesPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<ProgramTemplateListItem | undefined>();
   const [details, setDetails] = useState<ProgramTemplateListItem | undefined>();
+  const [detailGap, setDetailGap] = useState<TemplateDayGap | undefined>();
   const [publishing, setPublishing] = useState<
     ProgramTemplateListItem | undefined
   >();
@@ -152,7 +155,10 @@ export function ProgramTemplatesPage() {
         className={compact ? "size-8" : "min-h-11"}
         title={t("Ver detalles")}
         disabled={loadingEdit}
-        onClick={() => setDetails(tpl)}
+        onClick={() => {
+          setDetailGap(undefined);
+          setDetails(tpl);
+        }}
       >
         <Eye className="size-4" aria-hidden />
         {!compact && t("Ver detalles")}
@@ -197,6 +203,9 @@ export function ProgramTemplatesPage() {
           <Archive className="size-4" aria-hidden />
           {!compact && t("Archivar")}
         </Button>
+      )}
+      {tpl.status === "Active" && hasPermission("Program.Edit") && (
+        <TemplateNewVersionAction compact={compact} />
       )}
     </div>
   );
@@ -479,11 +488,12 @@ export function ProgramTemplatesPage() {
       />
 
       <ProgramTemplateDetailDialog
-        key={details?.id ?? "closed"}
+        key={`${details?.id ?? "closed"}:${detailGap?.day ?? ""}:${detailGap?.taskCode ?? ""}`}
         templateId={details?.id ?? null}
         onClose={() => setDetails(undefined)}
         getTemplate={getTemplate}
         saveWeekdayTasks={saveWeekdayTasks}
+        initialGap={detailGap}
       />
 
       {publishing && (
@@ -492,7 +502,8 @@ export function ProgramTemplatesPage() {
           template={publishing}
           onClose={() => setPublishing(undefined)}
           onPublish={publish}
-          onEdit={() => {
+          onEdit={(gap) => {
+            setDetailGap(gap);
             setDetails(publishing);
             setPublishing(undefined);
           }}

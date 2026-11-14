@@ -283,8 +283,8 @@ async function fixture(
       picker.getByText("Borrador no elegible", { exact: true }),
     ).toHaveCount(0);
     await expect(
-      picker.getByText("Placeholder no elegible", { exact: true }),
-    ).toHaveCount(0);
+      picker.getByRole("button", { name: `${options.english ? "Select" : "Seleccionar"} Placeholder no elegible`, exact: true }),
+    ).toBeDisabled();
     await picker
       .getByRole("button", {
         name: `${options.english ? "Select" : "Seleccionar"} ${replacement.title}`,
@@ -293,12 +293,14 @@ async function fixture(
       .click();
     await picker
       .getByRole("button", {
-        name: options.english ? "Add 1" : "Añadir 1",
+        name: options.english ? "Use as replacement" : "Usar como sustituto",
         exact: true,
       })
       .click();
     await expect(picker).not.toBeVisible();
-    await page.locator('[data-slot="dialog-content"][data-closed]').waitFor({ state: "detached" });
+    await page
+      .locator('[data-slot="dialog-content"][data-closed]')
+      .waitFor({ state: "detached" });
     return picker;
   };
   return { media, replacement, state, open, choose };
@@ -454,7 +456,7 @@ test("1.23 · impacto fallido recuperable y catálogo sin candidatos mantienen e
   });
   await expect(picker).toContainText("Sin resultados con los filtros");
   await expect(
-    picker.getByRole("button", { name: "Añadir 0", exact: true }),
+    picker.getByRole("button", { name: "Usar como sustituto", exact: true }),
   ).toBeDisabled();
   await picker.getByRole("button", { name: "Cancelar", exact: true }).click();
   await expect(

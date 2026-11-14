@@ -33,10 +33,12 @@ type Failure = "podcast" | "enrollment" | "range" | "permission" | "request";
 
 export function PatientPodcastAssignmentDialog({
   patients,
+  includesOtherPages = false,
   onClose,
   onApplied,
 }: {
   patients: readonly PodcastAssignmentPatient[];
+  includesOtherPages?: boolean;
   onClose: () => void;
   onApplied: () => void;
 }) {
@@ -51,8 +53,8 @@ export function PatientPodcastAssignmentDialog({
   const [step, setStep] = useState<"edit" | "review" | "result">("edit");
   const [media, setMedia] = useState<MediaItem | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
-  const [from, setFrom] = useState(1);
-  const [to, setTo] = useState(PODCAST_PROGRAM_WEEKS);
+  const [from, setFrom] = useState(0);
+  const [to, setTo] = useState(0);
   const [saving, setSaving] = useState(false);
   const savingRef = useRef(false);
   const bodyRef = useRef<HTMLDivElement>(null);
@@ -267,11 +269,13 @@ export function PatientPodcastAssignmentDialog({
                         </li>
                       ))}
                     </ul>
-                    <p className="text-xs text-muted-foreground">
-                      {t(
-                        "La selección incluye pacientes de otras páginas o filtros.",
-                      )}
-                    </p>
+                    {includesOtherPages && (
+                      <p className="text-xs text-muted-foreground">
+                        {t(
+                          "La selección incluye pacientes de otras páginas o filtros.",
+                        )}
+                      </p>
+                    )}
                   </section>
                   <section className="flex min-w-0 flex-col gap-3">
                     <h3 className="font-semibold">{t("Podcast")}</h3>
@@ -315,6 +319,9 @@ export function PatientPodcastAssignmentDialog({
                           }}
                           className="h-11 rounded-lg border border-input bg-background px-3 focus-visible:ring-2 focus-visible:ring-ring"
                         >
+                          <option value={0} disabled>
+                            {t("Elige una semana")}
+                          </option>
                           {weeks.map((week) => (
                             <option key={week} value={week}>
                               {week}
@@ -333,6 +340,9 @@ export function PatientPodcastAssignmentDialog({
                           }}
                           className="h-11 rounded-lg border border-input bg-background px-3 focus-visible:ring-2 focus-visible:ring-ring"
                         >
+                          <option value={0} disabled>
+                            {t("Elige una semana")}
+                          </option>
                           {weeks.map((week) => (
                             <option key={week} value={week}>
                               {week}
@@ -341,7 +351,7 @@ export function PatientPodcastAssignmentDialog({
                         </select>
                       </label>
                     </div>
-                    {from > to && (
+                    {from > 0 && to > 0 && from > to && (
                       <p role="alert" className="text-sm text-destructive">
                         {t(
                           "La semana final debe ser igual o posterior a la inicial.",

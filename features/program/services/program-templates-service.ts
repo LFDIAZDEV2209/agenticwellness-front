@@ -69,6 +69,8 @@ export interface TemplateImpact {
   pacientesQueCambian: number;
   conPersonalizacionesFuturas: number;
   semanasOmitidasIniciadas: number;
+  /** Ampliación de lectura pendiente del backend; ausencia no significa cero huecos. */
+  huecos?: TemplateDayGap[];
 }
 
 export interface TemplateDayGap {
@@ -98,6 +100,25 @@ export async function previewProgramTemplateImpact(
   ) {
     throw new Error("Invalid template impact response");
   }
+  if (
+    impact.huecos !== undefined &&
+    (!Array.isArray(impact.huecos) ||
+      impact.huecos.some(
+        (gap) =>
+          !gap ||
+          !Number.isInteger(gap.day) ||
+          gap.day < 1 ||
+          gap.day > 83 ||
+          !Number.isInteger(gap.weekNumber) ||
+          gap.weekNumber < 1 ||
+          gap.weekNumber > 12 ||
+          !Number.isInteger(gap.weekday) ||
+          gap.weekday < 1 ||
+          gap.weekday > 7 ||
+          typeof gap.taskCode !== "string",
+      ))
+  )
+    throw new Error("Invalid template gaps response");
   return impact;
 }
 
@@ -141,9 +162,7 @@ export async function archiveProgramTemplate(
 
 // --- Tareas por día ---
 
-export async function getWeekdayTasks(
-  id: string,
-): Promise<WeeklyDayTask[]> {
+export async function getWeekdayTasks(id: string): Promise<WeeklyDayTask[]> {
   return apiFetch<WeeklyDayTask[]>(`${PATH}/${id}/weekday-tasks`);
 }
 

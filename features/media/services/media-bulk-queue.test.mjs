@@ -41,6 +41,28 @@ function fixture() {
 }
 
 const fallback = "Respuesta inválida";
+
+test("valida archivos al entrar y permite recuperar un duplicado al quitar el primero", () => {
+  const audio = new File(["audio"], "igual.wav", { type: "audio/wav" });
+  const rows = queue.createMediaBulkRows([audio, audio, new File(["nota"], "notas.txt", { type: "text/plain" })]);
+  assert.equal(rows[0].validationError, null);
+  assert.equal(rows[1].validationError, "Archivo duplicado en este lote.");
+  assert.equal(rows[2].validationError, "Selecciona archivos de audio para la biblioteca de podcasts.");
+  const recovered = queue.validateMediaBulkFiles(rows.slice(1));
+  assert.equal(recovered[0].validationError, null);
+  assert.equal(recovered[0].state, "pendiente");
+});
+
+test("tamaño, vacío y metadatos obligatorios bloquean filas antes de subir", () => {
+  const row = fixture().rows[0];
+  const huge = queue.validateMediaBulkFiles([{ ...row, file: { name: "grande.wav", size: 200 * 1024 * 1024 + 1, type: "audio/wav" } }])[0];
+  assert.equal(queue.mediaBulkRowIssue(huge), "El archivo supera 200 MB.");
+  const empty = queue.createMediaBulkRows([new File([], "vacio.wav", { type: "audio/wav" })])[0];
+  assert.equal(queue.mediaBulkRowIssue(empty), "El archivo está vacío.");
+  assert.equal(queue.mediaBulkRowIssue(row), "El autor es obligatorio.");
+  assert.equal(queue.mediaBulkRowIssue({ ...row, author: "Equipo QA" }), "Elige una categoría.");
+  assert.equal(queue.mediaBulkRowIssue({ ...row, author: "Equipo QA", categoryChosen: true }), null);
+});
 const signal = () => new AbortController().signal;
 
 test("resultado parcial y reintento: solo se registra el archivo fallido", async () => {
