@@ -33,7 +33,7 @@ export async function mockWeekAgendaEditor(
     "Sábado",
     "Domingo",
   ];
-  const weeks = [1, 2, 3, 12];
+  const weeks = Array.from({ length: 12 }, (_, index) => index + 1);
   const state = {
     writes: [] as { week: number; tasks: Array<Record<string, unknown>> }[],
     fail: false,
@@ -42,6 +42,7 @@ export async function mockWeekAgendaEditor(
     hold: false,
     reads: 0,
     contextFails: false,
+    failedWeeks: [] as number[],
   };
   const details = new Map<number, EnrollmentWeekResponse>();
   for (const weekNumber of weeks) {
@@ -169,7 +170,7 @@ export async function mockWeekAgendaEditor(
           await new Promise((resolve) => setTimeout(resolve, 20));
         if (state.started)
           return reply(route, { detail: "PROGRAM_WEEK_STARTED" }, 409);
-        if (state.fail)
+        if (state.fail || state.failedWeeks.includes(week))
           return reply(route, { detail: "interno que no debe mostrarse" }, 503);
         for (const change of tasks) {
           const day = detail.days.find(

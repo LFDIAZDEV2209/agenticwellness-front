@@ -195,6 +195,7 @@ export function ContentTable({
   const t = useT();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [agendaRefresh, setAgendaRefresh] = useState(0);
 
   const totalPages = Math.max(1, Math.ceil(content.weeks.length / pageSize));
   const currentPage = Math.min(page, totalPages);
@@ -209,7 +210,7 @@ export function ContentTable({
   const { podcastByWeek, loadingWeeks, reloadWeek } = useWeekPodcasts(
     enrollmentId,
     pagedWeeks.map((w) => w.weekNumber),
-    podcastRefreshKey,
+    podcastRefreshKey + agendaRefresh,
   );
 
   /**
@@ -302,6 +303,7 @@ export function ContentTable({
                 podcast={podcastByWeek[week.weekNumber]}
                 podcastLoading={Boolean(loadingWeeks[week.weekNumber])}
                 onPodcastChange={canEdit ? handleChangeWeekPodcast : undefined}
+                onAgendaChanged={() => setAgendaRefresh((value) => value + 1)}
               />
             ))}
           </TableBody>
@@ -337,6 +339,7 @@ export function WeekRow({
   podcast,
   podcastLoading = false,
   onPodcastChange,
+  onAgendaChanged,
 }: {
   week: ProgramContentWeek;
   canEdit: boolean;
@@ -352,6 +355,7 @@ export function WeekRow({
     weekNumber: number,
     mediaId: string | null,
   ) => Promise<void>;
+  onAgendaChanged?: () => void;
 }) {
   const t = useT();
   const [editing, setEditing] = useState(false);
@@ -589,6 +593,7 @@ export function WeekRow({
         onOpenChange={setTasksDialogOpen}
         week={week}
         enrollmentId={enrollmentId}
+        onChanged={onAgendaChanged}
       />
 
       {/* Selector directo del podcast de la semana (REQ-PCA-05) */}

@@ -43,6 +43,7 @@ import { PodcastPickerDialog } from "../podcast-picker-dialog";
 import type { MediaItem } from "@/features/media/types";
 import { useT } from "@/providers/i18n-provider";
 import { cn } from "@/lib/utils";
+import { ProgramCopyWeekDialog, type ProgramCopyWeekDialogProps } from "./program-copy-week-dialog";
 
 /** Días ISO 1..7 con etiqueta corta y completa (render traducido). */
 const BULK_DAY_KEYS = [
@@ -86,7 +87,11 @@ function todayLocalISO(): string {
   return `${now.getFullYear()}-${month}-${day}`;
 }
 
-export function ProgramBulkAssignDialog({
+export function ProgramBulkAssignDialog(props: ProgramBulkAssignDialogProps | ProgramCopyWeekDialogProps) {
+  return "copyWeek" in props ? <ProgramCopyWeekDialog {...props} /> : <PodcastBulkAssignDialog {...props} />;
+}
+
+function PodcastBulkAssignDialog({
   open,
   onOpenChange,
   targetType,

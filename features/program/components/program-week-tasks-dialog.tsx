@@ -20,6 +20,7 @@ import {
   type SelectedAgendaCell,
 } from "../hooks/use-week-agenda-editor";
 import { WeekAgendaCellPanel } from "./week-agenda-cell-panel";
+import { ProgramBulkAssignDialog } from "./editorial-agenda/program-bulk-assign-dialog";
 import { fetchEnrollmentWeek } from "../services/program-content-service";
 import type {
   EnrollmentWeekDay,
@@ -215,6 +216,7 @@ export function WeekTasksDialog({
   const t = useT();
   const key = `${enrollmentId}:${week.weekNumber}`;
   const [reload, setReload] = useState(0);
+  const [copyOpen, setCopyOpen] = useState(false);
   const [resource, setResource] = useState<{
     key: string;
     data: EnrollmentWeekResponse | null;
@@ -268,6 +270,16 @@ export function WeekTasksDialog({
             {t(editor.canEdit ? "Agenda semanal" : "Agenda en solo lectura")} ·{" "}
             {week.weekStartDateLocal} — {week.weekEndDateLocal}
           </DialogDescription>
+          {editor.canEdit && editor.context && current?.data && (
+            <Button
+              variant="outline"
+              className="mt-3 min-h-11 self-start"
+              disabled={editor.saving}
+              onClick={() => setCopyOpen(true)}
+            >
+              {t("Copiar a otras semanas")}
+            </Button>
+          )}
         </DialogHeader>
         <DialogBody className="flex flex-col gap-4" aria-busy={!current}>
           {!current ? (
@@ -349,6 +361,18 @@ export function WeekTasksDialog({
             key={`${editor.selected.weekday}:${editor.selected.taskCode}`}
             editor={editor}
             data={current.data}
+          />
+        )}
+        {copyOpen && current?.data && editor.context && (
+          <ProgramBulkAssignDialog
+            open
+            onOpenChange={setCopyOpen}
+            copyWeek={{
+              source: current.data,
+              enrollment: editor.context.enrollment,
+              template: editor.context.template,
+            }}
+            onCopied={onChanged}
           />
         )}
       </DialogContent>
