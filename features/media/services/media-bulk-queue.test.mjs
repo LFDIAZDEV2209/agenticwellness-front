@@ -40,83 +40,161 @@ function fixture() {
   };
 }
 
-test("cinco archivos: cuatro borradores y un error; el reintento solo crea el quinto", async () => {
+const fallback = "Respuesta inválida";
+const signal = () => new AbortController().signal;
+
+test("resultado parcial y reintento: solo se registra el archivo fallido", async () => {
   const state = fixture();
   const calls = [];
-  await queue.createMediaBulkDrafts(
-    state.rows,
-    async (row) => {
-      calls.push(row.file.name);
-      if (row.file.name === "episodio_5.mp3") throw new Error("Error simulado");
-      return `media-${row.file.name}`;
-    },
-    state.apply,
-  );
+  const run = (fail) =>
+    queue.runMediaBulkBatches(
+      queue.mediaBulkDraftCandidates(state.rows),
+      async (batch) => {
+        calls.push(batch.map((row) => row.file.name));
+        return queue.applyMediaBulkResults(
+          batch,
+          batch.map((row, index) => ({
+            nombre: row.file.name,
+            estado: fail && index === 4 ? "error" : "borrador",
+            ...(fail && index === 4
+              ? { error: "Error simulado" }
+              : { mediaId: `id-${row.file.name}` }),
+          })),
+          fallback,
+        );
+      },
+      state.apply,
+      signal(),
+      fallback,
+    );
+  await run(true);
   assert.equal(state.rows.filter((row) => row.state === "borrador").length, 4);
-  assert.deepEqual(queue.mediaBulkResult(state.rows[4]), {
-    nombre: "episodio_5.mp3",
-    estado: "error",
-    error: "Error simulado",
-  });
-  await queue.createMediaBulkDrafts(
-    state.rows,
-    async (row) => {
-      calls.push(row.file.name);
-      return `media-${row.file.name}`;
-    },
-    state.apply,
+  assert.equal(queue.mediaBulkResult(state.rows[4]).error, "Error simulado");
+  await run(false);
+  assert.deepEqual(
+    calls.map((batch) => batch.length),
+    [5, 1],
   );
-  assert.deepEqual(calls, [
-    "episodio_1.mp3",
-    "episodio_2.mp3",
-    "episodio_3.mp3",
-    "episodio_4.mp3",
-    "episodio_5.mp3",
-    "episodio_5.mp3",
-  ]);
-  assert.equal(state.rows.filter((row) => row.state === "borrador").length, 5);
+  assert.equal(calls[1][0], "episodio_5.mp3");
 });
 
-test("publicación parcial: conserva ids y reintenta solo la publicación fallida", async () => {
+test("publicación fallida conserva id y excluye los resultados correctos", () => {
   const state = fixture();
-  await queue.createMediaBulkDrafts(
-    state.rows,
-    async (row) => `media-${row.file.name}`,
-    state.apply,
+  const rows = state.rows.map((row, index) => ({
+    ...row,
+    mediaId: `id-${index}`,
+    state: "borrador",
+  }));
+  const result = queue.applyMediaBulkResults(
+    rows,
+    rows.map((row, index) => ({
+      nombre: row.file.name,
+      estado: index === 2 ? "error" : "publicado",
+      ...(index === 2 ? { error: "Reintenta" } : { mediaId: row.mediaId }),
+    })),
+    fallback,
   );
-  const calls = [];
-  await queue.publishMediaBulkDrafts(
-    state.rows,
-    async (row) => {
-      calls.push(row.mediaId);
-      if (row.file.name === "episodio_3.mp3") throw new Error("Error simulado");
-    },
-    state.apply,
+  assert.equal(queue.mediaBulkDraftCandidates(result).length, 0);
+  assert.deepEqual(
+    queue.mediaBulkPublishCandidates(result).map((row) => row.mediaId),
+    ["id-2"],
   );
-  assert.equal(state.rows.filter((row) => row.state === "publicado").length, 4);
-  assert.equal(state.rows[2].mediaId, "media-episodio_3.mp3");
-  assert.equal(queue.mediaBulkDraftCandidates(state.rows).length, 0);
-  await queue.publishMediaBulkDrafts(
-    state.rows,
-    async (row) => {
-      calls.push(row.mediaId);
-    },
-    state.apply,
-  );
-  assert.equal(calls.length, 6);
-  assert.equal(calls.at(-1), "media-episodio_3.mp3");
-  assert.equal(state.rows.filter((row) => row.state === "publicado").length, 5);
 });
 
-test("el título nace del archivo y los nombres duplicados conservan identidades distintas", () => {
-  assert.equal(
-    queue.mediaTitleFromFilename("Mi_podcast-final.mp3"),
-    "Mi podcast final",
+test("100 filas por petición: un fallo HTTP no borra ids ni impide procesar el siguiente lote", async () => {
+  const rows = Array.from({ length: 101 }, (_, index) => ({
+    ...fixture().rows[0],
+    key: String(index),
+    mediaId: `id-${index}`,
+  }));
+  const sizes = [];
+  const results = [];
+  await queue.runMediaBulkBatches(
+    rows,
+    async (batch) => {
+      sizes.push(batch.length);
+      if (sizes.length === 1) throw new Error("Sin conexión");
+      return batch.map((row) => ({ ...row, state: "publicado" }));
+    },
+    (row) => results.push(row),
+    signal(),
+    fallback,
   );
+  assert.deepEqual(sizes, [100, 1]);
+  assert.equal(results[0].mediaId, "id-0");
+  assert.equal(results.filter((row) => row.state === "error").length, 100);
+  assert.equal(results[100].state, "publicado");
+});
+
+test("nombres repetidos se correlacionan por posición y respuestas incompletas no crean falsos éxitos", () => {
   const rows = queue.createMediaBulkRows([
     new File(["a"], "igual.mp3"),
     new File(["b"], "igual.mp3"),
   ]);
   assert.notEqual(rows[0].key, rows[1].key);
-  assert.equal(queue.mediaBulkResult(rows[0]), null);
+  const result = queue.applyMediaBulkResults(
+    rows,
+    [
+      { nombre: "igual.mp3", estado: "publicado", mediaId: "primero" },
+      { nombre: "igual.mp3", estado: "borrador", mediaId: "segundo" },
+    ],
+    fallback,
+  );
+  assert.deepEqual(
+    result.map((row) => row.mediaId),
+    ["primero", "segundo"],
+  );
+  assert.equal(result[0].state, "publicado");
+  for (const response of [
+    [],
+    [{ nombre: "otro", estado: "borrador", mediaId: "incorrecto" }],
+    [{ nombre: "igual.mp3", estado: "borrador" }],
+  ]) {
+    assert.equal(
+      queue.applyMediaBulkResults(rows, response, fallback)[0].state,
+      "error",
+    );
+  }
+});
+
+test("cancelar evita procesar el siguiente bloque y aplicar respuestas tardías", async () => {
+  const controller = new AbortController();
+  let applied = false;
+  await assert.rejects(
+    queue.runMediaBulkBatches(
+      fixture().rows,
+      async (batch) => {
+        controller.abort();
+        return batch;
+      },
+      () => {
+        applied = true;
+      },
+      controller.signal,
+      fallback,
+    ),
+    { name: "AbortError" },
+  );
+  assert.equal(applied, false);
+});
+
+test("deriva título y permite guardar borradores editados sin repetir los que no cambiaron", () => {
+  assert.equal(
+    queue.mediaTitleFromFilename("Mi_podcast-final.mp3"),
+    "Mi podcast final",
+  );
+  const row = fixture().rows[0];
+  assert.equal(queue.mediaBulkResult(row), null);
+  assert.equal(
+    queue.mediaBulkDraftCandidates([
+      { ...row, mediaId: "id", state: "borrador", dirty: false },
+    ]).length,
+    0,
+  );
+  assert.equal(
+    queue.mediaBulkDraftCandidates([
+      { ...row, mediaId: "id", state: "borrador", dirty: true },
+    ]).length,
+    1,
+  );
 });
