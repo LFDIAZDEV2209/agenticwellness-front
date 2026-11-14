@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useT } from "@/providers/i18n-provider";
-import { fetchMediaItems, formatDuration, getMediaItemById } from "../services/media-service";
+import { fetchMediaItems, formatDuration, getMediaItemById, isPlaceholderMedia } from "../services/media-service";
 import type { MediaCategory, MediaItem } from "../types";
 import { getMediaCategoryMeta, mediaCategoryMeta, mediaTypeMeta } from "./media-meta";
 import { MediaPlayer } from "./media-player";
@@ -21,6 +21,8 @@ interface PickerOptions {
   description?: string;
   onConfirm: (items: MediaItem[]) => void;
   onReset?: () => void;
+  /** Sustitución: excluye el medio retirado y exige el mismo tipo publicado. */
+  replacementFor?: Pick<MediaItem, "id" | "mediaType">;
 }
 
 /** La demostración de un ejercicio es singular; el programa admite secuencias. */
@@ -39,13 +41,13 @@ export function MediaLibraryPicker(props: MediaLibraryPickerProps) {
   </Dialog>;
 }
 
-function accepts(item: MediaItem, destino: "programa" | "rutinas") {
-  return item.status === "Published" && (destino === "programa"
+function accepts(item: MediaItem, destino: "programa" | "rutinas", replacementFor?: PickerOptions["replacementFor"]) {
+  return item.id !== replacementFor?.id && (!replacementFor || item.mediaType === replacementFor.mediaType && Boolean(item.storageKey.trim()) && !isPlaceholderMedia(item)) && item.status === "Published" && (destino === "programa"
     ? item.mediaType === "Podcast"
     : item.mediaType === "Video" || item.mediaType === "Image");
 }
 
-function PickerContent({ destino, multiple, selectedIds = [], title, description, onConfirm, onReset, onOpenChange }:
+function PickerContent({ destino, multiple, selectedIds = [], title, description, onConfirm, onReset, onOpenChange, replacementFor }:
   PickerOptions & { destino: "programa" | "rutinas"; multiple: boolean }) {
   const t = useT();
   const previewRef = useRef<HTMLElement>(null);
@@ -71,18 +73,18 @@ function PickerContent({ destino, multiple, selectedIds = [], title, description
       const resolved = new Map<string, MediaItem>();
       const failed: string[] = [];
       results.forEach((result, index) => {
-        if (result.status === "fulfilled" && result.value.id === initialIds[index] && accepts(result.value, destino)) resolved.set(initialIds[index], result.value);
+        if (result.status === "fulfilled" && result.value.id === initialIds[index] && accepts(result.value, destino, replacementFor)) resolved.set(initialIds[index], result.value);
         else failed.push(initialIds[index]);
       });
       setSelected(previous => new Map([...previous].map(([id, item]) => [id, item ?? resolved.get(id) ?? null])));
       setUnavailable(failed);
     });
     return () => { active = false; };
-  }, [initialIds, destino]);
+  }, [initialIds, destino, replacementFor]);
 
   useEffect(() => {
     const controller = new AbortController();
-    const types: MediaItem["mediaType"][] = destino === "programa" ? ["Podcast"] : ["Video", "Image"];
+    const types: MediaItem["mediaType"][] = replacementFor ? [replacementFor.mediaType] : destino === "programa" ? ["Podcast"] : ["Video", "Image"];
     const timer = setTimeout(() => {
       setLoading(true);
       setError(null);
@@ -92,7 +94,7 @@ function PickerContent({ destino, multiple, selectedIds = [], title, description
         if (controller.signal.aborted) return;
         // Defensa adicional: un resultado ajeno al destino nunca llega a la UI.
         const visible = results.flatMap((result, index) => result.data.filter(item =>
-          item.mediaType === types[index] && accepts(item, destino)));
+          item.mediaType === types[index] && accepts(item, destino, replacementFor)));
         setItems([...new Map(visible.map(item => [item.id, item])).values()]);
         setTotal(results.reduce((sum, result) => sum + result.total, 0));
         setTotalPages(Math.max(1, ...results.map(result => result.totalPages)));
@@ -104,7 +106,7 @@ function PickerContent({ destino, multiple, selectedIds = [], title, description
       }).finally(() => { if (!controller.signal.aborted) setLoading(false); });
     }, 0);
     return () => { clearTimeout(timer); controller.abort(); };
-  }, [destino, page, search, category, reload, t]);
+  }, [destino, page, search, category, reload, t, replacementFor]);
 
   function toggle(item: MediaItem) {
     setSelected(previous => {

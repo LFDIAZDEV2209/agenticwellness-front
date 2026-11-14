@@ -44,16 +44,12 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/providers/auth-provider";
 import { useT } from "@/providers/i18n-provider";
-import { ApiError } from "@/lib/api/http";
 import {
-  archiveMediaItem,
-  deleteMediaItem,
   fetchMediaItems,
   getMediaItemById,
   updateMediaItem,
   formatDuration,
   publishMediaItem,
-  unpublishMediaItem,
 } from "../services/media-service";
 import { MediaPlayer } from "./media-player";
 import { MediaQuickEditSheet } from "./media-form-fields";
@@ -64,7 +60,7 @@ import { getMediaCategoryMeta, mediaCategoryMeta, mediaStatusMeta } from "./medi
 import { MediaTable } from "./media-table";
 import { type MediaDetailAction } from "./media-detail-dialog";
 import { MediaReferencesDialog } from "./media-references-dialog";
-import { MediaDeleteBlockedDialog } from "./media-delete-blocked-dialog";
+import { MediaRetirementDialog, type MediaRetirementAction } from "./media-retirement-dialog";
 import { MediaCleanupAdminDialog } from "./media-cleanup-admin-dialog";
 import type { MediaFilters, MediaInput, MediaItem, PaginatedResult } from "../types";
 
@@ -105,7 +101,7 @@ export function MediaPage() {
   };
 
   const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
-  const [deleting, setDeleting] = useState<MediaItem | undefined>();
+  const [retiring, setRetiring] = useState<{ item: MediaItem; action: MediaRetirementAction } | null>(null);
   const [pageSize, setPageSize] = useState(20);
   // El episodio seleccionado no depende del resultado ni de sus filtros.
   const [currentPodcast, setCurrentPodcast] = useState<MediaItem | null>(null);
@@ -156,9 +152,8 @@ export function MediaPage() {
     action: MediaDetailAction;
     item: MediaItem;
   } | null>(null);
-  // Referencias ("dónde se usa") y eliminación bloqueada por 409.
+  // Referencias ("dónde se usa"); el retiro gestiona su propio 409.
   const [referencesFor, setReferencesFor] = useState<MediaItem | undefined>();
-  const [blockedFor, setBlockedFor] = useState<MediaItem | undefined>();
   const [cleanupOpen, setCleanupOpen] = useState(false);
   /** Toasts efímeros de la biblioteca. */
   const [toasts, setToasts] = useState<MediaToast[]>([]);
@@ -226,26 +221,14 @@ export function MediaPage() {
    * refresca el estado de la biblioteca y avisa con
    * toast. Un 422 de validación técnica muestra el ProblemDetails del back.
    */
-  const runSemanticAction = async (action: MediaDetailAction) => {
+  const runSemanticAction = async () => {
     const target = pendingAction?.item;
-    if (!target) return;
+    if (!target || !canPublish || actionLoading) return;
     setPendingAction(null);
+    setActionLoading(true);
     try {
-      if (action === "publish") {
-        await publishMediaItem(target.id);
-      } else if (action === "unpublish") {
-        await unpublishMediaItem(target.id);
-      } else {
-        await archiveMediaItem(target.id);
-      }
-      toast(
-        action === "publish"
-          ? t("Medio publicado: los pacientes ya pueden verlo.")
-          : action === "unpublish"
-            ? t("Medio devuelto a borrador.")
-            : t("Medio archivado: sale de las nuevas asignaciones."),
-        "success",
-      );
+      await publishMediaItem(target.id);
+      toast(t("Medio publicado: los pacientes ya pueden verlo."), "success");
       retry();
     } catch (err) {
       toast(
@@ -254,40 +237,8 @@ export function MediaPage() {
           : t("No se pudo completar la acción."),
         "error",
       );
-    }
-  };
-
-  /**
-   * Eliminación con salvaguarda (REQ-PCA-07): si el back responde 409
-   * Conflict por referencias activas, abre el diálogo que explica las
-   * dependencias y sugiere archivar en lugar de eliminar.
-   */
-  const confirmDelete = async () => {
-    const target = deleting;
-    if (!target) return;
-    try {
-      setActionLoading(true);
-      await deleteMediaItem(target.id);
-      if (currentPodcast?.id === target.id) setCurrentPodcast(null);
-      retry();
-      toast(
-        t('Medio "{title}" eliminado.', { title: target.title }),
-        "success",
-      );
-    } catch (err) {
-      if (err instanceof ApiError && err.status === 409) {
-        setBlockedFor(target);
-      } else {
-        toast(
-          err instanceof Error
-            ? err.message
-            : t("No se pudo eliminar el medio."),
-          "error",
-        );
-      }
     } finally {
       setActionLoading(false);
-      setDeleting(undefined);
     }
   };
 
@@ -424,7 +375,7 @@ export function MediaPage() {
                 <div className="flex gap-4 overflow-x-auto pb-3 [scrollbar-width:thin]">
                   {shelf.items.map(item => <PodcastCard key={item.id} item={item} selected={currentPodcast?.id === item.id}
                     onPlay={() => setCurrentPodcast(item)} onDetails={() => router.push(`/media/${item.id}`)}
-                    onEdit={canEdit ? () => openEdit(item) : undefined} onDelete={canDelete ? () => setDeleting(item) : undefined} />)}
+                    onEdit={canEdit ? () => openEdit(item) : undefined} onDelete={canDelete ? () => setRetiring({ item, action: "delete" }) : undefined} />)}
                 </div>
               </section>)}
             </div>
@@ -433,7 +384,7 @@ export function MediaPage() {
               items={podcasts}
               onDetails={(item) => router.push(`/media/${item.id}`)}
               onEdit={openEdit}
-              onDelete={setDeleting}
+              onDelete={(item) => { if (canDelete) setRetiring({ item, action: "delete" }); }}
               onPublish={
                 canPublish
                   ? (item) => setPendingAction({ action: "publish", item })
@@ -441,12 +392,12 @@ export function MediaPage() {
               }
               onUnpublish={
                 canPublish
-                  ? (item) => setPendingAction({ action: "unpublish", item })
+                  ? (item) => setRetiring({ action: "unpublish", item })
                   : undefined
               }
               onArchive={
                 canArchive
-                  ? (item) => setPendingAction({ action: "archive", item })
+                  ? (item) => setRetiring({ action: "archive", item })
                   : undefined
               }
             />
@@ -572,7 +523,7 @@ export function MediaPage() {
               }
               disabled={actionLoading}
               onClick={() =>
-                void runSemanticAction(pendingAction?.action ?? "publish")
+                void runSemanticAction()
               }
             >
               {pendingAction?.action === "publish" && t("Publicar")}
@@ -583,16 +534,15 @@ export function MediaPage() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Eliminación bloqueada: 409 → dependencias + archivar (REQ-PCA-07) */}
-      <MediaDeleteBlockedDialog
-        media={blockedFor}
-        onClose={() => setBlockedFor(undefined)}
-        onArchived={() => {
-          toast(t("Medio archivado: sale de las nuevas asignaciones."));
-
+      {retiring && <MediaRetirementDialog
+        key={`${retiring.item.id}:${retiring.action}`}
+        media={retiring.item} action={retiring.action}
+        onClose={() => setRetiring(null)}
+        onCompleted={(updated) => {
+          setCurrentPodcast(current => current?.id === retiring.item.id ? updated : current);
           retry();
         }}
-      />
+      />}
 
       {/* Dónde se usa (GET /media/{id}/references, REQ-PCA-07) */}
       <MediaReferencesDialog
@@ -653,36 +603,6 @@ export function MediaPage() {
           ))}
         </div>
       )}
-
-      <AlertDialog
-        open={Boolean(deleting)}
-        onOpenChange={(open) => !open && setDeleting(undefined)}
-      >
-        <AlertDialogContent>
-          <AlertDialogMedia className="bg-destructive-soft text-destructive">
-            <Trash2 />
-          </AlertDialogMedia>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t("¿Eliminar medio?")}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t(
-                'Se eliminará la metadata de "{title}". Esta acción no se puede deshacer.',
-                { title: deleting?.title ?? "" },
-              )}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{t("Cancelar")}</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive hover:bg-destructive/90"
-              disabled={actionLoading}
-              onClick={() => void confirmDelete()}
-            >
-              {t("Eliminar")}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 }

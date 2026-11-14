@@ -23,8 +23,6 @@ import {
   getMediaItemById,
   updateMediaItem,
   publishMediaItem,
-  unpublishMediaItem,
-  archiveMediaItem,
 } from "../services/media-service";
 import { resolveStorageKeys } from "../services/upload-service";
 import {
@@ -32,6 +30,7 @@ import {
   type MediaDetailAction,
 } from "./media-detail-dialog";
 import { MediaReferencesDialog } from "./media-references-dialog";
+import { MediaRetirementDialog } from "./media-retirement-dialog";
 import { MediaFormFields } from "./media-form-fields";
 import { mediaTypeMeta, mediaStatusMeta } from "./media-meta";
 import type { MediaInput, MediaItem } from "../types";
@@ -110,15 +109,12 @@ export function MediaItemPage({
     }
   };
   const runAction = async () => {
-    if (!pending || !media || !allowed.includes(pending)) return;
-    const action = pending;
+    if (pending !== "publish" || !media || !allowed.includes(pending)) return;
     setPending(null);
     setSaving(true);
     setError(null);
     try {
-      if (action === "publish") await publishMediaItem(id);
-      else if (action === "unpublish") await unpublishMediaItem(id);
-      else await archiveMediaItem(id);
+      await publishMediaItem(id);
       setMedia(await getMediaItemById(id));
     } catch (err) {
       setError(
@@ -235,8 +231,17 @@ export function MediaItemPage({
         media={references && media ? media : undefined}
         onClose={() => setReferences(false)}
       />
+      {media && (pending === "unpublish" || pending === "archive") && (
+        <MediaRetirementDialog
+          key={`${media.id}:${pending}`}
+          media={media}
+          action={pending}
+          onClose={() => setPending(null)}
+          onCompleted={(updated) => { if (updated) setMedia(updated); }}
+        />
+      )}
       <AlertDialog
-        open={pending !== null}
+        open={pending === "publish"}
         onOpenChange={(open) => {
           if (!open) setPending(null);
         }}
