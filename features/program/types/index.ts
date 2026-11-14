@@ -239,6 +239,10 @@ export interface SetWeekContentInput {
 
 /** Tarea individual de una semana de inscripción con estado real del paciente. */
 export interface EnrollmentWeekTask {
+  /** Origen efectivo de 2.3/2.5; `snapshot` no acredita autoría individual. */
+  source?: string | null;
+  rest?: boolean | null;
+  sourcePrescriptionId?: string | null;
   taskCode: string;
   taskLabel: string;
   points: number;
@@ -254,6 +258,8 @@ export interface EnrollmentWeekTask {
 
 /** Día de una semana de inscripción con totales reales vs programados. */
 export interface EnrollmentWeekDay {
+  /** En descanso no existe misión de ejercicio. */
+  rest?: boolean | null;
   localDate: string;
   weekday: number;
   dayLabel: string;

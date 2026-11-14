@@ -5409,5 +5409,20 @@
   "Acciones de pacientes seleccionados": "Acciones de pacientes seleccionados",
   "{count} en esta página. Máximo {max} por asignación.": "{count} en esta página. Máximo {max} por asignación.",
   "No se pudo abrir la plantilla": "No se pudo abrir la plantilla",
-  "{days} día{daySuffix} · {weeks} semana{weekSuffix}": "{days} día{daySuffix} · {weeks} semana{weekSuffix}"
+  "{days} día{daySuffix} · {weeks} semana{weekSuffix}": "{days} día{daySuffix} · {weeks} semana{weekSuffix}",
+  "Del programa": "Del programa",
+  "Asignación anterior": "Asignación anterior",
+  "De la semana": "De la semana",
+  "Sin contenido": "Sin contenido",
+  "Origen no informado": "Origen no informado",
+  "Sin rutina": "Sin rutina",
+  "Contenido asignado": "Contenido asignado",
+  "Sin misión de ejercicio": "Sin misión de ejercicio",
+  "Otras tareas": "Otras tareas",
+  "Agenda en solo lectura": "Agenda en solo lectura",
+  "Cargando agenda": "Cargando agenda",
+  "No pudimos cargar la agenda": "No pudimos cargar la agenda",
+  "Agenda semanal": "Agenda semanal",
+  "Sin tareas configuradas para esta semana": "Sin tareas configuradas para esta semana",
+  "Ver tareas": "Ver tareas"
 }

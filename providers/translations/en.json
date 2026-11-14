@@ -5422,5 +5422,20 @@
   "Acciones de pacientes seleccionados": "Selected patient actions",
   "{count} en esta página. Máximo {max} por asignación.": "{count} on this page. Maximum {max} per assignment.",
   "No se pudo abrir la plantilla": "Unable to open the template",
-  "{days} día{daySuffix} · {weeks} semana{weekSuffix}": "{days} day{daySuffix} · {weeks} week{weekSuffix}"
+  "{days} día{daySuffix} · {weeks} semana{weekSuffix}": "{days} day{daySuffix} · {weeks} week{weekSuffix}",
+  "Del programa": "From the program",
+  "Asignación anterior": "Previous assignment",
+  "De la semana": "From the week",
+  "Sin contenido": "Missing content",
+  "Origen no informado": "Source not provided",
+  "Sin rutina": "No routine",
+  "Contenido asignado": "Assigned content",
+  "Sin misión de ejercicio": "No exercise mission",
+  "Otras tareas": "Other tasks",
+  "Agenda en solo lectura": "Read-only agenda",
+  "Cargando agenda": "Loading agenda",
+  "No pudimos cargar la agenda": "Unable to load the agenda",
+  "Agenda semanal": "Weekly agenda",
+  "Sin tareas configuradas para esta semana": "No tasks configured for this week",
+  "Ver tareas": "View tasks"
 }

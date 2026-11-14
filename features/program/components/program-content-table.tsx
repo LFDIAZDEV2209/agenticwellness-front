@@ -520,6 +520,9 @@ export function WeekRow({
     <TableRow className="hover:bg-muted/40">
       <TableCell className="font-semibold text-sm tabular-nums">
         {week.weekNumber}
+        <Button variant="ghost" size="sm" onClick={() => setTasksDialogOpen(true)} className="ml-2 min-h-11 gap-1 text-xs">
+          <CalendarDays aria-hidden className="size-3.5" />{t("Ver tareas")}
+        </Button>
       </TableCell>
       <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
         {week.weekStartDateLocal} — {week.weekEndDateLocal}
@@ -555,15 +558,6 @@ export function WeekRow({
       {canEdit && (
         <TableCell className="text-right">
           <div className="flex items-center justify-end gap-1.5">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setTasksDialogOpen(true)}
-              className="gap-1 text-xs"
-            >
-              <CalendarDays className="size-3.5" />
-              Ver tareas
-            </Button>
             <Button
               variant="outline"
               size="sm"

@@ -1,213 +1,166 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
+import { CalendarDays, CheckCircle2, Moon, RefreshCw } from "lucide-react";
 import {
   Dialog,
+  DialogBody,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import {
-  CheckCircle2,
-  Circle,
-  Salad,
-  Dumbbell,
-  Edit2,
-  Save,
-  X,
-  Plus,
-  Trash2,
-  Loader2,
-  Copy,
-  Calendar,
-  Search,
-} from "lucide-react";
-import { useAuth } from "@/providers/auth-provider";
-import {
-  fetchEnrollmentWeek,
-  replaceEnrollmentWeekTasks,
-} from "../services/program-content-service";
-import { fetchRoutinesForPicker } from "@/features/wellness/services/assignments-service";
-import { fetchMediaItems } from "@/features/media/services/media-service";
-import { PodcastPickerDialog } from "./podcast-picker-dialog";
+import { useI18n, useT } from "@/providers/i18n-provider";
+import { fetchEnrollmentWeek } from "../services/program-content-service";
 import type {
-  ProgramContentWeek,
-  EnrollmentWeekResponse,
   EnrollmentWeekDay,
+  EnrollmentWeekResponse,
+  EnrollmentWeekTask,
+  ProgramContentWeek,
 } from "../types";
-import type { ExerciseRoutineListItem } from "@/features/wellness/types";
-import type { MediaItem } from "@/features/media/types";
 
-// --- Constantes de tareas ---
-
-const AVAILABLE_TASK_CODES: Array<{
-  code: string;
-  label: string;
-  defaultPoints: number;
-}> = [
-  { code: "podcast", label: "Podcast educativo", defaultPoints: 80 },
-  { code: "vitals", label: "Signos vitales", defaultPoints: 120 },
-  { code: "nut", label: "Plan nutricional", defaultPoints: 150 },
-  { code: "ejercicio", label: "Rutina de ejercicio", defaultPoints: 150 },
-  { code: "nutraceutico", label: "Nutracéutico ADRED", defaultPoints: 80 },
-  { code: "emocional", label: "Check-in emocional", defaultPoints: 120 },
-];
-
-function getTaskLabel(code: string): string {
-  const found = AVAILABLE_TASK_CODES.find((t) => t.code === code);
-  return found ? found.label : code;
-}
-
-/** Extrae "24 ago" de un date string "2026-08-24" (sin timezone drift) */
-function shortDate(dateStr: string): string {
-  const [, m, d] = dateStr.split("-").map(Number);
-  const months = [
-    "ene",
-    "feb",
-    "mar",
-    "abr",
-    "may",
-    "jun",
-    "jul",
-    "ago",
-    "sep",
-    "oct",
-    "nov",
-    "dic",
-  ];
-  return `${d} ${months[m - 1]}`;
-}
-
-const DAY_LABELS: Record<number, string> = {
-  1: "Lunes",
-  2: "Martes",
-  3: "Miércoles",
-  4: "Jueves",
-  5: "Viernes",
-  6: "Sábado",
-  7: "Domingo",
+const SOURCE_LABELS: Record<string, string> = {
+  program: "Del programa",
+  template_week: "Del programa",
+  template_generic: "Del programa",
+  individual: "Personalizado",
+  legacy: "Asignación anterior",
+  rest: "Descanso",
+  // El contrato no distingue la autoría de las rutinas guardadas en snapshot.
+  snapshot: "De la semana",
+  missing: "Sin contenido",
 };
 
-// --- Interfaces de edición ---
-
-interface EditableTaskItem {
-  weekday: number;
-  taskCode: string;
-  points: number;
-  sortOrder: number;
-  routineId?: string | null;
-  mediaId?: string | null;
-}
-
-// --- Sub-componente: celda de día en el Panorama Semanal (Modo Lectura) ---
-
-function DayColumnRead({ day }: { day: EnrollmentWeekDay }) {
+function ContentCell({
+  task,
+  routine,
+  rest = false,
+}: {
+  task?: EnrollmentWeekTask;
+  routine?: boolean;
+  rest?: boolean;
+}) {
+  const t = useT();
+  const missing =
+    !rest &&
+    (!task ||
+      task.source === "missing" ||
+      !(task.contentRefId || task.contentName || task.routineId));
+  const source = rest
+    ? "rest"
+    : task?.source === "snapshot" && !routine
+      ? "program"
+      : (task?.source ?? "");
+  const label = SOURCE_LABELS[source] ?? "Origen no informado";
   return (
-    <div className="flex flex-col gap-2 rounded-xl border border-border bg-muted/20 p-2.5">
-      {/* Header del día */}
-      <div className="flex flex-col border-b border-border/60 pb-1.5">
-        <span className="text-xs font-bold text-foreground">
-          {day.dayLabel}
-        </span>
-        <span className="text-[10px] text-muted-foreground">
-          {shortDate(day.localDate)}
-        </span>
-      </div>
-
-      {/* Lista de tareas */}
-      {day.tasks.length === 0 ? (
-        <p className="text-[11px] text-muted-foreground italic py-2">
-          Sin tareas
+    <section
+      aria-label={routine ? t("Rutina") : t("Podcast")}
+      className={`flex min-w-0 flex-col gap-2 rounded-xl border p-3 ${missing ? "border-destructive/40 bg-destructive-soft/20" : rest ? "border-border bg-muted/40" : "border-border bg-background"}`}
+    >
+      <p className="text-xs font-medium text-muted-foreground">
+        {routine ? t("Rutina") : t("Podcast")}
+      </p>
+      <h4 className="break-words text-sm font-semibold">
+        {rest ? (
+          <span className="flex items-center gap-2">
+            <Moon aria-hidden className="size-4 shrink-0" />
+            {t("Descanso")}
+          </span>
+        ) : missing ? (
+          routine ? (
+            t("Sin rutina")
+          ) : (
+            t("Sin podcast")
+          )
+        ) : (
+          task?.contentName || t(task?.taskLabel ?? "Contenido asignado")
+        )}
+      </h4>
+      <Badge
+        variant="outline"
+        className="h-auto max-w-full self-start whitespace-normal text-xs"
+      >
+        {t(missing ? "Sin contenido" : label)}
+      </Badge>
+      {rest ? (
+        <p className="text-xs text-muted-foreground">
+          {t("Sin misión de ejercicio")}
         </p>
       ) : (
-        <ul className="flex flex-col gap-1.5">
-          {day.tasks.map((task) => {
-            const isCompleted = task.status === "completed";
-            const displayName = task.contentName || task.taskLabel;
-            return (
-              <li
-                key={task.taskCode}
-                className="flex flex-col gap-0.5 rounded-lg bg-card p-2 shadow-2xs border border-border/60 text-xs"
-              >
-                <div className="flex items-center justify-between gap-1">
-                  <span className="flex items-center gap-1.5 min-w-0">
-                    {isCompleted ? (
-                      <CheckCircle2 className="size-3.5 shrink-0 text-emerald-600" />
-                    ) : (
-                      <Circle className="size-3.5 shrink-0 text-muted-foreground/50" />
-                    )}
-                    <span
-                      className="font-semibold text-foreground truncate"
-                      title={displayName}
-                    >
-                      {displayName}
-                    </span>
-                  </span>
-                  <span
-                    className={`shrink-0 text-[11px] tabular-nums ${isCompleted ? "font-semibold text-emerald-600" : "text-muted-foreground"}`}
-                  >
-                    {isCompleted
-                      ? `${task.points} XP`
-                      : `${task.scheduledPoints} XP`}
-                  </span>
-                </div>
-                {task.detailText && (
-                  <span
-                    className="text-[10px] text-muted-foreground pl-5 truncate"
-                    title={task.detailText}
-                  >
-                    {task.detailText}
-                  </span>
-                )}
-                {task.contentName && (
-                  <span className="text-[9px] text-primary/80 font-medium pl-5 uppercase tracking-wider">
-                    {task.taskLabel}
-                  </span>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      )}
-
-      {/* Footer: total del día + badges */}
-      {day.tasks.length > 0 && (
-        <div className="mt-auto flex flex-col gap-1 border-t border-border/60 pt-1.5">
-          <span className="text-[10px] font-semibold text-foreground">
-            Total: {day.totalPoints}/{day.maxPoints} XP
-          </span>
-          <div className="flex flex-wrap items-center gap-1">
-            {day.bonusAwarded > 0 && (
-              <Badge className="bg-amber-100 text-amber-800 text-[9px] px-1 py-0">
-                +{day.bonusAwarded} bonus
-              </Badge>
+        task &&
+        !missing && (
+          <p className="flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
+            {task.status === "completed" && (
+              <CheckCircle2 aria-hidden className="size-3.5 text-success" />
             )}
-            {day.isPerfectDay && (
-              <Badge className="bg-emerald-100 text-emerald-800 text-[9px] px-1 py-0">
-                Día perfecto
-              </Badge>
-            )}
-          </div>
-        </div>
+            {task.status === "completed" ? t("Completada") : t("Pendiente")} ·{" "}
+            {task.status === "completed" ? task.points : task.scheduledPoints}{" "}
+            XP
+          </p>
+        )
       )}
-    </div>
+    </section>
   );
 }
 
-// --- Componente principal del dialog ---
+function AgendaDay({ day }: { day: EnrollmentWeekDay }) {
+  const t = useT();
+  const { lang } = useI18n();
+  const date = new Intl.DateTimeFormat(lang === "en" ? "en-US" : "es-CO", {
+    day: "numeric",
+    month: "short",
+    timeZone: "UTC",
+  }).format(new Date(`${day.localDate}T12:00:00Z`));
+  const routine = day.tasks.find((task) => task.taskCode === "ejercicio");
+  const podcast = day.tasks.find((task) => task.taskCode === "podcast");
+  const other = day.tasks.filter(
+    (task) => !["ejercicio", "podcast"].includes(task.taskCode),
+  );
+  return (
+    <article
+      aria-label={`${t(day.dayLabel)} · ${day.localDate}`}
+      className="flex min-w-0 flex-col gap-3 rounded-xl bg-muted/30 p-2"
+    >
+      <header className="flex flex-col gap-1 px-1 py-2">
+        <h3 className="text-sm font-semibold">{t(day.dayLabel)}</h3>
+        <time
+          dateTime={day.localDate}
+          className="text-xs text-muted-foreground"
+        >
+          {date}
+        </time>
+      </header>
+      <ContentCell
+        task={routine}
+        routine
+        rest={day.rest === true || routine?.rest === true}
+      />
+      <ContentCell task={podcast} />
+      {other.length > 0 && (
+        <details className="rounded-lg px-1 text-xs">
+          <summary className="min-h-11 cursor-pointer py-3 font-medium">
+            {t("Otras tareas")} ({other.length})
+          </summary>
+          <ul className="flex flex-col gap-2 py-2">
+            {other.map((task) => (
+              <li key={task.taskCode} className="break-words">
+                {t(task.taskLabel)} ·{" "}
+                {task.status === "completed" ? t("Completada") : t("Pendiente")}
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+      <p className="mt-auto border-t border-border px-1 pt-2 text-xs tabular-nums text-muted-foreground">
+        {t("Total")}: {day.totalPoints}/{day.maxPoints} XP
+      </p>
+    </article>
+  );
+}
 
 interface WeekTasksDialogProps {
   open: boolean;
@@ -216,737 +169,109 @@ interface WeekTasksDialogProps {
   enrollmentId: string;
 }
 
+/** Agenda de lectura. Las mutaciones por celda se incorporan con el contrato 2.8. */
 export function WeekTasksDialog({
   open,
   onOpenChange,
   week,
   enrollmentId,
 }: WeekTasksDialogProps) {
-  const { hasPermission } = useAuth();
-  const canEdit = hasPermission("Program.Edit");
-
-  const [data, setData] = useState<EnrollmentWeekResponse | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [editing, setEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState<string>("1");
-
-  const [availableRoutines, setAvailableRoutines] = useState<
-    ExerciseRoutineListItem[]
-  >([]);
-  const [availablePodcasts, setAvailablePodcasts] = useState<MediaItem[]>([]);
-  const [editableTasks, setEditableTasks] = useState<EditableTaskItem[]>([]);
-  const [pickerState, setPickerState] = useState<{
-    open: boolean;
-    weekday: number;
-    currentMediaId: string | null;
-    dayLabel: string;
+  const t = useT();
+  const key = `${enrollmentId}:${week.weekNumber}`;
+  const [reload, setReload] = useState(0);
+  const [resource, setResource] = useState<{
+    key: string;
+    data: EnrollmentWeekResponse | null;
+    error: boolean;
   } | null>(null);
-  const initializedRef = useRef(false);
-
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await fetchEnrollmentWeek(enrollmentId, week.weekNumber);
-      setData(result);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Error al cargar las tareas",
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, [enrollmentId, week.weekNumber]);
-
-  // Cargar datos al abrir
-  useEffect(() => {
-    if (open && (!initializedRef.current || data === null)) {
-      initializedRef.current = true;
-      fetchData();
-    }
-  }, [open, data, fetchData]);
-
-  // Cargar catálogo de rutinas y podcasts para el modo edición
   useEffect(() => {
     if (!open) return;
-    fetchRoutinesForPicker(1, 100, "")
-      .then((res) => setAvailableRoutines(res.data))
-      .catch(() => {});
-    fetchMediaItems(1, 100, { search: "", mediaType: "Podcast", status: "Published" })
-      .then((res) => setAvailablePodcasts(res.data))
-      .catch(() => {});
-  }, [open]);
-
-  // Asegurar que la rutina general asignada a la semana esté en la lista
-  const allRoutines = [...availableRoutines];
-  if (
-    week.exerciseRoutine &&
-    !allRoutines.some((r) => r.id === week.exerciseRoutine!.id)
-  ) {
-    allRoutines.unshift({
-      id: week.exerciseRoutine.id,
-      name: week.exerciseRoutine.name,
-      category: "Asignada",
-      difficulty: "",
-    } as unknown as ExerciseRoutineListItem);
-  }
-
-  // Reiniciar estado al cerrar
-  const handleOpenChange = useCallback(
-    (nextOpen: boolean) => {
-      if (!nextOpen) {
-        setEditing(false);
-        setActiveTab("1");
-      }
-      onOpenChange(nextOpen);
-    },
-    [onOpenChange],
-  );
-
-  // Iniciar modo edición
-  const handleStartEdit = useCallback(() => {
-    if (!data) return;
-    const initial: EditableTaskItem[] = [];
-    data.days.forEach((day) => {
-      day.tasks.forEach((t, idx) => {
-        initial.push({
-          weekday: day.weekday,
-          taskCode: t.taskCode,
-          points: t.scheduledPoints,
-          sortOrder: idx + 1,
-          routineId: t.taskCode === "ejercicio" ? (t.routineId ?? t.contentRefId ?? null) : null,
-          mediaId: t.taskCode === "podcast" ? (t.contentRefId ?? null) : null,
+    const controller = new AbortController();
+    const timer = setTimeout(() => {
+      setResource(null);
+      void fetchEnrollmentWeek(enrollmentId, week.weekNumber, controller.signal)
+        .then((data) => {
+          if (!controller.signal.aborted)
+            setResource({ key, data, error: false });
+        })
+        .catch(() => {
+          if (!controller.signal.aborted)
+            setResource({ key, data: null, error: true });
         });
-      });
-    });
-    setEditableTasks(initial);
-    setEditing(true);
-  }, [data]);
-
-  // Handlers de edición por día
-  const handleAddTask = useCallback((weekday: number, taskCode: string) => {
-    const meta = AVAILABLE_TASK_CODES.find((t) => t.code === taskCode);
-    const defaultPoints = meta ? meta.defaultPoints : 100;
-    setEditableTasks((prev) => {
-      const dayTasks = prev.filter((t) => t.weekday === weekday);
-      return [
-        ...prev,
-        {
-          weekday,
-          taskCode,
-          points: defaultPoints,
-          sortOrder: dayTasks.length + 1,
-          routineId: null,
-          mediaId: null,
-        },
-      ];
-    });
-  }, []);
-
-  const handleRemoveTask = useCallback((weekday: number, taskCode: string) => {
-    setEditableTasks((prev) =>
-      prev.filter((t) => !(t.weekday === weekday && t.taskCode === taskCode)),
-    );
-  }, []);
-
-  const handleUpdatePoints = useCallback(
-    (weekday: number, taskCode: string, points: number) => {
-      setEditableTasks((prev) =>
-        prev.map((t) =>
-          t.weekday === weekday && t.taskCode === taskCode
-            ? { ...t, points }
-            : t,
-        ),
-      );
-    },
-    [],
-  );
-
-  const handleUpdateRoutine = useCallback(
-    (weekday: number, taskCode: string, routineId: string | null) => {
-      setEditableTasks((prev) =>
-        prev.map((t) =>
-          t.weekday === weekday && t.taskCode === taskCode
-            ? { ...t, routineId }
-            : t,
-        ),
-      );
-    },
-    [],
-  );
-
-  const handleUpdateMedia = useCallback(
-    (weekday: number, taskCode: string, mediaId: string | null) => {
-      setEditableTasks((prev) =>
-        prev.map((t) =>
-          t.weekday === weekday && t.taskCode === taskCode
-            ? { ...t, mediaId }
-            : t,
-        ),
-      );
-    },
-    [],
-  );
-
-  // --- Atajos de copia rápida en Modo Edición ---
-
-  const handleCopyDayToAllWeek = useCallback((sourceWeekday: number) => {
-    setEditableTasks((prev) => {
-      const sourceTasks = prev.filter((t) => t.weekday === sourceWeekday);
-      const newTasks: EditableTaskItem[] = [];
-      for (let day = 1; day <= 7; day++) {
-        sourceTasks.forEach((st, idx) => {
-          newTasks.push({
-            weekday: day,
-            taskCode: st.taskCode,
-            points: st.points,
-            sortOrder: idx + 1,
-            routineId: st.routineId ?? null,
-            mediaId: st.mediaId ?? null,
-          });
-        });
-      }
-      return newTasks;
-    });
-  }, []);
-
-  const handleCopyDayToWeekdays = useCallback((sourceWeekday: number) => {
-    setEditableTasks((prev) => {
-      const sourceTasks = prev.filter((t) => t.weekday === sourceWeekday);
-      const weekendTasks = prev.filter((t) => t.weekday > 5);
-      const newTasks: EditableTaskItem[] = [...weekendTasks];
-
-      for (let day = 1; day <= 5; day++) {
-        sourceTasks.forEach((st, idx) => {
-          newTasks.push({
-            weekday: day,
-            taskCode: st.taskCode,
-            points: st.points,
-            sortOrder: idx + 1,
-            routineId: st.routineId ?? null,
-            mediaId: st.mediaId ?? null,
-          });
-        });
-      }
-      return newTasks;
-    });
-  }, []);
-
-  // Guardar tareas editadas
-  const handleSaveTasks = useCallback(async () => {
-    setSaving(true);
-    setError(null);
-    try {
-      const payload = editableTasks.map((t) => ({
-        weekday: t.weekday,
-        taskCode: t.taskCode,
-        points: t.points,
-        sortOrder: t.sortOrder,
-        routineId: t.routineId ?? null,
-        mediaId: t.mediaId ?? null,
-      }));
-      const result = await replaceEnrollmentWeekTasks(
-        enrollmentId,
-        week.weekNumber,
-        payload,
-      );
-      setData(result);
-      setEditing(false);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Error al guardar las tareas",
-      );
-    } finally {
-      setSaving(false);
-    }
-  }, [enrollmentId, week.weekNumber, editableTasks]);
-
+    }, 0);
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [open, enrollmentId, week.weekNumber, key, reload]);
+  const current = resource?.key === key ? resource : null;
+  const changeOpen = (next: boolean) => {
+    if (!next) setResource(null);
+    onOpenChange(next);
+  };
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-6xl max-h-[90vh] flex flex-col gap-4 overflow-hidden">
-        <DialogHeader className="shrink-0 border-b border-border pb-3">
-          <div className="flex flex-wrap items-center justify-between gap-3 pr-6">
-            <div>
-              <DialogTitle className="text-xl font-bold flex items-center gap-2">
-                <Calendar className="size-5 text-primary" />
-                Semana {week.weekNumber}
-              </DialogTitle>
-              <DialogDescription className="text-xs text-muted-foreground mt-0.5">
-                Ventana local: {week.weekStartDateLocal} —{" "}
-                {week.weekEndDateLocal}
-              </DialogDescription>
-            </div>
-
-            <div className="flex items-center gap-2">
-              {canEdit && !editing && !loading && data && (
-                <Button
-                  variant="default"
-                  size="sm"
-                  onClick={handleStartEdit}
-                  className="gap-1.5 shadow-xs"
-                >
-                  <Edit2 className="size-3.5" />
-                  Editar tareas de la semana
-                </Button>
-              )}
-            </div>
-          </div>
-
-          {/* Badges superiores de plan y rutina general */}
-          <div className="flex flex-wrap items-center gap-2 mt-3 pt-2 border-t border-border/40">
-            {week.nutritionPlan ? (
-              <Badge className="bg-green-100 text-green-800 border-green-200">
-                <Salad className="mr-1 size-3" />
-                Plan: {week.nutritionPlan.name}
-              </Badge>
-            ) : (
-              <Badge
-                variant="outline"
-                className="text-muted-foreground border-dashed text-xs"
-              >
-                Sin plan nutricional asignado
-              </Badge>
-            )}
-
-            {week.exerciseRoutine ? (
-              <Badge className="bg-blue-100 text-blue-800 border-blue-200">
-                <Dumbbell className="mr-1 size-3" />
-                Rutina general: {week.exerciseRoutine.name}
-              </Badge>
-            ) : (
-              <Badge
-                variant="outline"
-                className="text-muted-foreground border-dashed text-xs"
-              >
-                Sin rutina general asignada
-              </Badge>
-            )}
-
-            {editing && (
-              <Badge
-                variant="secondary"
-                className="bg-primary/10 text-primary border-primary/20 font-semibold"
-              >
-                Modo edición activo (Vista por pestañas)
-              </Badge>
-            )}
-          </div>
+    <Dialog open={open} onOpenChange={changeOpen}>
+      <DialogContent size="xl" className="gap-0 overflow-hidden p-0">
+        <DialogHeader className="rounded-none border-0 border-b border-border bg-transparent px-6 py-5">
+          <DialogTitle className="flex items-center gap-2">
+            <CalendarDays aria-hidden className="size-5 text-primary" />
+            {t("Semana {week}", { week: String(week.weekNumber) })}
+          </DialogTitle>
+          <DialogDescription>
+            {t("Agenda en solo lectura")} · {week.weekStartDateLocal} —{" "}
+            {week.weekEndDateLocal}
+          </DialogDescription>
         </DialogHeader>
-
-        {/* Cuerpo del Dialog */}
-        <div className="flex-1 overflow-y-auto pr-1">
-          {loading ? (
-            <div className="flex flex-col gap-3 py-6">
-              <Skeleton className="h-10 w-full rounded-lg" />
-              <div className="grid grid-cols-7 gap-2 mt-2">
-                {Array.from({ length: 7 }).map((_, i) => (
-                  <Skeleton key={i} className="h-40 rounded-xl" />
-                ))}
-              </div>
+        <DialogBody className="flex flex-col gap-4" aria-busy={!current}>
+          {!current ? (
+            <div
+              aria-label={t("Cargando agenda")}
+              role="status"
+              className="grid grid-cols-1 gap-3 md:grid-cols-7"
+            >
+              {Array.from({ length: 7 }, (_, index) => (
+                <Skeleton key={index} className="h-52 rounded-xl" />
+              ))}
             </div>
-          ) : error ? (
-            <div className="flex flex-col items-center gap-3 rounded-2xl border border-destructive/20 bg-destructive-soft/40 py-12 text-center my-4">
-              <p className="text-sm font-semibold text-destructive">
-                No pudimos cargar el horario de tareas
+          ) : current.error ? (
+            <div
+              role="alert"
+              className="flex flex-col items-start gap-3 rounded-xl bg-destructive-soft/30 p-5"
+            >
+              <p className="text-sm font-semibold">
+                {t("No pudimos cargar la agenda")}
               </p>
-              <p className="max-w-sm text-xs text-muted-foreground">{error}</p>
-              <Button variant="outline" size="sm" onClick={fetchData}>
-                Reintentar
+              <Button
+                variant="outline"
+                onClick={() => setReload((value) => value + 1)}
+              >
+                <RefreshCw aria-hidden />
+                {t("Reintentar")}
               </Button>
             </div>
-          ) : !editing ? (
-            /* --- MODO SOLO LECTURA: PANORAMA SEMANAL COMPLETO (7 DÍAS SIMULTÁNEOS) --- */
-            data && data.days.length > 0 ? (
-              <div className="flex flex-col gap-3">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-semibold text-foreground">
-                    Panorama Semanal Completo (7 Días)
-                  </h3>
-                  <span className="text-xs text-muted-foreground">
-                    Vista panorámica completa en solo lectura
-                  </span>
-                </div>
-                <div className="overflow-x-auto pb-2">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2 min-w-[760px]">
-                    {data.days.map((day) => (
-                      <DayColumnRead key={day.localDate} day={day} />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center gap-2 py-12 text-center">
-                <p className="text-sm text-muted-foreground">
-                  Sin tareas configuradas para esta semana
-                </p>
-              </div>
-            )
-          ) : (
-            /* --- MODO EDICIÓN: VISTA ENFOCADA POR PESTAÑAS (TABS) --- */
-            <Tabs
-              value={activeTab}
-              onValueChange={setActiveTab}
-              className="w-full flex flex-col gap-4"
+          ) : current.data && current.data.days.length > 0 ? (
+            <div
+              aria-label={t("Agenda semanal")}
+              className="grid grid-cols-1 gap-3 md:grid-cols-7"
             >
-              {/* Barra de pestañas para los 7 días */}
-              <TabsList className="w-full justify-start overflow-x-auto bg-muted/60 p-1 rounded-xl">
-                {[1, 2, 3, 4, 5, 6, 7].map((wDay) => {
-                  const count = editableTasks.filter(
-                    (t) => t.weekday === wDay,
-                  ).length;
-
-                  return (
-                    <TabsTrigger
-                      key={wDay}
-                      value={String(wDay)}
-                      className="px-3 py-1.5 text-xs font-semibold data-active:bg-card data-active:shadow-xs rounded-lg"
-                    >
-                      <span>{DAY_LABELS[wDay]}</span>
-                      <span className="ml-1.5 rounded-full bg-primary/10 px-1.5 py-0.2 text-[10px] text-primary font-bold">
-                        {count}
-                      </span>
-                    </TabsTrigger>
-                  );
-                })}
-              </TabsList>
-
-              {/* Panel por cada día */}
-              {[1, 2, 3, 4, 5, 6, 7].map((wDay) => {
-                const dayData = data?.days.find((d) => d.weekday === wDay);
-                const dayTasks = editableTasks.filter(
-                  (t) => t.weekday === wDay,
-                );
-
-                const dayDateStr = dayData ? shortDate(dayData.localDate) : "";
-                const existingCodes = new Set(dayTasks.map((t) => t.taskCode));
-                const availableToAdd = AVAILABLE_TASK_CODES.filter(
-                  (t) => !existingCodes.has(t.code),
-                );
-
-                return (
-                  <TabsContent
-                    key={wDay}
-                    value={String(wDay)}
-                    className="flex flex-col gap-4"
-                  >
-                    {/* Encabezado del Día */}
-                    <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-card p-3 shadow-xs">
-                      <div>
-                        <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-                          {DAY_LABELS[wDay]}
-                          {dayDateStr && (
-                            <span className="text-xs font-normal text-muted-foreground">
-                              ({dayDateStr})
-                            </span>
-                          )}
-                        </h3>
-                        <p className="text-xs text-muted-foreground">
-                          {dayTasks.length} misiones programadas para este día
-                        </p>
-                      </div>
-
-                      {/* Botones de acción rápida de copia */}
-                      <div className="flex flex-wrap items-center gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleCopyDayToWeekdays(wDay)}
-                          className="h-7 text-xs gap-1 border-dashed"
-                          title="Copiar las misiones de este día a Lunes-Viernes"
-                        >
-                          <Copy className="size-3" />
-                          Copiar a Lun-Vie
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleCopyDayToAllWeek(wDay)}
-                          className="h-7 text-xs gap-1 border-dashed"
-                          title="Copiar las misiones de este día a todos los 7 días de la semana"
-                        >
-                          <Copy className="size-3" />
-                          Copiar a toda la semana
-                        </Button>
-                      </div>
-                    </div>
-
-                    {/* Lista amplia de tareas en tarjetas */}
-                    {dayTasks.length === 0 ? (
-                      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border py-12 text-center bg-muted/10">
-                        <p className="text-sm font-medium text-muted-foreground">
-                          Sin misiones configuradas para el {DAY_LABELS[wDay]}
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Usa el selector desplegable de abajo para agregar una
-                          nueva misión.
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {dayTasks.map((editTask) => {
-                          const taskCode = editTask.taskCode;
-                          const label = getTaskLabel(taskCode);
-
-                          return (
-                            <div
-                              key={taskCode}
-                              className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4 shadow-xs hover:border-primary/40 transition-colors"
-                            >
-                              {/* Título de la tarea + Eliminar */}
-                              <div className="flex items-start justify-between gap-2 border-b border-border/50 pb-2">
-                                <span className="font-bold text-sm text-foreground">
-                                  {label}
-                                </span>
-
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    handleRemoveTask(wDay, taskCode)
-                                  }
-                                  className="text-muted-foreground hover:text-destructive p-1 rounded-md hover:bg-muted"
-                                  title="Eliminar misión"
-                                >
-                                  <Trash2 className="size-4" />
-                                </button>
-                              </div>
-
-                              {/* Detalle y configuración en Modo Edición */}
-                              <div className="flex flex-col gap-3 text-xs pt-1">
-                                {/* Si la tarea es Ejercicio: Selector de rutina específica */}
-                                {taskCode === "ejercicio" &&
-                                  (() => {
-                                    const editTaskRoutineName =
-                                      editTask.routineId
-                                        ? (allRoutines.find(
-                                            (r) => r.id === editTask.routineId,
-                                          )?.name ?? "Rutina seleccionada")
-                                        : week.exerciseRoutine
-                                          ? `Usar rutina general (${week.exerciseRoutine.name})`
-                                          : "Usar rutina general de la semana";
-
-                                    return (
-                                      <div className="flex flex-col gap-1.5">
-                                        <label className="text-xs font-semibold text-foreground">
-                                          Rutina de ejercicio específica para{" "}
-                                          {DAY_LABELS[wDay]}:
-                                        </label>
-                                        <Select
-                                          value={
-                                            editTask.routineId ?? "default"
-                                          }
-                                          onValueChange={(val) =>
-                                            handleUpdateRoutine(
-                                              wDay,
-                                              taskCode,
-                                              val === "default" ? null : val,
-                                            )
-                                          }
-                                        >
-                                          <SelectTrigger className="w-full text-xs h-9 bg-muted/40">
-                                            <SelectValue placeholder="Usar rutina general">
-                                              {editTaskRoutineName}
-                                            </SelectValue>
-                                          </SelectTrigger>
-                                          <SelectContent>
-                                            <SelectItem
-                                              value="default"
-                                              label={
-                                                week.exerciseRoutine
-                                                  ? `Rutina general (${week.exerciseRoutine.name})`
-                                                  : "Usar rutina general de la semana"
-                                              }
-                                              className="text-xs text-muted-foreground italic"
-                                            >
-                                              {week.exerciseRoutine
-                                                ? `Usar rutina general de la semana (${week.exerciseRoutine.name})`
-                                                : "Usar rutina general de la semana"}
-                                            </SelectItem>
-                                            {allRoutines.map((r) => (
-                                              <SelectItem
-                                                key={r.id}
-                                                value={r.id}
-                                                label={r.name}
-                                                className="text-xs font-medium"
-                                              >
-                                                <span className="font-semibold">
-                                                  {r.name}
-                                                </span>
-                                                {r.category && (
-                                                  <span className="text-[10px] text-muted-foreground ml-1.5">
-                                                    · {r.category}
-                                                  </span>
-                                                )}
-                                              </SelectItem>
-                                            ))}
-                                          </SelectContent>
-                                        </Select>
-                                      </div>
-                                    );
-                                  })()}
-
-                                {/* Si la tarea es Podcast: Botón selector para abrir el modal paginado y buscable */}
-                                {taskCode === "podcast" && (() => {
-                                  const selectedPodcast = editTask.mediaId
-                                    ? availablePodcasts.find((m) => m.id === editTask.mediaId)
-                                    : null;
-
-                                  const podcastDisplayName = selectedPodcast
-                                    ? selectedPodcast.title
-                                    : editTask.mediaId
-                                      ? "Podcast personalizado asignado"
-                                      : "Por defecto (Seguir secuencia)";
-
-                                  return (
-                                    <div className="flex flex-col gap-1.5">
-                                      <label className="text-xs font-semibold text-foreground">
-                                        Podcast educativo para {DAY_LABELS[wDay]}:
-                                      </label>
-                                      <Button
-                                        type="button"
-                                        variant="outline"
-                                        onClick={() =>
-                                          setPickerState({
-                                            open: true,
-                                            weekday: wDay,
-                                            currentMediaId: editTask.mediaId ?? null,
-                                            dayLabel: DAY_LABELS[wDay],
-                                          })
-                                        }
-                                        className="w-full justify-between h-9 text-xs bg-muted/40 font-normal hover:bg-muted"
-                                      >
-                                        <span className="truncate max-w-[200px] text-left font-medium">
-                                          {podcastDisplayName}
-                                        </span>
-                                        <Search className="size-3.5 shrink-0 text-muted-foreground ml-2" />
-                                      </Button>
-                                    </div>
-                                  );
-                                })()}
-
-                                {/* Configuración de Puntos XP */}
-                                <div className="flex items-center justify-between gap-2 bg-muted/30 p-2 rounded-lg border border-border/50">
-                                  <span className="font-medium text-muted-foreground">
-                                    Puntos XP a otorgar:
-                                  </span>
-                                  <Input
-                                    type="number"
-                                    min={0}
-                                    max={1000}
-                                    value={editTask.points}
-                                    onChange={(e) =>
-                                      handleUpdatePoints(
-                                        wDay,
-                                        taskCode,
-                                        Math.max(
-                                          0,
-                                          parseInt(e.target.value) || 0,
-                                        ),
-                                      )
-                                    }
-                                    className="h-7 w-20 px-2 text-right text-xs font-bold bg-card"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-
-                    {/* Agregar tarea al día en Modo Edición */}
-                    {availableToAdd.length > 0 && (
-                      <div className="mt-2">
-                        <Select
-                          value=""
-                          onValueChange={(val) => {
-                            if (val) handleAddTask(wDay, val);
-                          }}
-                        >
-                          <SelectTrigger className="w-full h-9 text-xs bg-card border-dashed">
-                            <Plus className="mr-1.5 size-4 text-primary" />
-                            <span>
-                              Agregar nueva misión para el {DAY_LABELS[wDay]}...
-                            </span>
-                          </SelectTrigger>
-                          <SelectContent>
-                            {availableToAdd.map((t) => (
-                              <SelectItem
-                                key={t.code}
-                                value={t.code}
-                                label={t.label}
-                                className="text-xs"
-                              >
-                                {t.label} ({t.defaultPoints} XP)
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    )}
-                  </TabsContent>
-                );
-              })}
-            </Tabs>
-          )}
-        </div>
-
-        {/* Footer del Dialog */}
-        <div className="shrink-0 flex items-center justify-end gap-2 border-t border-border pt-3 mt-2">
-          {editing ? (
-            <>
-              <Button
-                variant="ghost"
-                size="sm"
-                disabled={saving}
-                onClick={() => setEditing(false)}
-              >
-                <X className="mr-1 size-3.5" />
-                Cancelar
-              </Button>
-              <Button
-                variant="default"
-                size="sm"
-                disabled={saving}
-                onClick={handleSaveTasks}
-                className="gap-1.5 px-4 shadow-sm"
-              >
-                {saving ? (
-                  <Loader2 className="size-3.5 animate-spin" />
-                ) : (
-                  <Save className="size-3.5" />
-                )}
-                Guardar tareas de la semana
-              </Button>
-            </>
+              {current.data.days.map((day) => (
+                <AgendaDay key={day.localDate} day={day} />
+              ))}
+            </div>
           ) : (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleOpenChange(false)}
+            <p
+              role="status"
+              className="py-10 text-center text-sm text-muted-foreground"
             >
-              Cerrar
-            </Button>
+              {t("Sin tareas configuradas para esta semana")}
+            </p>
           )}
-        </div>
-
-        {pickerState && (
-          <PodcastPickerDialog
-            open={pickerState.open}
-            onOpenChange={(nextOpen) => {
-              if (!nextOpen) setPickerState(null);
-            }}
-            currentMediaId={pickerState.currentMediaId}
-            dayLabel={pickerState.dayLabel}
-            onSelect={(selectedMediaId, selectedItem) => {
-              handleUpdateMedia(pickerState.weekday, "podcast", selectedMediaId);
-              if (selectedItem && !availablePodcasts.some((p) => p.id === selectedItem.id)) {
-                setAvailablePodcasts((prev) => [selectedItem, ...prev]);
-              }
-            }}
-          />
-        )}
+        </DialogBody>
+        <DialogFooter className="m-0 rounded-none px-6 py-4">
+          <Button variant="outline" onClick={() => changeOpen(false)}>
+            {t("Cerrar")}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
