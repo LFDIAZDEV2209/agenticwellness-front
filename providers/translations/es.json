@@ -5338,5 +5338,21 @@
   "Escribe una etiqueta y pulsa Enter": "Escribe una etiqueta y pulsa Enter",
   "Añadir etiqueta": "Añadir etiqueta",
   "Quitar etiqueta {tag}": "Quitar etiqueta {tag}",
-  "Ver video en el sitio de origen": "Ver video en el sitio de origen"
+  "Ver video en el sitio de origen": "Ver video en el sitio de origen",
+  "Publicar la versión {version}": "Publicar la versión {version}",
+  "Publicar versión {version}": "Publicar versión {version}",
+  "Cargando impacto de publicación…": "Cargando impacto de publicación…",
+  "No se pudo cargar el impacto. Reintenta antes de publicar.": "No se pudo cargar el impacto. Reintenta antes de publicar.",
+  "A quién llega": "A quién llega",
+  "Recibirán los cambios desde su próxima semana": "Recibirán los cambios desde su próxima semana",
+  "Conservan sus personalizaciones futuras": "Conservan sus personalizaciones futuras",
+  "{count} semanas ya iniciadas no se tocan.": "{count} semanas ya iniciadas no se tocan.",
+  "Solo cambian los elementos del programa. Lo personalizado se conserva.": "Solo cambian los elementos del programa. Lo personalizado se conserva.",
+  "El impacto respeta tu alcance de pacientes. Los conteos pueden incluir a la misma persona.": "El impacto respeta tu alcance de pacientes. Los conteos pueden incluir a la misma persona.",
+  "Comprobaciones de la plantilla": "Comprobaciones de la plantilla",
+  "Completa estos días antes de publicar.": "Completa estos días antes de publicar.",
+  "Día {day} · Semana {week}": "Día {day} · Semana {week}",
+  "Al publicar se comprobará el contenido de los 83 días: podcast, rutina y plan nutricional.": "Al publicar se comprobará el contenido de los 83 días: podcast, rutina y plan nutricional.",
+  "No se pudo publicar. Reintenta o vuelve a revisar la plantilla.": "No se pudo publicar. Reintenta o vuelve a revisar la plantilla.",
+  "Revisar plantilla": "Revisar plantilla"
 }

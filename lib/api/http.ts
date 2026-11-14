@@ -34,12 +34,18 @@ export class ApiError extends Error {
   readonly errors?: Record<string, string[]>;
   /** Correlation ID del backend para soporte. */
   readonly correlationId?: string;
+  /** Extensiones de ProblemDetails, conservadas para validaciones de dominio. */
+  readonly extensions?: Record<string, unknown>;
 
   constructor(
     status: number,
     code: ApiErrorCode,
     message: string,
-    options?: { errors?: Record<string, string[]>; correlationId?: string },
+    options?: {
+      errors?: Record<string, string[]>;
+      correlationId?: string;
+      extensions?: Record<string, unknown>;
+    },
   ) {
     super(message);
     this.name = "ApiError";
@@ -47,6 +53,7 @@ export class ApiError extends Error {
     this.code = code;
     this.errors = options?.errors;
     this.correlationId = options?.correlationId;
+    this.extensions = options?.extensions;
   }
 }
 
@@ -275,11 +282,13 @@ async function toApiError(response: Response): Promise<ApiError> {
   let detail: string | undefined;
   let errors: Record<string, string[]> | undefined;
   let correlationId: string | undefined;
+  let extensions: Record<string, unknown> | undefined;
   try {
     const raw = new TextDecoder("utf-8").decode(await response.arrayBuffer());
     const body: unknown = raw ? JSON.parse(raw) : null;
     if (typeof body === "object" && body !== null) {
       const record = body as Record<string, unknown>;
+      extensions = record;
       if (typeof record.detail === "string") {
         detail = deMojibake(record.detail);
       } else if (typeof record.message === "string") {
@@ -308,7 +317,7 @@ async function toApiError(response: Response): Promise<ApiError> {
     // Respuesta sin cuerpo JSON: se usa el mensaje genérico.
   }
 
-  const common = { errors, correlationId };
+  const common = { errors, correlationId, extensions };
 
   switch (response.status) {
     case 401:

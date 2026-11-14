@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useAuth } from "@/providers/auth-provider";
+import { useT } from "@/providers/i18n-provider";
+import { ProgramTemplateImpactDialog } from "./program-template-impact-dialog";
 import {
   Trophy,
   Plus,
@@ -52,6 +55,8 @@ import { ProgramTemplateDetailDialog } from "./program-template-detail";
 import type { ProgramTemplateListItem } from "../types";
 
 export function ProgramTemplatesPage() {
+  const { hasPermission } = useAuth();
+  const t = useT();
   const {
     result,
     loading,
@@ -259,12 +264,12 @@ export function ProgramTemplatesPage() {
                         >
                           <Pencil className="size-4" />
                         </Button>
-                        {tpl.status === "Draft" && (
+                        {tpl.status === "Draft" && hasPermission("Program.Edit") && (
                           <Button
                             variant="ghost"
                             size="icon"
                             className="size-8 text-success"
-                            title="Publicar"
+                            title={t("Publicar")}
                             onClick={() => setPublishing(tpl)}
                           >
                             <Send className="size-4" />
@@ -351,38 +356,18 @@ export function ProgramTemplatesPage() {
         saveWeekdayTasks={saveWeekdayTasks}
       />
 
-      {/* Confirmar publicación */}
-      <AlertDialog
-        open={Boolean(publishing)}
-        onOpenChange={(open) => !open && setPublishing(undefined)}
-      >
-        <AlertDialogContent>
-          <AlertDialogMedia className="bg-success-soft text-success">
-            <Send />
-          </AlertDialogMedia>
-          <AlertDialogHeader>
-            <AlertDialogTitle>¿Publicar plantilla?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Se publicará la plantilla &quot;{publishing?.name}&quot; y se
-              incrementará su versión. Los pacientes podrán inscribirse con esta
-              plantilla.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-success text-success-foreground hover:bg-success/90"
-              disabled={actionLoading}
-              onClick={async () => {
-                if (publishing) await publish(publishing.id);
-                setPublishing(undefined);
-              }}
-            >
-              Publicar
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {publishing && (
+        <ProgramTemplateImpactDialog
+          key={publishing.id}
+          template={publishing}
+          onClose={() => setPublishing(undefined)}
+          onPublish={publish}
+          onEdit={() => {
+            setDetails(publishing);
+            setPublishing(undefined);
+          }}
+        />
+      )}
 
       {/* Confirmar archivado */}
       <AlertDialog

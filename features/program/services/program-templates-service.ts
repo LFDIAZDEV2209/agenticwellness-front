@@ -1,4 +1,4 @@
-import { apiFetch } from "@/lib/api/http";
+import { apiFetch, ApiError } from "@/lib/api/http";
 import { env } from "@/lib/config/env";
 import type {
   ProgramTemplate,
@@ -64,6 +64,64 @@ export async function updateProgramTemplate(
 }
 
 // --- Publicar / Archivar ---
+
+export interface TemplateImpact {
+  pacientesQueCambian: number;
+  conPersonalizacionesFuturas: number;
+  semanasOmitidasIniciadas: number;
+}
+
+export interface TemplateDayGap {
+  day: number;
+  weekNumber: number;
+  weekday: number;
+  taskCode: string;
+}
+
+export async function previewProgramTemplateImpact(
+  id: string,
+  signal?: AbortSignal,
+): Promise<TemplateImpact> {
+  const impact = await apiFetch<TemplateImpact>(
+    `${PATH}/${id}/publish?preview=true`,
+    {
+      method: "POST",
+      signal,
+    },
+  );
+  if (
+    ![
+      impact.pacientesQueCambian,
+      impact.conPersonalizacionesFuturas,
+      impact.semanasOmitidasIniciadas,
+    ].every((value) => Number.isInteger(value) && value >= 0)
+  ) {
+    throw new Error("Invalid template impact response");
+  }
+  return impact;
+}
+
+/** La lista procede del 422 de publicación; no se deduce del editor de podcasts. */
+export function templateContentGaps(error: unknown): TemplateDayGap[] {
+  if (!(error instanceof ApiError) || error.status !== 422) return [];
+  const gaps = error.extensions?.gaps;
+  if (!Array.isArray(gaps)) return [];
+  return gaps.filter(
+    (gap): gap is TemplateDayGap =>
+      typeof gap === "object" &&
+      gap !== null &&
+      Number.isInteger(gap.day) &&
+      gap.day >= 1 &&
+      gap.day <= 83 &&
+      Number.isInteger(gap.weekNumber) &&
+      gap.weekNumber >= 1 &&
+      gap.weekNumber <= 12 &&
+      Number.isInteger(gap.weekday) &&
+      gap.weekday >= 1 &&
+      gap.weekday <= 7 &&
+      typeof gap.taskCode === "string",
+  );
+}
 
 export async function publishProgramTemplate(
   id: string,
