@@ -37,7 +37,8 @@ export function useIntakeReviews(days: IntakeDay[]) {
         const previous = ranges.at(-1);
         if (
           previous?.cycleId === day.cycleId &&
-          addIntakeDays(previous.to, 1) === day.localDate
+          addIntakeDays(previous.to, 1) === day.localDate &&
+          day.localDate <= addIntakeDays(previous.from, 99)
         )
           previous.to = day.localDate;
         else

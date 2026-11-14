@@ -31,7 +31,7 @@ export function IntakeMealName({ code }: { code: string }) {
   };
   return <>{labels[code] ? t(labels[code]) : code}</>;
 }
-function Origin({ origin }: { origin: IntakeRecord["origin"] }) {
+export function IntakeOrigin({ origin }: { origin: IntakeRecord["origin"] }) {
   const t = useT();
   return (
     <span
@@ -70,7 +70,7 @@ function Macros({ value }: { value: IntakeMacros }) {
   );
 }
 
-function IntakePhoto({
+export function IntakePhoto({
   photo,
   canPhotos,
   retry,
@@ -243,7 +243,7 @@ export function NutritionIntakeDay({
                       <strong>
                         <IntakeMealName code={row.mealCode} />
                       </strong>
-                      <Origin origin={row.origin} />
+                      <IntakeOrigin origin={row.origin} />
                       {isHighlighted?.(row) && (
                         <span className="nutrition-intake-pinned">
                           <Star aria-hidden="true" className="size-4" />
@@ -332,7 +332,7 @@ export function NutritionIntakeDay({
               canPhotos={canPhotos}
               retry={retry}
             />
-            <Origin origin={current.origin} />
+            <IntakeOrigin origin={current.origin} />
             <h5>{t("Registro final")}</h5>
             <Macros value={current.recorded} />
             {current.waterMl !== null && (

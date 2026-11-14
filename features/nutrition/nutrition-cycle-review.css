@@ -1,0 +1,490 @@
+.nutrition-cycle-review {
+  container-type: inline-size;
+  min-width: 0;
+  padding: 1.25rem;
+  color: var(--foreground);
+}
+.nutrition-review-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.nutrition-review-hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  border-radius: 14px;
+  padding: 1.5rem;
+  background: linear-gradient(110deg, #023467, #0e5f63);
+  color: #fff;
+}
+.nutrition-review-hero > div {
+  min-width: 0;
+  flex: 1;
+}
+.nutrition-review-hero h1 {
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  line-height: 1.3;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.nutrition-review-hero p {
+  margin-top: 0.5rem;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+.nutrition-review-hero dl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+.nutrition-review-hero dt {
+  font-size: 0.75rem;
+}
+.nutrition-review-hero dd {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.nutrition-review-read-notice {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  background: var(--card);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  margin: 1rem 0;
+}
+.nutrition-review-layout {
+  display: grid;
+  grid-template-columns: 175px minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+.nutrition-review-sidebar {
+  position: sticky;
+  top: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.75rem;
+}
+.nutrition-review-sidebar button {
+  width: 100%;
+  min-height: 52px;
+  text-align: start;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.75rem 0.5rem;
+  border-radius: 9px;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+.nutrition-review-sidebar button > span:first-child {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  font-variant-numeric: tabular-nums;
+}
+.nutrition-review-sidebar button[aria-current] {
+  background: var(--primary-soft);
+  font-weight: 650;
+}
+.nutrition-review-sidebar button[aria-current] > span:first-child {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+.nutrition-review-sidebar button:disabled {
+  color: var(--muted-foreground);
+  cursor: default;
+}
+.nutrition-review-sidebar small {
+  display: block;
+  font-size: 0.6875rem;
+}
+.nutrition-review-sidebar > p {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  line-height: 1.6;
+}
+.nutrition-review-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-width: 0;
+}
+.nutrition-review-section {
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  overflow: hidden;
+  scroll-margin-block: 1rem;
+}
+.nutrition-review-section-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 1.125rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--muted);
+}
+.nutrition-review-section-header h2 {
+  flex: 1;
+  min-width: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.nutrition-review-section-header > span:last-child {
+  font-size: 0.6875rem;
+  color: var(--muted-foreground);
+}
+.nutrition-review-step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-weight: 650;
+}
+.nutrition-review-section-body {
+  min-width: 0;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.nutrition-review-section-body > button {
+  align-self: start;
+  min-height: 44px;
+  height: auto;
+  white-space: normal;
+}
+.nutrition-review-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
+  gap: 0.75rem;
+}
+.nutrition-review-stats > div {
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  min-width: 0;
+}
+.nutrition-review-stats h3 {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+.nutrition-review-stats strong {
+  display: block;
+  font-size: 1.5rem;
+  line-height: 1.4;
+  margin: 0.5rem 0;
+  font-variant-numeric: tabular-nums;
+}
+.nutrition-review-stats p {
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--muted-foreground);
+}
+.nutrition-review-subheading {
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+.nutrition-review-help {
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: var(--muted-foreground);
+}
+.nutrition-review-average-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: 0.75rem;
+}
+.nutrition-review-average-list > div {
+  padding: 0.875rem;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+}
+.nutrition-review-average-list dt {
+  font-size: 0.8125rem;
+}
+.nutrition-review-average-list dd {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin-top: 0.375rem;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+.nutrition-review-average-list dd span {
+  color: var(--muted-foreground);
+}
+.nutrition-review-origins,
+.nutrition-review-periods {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: 0.75rem;
+}
+.nutrition-review-origins > div,
+.nutrition-review-periods > div {
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.8125rem;
+  line-height: 1.8;
+}
+.nutrition-review-origins > div:first-child {
+  border-left: 3px solid #bd8731;
+}
+.nutrition-review-origins > div:last-child {
+  border-left: 3px solid #238574;
+}
+.nutrition-review-table-wrap {
+  container-type: inline-size;
+  min-width: 0;
+}
+.nutrition-review-comparison {
+  width: 100%;
+  font-size: 0.8125rem;
+  border-collapse: collapse;
+}
+.nutrition-review-comparison caption {
+  text-align: left;
+  font-weight: 650;
+  margin-bottom: 0.75rem;
+}
+.nutrition-review-comparison th,
+.nutrition-review-comparison td {
+  padding: 0.875rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.nutrition-review-comparison th:first-child {
+  text-align: left;
+}
+.nutrition-review-comparison thead {
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+.nutrition-review-comparison tbody th {
+  font-weight: 500;
+}
+.nutrition-review-comparison th > span {
+  display: block;
+  font-size: 0.6875rem;
+  color: var(--muted-foreground);
+  margin-top: 0.375rem;
+}
+.nutrition-review-comparison td:last-child {
+  color: var(--primary);
+  font-weight: 650;
+}
+.nutrition-review-origin-details > summary {
+  min-height: 44px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.nutrition-review-origin-details > div {
+  margin-top: 1rem;
+}
+.nutrition-review-gallery-tools,
+.nutrition-review-gallery-tools > div,
+.nutrition-review-gallery-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+.nutrition-review-gallery-tools {
+  justify-content: space-between;
+}
+.nutrition-review-gallery-tools > span,
+.nutrition-review-gallery-footer > p {
+  font-size: 0.8125rem;
+}
+.nutrition-review-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 1rem;
+}
+.nutrition-review-gallery > li {
+  min-width: 0;
+}
+.nutrition-review-record {
+  min-width: 0;
+  height: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--card);
+}
+.nutrition-review-record[data-pinned] {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+.nutrition-review-record > div:last-child {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 0.625rem;
+  padding: 1rem;
+  font-size: 0.8125rem;
+  overflow-wrap: anywhere;
+}
+.nutrition-review-record h3 {
+  font-weight: 650;
+  line-height: 1.6;
+}
+.nutrition-review-record > .nutrition-intake-photo {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+.nutrition-review-record > .nutrition-intake-photo img {
+  aspect-ratio: 4/3;
+  object-fit: cover;
+}
+.nutrition-review-highlight-note {
+  padding: 0.625rem;
+  border-radius: 8px;
+  background: var(--muted);
+  white-space: pre-wrap;
+}
+.nutrition-review-gallery-footer {
+  justify-content: space-between;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+.nutrition-review-gallery button,
+.nutrition-review-gallery-tools button,
+.nutrition-review-gallery-footer button {
+  min-height: 44px;
+  height: auto;
+  white-space: normal;
+}
+.nutrition-review-notice {
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.7;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 0.75rem;
+}
+.nutrition-review-next h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 650;
+}
+.nutrition-review-next p {
+  font-size: 0.8125rem;
+  color: var(--muted-foreground);
+}
+.nutrition-cycle-review button:focus-visible,
+.nutrition-review-section h2:focus-visible,
+.nutrition-review-origin-details summary:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+@container (max-width: 780px) {
+  .nutrition-review-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .nutrition-review-sidebar {
+    position: static;
+  }
+  .nutrition-review-sidebar ol {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.25rem;
+  }
+  .nutrition-review-sidebar li:nth-child(n + 4),
+  .nutrition-review-sidebar > p {
+    display: none;
+  }
+  .nutrition-review-sidebar button {
+    flex-direction: column;
+    text-align: center;
+    height: 100%;
+  }
+}
+@container (max-width: 540px) {
+  .nutrition-review-comparison caption {
+    display: block;
+    width: 100%;
+  }
+  .nutrition-review-comparison,
+  .nutrition-review-comparison tbody,
+  .nutrition-review-comparison tr,
+  .nutrition-review-comparison th,
+  .nutrition-review-comparison td {
+    display: block;
+  }
+  .nutrition-review-comparison thead {
+    display: none;
+  }
+  .nutrition-review-comparison tbody tr {
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+  }
+  .nutrition-review-comparison th,
+  .nutrition-review-comparison td {
+    text-align: start;
+    padding: 0.75rem;
+  }
+  .nutrition-review-comparison td {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .nutrition-review-comparison td::before {
+    content: attr(data-label);
+    color: var(--muted-foreground);
+    font-weight: 500;
+  }
+  .nutrition-review-comparison th {
+    background: var(--muted);
+  }
+}
+@media (max-width: 600px) {
+  .nutrition-cycle-review {
+    padding: 0.75rem;
+  }
+  .nutrition-review-hero {
+    padding: 1rem;
+  }
+  .nutrition-review-hero > div {
+    flex-basis: 100%;
+  }
+  .nutrition-review-section-body {
+    padding: 0.875rem;
+  }
+}

@@ -41,6 +41,7 @@ export async function mockIntakeHttp(
     delay?: boolean;
     canManage?: boolean;
     transformDay?: (day: IntakeDay) => IntakeDay;
+    cycleId?: string;
   } = {},
 ) {
   await page.clock.install({ time: new Date("2026-11-14T17:00:00Z") });
@@ -182,7 +183,7 @@ export async function mockIntakeHttp(
         const codes = ["des", "alm", "mer", "cen"];
         return {
           localDate,
-          cycleId: "synthetic-cycle",
+          cycleId: options.cycleId ?? "synthetic-cycle",
           cycleNumber: 2,
           continuity: localDate > end,
           menu: {

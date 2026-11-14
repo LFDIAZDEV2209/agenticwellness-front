@@ -80,9 +80,11 @@ import {
 } from "./nutrition-program-cycles";
 import { NutritionCycleSwitcher } from "./nutrition-cycle-switcher";
 import { NutritionIntake } from "./nutrition-intake";
+import { NutritionCycleReview } from "./nutrition-cycle-review";
 import "../nutrition.css";
 
-type DetailTab = "resultados" | "programacion" | "plan" | "registros";
+type DetailTab =
+  "resultados" | "programacion" | "plan" | "registros" | "cierre";
 interface DetailProps {
   patientId: string;
   prescriptionId?: string;
@@ -186,7 +188,12 @@ function PatientWorkspace({
       typeof window !== "undefined"
         ? new URLSearchParams(window.location.search).get("tab")
         : null;
-    return value === "plan" || value === "programacion" || value === "registros" ? value : "resultados";
+    return value === "plan" ||
+      value === "programacion" ||
+      value === "registros" ||
+      value === "cierre"
+      ? value
+      : "resultados";
   });
   const auditRef = useRef<HTMLElement>(null);
   const [toolbarHost, setToolbarHost] = useState<HTMLDivElement | null>(null);
@@ -299,6 +306,20 @@ function PatientWorkspace({
     publication_replaced: "Publicación sustituida",
   };
 
+  if (tab === "cierre")
+    return (
+      <NutritionCycleReview
+        patientId={patient.patientId}
+        patientName={patient.patientName}
+        headers={headers}
+        selectedId={cycle?.id}
+        today={today}
+        timezone={patient.timeZone ?? null}
+        onBack={() => changeTab("resultados")}
+        openInbox={() => changeTab("registros")}
+      />
+    );
+
   return (
     <div className="nutrition-detail-body">
       <div className="nutrition-detail-toolbar">
@@ -349,6 +370,15 @@ function PatientWorkspace({
           </div>
         </div>
         <div className="nutrition-detail-actions">
+          {cycle && canManage && can("Nutrition.RecordsView") && (
+            <Button
+              variant="outline"
+              disabled={locked}
+              onClick={() => changeTab("cierre")}
+            >
+              {t("Revisar ciclo")}
+            </Button>
+          )}
           {can("Program.Profile360View") && (
             <Button
               variant="outline"
@@ -752,7 +782,13 @@ function PatientWorkspace({
         </TabsContent>
         <TabsContent value="registros">
           <div className="nutrition-tab-body">
-            <NutritionIntake patientId={patient.patientId} headers={headers} selectedId={cycle?.id} today={today} timezone={patient.timeZone ?? null} />
+            <NutritionIntake
+              patientId={patient.patientId}
+              headers={headers}
+              selectedId={cycle?.id}
+              today={today}
+              timezone={patient.timeZone ?? null}
+            />
           </div>
         </TabsContent>
       </Tabs>

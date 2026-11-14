@@ -14,6 +14,9 @@ export async function mockIntakeReviewHttp(
     missingHighlights?: boolean;
     badOrigin?: boolean;
     noCycle?: boolean;
+    longContinuity?: boolean;
+    cycleId?: string;
+    transformDay?: (day: IntakeDay) => IntakeDay;
   } = {},
 ) {
   const days = new Map<string, IntakeDay>();
@@ -39,6 +42,8 @@ export async function mockIntakeReviewHttp(
   });
   state.release = release;
   const base = await mockIntakeHttp(page, {
+    cycleId: options.cycleId,
+    longContinuity: options.longContinuity,
     canManage: !options.readonly,
     noPhotos: options.noPhotos,
     english: options.english,
@@ -62,6 +67,7 @@ export async function mockIntakeReviewHttp(
           day.records[0].recorded.calories = 920;
         if (options.badOrigin) day.records[0].origin = "clinical" as never;
       }
+      if (options.transformDay) day = options.transformDay(day);
       days.set(day.localDate, structuredClone(day));
       if (options.noCycle) {
         day.cycleId = null;
