@@ -1,18 +1,28 @@
 import type { Page } from "@playwright/test";
 import { mockPlatformStyleHttp } from "./platform-style-http";
-export async function mockMediaPagesHttp(page: Page, { english = false } = {}) {
+export async function mockMediaPagesHttp(
+  page: Page,
+  { english = false, mediaType = "Video" }: {
+    english?: boolean;
+    mediaType?: "Video" | "Podcast";
+  } = {},
+) {
   const base = await mockPlatformStyleHttp(page, { english });
   const writes: { path: string; body: Record<string, unknown> }[] = [];
+  // La biblioteca usa podcasts; el video conserva la cobertura de rutas heredadas.
+  const podcast = mediaType === "Podcast";
+  const previewUrl = podcast ? "/qa-media-preview.mp3" : "/qa-media-preview.mp4";
+  const contentType = podcast ? "audio/mpeg" : "video/mp4";
   let item = {
     id: "qa-media",
     title: "Remo Â· TÃ©cnica (demo)",
-    description: "Video de tÃ©cnica para el ejercicio.",
+    description: `${podcast ? "Podcast" : "Video"} de tÃ©cnica para el ejercicio.`,
     author: "Ângela García",
-    mediaType: "Video",
+    mediaType,
     category: "SaludFisica",
-    storageKey: "media/exercises/qa.mp4",
+    storageKey: podcast ? "media/podcasts/qa.mp3" : "media/exercises/qa.mp4",
     thumbnailKey: null,
-    contentType: "video/mp4",
+    contentType,
     fileSizeBytes: 1024000,
     durationSecs: 15,
     status: "Published",
@@ -25,6 +35,7 @@ export async function mockMediaPagesHttp(page: Page, { english = false } = {}) {
     createdBy: null,
     chapters: [],
     takeaways: [],
+    tags: podcast ? ["técnica"] : [],
   };
   await page.route("**/api/**", async (route) => {
     const req = route.request(),
@@ -51,11 +62,11 @@ export async function mockMediaPagesHttp(page: Page, { english = false } = {}) {
       return reply(item);
     }
     if (p === "/api/v1/storage/sign")
-      return reply({ url: "/qa-media-preview.mp4" });
+      return reply({ url: previewUrl });
     return route.fallback();
   });
-  await page.route("**/qa-media-preview.mp4", (route) =>
-    route.fulfill({ contentType: "video/mp4", body: "" }),
+  await page.route(`**${previewUrl}`, (route) =>
+    route.fulfill({ contentType, body: "" }),
   );
   return { ...base, writes };
 }

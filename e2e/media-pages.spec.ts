@@ -3,20 +3,35 @@ import { mockMediaPagesHttp } from "./fixtures/media-pages-http";
 test("media names repair encoding fragments while preserving valid accented names", async ({
   page,
 }) => {
-  await mockMediaPagesHttp(page);
+  await mockMediaPagesHttp(page, { mediaType: "Podcast" });
   await page.goto("/media");
   await expect(
     page.getByRole("heading", { name: "Remo · Técnica (demo)", exact: true }),
   ).toBeVisible();
   await expect(page.getByText("Ângela García", { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("list", { name: "Etiquetas", exact: true }),
+  ).toContainText("técnica");
   await expect(page.getByText(/Â·|TÃ©cnica/)).toHaveCount(0);
 });
 test("media details open as a dedicated page and preserve playback metadata", async ({
   page,
 }) => {
-  await mockMediaPagesHttp(page);
+  await mockMediaPagesHttp(page, { mediaType: "Podcast" });
   await page.goto("/media");
-  await page.getByRole("button", { name: /Acciones de/ }).click();
+  const card = page.getByRole("article").filter({
+    has: page.getByRole("heading", { name: "Remo · Técnica (demo)", exact: true }),
+  });
+  await expect(
+    card.getByRole("list", { name: "Etiquetas", exact: true }),
+  ).toContainText("técnica");
+  // El detalle dedicado complementa el drawer cubierto por media-editor.spec.ts.
+  await card
+    .getByRole("button", {
+      name: "Acciones de Remo · Técnica (demo)",
+      exact: true,
+    })
+    .click();
   await page
     .getByRole("menuitem", { name: "Ver detalles", exact: true })
     .click();
@@ -29,7 +44,14 @@ test("media details open as a dedicated page and preserve playback metadata", as
     }),
   ).toBeVisible();
   await expect(page.getByRole("dialog")).toHaveCount(0);
-  await expect(page.locator("video")).toHaveAttribute("controls", "");
+  await expect(page.locator("audio")).toHaveAttribute("controls", "");
+  await expect(page.locator("audio")).toHaveAttribute(
+    "src", /\/qa-media-preview\.mp3$/,
+  );
+  await expect(page.getByText("audio/mpeg", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Podcast de técnica para el ejercicio.", { exact: true }),
+  ).toBeVisible();
   await page.getByRole("button", { name: "Editar medio", exact: true }).click();
   await expect(page).toHaveURL(/\/media\/qa-media\/edit$/);
   await expect(
@@ -37,6 +59,9 @@ test("media details open as a dedicated page and preserve playback metadata", as
   ).toBeVisible();
   await expect(page.getByLabel("Título", { exact: false })).toHaveValue(
     "Remo · Técnica (demo)",
+  );
+  await expect(page.getByLabel("Autor", { exact: false })).toHaveValue(
+    "Ângela García",
   );
 });
 test("the full edit page saves metadata without replacing the stored video", async ({
