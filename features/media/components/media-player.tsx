@@ -6,8 +6,10 @@ import { FileAudio, LoaderCircle } from "lucide-react";
 import { getMediaStreamUrl } from "../services/media-service";
 import type { MediaItem } from "../types";
 import { useT } from "@/providers/i18n-provider";
+import { parseExternalVideo } from "../services/external-video";
 
 interface MediaPlayerProps {
+  externalUrl?: string | null;
   storageKey: string;
   mediaType: MediaItem["mediaType"];
   className?: string;
@@ -31,6 +33,7 @@ export function MediaPlayer({
   onDuration,
   alt,
   autoPlay = false,
+  externalUrl,
 }: MediaPlayerProps) {
   const t = useT();
   const [source, setSource] = useState<{ key: string; url: string | null; error: boolean } | null>(null);
@@ -38,6 +41,7 @@ export function MediaPlayer({
   const error = source?.key === storageKey && source.error;
 
   useEffect(() => {
+    if (externalUrl) return;
     let cancelled = false;
 
     getMediaStreamUrl(storageKey)
@@ -51,7 +55,13 @@ export function MediaPlayer({
     return () => {
       cancelled = true;
     };
-  }, [storageKey]);
+  }, [storageKey, externalUrl]);
+
+  if (externalUrl) {
+    const video = parseExternalVideo(externalUrl);
+    if (!video) return <p role="alert">{t("No se pudo cargar el medio")}</p>;
+    return <div className={`flex flex-col gap-2 ${className}`}><iframe title={alt ?? t("Demostración del ejercicio")} src={video.embedUrl} loading="lazy" allow="fullscreen; picture-in-picture" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" className="aspect-video w-full rounded-lg border-0" /><a href={video.url} target="_blank" rel="noopener noreferrer" className="text-sm text-primary underline">{t("Abrir vídeo original")}</a></div>;
+  }
 
   if (error) {
     return (

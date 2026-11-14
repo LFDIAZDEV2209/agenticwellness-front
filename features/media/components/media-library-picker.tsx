@@ -200,6 +200,7 @@ function PickerContent({ destino, multiple, selectedIds = [], title, description
           <p className="break-words text-sm font-medium">{preview.title}</p>
           <p className="break-words text-xs text-muted-foreground">{t(getMediaCategoryMeta(preview.category).label)}{preview.author ? ` · ${preview.author}` : ""}</p>
           <MediaPlayer key={preview.id} storageKey={preview.storageKey} mediaType={preview.mediaType}
+            externalUrl={preview.source_kind === "external" ? preview.external_url : null}
             autoPlay alt={preview.title} className="rounded-lg" />
           {preview.description && <p className="whitespace-pre-wrap break-words text-xs text-muted-foreground">{preview.description}</p>}
           <div className="flex flex-wrap justify-between gap-2 border-t border-border pt-3 text-xs">

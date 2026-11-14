@@ -5437,5 +5437,11 @@
   "No pudimos cargar la agenda": "Unable to load the agenda",
   "Agenda semanal": "Weekly agenda",
   "Sin tareas configuradas para esta semana": "No tasks configured for this week",
-  "Ver tareas": "View tasks"
+  "Ver tareas": "View tasks",
+  "Abrir vídeo original": "Open original video",
+  "No se pudo adjuntar el enlace. Reintenta sin perder la demostración actual.": "Unable to attach the link. Retry without losing the current demonstration.",
+  "Enlace único de YouTube o Vimeo": "Single YouTube or Vimeo link",
+  "Una sola demostración por ejercicio. El enlace sustituye al archivo al confirmarlo.": "One demonstration per exercise. The link replaces the file when confirmed.",
+  "Introduce un enlace HTTPS de un solo vídeo de YouTube o Vimeo.": "Enter an HTTPS link to a single YouTube or Vimeo video.",
+  "Usar este enlace": "Use this link"
 }

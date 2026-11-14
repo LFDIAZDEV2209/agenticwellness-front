@@ -59,8 +59,8 @@ async function fixture(page: Page, failDetail = false) {
     if (new URL(request.url()).pathname.startsWith("/api/v1/patients"))
       patientRequests.push(request.url());
   });
-  // React Strict Mode monta el efecto de lectura dos veces en desarrollo.
-  let failuresRemaining = failDetail ? 2 : 0;
+  // El fallo dura hasta el reintento explícito, también con efectos duplicados en desarrollo.
+  const state = { failDetail };
   await page.route("**/api/v1/media/demo-source", (route) =>
     route.fulfill({
       status: 404,
@@ -86,8 +86,7 @@ async function fixture(page: Page, failDetail = false) {
     }
     if (url.pathname.endsWith("/routine-source")) {
       details.push(url.pathname);
-      if (failuresRemaining > 0) {
-        failuresRemaining -= 1;
+      if (state.failDetail) {
         return reply({ detail: "Fallo controlado" }, 422);
       }
       return reply(routine);
@@ -106,7 +105,7 @@ async function fixture(page: Page, failDetail = false) {
       totalPages: matches ? 1 : 0,
     });
   });
-  return { writes, details, lists, patientRequests };
+  return { writes, details, lists, patientRequests, recoverDetail: () => { state.failDetail = false; } };
 }
 
 test("2.20a · copia un ejercicio del catálogo y crea la rutina sin asignar paciente", async ({
@@ -196,6 +195,8 @@ test("2.20a · búsqueda, detalle fallido y reintento accesible en móvil", asyn
   await expect(dialog.getByRole("alert")).toContainText(
     "No se pudo cargar el detalle",
   );
+  const readsBeforeRetry = http.details.length;
+  http.recoverDetail();
   await dialog.getByRole("button", { name: "Reintentar", exact: true }).click();
   const select = dialog.getByRole("button", {
     name: "Seleccionar Marcha en el lugar",
@@ -218,7 +219,7 @@ test("2.20a · búsqueda, detalle fallido y reintento accesible en móvil", asyn
   await expect(
     page.getByRole("textbox", { name: "Nombre del ejercicio *", exact: true }),
   ).toHaveValue(exercise.name);
-  expect(http.details.length).toBeGreaterThanOrEqual(3);
+  expect(http.details.length).toBeGreaterThan(readsBeforeRetry);
   expect(http.writes).toHaveLength(0);
   expect(
     http.lists.some((url) => url.searchParams.get("search") === "Cardio"),

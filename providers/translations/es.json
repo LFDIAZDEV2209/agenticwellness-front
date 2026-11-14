@@ -5424,5 +5424,11 @@
   "No pudimos cargar la agenda": "No pudimos cargar la agenda",
   "Agenda semanal": "Agenda semanal",
   "Sin tareas configuradas para esta semana": "Sin tareas configuradas para esta semana",
-  "Ver tareas": "Ver tareas"
+  "Ver tareas": "Ver tareas",
+  "Abrir vídeo original": "Abrir vídeo original",
+  "No se pudo adjuntar el enlace. Reintenta sin perder la demostración actual.": "No se pudo adjuntar el enlace. Reintenta sin perder la demostración actual.",
+  "Enlace único de YouTube o Vimeo": "Enlace único de YouTube o Vimeo",
+  "Una sola demostración por ejercicio. El enlace sustituye al archivo al confirmarlo.": "Una sola demostración por ejercicio. El enlace sustituye al archivo al confirmarlo.",
+  "Introduce un enlace HTTPS de un solo vídeo de YouTube o Vimeo.": "Introduce un enlace HTTPS de un solo vídeo de YouTube o Vimeo.",
+  "Usar este enlace": "Usar este enlace"
 }

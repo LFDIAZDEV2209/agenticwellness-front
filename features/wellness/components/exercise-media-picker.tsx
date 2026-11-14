@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { ImageIcon, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import { MediaPlayer } from "@/features/media/components/media-player";
 import { createMediaItem, getMediaItemById, publishMediaItem } from "@/features/media/services/media-service";
 import { detectMediaMetadata, resolveStorageKeys } from "@/features/media/services/upload-service";
 import type { MediaItem } from "@/features/media/types";
+import { parseExternalVideo } from "@/features/media/services/external-video";
 
 interface Props {
   value: string;
@@ -30,8 +31,12 @@ export function ExerciseMediaPicker({ value, exerciseName, disabled, onChange, o
   const [pickerOpen, setPickerOpen] = useState(false);
   const [selected, setSelected] = useState<MediaItem | null>(null);
   const [busy, setBusy] = useState(false);
+  const busyRef = useRef(false);
   const [error, setError] = useState("");
   const [progress, setProgress] = useState(0);
+  const [link, setLink] = useState("");
+  const [externalDraft, setExternalDraft] = useState<{ url: string; item: MediaItem } | null>(null);
+  const videoLink = parseExternalVideo(link);
   const canBrowse = can("Media.View");
   const canUpload = can("Media.Create") && can("Media.Publish");
 
@@ -45,6 +50,7 @@ export function ExerciseMediaPicker({ value, exerciseName, disabled, onChange, o
   }, [value, canBrowse]);
 
   const upload = async (file: File) => {
+    if (busyRef.current || disabled) return;
     const imageTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
     const videoTypes = ["video/mp4", "video/webm", "video/quicktime"];
     const isImage = imageTypes.includes(file.type);
@@ -56,6 +62,7 @@ export function ExerciseMediaPicker({ value, exerciseName, disabled, onChange, o
       setError(t("La imagen admite hasta 20 MB y el vídeo hasta 1 GB."));
       return;
     }
+    busyRef.current = true;
     setBusy(true); onBusyChange(true); setError(""); setProgress(0);
     try {
       const metadata = isImage ? null : await detectMediaMetadata(file);
@@ -74,8 +81,27 @@ export function ExerciseMediaPicker({ value, exerciseName, disabled, onChange, o
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : t("No se pudo adjuntar la demostración."));
     } finally {
-      setBusy(false); onBusyChange(false);
+      busyRef.current = false; setBusy(false); onBusyChange(false);
     }
+  };
+
+  const attachLink = async () => {
+    if (!videoLink || busyRef.current || disabled) return;
+    busyRef.current = true;
+    setBusy(true); onBusyChange(true); setError("");
+    try {
+      const created = externalDraft?.url === videoLink.url ? externalDraft.item : await createMediaItem({
+        title: exerciseName.trim() || t("Demostración del ejercicio"), author: "", description: null, mediaType: "Video", category: "SaludFisica",
+        storageKey: "", thumbnailKey: null, contentType: null, fileSizeBytes: null, durationSecs: null,
+        status: "Draft", sortOrder: 0, day: 0, month: 0,
+        source_kind: "external", provider: videoLink.provider, external_url: videoLink.url,
+      });
+      setExternalDraft({ url: videoLink.url, item: created });
+      await publishMediaItem(created.id);
+      setSelected({ ...created, status: "Published" });
+      onChange(created.id); setLink(""); setExternalDraft(null);
+    } catch { setError(t("No se pudo adjuntar el enlace. Reintenta sin perder la demostración actual.")); }
+    finally { busyRef.current = false; setBusy(false); onBusyChange(false); }
   };
 
   return <section className="flex flex-col gap-3 rounded-xl border border-border bg-background p-4">
@@ -88,6 +114,7 @@ export function ExerciseMediaPicker({ value, exerciseName, disabled, onChange, o
     </div>
     {value ? <div className="flex flex-col gap-3">
       {selected?.id === value && <MediaPlayer key={value} storageKey={selected.storageKey}
+        externalUrl={selected.source_kind === "external" ? selected.external_url : null}
         mediaType={selected.mediaType} alt={exerciseName || selected.title} preload="none" className="rounded-lg" />}
       <div className="flex items-center justify-between gap-2">
         <p className="text-sm font-medium">{selected?.id === value ? selected.title : t("Demostración adjunta")}</p>
@@ -110,6 +137,13 @@ export function ExerciseMediaPicker({ value, exerciseName, disabled, onChange, o
           const file = event.target.files?.[0]; event.target.value = ""; if (file) void upload(file);
         }} />
       {busy && <p role="status" className="text-xs text-muted-foreground">{t("Preparando demostración: {progress}%", { progress: String(progress) })}</p>}
+    </div>}
+    {canUpload && <div className="flex flex-col gap-2 border-t border-border pt-3">
+      <Label htmlFor={`${fieldId}-link`}>{t("Enlace único de YouTube o Vimeo")}</Label>
+      <Input id={`${fieldId}-link`} type="url" value={link} disabled={disabled || busy} aria-invalid={Boolean(link.trim() && !videoLink)} aria-describedby={`${fieldId}-link-help`} placeholder="https://" onChange={event => { setLink(event.target.value); setError(""); }} />
+      <p id={`${fieldId}-link-help`} className="text-xs text-muted-foreground">{t("Una sola demostración por ejercicio. El enlace sustituye al archivo al confirmarlo.")}</p>
+      {link.trim() && !videoLink && <p role="alert" className="text-xs text-destructive">{t("Introduce un enlace HTTPS de un solo vídeo de YouTube o Vimeo.")}</p>}
+      <Button type="button" variant="outline" disabled={disabled || busy || !videoLink} onClick={() => void attachLink()}>{t("Usar este enlace")}</Button>
     </div>}
     {error && <p role="alert" className="text-xs text-destructive">{error}</p>}
   </section>;
