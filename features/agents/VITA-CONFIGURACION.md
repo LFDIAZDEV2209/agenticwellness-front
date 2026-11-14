@@ -7,7 +7,7 @@ Entrega ERP de `vita-asistente-integral`, desde `54dfc28`. Se amplían los formu
 1. Crear el tipo en `/agents/new`. El estado inicial sigue siendo `Borrador`. Desde `/agents`, edición abre el mismo formulario.
 2. Opcionalmente activar **Personalizar selección en Vita**. Introducir temas y palabras clave, un valor por línea (hasta 32 por campo, de 1 a 80 caracteres). Se omiten líneas vacías y se recortan espacios exteriores. Texto y voz empiezan seleccionados al personalizar un agente sin routing. Ningún canal seleccionado produce `channels: []`, no ambos canales.
 3. Documentación global: `/agents/knowledge` y `/agents/knowledge/new`. Documentación propia: `/agents/[id]`, tab **Conocimiento**, creación en `/agents/[id]/knowledge/new`. Subir/registrar documentos con los controles existentes y comprobar estado `Listo`.
-4. Crear configuración en `/agents/[id]/versions/new`. Activar **Usar conocimiento de documentos** y seleccionar bases globales/propias. Se conservan `knowledge_base_ids` y `top_k`. Subir un `.md/.txt` registra el documento en la KB propia y la vincula al retrieval. Crear previamente esa KB para usar el recorrido probado; ver limitación previa documentada abajo.
+4. Crear configuración en `/agents/[id]/versions/new`. Activar **Usar conocimiento de documentos** y seleccionar bases globales/propias. Se conservan `knowledge_base_ids` y `top_k`. Subir un `.md/.txt` registra el documento en la KB propia y la vincula al retrieval. Si no existe KB propia, se crea y el upload usa directamente el ID devuelto por el POST, sin esperar un nuevo render ni una lista refrescada. Todo ocurre al guardar esa versión.
 5. Elegir las consultas necesarias, todas opcionales:
 
    | Control | Tool |
@@ -35,9 +35,9 @@ Entrega ERP de `vita-asistente-integral`, desde `54dfc28`. Se amplían los formu
 
 El catálogo exige paciente activo/consentimiento, instancia activa asignada a su usuario, tipo activo, versión activa coincidente y runtime sincronizado. Temas/tools/retrieval no sustituyen estos requisitos ni conceden permisos. Voz sigue sujeta al adaptador, integración y flags de BACK/AI/APP.
 
-Existe `assignInstance` (`POST /api/v1/agents/instances`), pero CodeGraph no encuentra consumidores UI en esta base. No se inventa un recorrido de asignación administrativa ni se construye dentro de esta misión. El coordinador debe resolver/verificar la asignación mediante el mecanismo autorizado de BACK antes de declarar disponibilidad móvil.
+Existe `assignInstance` (`POST /api/v1/agents/instances`), pero CodeGraph no encuentra consumidores UI en esta base. Luis amplió la misión para añadir un control mínimo en detalle del agente. Está bloqueado por el contrato real: `PatientListItemDto/PatientDto` y los tipos ERP no exponen `userId` de la cuenta vinculada, mientras el POST requiere el ID de `auth.users`. No se debe sustituir por patientId ni deducirlo por nombre/correo. Root debe coordinar con BACK la lectura administrativa y su scope, además del permiso vigente para asignar (`Agents.Update` existe; no se inventa `Agents.Assign`). El detalle está en `openspec/changes/vita-asistente-integral/handoffs/erp-bloqueo-selector.md` del workspace compartido. No hay todavía control ni pruebas de asignación operativa.
 
-Limitación previa identificada por lectura de código, sin reproducir su fallo en esta entrega: en upload sin KB propia, `useAgentKnowledge.handleCreateBase` devuelve void y `uploadInstructionsDocument` intenta obtener inmediatamente la KB desde un closure todavía no refrescado. La prueba usa una KB propia existente y acredita PUT storage → registro → vinculación RAG. Crear primero la KB permite usar el recorrido probado. No se acredita creación automática en ese caso previo ni embeddings/indexación reales.
+El upload sin KB propia ya está corregido: `useAgentKnowledge.handleCreateBase` devuelve la KB creada y `uploadInstructionsDocument` usa esa respuesta. La prueba sintética acredita crear KB → PUT storage → registrar documento → guardar versión con retrieval habilitado y el ID nuevo, incluso si la lista consultada sigue obsoleta. Si la respuesta de creación carece de ID, se muestra el error existente y se conserva el archivo seleccionado; no hay PUT ni registro ni versión. No se acreditan embeddings/indexación reales.
 
 ## Validación reproducible
 
@@ -52,7 +52,7 @@ yarn build
 git diff --check
 ```
 
-Ocho pruebas de roundtrip/contrato y cuatro recorridos UI con HTTP sintético que bloquea APIs desconocidas: metadata/config avanzada, límites 32/80, canales, listas antiguas, edición/reapertura, creación sin routing, inglés a 390 px, seis tools y RAG global/propio con upload. No hay escrituras en servidores compartidos ni prueba de autorización, persistencia, sincronización o disponibilidad móvil reales.
+Ocho pruebas de roundtrip/contrato y seis recorridos UI con HTTP sintético que bloquea APIs desconocidas: metadata/config avanzada, límites 32/80, canales, listas antiguas, edición/reapertura, creación sin routing, inglés a 390 px, seis tools, RAG global/propio, upload con KB existente, creación+upload sin KB y negativo de ID ausente en creación de KB. No hay escrituras en servidores compartidos ni prueba de autorización, persistencia, sincronización o disponibilidad móvil reales. Los negativos de permiso/usuario vinculado para asignación quedan pendientes del contrato bloqueado.
 
 Revisión visual manual con Playwright MCP a 1440 y 390 px: sin overflow, leyendas/labels explícitos, foco visible y controles existentes. La suite comprueba foco de error, Space para voz y estados accesibles de tools/KBs. Chrome DevTools MCP no abrió contexto porque el perfil estaba ocupado; el navegador ajeno quedó intacto. Detector Impeccable: exit 127 (no disponible); revisión manual acotada sin instalar/reconfigurar el gate. Postman CLI 1.76.0 no ofrece `postman status`; evidencia funcional de Playwright/roundtrip local, sin nuevos recursos remotos.
 

@@ -78,3 +78,36 @@ test("versión: seis consultas opt-in, advanced roundtrip y RAG global/propio co
   expect(state.unknowns).toEqual([]);
   expect(state.errors).toEqual([]);
 });
+
+test("crear KB propia y subir instrucciones en un solo recorrido usa el ID devuelto aunque la lista siga obsoleta", async ({ page }) => {
+  const state = await mockAgentsHttp(page, false, { withoutOwnBase: true });
+  await page.goto(`/agents/${agentId}/versions/new`);
+  await page.getByRole("switch", { name: "Usar conocimiento de documentos" }).check();
+  await expect(page.getByRole("button", { name: /Guía global QA/ })).toBeVisible();
+  await page.locator('input[type="file"]').setInputFiles({ name: "primera-guia.md", mimeType: "text/markdown", buffer: Buffer.from("# Documentación sintética de primera carga") });
+  await page.getByRole("button", { name: "Crear versión", exact: true }).click();
+  await expect.poll(() => state.writes.length).toBe(4);
+  expect(state.writes.map(({ path, method }) => [method, decodeURIComponent(path)])).toEqual([
+    ["POST", "/api/v1/agents/knowledge-bases"],
+    ["PUT", expect.stringMatching(/^\/api\/v1\/storage\/agents\/docs\/kb-created\/.+-primera-guia.md$/)],
+    ["POST", "/api/v1/agents/knowledge-bases/kb-created/documents"],
+    ["POST", `/api/v1/agents/${agentId}/versions`],
+  ]);
+  expect(state.writes[0].body).toMatchObject({ scope: "Agent", agentTypeId: agentId, status: "Activo" });
+  expect(state.writes[2].body).toMatchObject({ fileName: "primera-guia.md", storageKey: expect.stringContaining("agents/docs/kb-created/") });
+  expect(JSON.parse(state.writes[3].body.config as string)).toMatchObject({ retrieval_config: { enabled: true, knowledge_base_ids: ["kb-created"] } });
+  expect(state.unknowns).toEqual([]);
+  expect(state.errors).toEqual([]);
+});
+
+test("si creación de KB no devuelve ID, explica el error y no sube ni crea la versión", async ({ page }) => {
+  const state = await mockAgentsHttp(page, false, { withoutOwnBase: true, missingCreatedBaseId: true });
+  await page.goto(`/agents/${agentId}/versions/new`);
+  await page.locator('input[type="file"]').setInputFiles({ name: "guia.md", mimeType: "text/markdown", buffer: Buffer.from("# QA") });
+  await page.getByRole("button", { name: "Crear versión", exact: true }).click();
+  await expect(page.locator("form").getByRole("alert")).toHaveText("No se pudo subir el documento de instrucciones.");
+  expect(state.writes.map(({ path }) => path)).toEqual(["/api/v1/agents/knowledge-bases"]);
+  await expect(page.getByText("guia.md", { exact: true })).toBeVisible();
+  expect(state.unknowns).toEqual([]);
+  expect(state.errors).toEqual([]);
+});

@@ -5,8 +5,8 @@ import { mockPatientsHttp } from "../../../e2e/fixtures/patients-http";
 export const agentId = "00000000-0000-4000-8000-000000000901";
 
 /** Transporte sintético: ninguna petición API desconocida llega a servicios reales. */
-export async function mockAgentsHttp(page: Page, english = false) {
-  const base = await mockPatientsHttp(page, { permissions: ["Agents.View", "Agents.Create", "Agents.Edit"], english });
+export async function mockAgentsHttp(page: Page, english = false, options: { withoutOwnBase?: boolean; missingCreatedBaseId?: boolean } = {}) {
+  const base = await mockPatientsHttp(page, { permissions: ["Agents.View", "Agents.Create", "Agents.Update"], english });
   const agent: AgentType = {
     id: agentId, name: "Especialista QA", description: "Agente sintético",
     specialty: "Nutrición", iconKey: "Bot", status: "Borrador",
@@ -35,11 +35,15 @@ export async function mockAgentsHttp(page: Page, english = false) {
       if (method === "POST") return reply({ id: "version-qa", agentTypeId: agentId, versionNumber: 1, isActive: true, ...request.postDataJSON(), createdAt: agent.createdAt }, 201);
       return reply([]);
     }
+    if (path === "/api/v1/agents/knowledge-bases" && method === "POST") return reply({
+      ...request.postDataJSON(), id: options.missingCreatedBaseId ? "" : "kb-created", documentCount: 0,
+    }, 201);
+    // La lista sigue desactualizada tras crear: el upload debe usar el ID del POST.
     if (path === "/api/v1/agents/knowledge-bases") return reply([
       { id: "kb-global", name: "Guía global QA", scope: "Global", agentTypeId: null, status: "Activo", documentCount: 1 },
-      { id: "kb-own", name: "Guía propia QA", scope: "Agent", agentTypeId: agentId, status: "Activo", documentCount: 1 },
+      ...options.withoutOwnBase ? [] : [{ id: "kb-own", name: "Guía propia QA", scope: "Agent", agentTypeId: agentId, status: "Activo", documentCount: 1 }],
     ]);
-    if (path === "/api/v1/agents/knowledge-bases/kb-own/documents" && method === "POST") return reply({ id: "doc-qa", status: "Listo", ...request.postDataJSON() }, 201);
+    if (["/api/v1/agents/knowledge-bases/kb-own/documents", "/api/v1/agents/knowledge-bases/kb-created/documents"].includes(path) && method === "POST") return reply({ id: "doc-qa", status: "Listo", ...request.postDataJSON() }, 201);
     if (path === "/api/v1/agents/executions") return reply({ isAvailable: true, total: 0, items: [] });
     return route.fallback();
   });
