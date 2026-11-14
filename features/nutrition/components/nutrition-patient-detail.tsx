@@ -79,9 +79,10 @@ import {
   NutritionProgramCycles,
 } from "./nutrition-program-cycles";
 import { NutritionCycleSwitcher } from "./nutrition-cycle-switcher";
+import { NutritionIntake } from "./nutrition-intake";
 import "../nutrition.css";
 
-type DetailTab = "resultados" | "programacion" | "plan";
+type DetailTab = "resultados" | "programacion" | "plan" | "registros";
 interface DetailProps {
   patientId: string;
   prescriptionId?: string;
@@ -185,7 +186,7 @@ function PatientWorkspace({
       typeof window !== "undefined"
         ? new URLSearchParams(window.location.search).get("tab")
         : null;
-    return value === "plan" || value === "programacion" ? value : "resultados";
+    return value === "plan" || value === "programacion" || value === "registros" ? value : "resultados";
   });
   const auditRef = useRef<HTMLElement>(null);
   const [toolbarHost, setToolbarHost] = useState<HTMLDivElement | null>(null);
@@ -451,7 +452,7 @@ function PatientWorkspace({
         <div className="nutrition-context-bar">
           <TabsList
             aria-label={t("Secciones de la ficha nutricional")}
-            className="nutrition-tab-list"
+            className="nutrition-tab-list nutrition-tab-list-with-intake"
           >
             <TabsTrigger value="resultados">
               <Activity className="size-4" aria-hidden="true" />
@@ -464,6 +465,10 @@ function PatientWorkspace({
             <TabsTrigger value="plan">
               <FileText className="size-4" aria-hidden="true" />
               {t("Plan de 30 días")}
+            </TabsTrigger>
+            <TabsTrigger value="registros">
+              <ClipboardCheck className="size-4" aria-hidden="true" />
+              {t("Registros de comidas")}
             </TabsTrigger>
           </TabsList>
           <div ref={setToolbarHost} hidden={tab !== "plan" || !cycle} />
@@ -743,6 +748,11 @@ function PatientWorkspace({
                 )}
               </section>
             )}
+          </div>
+        </TabsContent>
+        <TabsContent value="registros">
+          <div className="nutrition-tab-body">
+            <NutritionIntake patientId={patient.patientId} headers={headers} selectedId={cycle?.id} today={today} timezone={patient.timeZone ?? null} />
           </div>
         </TabsContent>
       </Tabs>
