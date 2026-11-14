@@ -147,11 +147,13 @@ test("1.22 · impacto real del contrato, carga bloqueada, cancelar y confirmar u
   await dialog.getByRole("button", { name: "Cancelar", exact: true }).click();
   await expect(dialog).not.toBeVisible();
   expect(http.state.publications).toBe(0);
+  const previewsBeforeReopen = http.state.previews;
   const reopened = await http.open();
   await expect(
     reopened.getByRole("button", { name: "Publicar versión 8", exact: true }),
   ).toBeEnabled();
-  expect(http.state.previews).toBe(2);
+  // Reabrir consulta datos nuevos; StrictMode puede duplicar los efectos en desarrollo.
+  expect(http.state.previews).toBeGreaterThan(previewsBeforeReopen);
   await reopened
     .getByRole("button", { name: "Publicar versión 8", exact: true })
     .click();
