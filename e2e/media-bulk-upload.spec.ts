@@ -20,7 +20,16 @@ function audioFile(name: string) {
   return { name, mimeType: "audio/wav", buffer };
 }
 
-async function mockBulkHttp(page: Page, writable = true) {
+async function mockBulkHttp(
+  page: Page,
+  writable = true,
+  options: {
+    failCreate?: boolean;
+    loseDraftBatch?: boolean;
+    losePublishBatch?: boolean;
+    partialPublish?: boolean;
+  } = {},
+) {
   await mockPatientsHttp(page, {
     permissions: writable
       ? ["Media.View", "Media.Create", "Media.Edit", "Media.Publish"]
@@ -32,8 +41,12 @@ async function mockBulkHttp(page: Page, writable = true) {
   const publishes: string[] = [];
   const uploads: string[] = [];
   const updates: MediaInput[] = [];
-  let failCreate = true;
-  let losePublishResponse = true;
+  let failCreate = options.failCreate ?? true;
+  let partialPublish = options.partialPublish ?? true;
+  let loseDraftBatch = options.loseDraftBatch ?? false;
+  let losePublishBatch = options.losePublishBatch ?? false;
+  const draftBatches: { nombre: string; storageKey: string }[][] = [];
+  const publishBatches: { nombre: string; mediaId: string }[][] = [];
   const intents: string[] = [];
   await page.route("**/api/v1/storage/**", (route) => {
     uploads.push(new URL(route.request().url()).pathname);
@@ -61,32 +74,83 @@ async function mockBulkHttp(page: Page, writable = true) {
         expiresInSeconds: 900,
       });
     }
-    if (path === "/api/v1/media" && method === "POST") {
-      const input = request.postDataJSON() as MediaInput;
-      const name = filenames.get(input.storageKey)!;
-      creates.push(name);
-      if (name === "episodio_5.wav" && failCreate) {
-        failCreate = false;
+    if (path === "/api/v1/media/bulk/drafts" && method === "POST") {
+      const { files } = request.postDataJSON();
+      draftBatches.push(files);
+      const results = files.map((file: MediaInput & { nombre: string }) => {
+        creates.push(file.nombre);
+        const existing = Array.from(store.values()).find(
+          (item) => item.storageKey === file.storageKey,
+        );
+        if (existing)
+          return {
+            nombre: file.nombre,
+            estado: existing.status === "Published" ? "publicado" : "borrador",
+            mediaId: existing.id,
+          };
+        if (file.nombre === "episodio_5.wav" && failCreate) {
+          failCreate = false;
+          return {
+            nombre: file.nombre,
+            estado: "error",
+            error: "Error controlado al registrar el quinto archivo.",
+          };
+        }
+        const id = `00000000-0000-4000-8000-${String(store.size + 1).padStart(12, "0")}`;
+        const item: MediaItem = {
+          ...file,
+          id,
+          mediaType: "Podcast",
+          status: "Draft",
+          description: null,
+          sortOrder: 0,
+          day: 0,
+          month: 0,
+          tags: [],
+          chapters: [],
+          takeaways: [],
+          publishedAt: null,
+          createdAt: "2026-11-13T12:00:00Z",
+          updatedAt: null,
+          createdBy: null,
+        };
+        store.set(id, item);
+        return { nombre: file.nombre, estado: "borrador", mediaId: id };
+      });
+      if (loseDraftBatch) {
+        loseDraftBatch = false;
         return reply(
-          { detail: "Error controlado al registrar el quinto archivo." },
-          422,
+          { detail: "Respuesta perdida después de crear el lote." },
+          503,
         );
       }
-      const id =
-        Array.from(store.values()).find(
-          (item) => item.storageKey === input.storageKey,
-        )?.id ??
-        `00000000-0000-4000-8000-${String(store.size + 1).padStart(12, "0")}`;
-      const item: MediaItem = {
-        ...input,
-        id,
-        publishedAt: null,
-        createdAt: "2026-11-13T12:00:00Z",
-        updatedAt: null,
-        createdBy: null,
-      };
-      store.set(id, item);
-      return reply(item, 201);
+      return reply(results);
+    }
+    if (path === "/api/v1/media/bulk/publish" && method === "POST") {
+      const { files } = request.postDataJSON();
+      publishBatches.push(files);
+      const results = files.map((file: { nombre: string; mediaId: string }) => {
+        const item = store.get(file.mediaId)!;
+        publishes.push(item.id);
+        item.status = "Published";
+        if (file.nombre === "episodio_3.wav" && partialPublish) {
+          partialPublish = false;
+          return {
+            nombre: file.nombre,
+            estado: "error",
+            error: "Respuesta perdida después de publicar.",
+          };
+        }
+        return { nombre: file.nombre, estado: "publicado", mediaId: item.id };
+      });
+      if (losePublishBatch) {
+        losePublishBatch = false;
+        return reply(
+          { detail: "Respuesta perdida después de publicar el lote." },
+          503,
+        );
+      }
+      return reply(results);
     }
     const match = path.match(/^\/api\/v1\/media\/([^/]+)(\/publish)?$/);
     if (!match) return reply({}, 404);
@@ -99,31 +163,18 @@ async function mockBulkHttp(page: Page, writable = true) {
       Object.assign(item, input);
       return reply(item);
     }
-    if (method === "POST" && match[2]) {
-      publishes.push(item.id);
-      item.status = "Published";
-      if (
-        filenames.get(item.storageKey) === "episodio_3.wav" &&
-        losePublishResponse
-      ) {
-        losePublishResponse = false;
-        return reply({ detail: "Respuesta perdida después de publicar." }, 503);
-      }
-      return reply({
-        id: item.id,
-        status: item.status,
-        publishedAt: "2026-11-13T12:00:00Z",
-        validation: {
-          storageKeyVerified: true,
-          thumbnailVerified: false,
-          durationSecs: 1,
-          fileSizeBytes: item.fileSizeBytes,
-        },
-      });
-    }
     return reply({}, 405);
   });
-  return { store, creates, publishes, uploads, updates, intents };
+  return {
+    store,
+    creates,
+    publishes,
+    uploads,
+    updates,
+    intents,
+    draftBatches,
+    publishBatches,
+  };
 }
 
 test("1.19 · cinco audios, fallo parcial, edición y reintento sin repetir los correctos", async ({
@@ -156,19 +207,18 @@ test("1.19 · cinco audios, fallo parcial, edición y reintento sin repetir los 
   await expect(table.getByText("Borrador listo", { exact: true })).toHaveCount(
     4,
   );
-  const failed = table
-    .getByRole("row")
-    .filter({
-      has: page.getByRole("textbox", {
-        name: "Título de episodio_5.wav",
-        exact: true,
-      }),
-    });
+  const failed = table.getByRole("row").filter({
+    has: page.getByRole("textbox", {
+      name: "Título de episodio_5.wav",
+      exact: true,
+    }),
+  });
   await expect(failed.getByRole("alert")).toContainText("Error controlado");
   await failed.getByRole("button", { name: "Reintentar", exact: true }).click();
   await expect(table.getByText("Borrador listo", { exact: true })).toHaveCount(
     5,
   );
+  expect(http.draftBatches.map((batch) => batch.length)).toEqual([5, 1]);
   expect(http.intents).toHaveLength(5);
   expect(http.uploads).toHaveLength(5);
   expect(http.creates).toEqual([
@@ -187,14 +237,12 @@ test("1.19 · cinco audios, fallo parcial, edición y reintento sin repetir los 
     .selectOption("Habitos");
   await page.getByRole("button", { name: /^Publicar \d+ listos$/ }).click();
   await expect(table.getByText("Publicado", { exact: true })).toHaveCount(4);
-  const lostResponse = table
-    .getByRole("row")
-    .filter({
-      has: page.getByRole("textbox", {
-        name: "Título de episodio_3.wav",
-        exact: true,
-      }),
-    });
+  const lostResponse = table.getByRole("row").filter({
+    has: page.getByRole("textbox", {
+      name: "Título de episodio_3.wav",
+      exact: true,
+    }),
+  });
   await expect(
     lostResponse.getByRole("button", { name: "Reintentar", exact: true }),
   ).toBeVisible();
@@ -202,6 +250,7 @@ test("1.19 · cinco audios, fallo parcial, edición y reintento sin repetir los 
     .getByRole("button", { name: "Reintentar", exact: true })
     .click();
   await expect(table.getByText("Publicado", { exact: true })).toHaveCount(5);
+  expect(http.publishBatches.map((batch) => batch.length)).toEqual([5]);
   expect(http.publishes).toHaveLength(5);
   expect(http.updates).toHaveLength(1);
   expect(http.updates[0]).toMatchObject({
@@ -290,4 +339,77 @@ test("1.18 · el formulario individual no pide día ni mes y enlaza la carga mú
     .getByRole("link", { name: "Carga múltiple de podcasts", exact: true })
     .click();
   await expect(page).toHaveURL(/\/media\/new\?mode=bulk$/);
+});
+
+test("1.19 · respuesta de creación perdida reutiliza claves e ids con nombres duplicados", async ({
+  page,
+}) => {
+  const http = await mockBulkHttp(page, true, {
+    failCreate: false,
+    loseDraftBatch: true,
+  });
+  await page.goto("/media/new?mode=bulk");
+  await page
+    .getByLabel("Seleccionar varios archivos", { exact: true })
+    .setInputFiles([audioFile("igual.wav"), audioFile("igual.wav")]);
+  const authors = page.getByLabel("Autor de igual.wav", { exact: true });
+  await expect(authors).toHaveCount(2);
+  for (const author of await authors.all()) await author.fill("Autor QA");
+  const save = page.getByRole("button", {
+    name: "Guardar borradores",
+    exact: true,
+  });
+  await save.click();
+  await expect(page.getByRole("table").getByRole("alert")).toHaveCount(2);
+  await page
+    .getByLabel("Título de igual.wav", { exact: true })
+    .first()
+    .fill("Nombre recuperado");
+  await save.click();
+  await expect(page.getByText("Borrador listo", { exact: true })).toHaveCount(
+    2,
+  );
+  expect(http.store.size).toBe(2);
+  expect(http.uploads).toHaveLength(2);
+  expect(http.draftBatches[1].map((file) => file.storageKey)).toEqual(
+    http.draftBatches[0].map((file) => file.storageKey),
+  );
+  expect(Array.from(http.store.values())[0].title).toBe("Nombre recuperado");
+  await page
+    .getByLabel("Título de igual.wav", { exact: true })
+    .first()
+    .fill("Título guardado");
+  await save.click();
+  await expect(save).toBeDisabled();
+  expect(http.updates).toHaveLength(2);
+  expect(http.updates[1].title).toBe("Título guardado");
+  expect(http.draftBatches).toHaveLength(2);
+});
+
+test("1.19 · respuesta de publicación perdida recupera los publicados sin repetir escrituras", async ({
+  page,
+}) => {
+  const http = await mockBulkHttp(page, true, {
+    failCreate: false,
+    partialPublish: false,
+    losePublishBatch: true,
+  });
+  await page.goto("/media/new?mode=bulk");
+  await page
+    .getByLabel("Seleccionar varios archivos", { exact: true })
+    .setInputFiles([audioFile("uno.wav"), audioFile("dos.wav")]);
+  await page.getByLabel("Autor de uno.wav", { exact: true }).fill("Autor QA");
+  await page.getByLabel("Autor de dos.wav", { exact: true }).fill("Autor QA");
+  await page
+    .getByRole("button", { name: "Guardar borradores", exact: true })
+    .click();
+  const publish = page.getByRole("button", { name: /^Publicar \d+ listos$/ });
+  await expect(publish).toHaveText("Publicar 2 listos");
+  await publish.click();
+  await expect(page.getByRole("table").getByRole("alert")).toHaveCount(2);
+  await publish.click();
+  await expect(page.getByText("Publicado", { exact: true })).toHaveCount(2);
+  expect(http.publishBatches).toHaveLength(1);
+  expect(http.updates).toHaveLength(0);
+  expect(http.uploads).toHaveLength(2);
 });

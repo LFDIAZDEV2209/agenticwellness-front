@@ -21,35 +21,68 @@ individual ya ofrece el enlace con `Carga múltiple de podcasts`.
 
 ## Transporte y dependencias
 
-`MediaBulkUpload` recibe adaptadores `createDraft` y `publishDraft`; la cola está aislada
-en `services/media-bulk-queue.ts`. El adaptador de página utiliza las operaciones
-individuales ya existentes (upload-intent, almacenamiento, POST media, GET/PUT media y
-POST publish). No presupone rutas HTTP de lote nuevas. El registro es idempotente por
-storageKey; se conserva la clave tras una respuesta fallida y el id tras crear el borrador.
-Antes de reintentar publicar se consulta el estado: un medio ya publicado no se despublica.
+Contrato confirmado con CodeGraph y el código de `BulkMediaCommands.cs` y
+`MediaController.cs` del backend, commit **a96bb57 (1.13)**:
+
+- `POST /api/v1/media/bulk/drafts`, permiso `Media.Create`, cuerpo `{ files: [...] }`.
+  Cada fila lleva `nombre`, `storageKey`, `title`, `author`, `category`, `contentType`,
+  `fileSizeBytes`, `durationSecs` y `thumbnailKey`. El servidor crea podcasts en borrador;
+  no recibe archivos binarios ni asignaciones de día/mes.
+- `POST /api/v1/media/bulk/publish`, permiso `Media.Publish`, cuerpo
+  `{ files: [{ nombre, mediaId }] }`.
+- Ambos responden un array, en el mismo orden, de
+  `{ nombre, estado: "borrador" | "publicado" | "error", mediaId?, error? }`.
+  Una fila incorrecta no revierte las demás. Cada petición admite de 1 a 100 filas.
+
+`services/media-bulk-service.ts` contiene exclusivamente este transporte, separado
+del servicio compartido de medios y de los diálogos de sustitución de 1.23.
+`MediaBulkUpload` recibe `createDrafts` y `publishDrafts`; la cola divide cargas grandes
+en bloques de 100. Primero se sube cada audio mediante upload-intent y almacenamiento
+existentes; después se registra el bloque. Un fallo local de archivo no impide registrar
+los demás. Se conserva la clave tras una respuesta perdida y el id tras crear el borrador.
+Las filas se correlacionan por posición, conservando identidades distintas aunque el nombre
+se repita. Una respuesta incompleta no se presenta como éxito.
+
+La tabla permite guardar cambios de título, autor y categoría sin publicar. GET/PUT
+individuales conservan etiquetas, origen, capítulos y calendario. Antes de publicar o
+reintentar se consulta el estado: un medio ya publicado no se vuelve a editar ni despublicar.
+Los reintentos excluyen los correctos y no repiten sus subidas.
+Si se edita una fila después de perder la respuesta de creación, se reconcilian sus
+metadatos al recuperar el id: el registro idempotente del backend no los sobrescribe.
 
 La salida por archivo sigue 1.13: `{ nombre, estado: borrador|publicado|error, error? }`.
 Los resultados correctos se omiten al reintentar. El autor permanece editable y obligatorio
 porque el contrato vigente lo exige. El progreso y la duración vienen del archivo real.
 
-**Pendientes para cerrar:** confirmar 1.8 commiteada antes de integrar etiquetas; confirmar
-el contrato definitivo de 1.13; conectar el drawer desde las tarjetas de 1.17. Estos cambios
-preparatorios no cierran esas dependencias ni acreditan QA con el backend real.
+La preparación de `a4d7bc6` / `f4b7957` quedó conectada al contrato 1.13. El drawer de
+1.18 y las sustituciones de 1.23 quedan fuera de este cambio. El estado local y las claves
+de reintento viven en la página; no se conserva una carga tras cerrar o recargar la pestaña.
+Al salir se abortan los lotes pendientes; la utilidad compartida de subida puede terminar
+el PUT ya iniciado, pero después no se registra ni publica otro bloque desde esa página.
 
 ## Verificación
 
 ```powershell
 node --test features/media/services/media-bulk-queue.test.mjs
-corepack yarn e2e media-bulk-upload.spec.ts --project=chromium-desktop
+corepack yarn e2e e2e/media-bulk-upload.spec.ts e2e/media-pages.spec.ts e2e/exercise-media.spec.ts
+corepack yarn e2e --config=features/media/playwright.config.ts
 corepack yarn lint
 corepack yarn build
 corepack yarn i18n:check
 ```
 
-La suite HTTP sintética cubre cinco archivos con un fallo, reintento sin volver a subir
-los correctos, edición del borrador, respuesta perdida de publicación, permisos de lectura,
-tabla accesible a 390 px, traducción y ausencia de día/mes. Genera capturas de escritorio y
-móvil en el directorio de resultados de Playwright. No sustituye la prueba de API real.
+La suite HTTP sintética usa las dos rutas y los DTO reales: cinco archivos en una petición
+con un fallo, reintento de una sola fila, edición del borrador, respuestas de lote perdidas
+tras persistir o publicar, nombres duplicados, permisos de lectura, tabla accesible a 390 px,
+traducción y ausencia de día/mes. Genera capturas de escritorio y móvil en el directorio de
+resultados de Playwright. Los unitarios cubren además bloques de 100, cancelación y respuestas
+incompletas. Esta evidencia valida el cliente contra el contrato y simulaciones HTTP;
+no constituye una ejecución del stack backend real ni una prueba de almacenamiento S3.
+
+Validación de 1.19 (14-11-2026): lint, build e i18n correctos (0 claves faltantes),
+16/16 E2E compartidos de medios, 5/5 de edición rápida y 6/6 unitarios de cola.
+Playwright MCP: dos borradores y publicación conjunta en una petición, foco de teclado,
+sin desbordamiento de página a 320/390/768/1440 px ni errores de JavaScript.
 
 ## Claves i18n para coordinación
 

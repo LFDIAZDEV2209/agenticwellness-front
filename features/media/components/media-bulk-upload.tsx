@@ -10,36 +10,35 @@ import { mediaCategoryMeta } from "./media-meta";
 import { formatDuration } from "../services/media-service";
 import {
   createMediaBulkRows,
-  createMediaBulkDrafts,
-  publishMediaBulkDrafts,
+  runMediaBulkBatches,
   mediaBulkDraftCandidates,
   mediaBulkPublishCandidates,
   type MediaBulkRow,
 } from "../services/media-bulk-queue";
 
 export interface MediaBulkUploadProps {
-  /** Adaptador pendiente de conectar al contrato confirmado de la tarea backend 1.13. */
-  createDraft: (
-    row: MediaBulkRow,
+  /** Sube archivos y registra un lote; cada fila conserva su resultado independiente. */
+  createDrafts: (
+    rows: MediaBulkRow[],
     signal: AbortSignal,
-    onProgress?: (update: {
-      percent?: number;
-      durationSecs?: number | null;
-    }) => void,
-  ) => Promise<string>;
-  /** Guarda los metadatos editados y publica el mismo id, nunca crea otro borrador. */
-  publishDraft: (
-    row: MediaBulkRow & { mediaId: string },
+    onProgress: (
+      key: string,
+      update: { percent?: number; durationSecs?: number | null },
+    ) => void,
+  ) => Promise<MediaBulkRow[]>;
+  /** Guarda la tabla editada y publica los ids existentes mediante el contrato 1.13. */
+  publishDrafts: (
+    rows: MediaBulkRow[],
     signal: AbortSignal,
-  ) => Promise<void>;
+  ) => Promise<MediaBulkRow[]>;
   onCancel: () => void;
   onChanged?: () => void;
 }
 
 /** Cola local por archivo. No contiene rutas HTTP ni altera la biblioteca de 1.17. */
 export function MediaBulkUpload({
-  createDraft,
-  publishDraft,
+  createDrafts,
+  publishDrafts,
   onCancel,
   onChanged,
 }: MediaBulkUploadProps) {
@@ -77,7 +76,9 @@ export function MediaBulkUpload({
   ) => {
     if (running.current) return;
     setRows((current) =>
-      current.map((row) => (row.key === key ? { ...row, ...values } : row)),
+      current.map((row) =>
+        row.key === key ? { ...row, ...values, dirty: true } : row,
+      ),
     );
   };
   const applyResult = (row: MediaBulkRow) => {
@@ -106,35 +107,18 @@ export function MediaBulkUpload({
     running.current = true;
     setBusy(true);
     try {
-      for (const row of candidates) {
-        if (signal.aborted) break;
-        setBusyKey(row.key);
-        if (action === "create") {
-          await createMediaBulkDrafts(
-            [row],
-            async (entry) => {
-              if (!entry.title.trim())
-                throw new Error(t("El título es obligatorio."));
-              if (!entry.author.trim())
-                throw new Error(t("El autor es obligatorio."));
-              if (entry.file.size > 200 * 1024 * 1024)
-                throw new Error(t("El archivo supera 200 MB."));
-              if (
-                !entry.file.type.startsWith("audio/") &&
-                !/\.(mp3|m4a|aac|ogg|wav|flac)$/i.test(entry.file.name)
-              )
-                throw new Error(
-                  t(
-                    "Selecciona archivos de audio para la biblioteca de podcasts.",
-                  ),
-                );
-              return createDraft(entry, signal, (update) => {
+      await runMediaBulkBatches(
+        candidates,
+        (batch) =>
+          action === "create"
+            ? createDrafts(batch, signal, (key, update) => {
                 if (signal.aborted) return;
+                setBusyKey(key);
                 setRows((current) =>
-                  current.map((previous) =>
-                    previous.key === entry.key
+                  current.map((row) =>
+                    row.key === key
                       ? {
-                          ...previous,
+                          ...row,
                           ...(update.durationSecs !== undefined
                             ? { durationSecs: update.durationSecs }
                             : {}),
@@ -142,22 +126,22 @@ export function MediaBulkUpload({
                             ? { progress: update.percent }
                             : {}),
                         }
-                      : previous,
+                      : row,
                   ),
                 );
-              });
-            },
-            applyResult,
-          );
-        } else {
-          await publishMediaBulkDrafts(
-            [row],
-            (entry) => publishDraft(entry, signal),
-            applyResult,
-          );
-        }
-      }
+              })
+            : publishDrafts(batch, signal),
+        applyResult,
+        signal,
+        t(
+          action === "create"
+            ? "No se pudo crear el medio."
+            : "No se pudo publicar el medio.",
+        ),
+      );
       if (!signal.aborted) onChanged?.();
+    } catch (error) {
+      if (!signal.aborted) throw error;
     } finally {
       running.current = false;
       if (!signal.aborted) {

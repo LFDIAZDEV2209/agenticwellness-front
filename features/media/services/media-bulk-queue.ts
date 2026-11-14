@@ -17,6 +17,7 @@ export interface MediaBulkRow {
   error: string | null;
   durationSecs: number | null;
   progress: number | null;
+  dirty: boolean;
 }
 
 export function mediaTitleFromFilename(name: string): string {
@@ -39,6 +40,7 @@ export function createMediaBulkRows(files: readonly File[]): MediaBulkRow[] {
     error: null,
     durationSecs: null,
     progress: null,
+    dirty: false,
   }));
 }
 
@@ -51,13 +53,14 @@ export function mediaBulkResult(row: MediaBulkRow): MediaBulkResult | null {
   };
 }
 
-/** No volver a crear los borradores correctos ni los errores de publicación. */
+/** Crea las filas pendientes o fallidas y permite guardar metadatos editados de borradores. */
 export function mediaBulkDraftCandidates(
   rows: readonly MediaBulkRow[],
 ): MediaBulkRow[] {
   return rows.filter(
     (row) =>
-      !row.mediaId && (row.state === "pendiente" || row.state === "error"),
+      (!row.mediaId && (row.state === "pendiente" || row.state === "error")) ||
+      (row.dirty && row.state !== "publicado"),
   );
 }
 
@@ -70,50 +73,59 @@ export function mediaBulkPublishCandidates(
   );
 }
 
-/**
- * Cola independiente del transporte pendiente de confirmar en 1.13.
- * El adaptador devuelve el id persistido; cada resultado se comunica al terminar.
- */
-export async function createMediaBulkDrafts(
-  rows: readonly MediaBulkRow[],
-  createDraft: (row: MediaBulkRow) => Promise<string>,
-  onResult: (row: MediaBulkRow) => void,
-): Promise<void> {
-  for (const row of mediaBulkDraftCandidates(rows)) {
-    try {
-      const mediaId = await createDraft(row);
-      if (!mediaId) throw new Error("No se pudo crear el medio.");
-      onResult({ ...row, mediaId, state: "borrador", error: null });
-    } catch (error) {
-      onResult({
-        ...row,
-        state: "error",
-        error:
-          error instanceof Error ? error.message : "No se pudo crear el medio.",
-      });
-    }
-  }
+export interface MediaBulkFileResult extends MediaBulkResult {
+  mediaId?: string | null;
 }
 
-export async function publishMediaBulkDrafts(
+/** El backend conserva el orden: no agrupar por nombre, porque puede repetirse. */
+export function applyMediaBulkResults(
   rows: readonly MediaBulkRow[],
-  publishDraft: (row: MediaBulkRow & { mediaId: string }) => Promise<void>,
-  onResult: (row: MediaBulkRow) => void,
-): Promise<void> {
-  for (const row of mediaBulkPublishCandidates(rows)) {
-    if (!row.mediaId) continue;
-    try {
-      await publishDraft({ ...row, mediaId: row.mediaId });
-      onResult({ ...row, state: "publicado", error: null });
-    } catch (error) {
-      onResult({
-        ...row,
-        state: "error",
-        error:
-          error instanceof Error
-            ? error.message
-            : "No se pudo publicar el medio.",
-      });
+  results: readonly MediaBulkFileResult[],
+  fallback: string,
+): MediaBulkRow[] {
+  return rows.map((row, index) => {
+    const result = Array.isArray(results) ? results[index] : undefined;
+    if (
+      !result ||
+      result.nombre !== row.file.name ||
+      !["borrador", "publicado", "error"].includes(result.estado) ||
+      (result.estado !== "error" && !result.mediaId)
+    ) {
+      return { ...row, state: "error", error: fallback };
     }
+    return {
+      ...row,
+      state: result.estado,
+      mediaId: result.mediaId ?? row.mediaId,
+      error: result.estado === "error" ? result.error || fallback : null,
+      dirty: result.estado === "error" ? row.dirty : false,
+    };
+  });
+}
+
+/** El contrato admite hasta 100 filas por petición; conserva resultados entre lotes. */
+export async function runMediaBulkBatches(
+  rows: readonly MediaBulkRow[],
+  operation: (batch: MediaBulkRow[]) => Promise<MediaBulkRow[]>,
+  onResult: (row: MediaBulkRow) => void,
+  signal: AbortSignal,
+  fallback: string,
+) {
+  for (let start = 0; start < rows.length; start += 100) {
+    signal.throwIfAborted();
+    const batch = rows.slice(start, start + 100);
+    let results: MediaBulkRow[];
+    try {
+      results = await operation(batch);
+    } catch (error) {
+      signal.throwIfAborted();
+      results = batch.map((row) => ({
+        ...row,
+        state: "error" as const,
+        error: error instanceof Error ? error.message : fallback,
+      }));
+    }
+    signal.throwIfAborted();
+    results.forEach(onResult);
   }
 }
