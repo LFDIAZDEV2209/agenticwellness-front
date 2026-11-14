@@ -7,11 +7,13 @@ import type { AgentRuntimeConfigForm } from "../types";
 export function parseRuntimeConfig(configJson: string): AgentRuntimeConfigForm {
   try {
     const raw = JSON.parse(configJson) as Record<string, unknown>;
+    if (!raw || typeof raw !== "object" || Array.isArray(raw)) return emptyRuntimeConfig();
     const retrieval =
       (raw.retrieval_config as Record<string, unknown> | undefined) ?? {};
     const memory = (raw.memory_config as Record<string, unknown> | undefined) ?? {};
 
     return {
+      originalConfig: raw,
       systemPrompt:
         (raw.system_prompt as string) ??
         "Eres un asistente de salud de CoppAddresd. Responde en español con claridad y empatía.",
@@ -61,14 +63,17 @@ export function emptyRuntimeConfig(): AgentRuntimeConfigForm {
 /** Serializa el formulario al JSON config del AI Service (snake_case). */
 export function toRuntimeConfigJson(form: AgentRuntimeConfigForm): string {
   const config: Record<string, unknown> = {
+    ...form.originalConfig,
     system_prompt: form.systemPrompt.trim(),
     tools: form.tools,
     retrieval_config: {
+      ...form.originalConfig?.retrieval_config as Record<string, unknown>,
       enabled: form.ragEnabled,
       knowledge_base_ids: form.knowledgeBaseIds,
       top_k: form.topK,
     },
     memory_config: {
+      ...form.originalConfig?.memory_config as Record<string, unknown>,
       enabled: form.memoryEnabled,
       categories: form.memoryCategories,
     },
@@ -76,6 +81,8 @@ export function toRuntimeConfigJson(form: AgentRuntimeConfigForm): string {
     recursion_limit: form.recursionLimit,
   };
 
+  // Estos campos sí pertenecen al formulario: vaciarlos debe quitar el valor previo.
+  for (const key of ["prompt", "provider", "model", "temperature", "max_tokens"]) delete config[key];
   if (form.extraPrompt?.trim()) config.prompt = form.extraPrompt.trim();
   if (form.provider) config.provider = form.provider;
   if (form.model) config.model = form.model;
@@ -96,6 +103,12 @@ export const MODEL_OPTIONS = [
 export const TOOL_OPTIONS = [
   { value: "calculate", label: "Calculadora", description: "Resuelve operaciones matemáticas" },
   { value: "get_current_time", label: "Hora y fecha", description: "Consulta la hora en zonas horarias" },
+  { value: "get_my_day", label: "Mi día", description: "Consulta las tareas y el estado del programa de hoy" },
+  { value: "get_my_nutrition", label: "Mi nutrición", description: "Consulta el menú vigente de hoy" },
+  { value: "get_my_assessments", label: "Mis evaluaciones", description: "Consulta las evaluaciones asignadas sin mostrar respuestas" },
+  { value: "get_my_podcast", label: "Mi podcast", description: "Consulta el podcast asignado para hoy" },
+  { value: "get_my_exercise", label: "Mi ejercicio", description: "Consulta el ejercicio o descanso de hoy" },
+  { value: "get_my_progress", label: "Mi progreso", description: "Consulta los registros de progreso, XP y racha" },
 ];
 
 export const MEMORY_CATEGORIES = [

@@ -59,11 +59,7 @@ export function VersionFormFields({
   const [notes, setNotes] = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [advancedJson, setAdvancedJson] = useState<string>(() =>
-    initialConfig
-      ? parseRuntimeConfig(initialConfig).systemPrompt
-        ? JSON.stringify(JSON.parse(initialConfig), null, 2)
-        : toRuntimeConfigJson(emptyRuntimeConfig())
-      : toRuntimeConfigJson(emptyRuntimeConfig()),
+    toRuntimeConfigJson(form),
   );
   const [validationError, setValidationError] = useState<string | null>(null);
   const [instructionsFile, setInstructionsFile] = useState<File | null>(null);
@@ -118,7 +114,8 @@ export function VersionFormFields({
     let configJson: string;
     if (showAdvanced) {
       try {
-        JSON.parse(advancedJson);
+        const parsed = JSON.parse(advancedJson);
+        if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("config");
       } catch {
         setValidationError(t('La configuración avanzada debe ser JSON válido.'));
         return;
@@ -290,6 +287,7 @@ export function VersionFormFields({
                   key={tool.value}
                   type="button"
                   onClick={() => toggleTool(tool.value)}
+                  aria-pressed={form.tools.includes(tool.value)}
                   className={`flex items-start gap-3 rounded-xl border p-3 text-left transition-colors ${
                     form.tools.includes(tool.value)
                       ? "border-primary bg-primary-soft"
@@ -353,6 +351,7 @@ export function VersionFormFields({
                           key={kb.id}
                           type="button"
                           onClick={() => toggleKb(kb.id)}
+                          aria-pressed={form.knowledgeBaseIds.includes(kb.id)}
                           className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-left text-[12.5px] transition-colors ${
                             form.knowledgeBaseIds.includes(kb.id)
                               ? "border-primary bg-primary-soft"
@@ -457,7 +456,22 @@ export function VersionFormFields({
               variant="ghost"
               size="sm"
               className="w-fit text-muted-foreground"
-              onClick={() => setShowAdvanced((current) => !current)}
+              onClick={() => {
+                if (!showAdvanced) {
+                  setAdvancedJson(toRuntimeConfigJson(form));
+                } else {
+                  try {
+                    const parsed = JSON.parse(advancedJson);
+                    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("config");
+                  } catch {
+                    setValidationError(t('La configuración avanzada debe ser JSON válido.'));
+                    return;
+                  }
+                }
+                setValidationError(null);
+                setShowAdvanced((current) => !current);
+              }}
+              aria-expanded={showAdvanced}
             >
               {showAdvanced ? (
                 <EyeOff data-icon="inline-start" className="size-4" />
@@ -473,6 +487,8 @@ export function VersionFormFields({
                 onChange={(event) => {
                   setAdvancedJson(event.target.value);
                   try {
+                    const parsed = JSON.parse(event.target.value);
+                    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return;
                     setForm(parseRuntimeConfig(event.target.value));
                   } catch {
                     // JSON inválido en edición manual: se valida al guardar.

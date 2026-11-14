@@ -229,6 +229,8 @@ export interface AgentExecutionsFilters {
 
 /** Formulario amigable de configuración de versión (sin JSON para el usuario). */
 export interface AgentRuntimeConfigForm {
+  /** Configuración de origen para conservar opciones avanzadas ajenas al formulario. */
+  originalConfig?: Record<string, unknown>;
   systemPrompt: string;
   extraPrompt: string | null;
   provider: string | null;
