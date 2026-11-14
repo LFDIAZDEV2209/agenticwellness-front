@@ -584,6 +584,7 @@ export function WeekRow({
       )}
 
       <WeekTasksDialog
+        key={`${enrollmentId}:${week.weekNumber}:${tasksDialogOpen}`}
         open={tasksDialogOpen}
         onOpenChange={setTasksDialogOpen}
         week={week}

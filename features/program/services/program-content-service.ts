@@ -128,6 +128,8 @@ export async function replaceEnrollmentWeekTasks(
     routineId?: string | null;
     nutritionPlanId?: string | null;
     mediaId?: string | null;
+    rest?: boolean;
+    reset?: boolean;
   }>,
 ): Promise<EnrollmentWeekResponse> {
   return apiFetch<EnrollmentWeekResponse>(

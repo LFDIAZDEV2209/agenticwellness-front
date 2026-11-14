@@ -25,3 +25,7 @@ export const WELLNESS_ASSIGNMENTS_ENABLED =
 /** Clínica del Programa: pendiente de reorganización del módulo Programa. */
 export const PROGRAM_CLINICA_ENABLED =
   process.env.NEXT_PUBLIC_PROGRAM_CLINICA_ENABLED === "true";
+
+/** Apertura coordinada con Program:RestDays:Enabled del backend; apagado por defecto. */
+export const PROGRAM_REST_DAYS_ENABLED =
+  process.env.NEXT_PUBLIC_PROGRAM_REST_DAYS_ENABLED === "true";

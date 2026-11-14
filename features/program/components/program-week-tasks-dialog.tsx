@@ -15,6 +15,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useI18n, useT } from "@/providers/i18n-provider";
+import {
+  useWeekAgendaEditor,
+  type SelectedAgendaCell,
+} from "../hooks/use-week-agenda-editor";
+import { WeekAgendaCellPanel } from "./week-agenda-cell-panel";
 import { fetchEnrollmentWeek } from "../services/program-content-service";
 import type {
   EnrollmentWeekDay,
@@ -39,10 +44,12 @@ function ContentCell({
   task,
   routine,
   rest = false,
+  onSelect,
 }: {
   task?: EnrollmentWeekTask;
   routine?: boolean;
   rest?: boolean;
+  onSelect?: () => void;
 }) {
   const t = useT();
   const missing =
@@ -86,6 +93,15 @@ function ContentCell({
       >
         {t(missing ? "Sin contenido" : label)}
       </Badge>
+      {onSelect && (
+        <Button
+          variant="outline"
+          className="min-h-11 whitespace-normal"
+          onClick={onSelect}
+        >
+          {t(routine ? "Editar rutina" : "Editar podcast")}
+        </Button>
+      )}
       {rest ? (
         <p className="text-xs text-muted-foreground">
           {t("Sin misión de ejercicio")}
@@ -107,7 +123,13 @@ function ContentCell({
   );
 }
 
-function AgendaDay({ day }: { day: EnrollmentWeekDay }) {
+function AgendaDay({
+  day,
+  onSelect,
+}: {
+  day: EnrollmentWeekDay;
+  onSelect?: (cell: SelectedAgendaCell) => void;
+}) {
   const t = useT();
   const { lang } = useI18n();
   const date = new Intl.DateTimeFormat(lang === "en" ? "en-US" : "es-CO", {
@@ -138,8 +160,20 @@ function AgendaDay({ day }: { day: EnrollmentWeekDay }) {
         task={routine}
         routine
         rest={day.rest === true || routine?.rest === true}
+        onSelect={
+          onSelect
+            ? () => onSelect({ weekday: day.weekday, taskCode: "ejercicio" })
+            : undefined
+        }
       />
-      <ContentCell task={podcast} />
+      <ContentCell
+        task={podcast}
+        onSelect={
+          onSelect
+            ? () => onSelect({ weekday: day.weekday, taskCode: "podcast" })
+            : undefined
+        }
+      />
       {other.length > 0 && (
         <details className="rounded-lg px-1 text-xs">
           <summary className="min-h-11 cursor-pointer py-3 font-medium">
@@ -167,14 +201,16 @@ interface WeekTasksDialogProps {
   onOpenChange: (open: boolean) => void;
   week: ProgramContentWeek;
   enrollmentId: string;
+  onChanged?: () => void;
 }
 
-/** Agenda de lectura. Las mutaciones por celda se incorporan con el contrato 2.8. */
+/** Agenda semanal con edición parcial por celda; el backend decide el bloqueo. */
 export function WeekTasksDialog({
   open,
   onOpenChange,
   week,
   enrollmentId,
+  onChanged,
 }: WeekTasksDialogProps) {
   const t = useT();
   const key = `${enrollmentId}:${week.weekNumber}`;
@@ -205,7 +241,18 @@ export function WeekTasksDialog({
     };
   }, [open, enrollmentId, week.weekNumber, key, reload]);
   const current = resource?.key === key ? resource : null;
+  const editor = useWeekAgendaEditor({
+    open,
+    enrollmentId,
+    weekNumber: week.weekNumber,
+    data: current?.data ?? null,
+    onData: (data) => {
+      setResource({ key, data, error: false });
+      onChanged?.();
+    },
+  });
   const changeOpen = (next: boolean) => {
+    if (editor.saving) return;
     if (!next) setResource(null);
     onOpenChange(next);
   };
@@ -218,8 +265,8 @@ export function WeekTasksDialog({
             {t("Semana {week}", { week: String(week.weekNumber) })}
           </DialogTitle>
           <DialogDescription>
-            {t("Agenda en solo lectura")} · {week.weekStartDateLocal} —{" "}
-            {week.weekEndDateLocal}
+            {t(editor.canEdit ? "Agenda semanal" : "Agenda en solo lectura")} ·{" "}
+            {week.weekStartDateLocal} — {week.weekEndDateLocal}
           </DialogDescription>
         </DialogHeader>
         <DialogBody className="flex flex-col gap-4" aria-busy={!current}>
@@ -255,7 +302,11 @@ export function WeekTasksDialog({
               className="grid grid-cols-1 gap-3 md:grid-cols-7"
             >
               {current.data.days.map((day) => (
-                <AgendaDay key={day.localDate} day={day} />
+                <AgendaDay
+                  key={day.localDate}
+                  day={day}
+                  onSelect={editor.canEdit ? editor.select : undefined}
+                />
               ))}
             </div>
           ) : (
@@ -268,10 +319,38 @@ export function WeekTasksDialog({
           )}
         </DialogBody>
         <DialogFooter className="m-0 rounded-none px-6 py-4">
-          <Button variant="outline" onClick={() => changeOpen(false)}>
+          {!editor.selected && editor.saved && (
+            <div
+              role="status"
+              className="mr-auto flex items-center gap-2 text-sm"
+            >
+              {t("Cambio guardado")}
+              {editor.undo && (
+                <Button
+                  variant="outline"
+                  disabled={editor.saving}
+                  onClick={editor.undoChange}
+                >
+                  {t("Deshacer")}
+                </Button>
+              )}
+            </div>
+          )}
+          <Button
+            variant="outline"
+            disabled={editor.saving}
+            onClick={() => changeOpen(false)}
+          >
             {t("Cerrar")}
           </Button>
         </DialogFooter>
+        {editor.selected && current?.data && (
+          <WeekAgendaCellPanel
+            key={`${editor.selected.weekday}:${editor.selected.taskCode}`}
+            editor={editor}
+            data={current.data}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );
