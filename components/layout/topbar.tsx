@@ -1,5 +1,5 @@
 "use client";
-import {APPOINTMENTS_ENABLED} from "@/lib/config/feature-visibility";
+import { APPOINTMENTS_ENABLED } from "@/lib/config/feature-visibility";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -112,13 +112,17 @@ export function Topbar({ onMenuClick, mobileOpen }: TopbarProps) {
                     "text-muted-foreground hover:text-foreground",
                   )}
                 >
-                  {t(segment.label)}
+                  {breadcrumbOverride && i === resolvedSegments.length - 1
+                    ? segment.label
+                    : t(segment.label)}
                 </Link>
               ) : (
                 <span
                   className={cn("truncate font-semibold", "text-foreground")}
                 >
-                  {t(segment.label)}
+                  {breadcrumbOverride && i === resolvedSegments.length - 1
+                    ? segment.label
+                    : t(segment.label)}
                 </span>
               )}
             </span>

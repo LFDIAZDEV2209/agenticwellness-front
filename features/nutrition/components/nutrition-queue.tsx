@@ -23,6 +23,7 @@ import { SectionHeader } from "@/components/layout/section-header";
 import { useT } from "@/providers/i18n-provider";
 import { useNutritionQueue } from "../hooks/use-nutrition-queue";
 import { NutritionPatientDetail } from "./nutrition-patient-detail";
+import { NutritionIntakePendingCount } from "./nutrition-intake-review";
 import { NutritionPatientAvatar, NutritionStateChip, useNutritionDate, useNutritionNumber } from "./nutrition-shared";
 import type { NutritionFilter } from "../types/nutrition";
 import { NutritionError, NutritionSkeleton } from "./nutrition-feedback";
@@ -211,6 +212,7 @@ export function NutritionQueue({
           <div className="nutrition-directory-columns" aria-hidden="true">
             <span>{t("Paciente")}</span><span>{t("Plan nutricional")}</span><span>{t("Vigencia")}</span><span />
           </div>
+          <NutritionIntakePendingCount />
           <div className="nutrition-patient-list" aria-busy={loading}>
             {loading ? (
               <NutritionSkeleton />

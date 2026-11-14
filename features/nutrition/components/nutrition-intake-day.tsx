@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import Image from "next/image";
-import { Expand, ImageOff } from "lucide-react";
+import { Expand, ImageOff, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,6 +18,7 @@ import type {
   IntakeRecord,
 } from "../types/nutrition-intake";
 import { useNutritionDate, useNutritionNumber } from "./nutrition-shared";
+import { isOutsideIntakeMenu } from "./nutrition-intake-filters";
 
 export function IntakeMealName({ code }: { code: string }) {
   const t = useT();
@@ -39,9 +40,7 @@ function Origin({ origin }: { origin: IntakeRecord["origin"] }) {
       {t(
         origin === "ai_estimated"
           ? "Estimado por IA"
-          : origin === "patient_confirmed"
-            ? "Confirmado por el paciente"
-            : "Clínico",
+          : "Confirmado por el paciente",
       )}
     </span>
   );
@@ -165,17 +164,27 @@ export function NutritionIntakeDay({
   day,
   canPhotos,
   retry,
+  visibleRecords = day.records,
+  reviewActions,
+  renderRecordActions,
+  isHighlighted,
+  filterPending = false,
 }: {
   day: IntakeDay;
   canPhotos: boolean;
   retry: () => void;
+  visibleRecords?: IntakeRecord[];
+  reviewActions?: ReactNode;
+  renderRecordActions?: (record: IntakeRecord) => ReactNode;
+  isHighlighted?: (record: IntakeRecord) => boolean;
+  filterPending?: boolean;
 }) {
   const t = useT();
   const date = useNutritionDate();
   const number = useNutritionNumber();
   const [selected, setSelected] = useState<string | null>(null);
   const current =
-    day.records.find((row) => row.id === selected) ?? day.records[0];
+    visibleRecords.find((row) => row.id === selected) ?? visibleRecords[0];
   const planned = current
     ? day.menu?.meals.find((meal) => meal.mealCode === current.mealCode)
     : null;
@@ -196,6 +205,7 @@ export function NutritionIntakeDay({
               })
             : t("Sin menú publicado para esta fecha.")}
         </p>
+        {reviewActions}
       </header>
       <div className="nutrition-intake-detail-grid">
         <div>
@@ -207,8 +217,17 @@ export function NutritionIntakeDay({
               {t("No hay comidas registradas en este día.")}
             </p>
           )}
+          {!!day.records.length && !visibleRecords.length && (
+            <p className="nutrition-intake-empty">
+              {t(
+                filterPending
+                  ? "El filtro sin revisar está pendiente de una lectura válida."
+                  : "Este día no tiene comidas que coincidan con los filtros activos.",
+              )}
+            </p>
+          )}
           <ul className="nutrition-intake-meals">
-            {day.records.map((row) => {
+            {visibleRecords.map((row) => {
               const menu = day.menu?.meals.find(
                 (meal) => meal.mealCode === row.mealCode,
               );
@@ -225,6 +244,12 @@ export function NutritionIntakeDay({
                         <IntakeMealName code={row.mealCode} />
                       </strong>
                       <Origin origin={row.origin} />
+                      {isHighlighted?.(row) && (
+                        <span className="nutrition-intake-pinned">
+                          <Star aria-hidden="true" className="size-4" />
+                          {t("Ejemplo anclado")}
+                        </span>
+                      )}
                     </span>
                     <span>
                       {t("Registrado: {value}", {
@@ -250,6 +275,19 @@ export function NutritionIntakeDay({
                         {t("El paciente corrigió el análisis")}
                       </span>
                     )}
+                    {isOutsideIntakeMenu(day, row) && (
+                      <span className="nutrition-intake-outside">
+                        {t("Fuera del plan · sin equivalente en el menú")}
+                      </span>
+                    )}
+                    {menu?.planned.calories != null &&
+                      row.recorded.calories != null && (
+                        <span>
+                          {t("Desvío respecto al menú: {value} kcal", {
+                            value: `${row.recorded.calories - menu.planned.calories > 0 ? "+" : ""}${number(row.recorded.calories - menu.planned.calories)}`,
+                          })}
+                        </span>
+                      )}
                   </button>
                 </li>
               );
@@ -343,6 +381,7 @@ export function NutritionIntakeDay({
                 {t("Este registro no tiene análisis de foto.")}
               </p>
             )}
+            {renderRecordActions?.(current)}
           </aside>
         )}
       </div>

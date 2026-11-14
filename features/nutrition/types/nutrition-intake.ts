@@ -1,4 +1,4 @@
-/** DTO provisional de 3.7; ver INTAKE-CONTRACT.md antes de cambiar este borde. */
+/** DTO de 3.7 verificado contra BACK 92da468; ver INTAKE-CONTRACT.md. */
 export interface IntakeMacros {
   calories: number | null;
   proteinG: number | null;
@@ -11,7 +11,7 @@ export interface IntakeRecord {
   mealCode: string;
   recorded: IntakeMacros;
   waterMl: number | null;
-  origin: "ai_estimated" | "patient_confirmed" | "clinical";
+  origin: "ai_estimated" | "patient_confirmed";
   photo: { url: string; expiresAt: string } | null;
   analysis: {
     analysisId: string;

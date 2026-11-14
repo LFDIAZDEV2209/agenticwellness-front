@@ -108,7 +108,7 @@ export function mapIntakePage(
         typeof row.mealCode !== "string" ||
         !macros(row.recorded) ||
         !nonnegative(row.waterMl) ||
-        !["ai_estimated", "patient_confirmed", "clinical"].includes(
+        !["ai_estimated", "patient_confirmed"].includes(
           row.origin,
         ) ||
         typeof row.patientCorrection !== "boolean"

@@ -74,7 +74,7 @@ test("3.14 · 30 días, continuidad, menú histórico, orígenes y foto ampliabl
   await day.getByRole("button", { name: /^Desayuno/ }).click();
   await expect(
     page.getByRole("complementary", { name: "Detalle de la comida" }),
-  ).toContainText("Clínico");
+  ).toContainText("Confirmado por el paciente");
   await expect(
     page.getByRole("complementary", { name: "Detalle de la comida" }),
   ).toContainText("Sin dato");

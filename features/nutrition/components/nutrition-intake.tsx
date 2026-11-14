@@ -13,6 +13,22 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useAppContext } from "@/providers/context-provider";
 import { useT } from "@/providers/i18n-provider";
 import { useNutritionResource } from "../hooks/use-nutrition-resource";
+import { useIntakeReviews } from "../hooks/use-intake-reviews";
+import {
+  NutritionIntakeReviewActions,
+  IntakeReviewStatus,
+} from "./nutrition-intake-review";
+import {
+  NutritionIntakeHighlightActions,
+  useIntakeHighlights,
+} from "./nutrition-intake-highlights";
+import {
+  NutritionIntakeFilters,
+  emptyIntakeFilters,
+  filterIntakeRecords,
+  hasIntakeFilters,
+  type IntakeFilters,
+} from "./nutrition-intake-filters";
 import {
   addIntakeDays,
   fetchNutritionIntake,
@@ -25,6 +41,7 @@ import { groupNutritionCycles } from "./nutrition-program-cycles";
 import { NutritionIntakeDay } from "./nutrition-intake-day";
 import { useNutritionDate } from "./nutrition-shared";
 import "../nutrition-intake.css";
+const noIntakeDays: IntakeDay[] = [];
 
 interface Props {
   patientId: string;
@@ -180,6 +197,45 @@ function IntakeReader({
     [patientId, start, end, today, timezone, continuityStart, continuityEnd],
   );
   const { data, error, loading, retry } = useNutritionResource(load, "", true);
+  const reviews = useIntakeReviews(data ?? noIntakeDays);
+  const highlights = useIntakeHighlights(data ?? noIntakeDays);
+  const reviewByDate = new Map(
+    reviews.data?.map((row) => [row.localDate, row]),
+  );
+  const reviewsReady =
+    reviews.data !== undefined &&
+    !reviews.loading &&
+    !reviews.error &&
+    !!data?.some((day) => day.cycleId);
+  const [filters, setFilters] = useState<IntakeFilters>(emptyIntakeFilters);
+  const matchingDays = (data ?? [])
+    .filter(
+      (day) =>
+        filterIntakeRecords(day, filters, reviewByDate.get(day.localDate))
+          .length,
+    )
+    .sort((a, b) => b.localDate.localeCompare(a.localDate));
+  const filteredCount =
+    filters.unreviewed && !reviewsReady
+      ? null
+      : matchingDays.reduce(
+          (total, day) =>
+            total +
+            filterIntakeRecords(day, filters, reviewByDate.get(day.localDate))
+              .length,
+          0,
+        );
+  function changeFilters(value: IntakeFilters) {
+    setFilters(value);
+    const next = [...(data ?? [])]
+      .sort((a, b) => b.localDate.localeCompare(a.localDate))
+      .find(
+        (day) =>
+          filterIntakeRecords(day, value, reviewByDate.get(day.localDate))
+            .length,
+      );
+    if (next) setSelected(next.localDate);
+  }
   const days = new Map(data?.map((day) => [day.localDate, day]));
   const selectedDay = days.get(selected);
   const cycleDates = intakeDates(start, end);
@@ -209,6 +265,7 @@ function IntakeReader({
       date: date(dayDate),
       state: t(stateLabels[state]),
     });
+    const review = reviewByDate.get(dayDate);
     return (
       <li key={dayDate}>
         <button
@@ -218,13 +275,18 @@ function IntakeReader({
           data-today={dayDate === today || undefined}
           aria-current={dayDate === today ? "date" : undefined}
           aria-pressed={selected === dayDate}
-          aria-label={label}
+          aria-label={`${label}${review ? ` · ${t(review.modifiedSinceReview ? "Modificado tras tu revisión" : review.unreviewed ? "Sin revisar" : review.reviewedAt ? "Revisado" : "Sin registros que revisar")}` : ""}`}
           title={label}
           onClick={() => setSelected(dayDate)}
         >
           <strong>{ordinal}</strong>
           <Icon className="size-4" aria-hidden="true" />
           <span>{dayDate.slice(8)}</span>
+          {review?.reviewedAt && (
+            <span aria-hidden="true">
+              {review.modifiedSinceReview ? "!" : "✓"}
+            </span>
+          )}
         </button>
       </li>
     );
@@ -371,6 +433,41 @@ function IntakeReader({
               )}
             </p>
           </section>
+          <NutritionIntakeFilters
+            value={filters}
+            onChange={changeFilters}
+            canPhotos={canPhotos}
+            reviewsReady={reviewsReady}
+            count={filteredCount}
+          />
+          {hasIntakeFilters(filters) && filteredCount !== null && (
+            <nav
+              className="nutrition-intake-filter-results"
+              aria-label={t("Días que coinciden con los filtros")}
+            >
+              {matchingDays.length ? (
+                matchingDays.map((day) => (
+                  <Button
+                    key={day.localDate}
+                    variant={selected === day.localDate ? "default" : "outline"}
+                    aria-pressed={selected === day.localDate}
+                    onClick={() => setSelected(day.localDate)}
+                  >
+                    {date(day.localDate)}{" "}
+                    <IntakeReviewStatus
+                      review={reviewByDate.get(day.localDate)}
+                    />
+                  </Button>
+                ))
+              ) : (
+                <p>
+                  {t(
+                    "No hay registros que coincidan en los días cargados. Prueba otros filtros o cambia la ventana de continuidad.",
+                  )}
+                </p>
+              )}
+            </nav>
+          )}
           <div className="nutrition-intake-selection" aria-live="polite">
             <p>
               {t("Día seleccionado: {date}", { date: date(selected) })} ·{" "}
@@ -384,6 +481,43 @@ function IntakeReader({
               day={selectedDay}
               canPhotos={canPhotos}
               retry={retry}
+              visibleRecords={filterIntakeRecords(
+                selectedDay,
+                filters,
+                reviewByDate.get(selectedDay.localDate),
+              )}
+              filterPending={filters.unreviewed && !reviewsReady}
+              reviewActions={
+                <NutritionIntakeReviewActions
+                  day={selectedDay}
+                  review={reviewByDate.get(selectedDay.localDate)}
+                  loading={reviews.loading}
+                  error={!!reviews.error}
+                  retry={reviews.retry}
+                />
+              }
+              isHighlighted={(record) =>
+                !!highlights.data
+                  ?.find((group) => group.cycleId === selectedDay.cycleId)
+                  ?.items.some((item) => item.recordId === record.id)
+              }
+              renderRecordActions={(record) => (
+                <NutritionIntakeHighlightActions
+                  key={`${record.id}:${highlights.data?.find((group) => group.cycleId === selectedDay.cycleId)?.items.find((item) => item.recordId === record.id)?.recordId ?? "none"}`}
+                  day={selectedDay}
+                  recordId={record.id}
+                  highlight={highlights.data
+                    ?.find((group) => group.cycleId === selectedDay.cycleId)
+                    ?.items.find((item) => item.recordId === record.id)}
+                  ready={
+                    highlights.data !== undefined &&
+                    !highlights.loading &&
+                    !highlights.error
+                  }
+                  port={highlights.port}
+                  retry={highlights.retry}
+                />
+              )}
             />
           ) : (
             <p className="nutrition-intake-notice">

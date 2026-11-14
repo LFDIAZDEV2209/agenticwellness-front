@@ -4,17 +4,18 @@
 
 Rama `org/f3-coppaddresd-front`, worktree `front-f3`, desde `0ab28dd` de Fase 2.
 Solo lectura en la pestaña **Registros de comidas** de `/nutrition/{patientId}`.
-No incluye filtros, revisiones diarias, contadores de pendientes, ejemplos ni cierre del ciclo (3.15–3.17).
+La entrega 3.14 no incluía filtros ni revisión. La ampliación 3.15 se documenta en
+`INTAKE-REVIEW-CONTRACT.md`; el cierre 3.16–3.17 queda fuera.
 
 Fuentes: `NUTRICION-CICLOS.md`, `ARQUITECTURA.md` §10.1 y mockup oficial
 `referencia-claude-f3-nutricion/Nutrición · Bandeja de registros del paciente.png`.
 Se adapta su tira y comparación al workspace existente, sin modificar el cuerpo humano del ERP.
 
-## Contrato provisional 3.7
+## Contrato real 3.7 (`92da468`)
 
-Se verificó con CodeGraph y lectura de la copia en desarrollo del backend el 14/11/2026:
+Se verificó con CodeGraph y `git show 92da468` del backend el 14/11/2026:
 `Features/Nutrition/Queries/PatientIntakeQuery.cs` y `NutritionReadController.cs`.
-**Pendiente confirmar contra el commit entregado por codex-back**; los tests HTTP son sintéticos,
+Contrato confirmado contra el commit entregado por codex-back; los tests HTTP son sintéticos,
 no constituyen QA de integración con la API real. El borde está aislado en
 `types/nutrition-intake.ts` y `services/nutrition-intake-service.ts`.
 
@@ -37,7 +38,7 @@ type Response = {
     };
     records: Array<{
       id: string; mealCode: string; recorded: Macros; waterMl: number | null;
-      origin: 'ai_estimated' | 'patient_confirmed' | 'clinical';
+      origin: 'ai_estimated' | 'patient_confirmed';
       photo: null | { url: string; expiresAt: string };
       analysis: null | {
         analysisId: string; status: string; estimated: Macros;
@@ -52,8 +53,9 @@ type Response = {
 };
 ```
 
-- El borrador del back usa `ai_estimated` y `patient_confirmed`; se reserva `clinical`
-  para mostrar explícitamente el origen clínico si 3.7 lo incorpora. Otros valores dan error visible.
+- El back 3.7 admite solo `ai_estimated` y `patient_confirmed`. La decisión de Luis
+  reserva el origen clínico para un canal profesional futuro; `clinical` se rechaza
+  como contrato inválido, nunca se acredita por un `source` libre de la app.
 - `mealCode`: `des`, `alm`, `mer`, `cen`, `agua`; otros se muestran literalmente.
 - `through = min(to, hoy del paciente)`; `days` contiene TODOS los días consultados
   hasta hoy, incluso sin registros, en orden descendente. Días futuros omitidos.
@@ -69,7 +71,7 @@ type Response = {
   Caducidad o carga fallida → aviso y **Actualizar foto**, que vuelve a leer intake.
   El temporizador retira también la foto que caduque mientras permanece abierta.
 - Valores nulos se muestran como **Sin dato**, nunca como cero. La estimación original IA,
-  el registro final corregido por paciente y el menú clínico aparecen por separado.
+  el registro final corregido por paciente y el menú planificado aparecen por separado.
   No se reconstruye un menú histórico usando el borrador actual.
 
 ## Ventanas, estados y continuidad
