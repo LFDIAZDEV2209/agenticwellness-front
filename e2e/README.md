@@ -281,3 +281,14 @@ verdes; i18n0 faltantes. Artefactos en `qa-reports/nutrition/wave5-live/` y
 `wave5-regression/`. Fixture real05900dde-45ce-40f1-b1b6-e3b6a5a0830a;
 las capturas actuales son de este recorrido, con consentimiento desmarcado.
 
+## Bienestar · fase 1 (1.25)
+
+`corepack yarn e2e e2e/bienestar-fase1.spec.ts --project=chromium-desktop`
+ejecuta cinco recorridos independientes: huecos al publicar, impacto antes de confirmar,
+asignación masiva con resultado por alcance, sustitución de podcast en uso y carga
+múltiple con error parcial y reintento. `fixtures/bienestar-fase1-http.ts` intercepta
+todas las APIs, incluida autenticación y almacenamiento; usa pacientes ficticios y
+audio PCM generado en memoria. No necesita seeds ni escribe en un backend real.
+Los conteos de previews toleran StrictMode; las escrituras de confirmación se exigen
+únicas. Se puede apuntar a un servidor aislado mediante `E2E_BASE_URL`.
+
