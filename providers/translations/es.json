@@ -5407,5 +5407,7 @@
   "Seleccionar pacientes de esta página": "Seleccionar pacientes de esta página",
   "Seleccionar a {name}": "Seleccionar a {name}",
   "Acciones de pacientes seleccionados": "Acciones de pacientes seleccionados",
-  "{count} en esta página. Máximo {max} por asignación.": "{count} en esta página. Máximo {max} por asignación."
+  "{count} en esta página. Máximo {max} por asignación.": "{count} en esta página. Máximo {max} por asignación.",
+  "No se pudo abrir la plantilla": "No se pudo abrir la plantilla",
+  "{days} día{daySuffix} · {weeks} semana{weekSuffix}": "{days} día{daySuffix} · {weeks} semana{weekSuffix}"
 }

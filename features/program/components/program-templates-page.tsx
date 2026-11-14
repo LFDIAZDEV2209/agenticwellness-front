@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useAuth } from "@/providers/auth-provider";
 import { useT } from "@/providers/i18n-provider";
 import { ProgramTemplateImpactDialog } from "./program-template-impact-dialog";
@@ -53,6 +53,16 @@ import {
 import { ProgramTemplateFormDialog } from "./program-template-form";
 import { ProgramTemplateDetailDialog } from "./program-template-detail";
 import type { ProgramTemplateListItem } from "../types";
+import { SEQUENCE_DAYS, SEQUENCE_WEEKS } from "../services/program-sequence";
+
+const mobileQuery = "(max-width: 767px)";
+function subscribeMobileLayout(onChange: () => void) {
+  const query = window.matchMedia(mobileQuery);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+}
+const mobileSnapshot = () => window.matchMedia(mobileQuery).matches;
+const serverMobileSnapshot = () => false;
 
 export function ProgramTemplatesPage() {
   const { hasPermission } = useAuth();
@@ -77,21 +87,119 @@ export function ProgramTemplatesPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<ProgramTemplateListItem | undefined>();
   const [details, setDetails] = useState<ProgramTemplateListItem | undefined>();
-  const [publishing, setPublishing] = useState<ProgramTemplateListItem | undefined>();
-  const [archiving, setArchiving] = useState<ProgramTemplateListItem | undefined>();
+  const [publishing, setPublishing] = useState<
+    ProgramTemplateListItem | undefined
+  >();
+  const [archiving, setArchiving] = useState<
+    ProgramTemplateListItem | undefined
+  >();
+  const [editFailure, setEditFailure] =
+    useState<ProgramTemplateListItem | null>(null);
+  const [loadingEdit, setLoadingEdit] = useState(false);
+  const editRequest = useRef(false);
+  const editAlert = useRef<HTMLDivElement>(null);
+  const isMobile = useSyncExternalStore(
+    subscribeMobileLayout,
+    mobileSnapshot,
+    serverMobileSnapshot,
+  );
+  useEffect(() => {
+    if (editFailure) editAlert.current?.focus();
+  }, [editFailure]);
 
   const openCreate = () => {
+    setEditFailure(null);
     setEditing(undefined);
     setFormOpen(true);
   };
 
   const openEdit = async (tpl: ProgramTemplateListItem) => {
-    const full = await getTemplate(tpl.id);
-    if (full) {
-      setEditing(full);
-      setFormOpen(true);
+    if (editRequest.current) return;
+    editRequest.current = true;
+    setLoadingEdit(true);
+    setEditFailure(null);
+    try {
+      const full = await getTemplate(tpl.id);
+      if (full) {
+        setEditing(full);
+        setFormOpen(true);
+      } else setEditFailure(tpl);
+    } finally {
+      editRequest.current = false;
+      setLoadingEdit(false);
     }
   };
+
+  const duration = (tpl: ProgramTemplateListItem) => {
+    const days =
+      tpl.totalWeeks === SEQUENCE_WEEKS ? SEQUENCE_DAYS : tpl.totalWeeks * 7;
+    return t("{days} día{daySuffix} · {weeks} semana{weekSuffix}", {
+      days: String(days),
+      daySuffix: days === 1 ? "" : "s",
+      weeks: String(tpl.totalWeeks),
+      weekSuffix: tpl.totalWeeks === 1 ? "" : "s",
+    });
+  };
+  const actions = (tpl: ProgramTemplateListItem, compact = false) => (
+    <div
+      role="group"
+      aria-label={t("Acciones")}
+      className={`flex flex-wrap items-center gap-1 ${compact ? "justify-end" : "justify-start gap-2"}`}
+    >
+      <Button
+        variant="ghost"
+        size={compact ? "icon" : "sm"}
+        className={compact ? "size-8" : "min-h-11"}
+        title={t("Ver detalles")}
+        disabled={loadingEdit}
+        onClick={() => setDetails(tpl)}
+      >
+        <Eye className="size-4" aria-hidden />
+        {!compact && t("Ver detalles")}
+      </Button>
+      <Button
+        variant={compact ? "ghost" : "outline"}
+        size={compact ? "icon" : "sm"}
+        className={compact ? "size-8" : "min-h-11"}
+        title={t("Editar")}
+        disabled={loadingEdit}
+        onClick={() => void openEdit(tpl)}
+      >
+        <Pencil className="size-4" aria-hidden />
+        {!compact && t("Editar")}
+      </Button>
+      {tpl.status === "Draft" && hasPermission("Program.Edit") && (
+        <Button
+          variant="ghost"
+          size={compact ? "icon" : "sm"}
+          className={compact ? "size-8 text-success" : "min-h-11 text-success"}
+          title={t("Publicar")}
+          disabled={loadingEdit}
+          onClick={() => setPublishing(tpl)}
+        >
+          <Send className="size-4" aria-hidden />
+          {!compact && t("Publicar")}
+        </Button>
+      )}
+      {tpl.status === "Active" && (
+        <Button
+          variant="ghost"
+          size={compact ? "icon" : "sm"}
+          className={
+            compact
+              ? "size-8 text-muted-foreground"
+              : "min-h-11 text-muted-foreground"
+          }
+          title={t("Archivar")}
+          disabled={loadingEdit}
+          onClick={() => setArchiving(tpl)}
+        >
+          <Archive className="size-4" aria-hidden />
+          {!compact && t("Archivar")}
+        </Button>
+      )}
+    </div>
+  );
 
   const statusColor = (status: string) => {
     switch (status) {
@@ -113,7 +221,7 @@ export function ProgramTemplatesPage() {
         description="Gestiona las plantillas del programa de gamificación"
         icon={Trophy}
         actions={
-          <Button size="sm" onClick={openCreate}>
+          <Button size="sm" onClick={openCreate} disabled={loadingEdit}>
             <Plus data-icon="inline-start" />
             Nueva plantilla
           </Button>
@@ -172,6 +280,32 @@ export function ProgramTemplatesPage() {
         </div>
       </section>
 
+      {editFailure && (
+        <div
+          ref={editAlert}
+          role="alert"
+          tabIndex={-1}
+          className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-destructive/20 bg-destructive-soft/40 p-4 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold text-destructive">
+              {t("No se pudo abrir la plantilla")}
+            </p>
+            <p className="break-words text-sm text-muted-foreground">
+              {editFailure.name}
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            disabled={loadingEdit}
+            onClick={() => void openEdit(editFailure)}
+          >
+            <RefreshCw aria-hidden />
+            {t("Reintentar")}
+          </Button>
+        </div>
+      )}
+
       {/* Contenido */}
       {loading ? (
         <TemplatesSkeleton />
@@ -181,118 +315,114 @@ export function ProgramTemplatesPage() {
         <div className="flex flex-col gap-0 overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-xs">
           <SectionHeader
             title={`${result.total} ${result.total === 1 ? "plantilla" : "plantillas"} disponibles`}
-            description="Vista de tabla"
             icon={Trophy}
             variant="primary"
           />
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nombre</TableHead>
-                  <TableHead className="hidden md:table-cell">
-                    Código
-                  </TableHead>
-                  <TableHead className="hidden md:table-cell">
-                    Duración
-                  </TableHead>
-                  <TableHead className="hidden lg:table-cell">
-                    Versión
-                  </TableHead>
-                  <TableHead>Estado</TableHead>
-                  <TableHead className="hidden lg:table-cell">Creado</TableHead>
-                  <TableHead className="text-right">Acciones</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {result.data.map((tpl) => (
-                  <TableRow key={tpl.id}>
-                    <TableCell>
-                      <div className="flex max-w-[280px] flex-col">
-                        <span
-                          className="truncate font-medium"
-                          title={tpl.name}
-                        >
-                          {tpl.name}
-                        </span>
-                        {tpl.description && (
-                          <span className="text-xs text-muted-foreground line-clamp-1">
-                            {tpl.description}
-                          </span>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell text-sm font-mono">
-                      {tpl.code}
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell text-xs">
-                      <span className="font-medium text-foreground">
-                        {tpl.totalWeeks} {tpl.totalWeeks === 1 ? "semana" : "semanas"}
-                      </span>
-                      <span className="block text-muted-foreground">
-                        ({tpl.totalWeeks * 7} días)
-                      </span>
-                    </TableCell>
-                    <TableCell className="hidden lg:table-cell text-sm">
-                      v{tpl.version}
-                    </TableCell>
-                    <TableCell>
-                      <Badge className={statusColor(tpl.status)}>
-                        {TEMPLATE_STATUS_LABELS[tpl.status] ?? tpl.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="hidden lg:table-cell text-xs text-muted-foreground">
-                      {new Date(tpl.createdAt).toLocaleDateString("es-CO")}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="size-8"
-                          title="Ver detalles"
-                          onClick={() => setDetails(tpl)}
-                        >
-                          <Eye className="size-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="size-8"
-                          title="Editar"
-                          onClick={() => openEdit(tpl)}
-                        >
-                          <Pencil className="size-4" />
-                        </Button>
-                        {tpl.status === "Draft" && hasPermission("Program.Edit") && (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="size-8 text-success"
-                            title={t("Publicar")}
-                            onClick={() => setPublishing(tpl)}
-                          >
-                            <Send className="size-4" />
-                          </Button>
-                        )}
-                        {tpl.status === "Active" && (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="size-8 text-muted-foreground"
-                            title="Archivar"
-                            onClick={() => setArchiving(tpl)}
-                          >
-                            <Archive className="size-4" />
-                          </Button>
-                        )}
-                      </div>
-                    </TableCell>
+          {isMobile ? (
+            <div className="flex flex-col gap-3 p-3">
+              {result.data.map((tpl) => (
+                <article
+                  key={tpl.id}
+                  aria-label={tpl.name}
+                  className="flex min-w-0 flex-col gap-3 rounded-xl border border-border bg-background p-4"
+                >
+                  <header className="flex items-start justify-between gap-3">
+                    <h3
+                      className="min-w-0 break-words text-sm font-semibold"
+                      title={tpl.name}
+                    >
+                      {tpl.name}
+                    </h3>
+                    <Badge className={`shrink-0 ${statusColor(tpl.status)}`}>
+                      {t(TEMPLATE_STATUS_LABELS[tpl.status] ?? tpl.status)}
+                    </Badge>
+                  </header>
+                  {tpl.description && (
+                    <p
+                      className="line-clamp-2 break-words text-xs text-muted-foreground"
+                      title={tpl.description}
+                    >
+                      {tpl.description}
+                    </p>
+                  )}
+                  <p className="text-sm font-medium">{duration(tpl)}</p>
+                  <p className="break-all text-xs text-muted-foreground">
+                    {tpl.code} · v{tpl.version}
+                  </p>
+                  <footer className="border-t border-border pt-3">
+                    {actions(tpl)}
+                  </footer>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Nombre</TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      Código
+                    </TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      Duración
+                    </TableHead>
+                    <TableHead className="hidden lg:table-cell">
+                      Versión
+                    </TableHead>
+                    <TableHead>Estado</TableHead>
+                    <TableHead className="hidden lg:table-cell">
+                      Creado
+                    </TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+                </TableHeader>
+                <TableBody>
+                  {result.data.map((tpl) => (
+                    <TableRow key={tpl.id}>
+                      <TableCell>
+                        <div className="flex max-w-[280px] flex-col">
+                          <span
+                            className="line-clamp-2 whitespace-normal break-words font-medium"
+                            title={tpl.name}
+                          >
+                            {tpl.name}
+                          </span>
+                          {tpl.description && (
+                            <span className="text-xs text-muted-foreground line-clamp-1">
+                              {tpl.description}
+                            </span>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell text-sm font-mono">
+                        {tpl.code}
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell text-xs">
+                        <span className="font-medium text-foreground">
+                          {duration(tpl)}
+                        </span>
+                      </TableCell>
+                      <TableCell className="hidden lg:table-cell text-sm">
+                        v{tpl.version}
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={statusColor(tpl.status)}>
+                          {TEMPLATE_STATUS_LABELS[tpl.status] ?? tpl.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="hidden lg:table-cell text-xs text-muted-foreground">
+                        {new Date(tpl.createdAt).toLocaleDateString("es-CO")}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {actions(tpl, true)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
         </div>
       ) : (
         <TemplatesEmptyState onCreate={openCreate} />

@@ -182,7 +182,7 @@ async function fixture(
     });
   });
   await page.goto("/program/gestion?view=plantillas");
-  await page.getByRole("button", { name: "Ver detalles", exact: true }).click();
+  await page.getByRole("button", { name: options.english ? "View details" : "Ver detalles", exact: true }).click();
   const dialog = page.getByRole("dialog", {
     name: options.english ? "Program template" : "Plantilla de programa",
     exact: true,

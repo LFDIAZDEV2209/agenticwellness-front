@@ -5420,5 +5420,7 @@
   "Seleccionar pacientes de esta página": "Select patients on this page",
   "Seleccionar a {name}": "Select {name}",
   "Acciones de pacientes seleccionados": "Selected patient actions",
-  "{count} en esta página. Máximo {max} por asignación.": "{count} on this page. Maximum {max} per assignment."
+  "{count} en esta página. Máximo {max} por asignación.": "{count} on this page. Maximum {max} per assignment.",
+  "No se pudo abrir la plantilla": "Unable to open the template",
+  "{days} día{daySuffix} · {weeks} semana{weekSuffix}": "{days} day{daySuffix} · {weeks} week{weekSuffix}"
 }

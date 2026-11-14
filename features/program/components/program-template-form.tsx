@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useT } from "@/providers/i18n-provider";
+import { SEQUENCE_DAYS, SEQUENCE_WEEKS } from "../services/program-sequence";
 import type {
   ProgramTemplate,
   ProgramTemplateListItem,
@@ -36,13 +38,18 @@ export function ProgramTemplateFormDialog({
   onOpenChange,
   onSubmit,
 }: ProgramTemplateFormDialogProps) {
+  const t = useT();
   const isEdit = Boolean(template);
   // Se inicializa directamente de props — el padre usa `key` para forzar remount
-  const [code, setCode] = useState(template && "code" in template ? template.code : "");
+  const [code, setCode] = useState(
+    template && "code" in template ? template.code : "",
+  );
   const [name, setName] = useState(template ? template.name : "");
   const [description, setDescription] = useState(template?.description ?? "");
   const [totalDays, setTotalDays] = useState(
-    template?.totalWeeks ? template.totalWeeks * 7 : 83,
+    template?.totalWeeks && template.totalWeeks !== SEQUENCE_WEEKS
+      ? template.totalWeeks * 7
+      : SEQUENCE_DAYS,
   );
 
   const calculatedWeeks = Math.max(1, Math.ceil((totalDays || 1) / 7));
@@ -129,9 +136,12 @@ export function ProgramTemplateFormDialog({
               required
             />
             <p className="text-xs text-muted-foreground">
-              Equivale a {calculatedWeeks}{" "}
-              {calculatedWeeks === 1 ? "semana" : "semanas"} ({calculatedWeeks * 7}{" "}
-              días en ciclo semanal).
+              {t("{days} día{daySuffix} · {weeks} semana{weekSuffix}", {
+                days: String(totalDays),
+                daySuffix: totalDays === 1 ? "" : "s",
+                weeks: String(calculatedWeeks),
+                weekSuffix: calculatedWeeks === 1 ? "" : "s",
+              })}
             </p>
           </div>
 
