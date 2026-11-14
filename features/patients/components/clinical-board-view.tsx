@@ -9,6 +9,7 @@ import {
   ClipboardList,
   Eye,
   FilterX,
+  Headphones,
   MoreHorizontal,
   Pencil,
   RefreshCw,
@@ -34,6 +35,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -65,10 +67,17 @@ import {
 } from "@/lib/ui/rainbow";
 import { cn } from "@/lib/utils";
 import { useAppContext } from "@/providers/context-provider";
+import { useAuth } from "@/providers/auth-provider";
 import { useT } from "@/providers/i18n-provider";
 import { useClinicalBoard } from "../hooks/use-clinical-board";
 import { deletePatient, fetchInsurers } from "../services/patients-service";
 import { PatientStatusToggle } from "./patient-status-toggle";
+import { PatientPodcastAssignmentDialog } from "./patient-podcast-assignment-dialog";
+import {
+  canAssignPatientPodcasts,
+  MAX_BULK_PATIENTS,
+  type PodcastAssignmentPatient,
+} from "../services/patient-podcast-assignment-service";
 import type {
   ClinicalBoardFilters,
   ClinicalBoardItem,
@@ -217,7 +226,8 @@ export function ClinicalBoardView({
 }: ClinicalBoardViewProps) {
   const t = useT();
   const router = useRouter();
-  const { can } = useAppContext();
+  const { can, activeClinicId } = useAppContext();
+  const { user } = useAuth();
   const {
     result,
     filters,
@@ -233,6 +243,46 @@ export function ClinicalBoardView({
   const [deleting, setDeleting] = useState<ClinicalBoardItem | null>(null);
   const [deleteBusy, setDeleteBusy] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const canAssign = canAssignPatientPodcasts(
+    user?.roles ?? [],
+    can("Program.Edit"),
+  );
+  const scope = `${user?.id ?? ""}:${activeClinicId ?? ""}:${canAssign}`;
+  const [selectionScope, setSelectionScope] = useState(scope);
+  const [selected, setSelected] = useState<
+    Map<string, PodcastAssignmentPatient>
+  >(new Map());
+  const [assigning, setAssigning] = useState<PodcastAssignmentPatient[] | null>(
+    null,
+  );
+  // La selección sobrevive a filtros y páginas, pero nunca a un cambio de contexto.
+  if (selectionScope !== scope) {
+    setSelectionScope(scope);
+    setSelected(new Map());
+    setAssigning(null);
+  }
+  const pagePatients = result?.data ?? [];
+  const selectedOnPage = pagePatients.filter((patient) =>
+    selected.has(patient.patientId),
+  ).length;
+  const allPageSelected =
+    pagePatients.length > 0 && selectedOnPage === pagePatients.length;
+  const pageExceedsLimit =
+    selected.size + pagePatients.length - selectedOnPage > MAX_BULK_PATIENTS;
+  const togglePatients = (patients: ClinicalBoardItem[], checked: boolean) => {
+    setSelected((previous) => {
+      const next = new Map(previous);
+      for (const patient of patients) {
+        if (!checked) next.delete(patient.patientId);
+        else if (next.size < MAX_BULK_PATIENTS)
+          next.set(patient.patientId, {
+            id: patient.patientId,
+            name: `${patient.firstName} ${patient.lastName}`,
+          });
+      }
+      return next;
+    });
+  };
 
   const canEdit = can("Patients.Update");
   const canDelete = can("Patients.Delete");
@@ -627,6 +677,23 @@ export function ClinicalBoardView({
             >
               <TableHeader>
                 <TableRow>
+                  {canAssign && (
+                    <TableHead className="w-12 px-2">
+                      <label className="flex size-11 cursor-pointer items-center justify-center">
+                        <Checkbox
+                          aria-label={t("Seleccionar pacientes de esta página")}
+                          checked={allPageSelected}
+                          indeterminate={selectedOnPage > 0 && !allPageSelected}
+                          disabled={
+                            loading || (!allPageSelected && pageExceedsLimit)
+                          }
+                          onCheckedChange={(checked) =>
+                            togglePatients(pagePatients, checked)
+                          }
+                        />
+                      </label>
+                    </TableHead>
+                  )}
                   <TableHead>{t("Paciente")}</TableHead>
                   <TableHead className="hidden @min-[1300px]/clinical-board:table-cell">
                     {t("Diagnóstico")}
@@ -659,7 +726,35 @@ export function ClinicalBoardView({
               </TableHeader>
               <TableBody>
                 {result.data.map((item) => (
-                  <TableRow key={item.patientId}>
+                  <TableRow
+                    key={item.patientId}
+                    data-selected={selected.has(item.patientId) || undefined}
+                    className={
+                      canAssign && selected.has(item.patientId)
+                        ? "bg-primary-soft/40"
+                        : undefined
+                    }
+                  >
+                    {canAssign && (
+                      <TableCell className="px-2">
+                        <label className="flex size-11 cursor-pointer items-center justify-center">
+                          <Checkbox
+                            aria-label={t("Seleccionar a {name}", {
+                              name: `${item.firstName} ${item.lastName}`,
+                            })}
+                            checked={selected.has(item.patientId)}
+                            disabled={
+                              loading ||
+                              (!selected.has(item.patientId) &&
+                                selected.size >= MAX_BULK_PATIENTS)
+                            }
+                            onCheckedChange={(checked) =>
+                              togglePatients([item], checked)
+                            }
+                          />
+                        </label>
+                      </TableCell>
+                    )}
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <span
@@ -909,6 +1004,48 @@ export function ClinicalBoardView({
           </div>
         ) : null}
       </section>
+
+      {canAssign && selected.size > 0 && (
+        <div
+          role="region"
+          aria-label={t("Acciones de pacientes seleccionados")}
+          className="sticky bottom-3 z-20 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-primary/20 bg-background p-4 shadow-lg"
+        >
+          <div className="min-w-0">
+            <p role="status" className="font-semibold">
+              {t("{count} paciente{s} seleccionado{s}", {
+                count: String(selected.size),
+                s: selected.size === 1 ? "" : "s",
+              })}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {t("{count} en esta página. Máximo {max} por asignación.", {
+                count: String(selectedOnPage),
+                max: String(MAX_BULK_PATIENTS),
+              })}
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" onClick={() => setSelected(new Map())}>
+              {t("Limpiar selección")}
+            </Button>
+            <Button onClick={() => setAssigning([...selected.values()])}>
+              <Headphones aria-hidden />
+              {t("Asignar podcast")}
+            </Button>
+          </div>
+        </div>
+      )}
+      {canAssign && assigning && (
+        <PatientPodcastAssignmentDialog
+          patients={assigning}
+          onClose={() => setAssigning(null)}
+          onApplied={() => {
+            setSelected(new Map());
+            retry();
+          }}
+        />
+      )}
 
       <AlertDialog
         open={Boolean(deleting)}
