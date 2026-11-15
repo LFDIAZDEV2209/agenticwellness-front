@@ -1,0 +1,74 @@
+{
+  "real": true,
+  "interception": false,
+  "events": [
+    {
+      "language": "es",
+      "http": 200,
+      "request": {
+        "title": "Crear hábitos sostenibles",
+        "language": "es",
+        "context": "Introducción a la constancia y los pequeños pasos."
+      },
+      "response": {
+        "status": "ok",
+        "isEstimate": true,
+        "draft": {
+          "description": "Exploración de cómo desarrollar hábitos duraderos a través de la constancia y los pequeños pasos. Se aborda la construcción progresiva de rutinas y la importancia de la persistencia en el cambio de comportamiento.",
+          "category": "Habitos",
+          "tags": [
+            "cambio de comportamiento",
+            "constancia",
+            "desarrollo personal",
+            "hábitos",
+            "pequeños pasos",
+            "persistencia",
+            "rutinas"
+          ]
+        },
+        "model": "claude-haiku-4-5-20251001",
+        "generatedAt": "2026-11-15T21:34:03.788163+00:00"
+      }
+    },
+    {
+      "language": "en",
+      "http": 200,
+      "request": {
+        "title": "Crear hábitos sostenibles",
+        "language": "en",
+        "context": "Introducción a la constancia y los pequeños pasos."
+      },
+      "response": {
+        "status": "ok",
+        "isEstimate": true,
+        "draft": {
+          "description": "An introduction to building sustainable habits through consistency and small incremental steps. This episode explores how gradual progress and daily practices can lead to lasting behavioral change.",
+          "category": "Habitos",
+          "tags": [
+            "behavior change",
+            "consistency",
+            "daily practices",
+            "habit building",
+            "personal growth",
+            "routine",
+            "small steps",
+            "sustainable habits"
+          ]
+        },
+        "model": "claude-haiku-4-5-20251001",
+        "generatedAt": "2026-11-15T21:34:05.665106+00:00"
+      }
+    }
+  ],
+  "catalogWrites": [],
+  "errors": [],
+  "before": {
+    "count": 55,
+    "hash": "80c9c6b5ecbf508dc107b6e81ddf5156e4b0539c0589a61e6cd3ccdaedd096fd"
+  },
+  "after": {
+    "count": 55,
+    "hash": "80c9c6b5ecbf508dc107b6e81ddf5156e4b0539c0589a61e6cd3ccdaedd096fd"
+  },
+  "unchanged": true
+}

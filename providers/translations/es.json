@@ -5923,5 +5923,18 @@
   "Después": "Después",
   "Aplicando sugerencia…": "Aplicando sugerencia…",
   "Confirmar y aplicar": "Confirmar y aplicar",
-  "Fuentes de la sugerencia": "Fuentes de la sugerencia"
+  "Fuentes de la sugerencia": "Fuentes de la sugerencia",
+  "Ayuda de IA para el podcast": "Ayuda de IA para el podcast",
+  "Sugiere descripción, categoría y etiquetas a partir del título y el contexto que escribas.": "Sugiere descripción, categoría y etiquetas a partir del título y el contexto que escribas.",
+  "Contexto editorial (opcional)": "Contexto editorial (opcional)",
+  "Incluye solo información del episodio, sin datos de pacientes, credenciales ni enlaces. El audio no se envía ni se transcribe.": "Incluye solo información del episodio, sin datos de pacientes, credenciales ni enlaces. El audio no se envía ni se transcribe.",
+  "Sugerir metadatos con IA": "Sugerir metadatos con IA",
+  "Escribe un título de hasta 200 caracteres y usa texto sin HTML ni URLs para solicitar ayuda.": "Escribe un título de hasta 200 caracteres y usa texto sin HTML ni URLs para solicitar ayuda.",
+  "La ayuda de IA no está disponible. Puedes reintentar o completar los campos manualmente.": "La ayuda de IA no está disponible. Puedes reintentar o completar los campos manualmente.",
+  "No tienes permiso para solicitar sugerencias. Puedes completar los campos manualmente.": "No tienes permiso para solicitar sugerencias. Puedes completar los campos manualmente.",
+  "Al usar las sugerencias se reemplazan descripción, categoría y etiquetas del formulario. Podrás editarlas antes de guardar.": "Al usar las sugerencias se reemplazan descripción, categoría y etiquetas del formulario. Podrás editarlas antes de guardar.",
+  "Descartar": "Descartar",
+  "Generando sugerencias…": "Generando sugerencias…",
+  "Usar sugerencias": "Usar sugerencias",
+  "Sin etiquetas": "Sin etiquetas"
 }

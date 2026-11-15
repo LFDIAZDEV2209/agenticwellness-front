@@ -1,0 +1,6 @@
+simulation: podcast-metadata-erp
+routing: header
+mocks:
+  - name: podcast-metadata-erp
+    routeKey: podcast-erp
+    path: postman/mocks/podcast-metadata-erp

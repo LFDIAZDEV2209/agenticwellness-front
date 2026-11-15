@@ -5923,5 +5923,18 @@
   "Después": "After",
   "Aplicando sugerencia…": "Applying suggestion…",
   "Confirmar y aplicar": "Confirm and apply",
-  "Fuentes de la sugerencia": "Suggestion sources"
+  "Fuentes de la sugerencia": "Suggestion sources",
+  "Ayuda de IA para el podcast": "AI help for the podcast",
+  "Sugiere descripción, categoría y etiquetas a partir del título y el contexto que escribas.": "Suggest a description, category and tags using the title and context you provide.",
+  "Contexto editorial (opcional)": "Editorial context (optional)",
+  "Incluye solo información del episodio, sin datos de pacientes, credenciales ni enlaces. El audio no se envía ni se transcribe.": "Include only information about the episode, without patient data, credentials or links. Audio is neither sent nor transcribed.",
+  "Sugerir metadatos con IA": "Suggest metadata with AI",
+  "Escribe un título de hasta 200 caracteres y usa texto sin HTML ni URLs para solicitar ayuda.": "Enter a title of up to 200 characters and use text without HTML or URLs to request help.",
+  "La ayuda de IA no está disponible. Puedes reintentar o completar los campos manualmente.": "AI help is unavailable. You can retry or fill in the fields manually.",
+  "No tienes permiso para solicitar sugerencias. Puedes completar los campos manualmente.": "You do not have permission to request suggestions. You can fill in the fields manually.",
+  "Al usar las sugerencias se reemplazan descripción, categoría y etiquetas del formulario. Podrás editarlas antes de guardar.": "Using the suggestions replaces the description, category and tags in the form. You can edit them before saving.",
+  "Descartar": "Discard",
+  "Generando sugerencias…": "Generating suggestions…",
+  "Usar sugerencias": "Use suggestions",
+  "Sin etiquetas": "No tags"
 }

@@ -54,6 +54,7 @@ import {
 import { MediaPlayer } from "./media-player";
 import { MediaThumb } from "./media-thumb";
 import { mediaCategoryMeta } from "./media-meta";
+import { PodcastMetadataAssistant } from "./podcast-metadata-assistant";
 import { useT } from "@/providers/i18n-provider";
 
 interface MediaFormFieldsProps {
@@ -131,6 +132,7 @@ export function MediaFormFields({
   const [tags, setTags] = useState<string[]>(media?.tags ?? []);
   const [tagDraft, setTagDraft] = useState("");
   const tagsHelpId = useId();
+  const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const [form, setForm] = useState(() =>
     media
       ? {
@@ -763,6 +765,21 @@ export function MediaFormFields({
           </div>
         </fieldset>
 
+        {!media && !quick && (!file || metadata?.mediaType === "Podcast") && (
+          <PodcastMetadataAssistant
+            title={form.title}
+            revision={JSON.stringify([form.description, form.category, tags, tagDraft, file?.name, file?.size, file?.lastModified])}
+            saving={uploading}
+            onAccept={draft => {
+              setForm(current => ({ ...current, description: draft.description, category: draft.category }));
+              setTags(draft.tags);
+              setTagDraft("");
+              setValidationError(null);
+              descriptionRef.current?.focus();
+            }}
+          />
+        )}
+
         <div className="flex min-w-0 flex-col gap-2">
           <div className="flex items-end gap-2">
             <div className="min-w-0 flex-1">
@@ -814,6 +831,7 @@ export function MediaFormFields({
 
         <Field label={t("Descripción")}>
           <textarea
+            ref={descriptionRef}
             className="min-h-20 w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-sm outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
             value={form.description ?? ""}
             onChange={(event) =>

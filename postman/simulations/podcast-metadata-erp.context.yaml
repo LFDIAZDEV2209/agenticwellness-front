@@ -1,0 +1,30 @@
+purpose:
+  stands_in_for: Backend ERP 4.6b de BACK 4c7a811.
+  unblocks: Revisión y aceptación editorial de 4.9 sin guardar ni publicar medios reales.
+assumptions:
+  - id: editorial-contract
+    status: supported
+    claim: El consumidor envía solamente title, language y context y acepta categorías estables, modelo nullable y fecha UTC.
+    reason: Contrato del proveedor leído y llamadas del consumidor observadas contra Postman y el runtime real.
+    verification: Pruebas ES/EN, sin modelo, categoría traducida inválida, tags largos, fecha inválida, HTML y estimación inválida. POST UI real 200/ok en ambos idiomas.
+    source: BACK 4c7a811 docs/modules/media/PODCAST-METADATA.md; features/media/evidence/4.9-live.json; e2e/podcast-metadata.spec.ts
+    updated_at: "2026-11-15"
+  - id: caller-preserves-form
+    status: supported
+    claim: En los escenarios ejecutados generar, descartar y cancelar no guardan ni publican; usar sugerencias requiere acción humana y deja los campos editables.
+    reason: Se observaron campos y escrituras del consumidor con éxito, fallos, respuestas tardías, edición y reintento de guardado.
+    verification: E2E del formulario contra este sustituto HTTP; guardar usa los endpoints existentes únicamente después de la acción explícita. El proveedor real conservó hash y conteo de los 55 medios.
+    source: e2e/podcast-metadata.spec.ts; features/media/evidence/4.9-live.json
+    updated_at: "2026-11-15"
+  - id: upstream-failures
+    status: supported
+    claim: El consumidor mantiene la edición manual ante unavailable, 403, 429, 500, 503 y JSON con valores inválidos en los escenarios simulados.
+    reason: Fallos inyectados en la frontera HTTP y valores manuales comprobados después de cada respuesta.
+    verification: Simulación local con CLI 1.76.0; cada fallo permite reintentar. No se provocaron fallos en el proveedor real.
+    source: postman/mocks/podcast-metadata-erp/default.js; e2e/podcast-metadata.spec.ts
+    updated_at: "2026-11-15"
+fingerprints:
+  - id: frontend-49
+    date: "2026-11-15"
+    commit: 6b57cf5 más cambios locales 4.9.
+    cli: "1.76.0; status no implementado. Búsqueda de mock cloud omitida; sustituto construido del contrato local, sin inicialización ni publicación de workspace."

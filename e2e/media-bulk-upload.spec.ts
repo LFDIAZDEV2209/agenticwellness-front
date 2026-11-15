@@ -392,7 +392,7 @@ test("1.19 · respuesta de creación perdida reutiliza claves e ids con nombres 
     .fill("Título guardado");
   await save.click();
   await expect(save).toBeDisabled();
-  expect(http.updates).toHaveLength(2);
+  await expect.poll(() => http.updates.length).toBe(2);
   expect(http.updates[1].title).toBe("Título guardado");
   expect(http.draftBatches).toHaveLength(2);
 });
