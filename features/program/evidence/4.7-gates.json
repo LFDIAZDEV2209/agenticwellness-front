@@ -1,0 +1,112 @@
+{
+  "date": "2026-11-15",
+  "task": "4.7",
+  "frontendBase": "a7d66fe",
+  "backendContract": "3b6e09e / 4.4b",
+  "gates": {
+    "lint": {
+      "exitCode": 0
+    },
+    "typecheck": {
+      "exitCode": 0
+    },
+    "build": {
+      "exitCode": 0,
+      "routes": 91
+    },
+    "i18n": {
+      "exitCode": 0,
+      "missing": 0,
+      "newKeysPerDictionary": 22,
+      "baselineValuesUnchanged": true,
+      "dictionaryParity": true
+    },
+    "e2e": {
+      "provider": "local Postman simulation",
+      "passed": 25,
+      "failed": 0,
+      "seconds": 20.1
+    },
+    "visualMcp": {
+      "matrix": "ES/EN x 320/390/1440",
+      "overflow": false,
+      "pageErrors": 0,
+      "minimumMeasuredTextContrast": 6.81,
+      "citationMinimumTarget": "24 x 24 CSS pixels",
+      "keyboardFocusToSourceTab": true
+    }
+  },
+  "live": {
+    "api": "http://127.0.0.1:5122",
+    "apiInterception": false,
+    "getReader": 200,
+    "getMissingPermission": 403,
+    "getForeign": 404,
+    "readerUi": {
+      "profileVisible": true,
+      "summaryVisible": false,
+      "generationControlVisible": false,
+      "overflow": false
+    },
+    "anonymousRedirect": "/login",
+    "generation": {
+      "es": {
+        "post": 200,
+        "status": "ok",
+        "sameIdAndOriginalDateAfterGet": true
+      },
+      "en": {
+        "post": 200,
+        "status": "ok",
+        "sameIdAndOriginalDateAfterGet": true
+      },
+      "successfulPostCount": 2,
+      "model": "claude-haiku-4-5-20251001",
+      "readerPost": 403,
+      "readerNoGenerationControls": true,
+      "readerKeyboardSourceNavigation": true,
+      "realMcpMatrix": "ES/EN x 320/390/1440",
+      "overflow": false,
+      "pageErrors": 0
+    }
+  },
+  "limitations": [
+    "Postman CLI 1.76.0 does not support postman status; local contract mock used without publishing.",
+    "Impeccable launcher unavailable (exit 127); bounded manual visual audit plus contrast, keyboard and responsive MCP checks."
+  ],
+  "constraints": {
+    "push": false,
+    "tasksMdChanged": false,
+    "published": false,
+    "clinicalWritesOutsideFixture": false,
+    "duplicatedMeal": false,
+    "sharedStackRestarted": false
+  },
+  "status": "complete",
+  "dataPreservation": {
+    "fixtureMealCount": 1,
+    "r7IntakeCount": 33,
+    "cycleReviewRevision": 7,
+    "cyclePublicationUnchanged": true,
+    "nextPrescriptionUnchanged": true,
+    "onlyTwoNewAiDraftsInFixture": true,
+    "otherPatientsAiBriefsUnchanged": true
+  },
+  "cleanup": {
+    "ownClosed": [
+      "ERP3056",
+      "Postman4537/4538",
+      "CDP9238",
+      "CDP9239",
+      "CDP9240",
+      "ChromeDevTools isolated page4"
+    ],
+    "sharedLeftListening": [
+      "Auth5123",
+      "Gateway5080",
+      "API5122",
+      "AI8000",
+      "FoodAI8010"
+    ]
+  }
+}

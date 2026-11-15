@@ -1,0 +1,109 @@
+{
+  "live": true,
+  "apiInterception": false,
+  "role": "generator",
+  "patientId": "0c487f75-a462-4fda-894d-61c031441884",
+  "ready": true,
+  "events": [
+    {
+      "method": "GET",
+      "path": "/api/v1/program/erp/patients/0c487f75-a462-4fda-894d-61c031441884/ai-summary",
+      "httpStatus": 200,
+      "status": "empty",
+      "hasSummary": false,
+      "generatedAt": null,
+      "language": null,
+      "model": null,
+      "cacheControl": "no-store,no-cache"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/program/erp/patients/0c487f75-a462-4fda-894d-61c031441884/ai-summary",
+      "httpStatus": 200,
+      "status": "empty",
+      "hasSummary": false,
+      "generatedAt": null,
+      "language": null,
+      "model": null,
+      "cacheControl": "no-store,no-cache"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/program/erp/patients/0c487f75-a462-4fda-894d-61c031441884/ai-summary",
+      "httpStatus": 200,
+      "status": "ok",
+      "hasSummary": true,
+      "generatedAt": "2026-11-15T19:53:13.535777+00:00",
+      "language": "es",
+      "model": "claude-haiku-4-5-20251001",
+      "cacheControl": "no-store,no-cache"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/program/erp/patients/0c487f75-a462-4fda-894d-61c031441884/ai-summary",
+      "httpStatus": 200,
+      "status": "ok",
+      "hasSummary": true,
+      "generatedAt": "2026-11-15T19:53:13.535777+00:00",
+      "language": "es",
+      "model": "claude-haiku-4-5-20251001",
+      "cacheControl": "no-store,no-cache"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/program/erp/patients/0c487f75-a462-4fda-894d-61c031441884/ai-summary",
+      "httpStatus": 200,
+      "status": "empty",
+      "hasSummary": false,
+      "generatedAt": null,
+      "language": null,
+      "model": null,
+      "cacheControl": "no-store,no-cache"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/program/erp/patients/0c487f75-a462-4fda-894d-61c031441884/ai-summary",
+      "httpStatus": 200,
+      "status": "ok",
+      "hasSummary": true,
+      "generatedAt": "2026-11-15T19:53:39.032483+00:00",
+      "language": "en",
+      "model": "claude-haiku-4-5-20251001",
+      "cacheControl": "no-store,no-cache"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/program/erp/patients/0c487f75-a462-4fda-894d-61c031441884/ai-summary",
+      "httpStatus": 200,
+      "status": "ok",
+      "hasSummary": true,
+      "generatedAt": "2026-11-15T19:53:39.032483+00:00",
+      "language": "en",
+      "model": "claude-haiku-4-5-20251001",
+      "cacheControl": "no-store,no-cache"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/program/erp/patients/0c487f75-a462-4fda-894d-61c031441884/ai-summary",
+      "httpStatus": 200,
+      "status": "ok",
+      "hasSummary": true,
+      "generatedAt": "2026-11-15T19:53:13.535777+00:00",
+      "language": "es",
+      "model": "claude-haiku-4-5-20251001",
+      "cacheControl": "no-store,no-cache"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/program/erp/patients/0c487f75-a462-4fda-894d-61c031441884/ai-summary",
+      "httpStatus": 200,
+      "status": "ok",
+      "hasSummary": true,
+      "generatedAt": "2026-11-15T19:53:39.032483+00:00",
+      "language": "en",
+      "model": "claude-haiku-4-5-20251001",
+      "cacheControl": "no-store,no-cache"
+    }
+  ],
+  "pageErrors": []
+}

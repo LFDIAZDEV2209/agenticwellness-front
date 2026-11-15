@@ -1,0 +1,10 @@
+version: 1
+name: patient-summary-erp
+slug: patient-summary-erp
+protocol: http
+port: 4538
+interceptRequests: true
+scenarios:
+  - name: default
+    path: ./default.js
+    default: true

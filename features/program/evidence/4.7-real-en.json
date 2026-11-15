@@ -1,0 +1,30 @@
+{
+  "live": true,
+  "apiInterception": false,
+  "language": "en",
+  "before": {
+    "status": "empty",
+    "hasSummary": false
+  },
+  "pendingDisabled": true,
+  "httpStatus": 200,
+  "status": "ok",
+  "summary": {
+    "id": "1bc55ae4-cdfd-489d-8c3e-b84a726fb3c2",
+    "language": "en",
+    "isEstimate": true,
+    "generatedAt": "2026-11-15T19:53:39.032483+00:00",
+    "model": "claude-haiku-4-5-20251001",
+    "sourceCount": 2
+  },
+  "cacheControl": "no-store,no-cache",
+  "uiDate": "2026-11-15T19:53:39.032483+00:00",
+  "estimateLabelVisible": true,
+  "readback": {
+    "httpStatus": 200,
+    "status": "ok",
+    "id": "1bc55ae4-cdfd-489d-8c3e-b84a726fb3c2",
+    "generatedAt": "2026-11-15T19:53:39.032483+00:00",
+    "uiDate": "2026-11-15T19:53:39.032483+00:00"
+  }
+}

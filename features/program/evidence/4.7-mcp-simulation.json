@@ -1,0 +1,81 @@
+{
+  "simulated": true,
+  "provider": "Postman4.4b",
+  "results": [
+    {
+      "lang": "es",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "lang": "es",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "lang": "es",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "lang": "en",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "lang": "en",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "lang": "en",
+      "width": 1440,
+      "overflow": false
+    }
+  ],
+  "contrast": [
+    {
+      "tag": "P",
+      "ratio": 16.68,
+      "width": 574.078125,
+      "height": 24
+    },
+    {
+      "tag": "BUTTON",
+      "ratio": 16.68,
+      "width": 24.140625,
+      "height": 24
+    },
+    {
+      "tag": "BUTTON",
+      "ratio": 16.68,
+      "width": 26.953125,
+      "height": 24
+    },
+    {
+      "tag": "TIME",
+      "ratio": 6.81,
+      "width": 229.328125,
+      "height": 16
+    },
+    {
+      "tag": "BUTTON",
+      "ratio": 14.98,
+      "width": 24.140625,
+      "height": 24
+    },
+    {
+      "tag": "BUTTON",
+      "ratio": 14.98,
+      "width": 26.953125,
+      "height": 24
+    }
+  ],
+  "keyboard": {
+    "targetSelected": true,
+    "focusOnTarget": true,
+    "sourceIntervalVisible": true
+  },
+  "pageErrors": [],
+  "automaticPostCount": 0
+}

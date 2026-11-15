@@ -1,0 +1,30 @@
+purpose:
+  stands_in_for: API ERP de resumen de paciente, contrato 4.4b de BACK 3b6e09e.
+  unblocks: QA del frontend 4.7 sin escribir ni reiniciar el stack compartido.
+assumptions:
+  - id: explicit-generation
+    status: verified
+    claim: Abrir Resumen solo consulta GET; POST se envía únicamente por acción con Program.AiManage.
+    reason: El consumidor se ejecutó frente al sustituto local con casos positivos y negativos.
+    verification: 25/25 E2E; abrir y cambiar idioma solo GET, botón explícito un POST, deshabilitado durante la operación.
+    source: BACK docs/modules/program-progress/PATIENT-SUMMARY.md; e2e/patient-ai-summary.spec.ts
+    updated_at: "2026-11-15"
+  - id: failed-generation-preserves-date
+    status: verified
+    claim: Una generación fallida no presenta el borrador anterior como recién generado.
+    reason: Comprobado en UI contra el sustituto; no constituye prueba del proveedor real.
+    verification: post-unavailable, post-insufficient y post500 conservan generatedAt 2026-11-15T16:00:00Z y anuncian el fallo.
+    source: BACK 3b6e09e; postman/mocks/patient-summary-erp/default.js
+    updated_at: "2026-11-15"
+  - id: provider-integration
+    status: verified
+    claim: El runtime compartido devuelve el contrato, aplica permisos y alcance y persiste borradores del fixture.
+    reason: Recorrido UI real sin interceptación hasta Auth, API5122, IA8000 y PostgreSQL. No certifica cada frase, revocación de consentimiento durante la red ni cancelación del proveedor.
+    verification: POST ES y EN 200/ok, modelo claude-haiku-4-5-20251001, GET conserva ID y fecha. Lector GET200 sin botón y POST403, sin AiView GET403, ajeno GET404. Dos drafts solo del fixture; comida/cierre/R7 intactos. No se buscó mock publicado porque CLI1.76.0 rechaza postman status.
+    source: BACK 3b6e09e, PATIENT-SUMMARY.md; postman status -> unknown command
+    updated_at: "2026-11-15"
+fingerprints:
+  - id: frontend-47-development
+    date: "2026-11-15"
+    commit: a7d66fe más cambios locales 4.7
+    cli: "1.76.0"

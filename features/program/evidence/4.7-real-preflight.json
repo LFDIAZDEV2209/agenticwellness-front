@@ -1,0 +1,37 @@
+{
+  "live": true,
+  "apiInterception": false,
+  "patientId": "0c487f75-a462-4fda-894d-61c031441884",
+  "rows": [
+    {
+      "role": "nutritionist",
+      "status": 200,
+      "aiView": true,
+      "aiManage": false,
+      "profileView": true,
+      "result": "empty",
+      "hasSummary": false,
+      "cacheControl": "no-store,no-cache"
+    },
+    {
+      "role": "coordinator",
+      "status": 403,
+      "aiView": false,
+      "aiManage": false,
+      "profileView": true,
+      "result": 403,
+      "hasSummary": false,
+      "cacheControl": null
+    },
+    {
+      "role": "foreignNutritionist",
+      "status": 404,
+      "aiView": true,
+      "aiManage": false,
+      "profileView": true,
+      "result": 404,
+      "hasSummary": false,
+      "cacheControl": null
+    }
+  ]
+}

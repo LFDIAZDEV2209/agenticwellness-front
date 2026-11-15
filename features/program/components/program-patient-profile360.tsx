@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { ArrowLeft, RefreshCw, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePatientOverview } from "../hooks/use-patient-overview";
 import { useEnrollmentSnapshot } from "../hooks/use-enrollment-snapshot";
-import { useT } from "@/providers/i18n-provider";
+import { useI18n, useT } from "@/providers/i18n-provider";
 import { ProgramGamificacionTab } from "./program-gamificacion-tab";
 import { usePersistedTab } from "./chart-tabs";
 import {
@@ -31,6 +31,9 @@ import { fetchEnrollmentById } from "../services/program-enrollments-service";
 import type { ProgramEnrollment } from "../types";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { NutritionPatientSummary } from "@/features/nutrition/components/nutrition-patient-summary";
+import { PatientAiSummaryPanel, patientSummarySectionLabels } from "./patient-ai-summary";
+import { formatSummaryDate } from "../services/patient-ai-summary-service";
+import type { PatientSummarySource } from "../types/patient-ai-summary";
 
 interface ProgramPatientProfile360Props {
   patientId: string;
@@ -47,6 +50,9 @@ export function ProgramPatientProfile360({
 }: ProgramPatientProfile360Props) {
   void _onBack;
   const t = useT();
+  const { lang } = useI18n();
+  const profileTabs = useRef<HTMLDivElement>(null);
+  const [summarySource, setSummarySource] = useState<{ patientId: string; tab: string; source: PatientSummarySource } | null>(null);
   const [activeTab, setActiveTab] = usePersistedTab(
     "perfil360:unified-v3",
     "resumen",
@@ -78,6 +84,14 @@ export function ProgramPatientProfile360({
   const safeTab = tabs.some((tab) => tab.key === migratedTab)
     ? migratedTab
     : "resumen";
+
+  function openSummarySource(source: PatientSummarySource) {
+    const tab = source.section === "nutrition" ? "nutricion"
+      : ["tests", "measurements", "alerts"].includes(source.section) ? "seguimiento" : "plan-semanal";
+    setSummarySource({ patientId, tab, source });
+    setActiveTab(tab);
+    profileTabs.current?.querySelector<HTMLButtonElement>(`[data-profile-tab="${tab}"]`)?.focus();
+  }
 
   const enrollmentId = data?.enrollment?.enrollment_id ?? null;
   const {
@@ -157,8 +171,9 @@ export function ProgramPatientProfile360({
 
   return (
     <Tabs
+      ref={profileTabs}
       value={safeTab}
-      onValueChange={(value) => setActiveTab(String(value))}
+      onValueChange={(value) => { setSummarySource(current => current?.tab === String(value) ? current : null); setActiveTab(String(value)); }}
       className="min-w-0 gap-5"
     >
       <Link
@@ -187,6 +202,7 @@ export function ProgramPatientProfile360({
             <TabsTrigger
               key={tab.key}
               value={tab.key}
+              data-profile-tab={tab.key}
               className="min-h-11 px-4 text-muted-foreground"
             >
               {tab.label}
@@ -228,6 +244,10 @@ export function ProgramPatientProfile360({
         </div>
       </div>
 
+      {summarySource?.patientId === patientId && summarySource.tab === safeTab && <p role="status" className="text-sm text-muted-foreground" data-testid="patient-ai-source-context">
+        {t("Fuente consultada: {section}. Del {from} al {to}.", { section: t(patientSummarySectionLabels[summarySource.source.section]), from: formatSummaryDate(summarySource.source.from, lang), to: formatSummaryDate(summarySource.source.to, lang) })}
+      </p>}
+
       <TabsContent value="resumen" className="flex flex-col gap-5">
         {/* Biometría: figura + zonas + mediciones exactas en el mismo box */}
         {biometriaLoading ? (
@@ -250,7 +270,7 @@ export function ProgramPatientProfile360({
 
         {/* Resto del resumen sin hero (ya renderizado arriba) — Misiones ya va dentro del box de biometría para poblar el espacio en blanco */}
         {loading ? null : error ? null : data ? (
-          <PatientResumenBody data={data} hideMisiones />
+          <PatientResumenBody data={data} hideMisiones summary={<PatientAiSummaryPanel patientId={patientId} onOpenSource={openSummarySource} />} />
         ) : null}
 
         {/* Historial biometría: tabla semanal (el heatmap vive en Gamificación) */}

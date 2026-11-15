@@ -4,7 +4,7 @@ import { chartGradient } from "@/lib/ui/rainbow";
 
 import { colorTint, RAINBOW_SERIES } from "@/lib/ui/rainbow";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -25,8 +25,6 @@ import {
   Weight,
   Droplet,
   Activity,
-  Sparkles,
-  Clock,
 } from "lucide-react";
 import {
   RadarChart,
@@ -68,6 +66,7 @@ import {
 } from "../services/program-erp-constants";
 import { ChartTabs, usePersistedTab } from "./chart-tabs";
 import type { BiometriaPatientDetail } from "../types/erp";
+import { PatientAiSummaryPanel } from "./patient-ai-summary";
 
 // --- Componente principal ---
 
@@ -106,7 +105,7 @@ export function ProgramPatientOverviewPage({
         <PatientError message={error} onRetry={retry} />
       ) : data ? (
         <div className="flex flex-col gap-6">
-          <PatientResumenSections data={data} />
+          <PatientResumenSections data={data} summary={<PatientAiSummaryPanel patientId={patientId} />} />
           <PatientClinicaSections data={data} />
         </div>
       ) : (
@@ -228,9 +227,11 @@ export function PatientResumenHero({
 export function PatientResumenBody({
   data,
   hideMisiones,
+  summary,
 }: {
   data: import("../types/erp").PatientOverviewDto;
   hideMisiones?: boolean;
+  summary?: ReactNode;
 }) {
   return (
     <>
@@ -531,47 +532,22 @@ export function PatientResumenBody({
         </section>
       )}
 
-      {/* IA Analysis placeholder */}
-      <div className="rounded-2xl border border-border bg-card p-5">
-        <div className="flex items-start gap-4">
-          <div
-            className="flex size-11 shrink-0 items-center justify-center rounded-xl"
-            style={{ background: "linear-gradient(135deg, #7C3AED, #4C1D95)" }}
-          >
-            <Sparkles className="size-5 text-white" />
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-[11px] font-bold uppercase tracking-wide text-[#7C3AED]">
-              IA · Análisis individual
-            </span>
-            <span className="text-[15px] font-bold text-foreground">
-              Análisis inteligente
-            </span>
-            <p className="text-[12.5px] leading-relaxed text-muted-foreground">
-              El análisis IA de este paciente (fortalezas, áreas de mejora,
-              predicciones de racha y riesgo de abandono) estará disponible
-              próximamente.
-            </p>
-            <span className="mt-1 inline-flex w-fit items-center gap-1 rounded-full bg-info-soft px-2 py-0.5 text-[11px] font-semibold text-info-soft-foreground">
-              <Clock className="size-3" />
-              Próximamente
-            </span>
-          </div>
-        </div>
-      </div>
+      {summary}
     </>
   );
 }
 
 export function PatientResumenSections({
   data,
+  summary,
 }: {
   data: import("../types/erp").PatientOverviewDto;
+  summary?: ReactNode;
 }) {
   return (
     <div className="flex flex-col gap-6">
       <PatientResumenHero data={data} />
-      <PatientResumenBody data={data} />
+      <PatientResumenBody data={data} summary={summary} />
     </div>
   );
 }

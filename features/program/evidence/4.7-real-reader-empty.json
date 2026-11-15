@@ -1,0 +1,43 @@
+{
+  "live": true,
+  "apiInterception": false,
+  "role": "nutritionist",
+  "patientId": "0c487f75-a462-4fda-894d-61c031441884",
+  "ready": true,
+  "events": [
+    {
+      "method": "GET",
+      "path": "/api/v1/program/erp/patients/0c487f75-a462-4fda-894d-61c031441884/ai-summary",
+      "httpStatus": 200,
+      "status": "empty",
+      "hasSummary": false,
+      "generatedAt": null,
+      "language": null,
+      "model": null,
+      "cacheControl": "no-store,no-cache"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/program/erp/patients/0c487f75-a462-4fda-894d-61c031441884/ai-summary",
+      "httpStatus": 200,
+      "status": "empty",
+      "hasSummary": false,
+      "generatedAt": null,
+      "language": null,
+      "model": null,
+      "cacheControl": "no-store,no-cache"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/program/erp/patients/0c487f75-a462-4fda-894d-61c031441884/ai-summary",
+      "httpStatus": 200,
+      "status": "empty",
+      "hasSummary": false,
+      "generatedAt": null,
+      "language": null,
+      "model": null,
+      "cacheControl": "no-store,no-cache"
+    }
+  ],
+  "pageErrors": []
+}

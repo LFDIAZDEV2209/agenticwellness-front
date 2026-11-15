@@ -1,0 +1,42 @@
+{
+  "readOnlyVerification": true,
+  "intakeCounts": [
+    {
+      "patientId": "0c487f75-a462-4fda-894d-61c031441884",
+      "count": 1
+    },
+    {
+      "patientId": "ef59c692-d01a-4105-b3ea-05c07ff76279",
+      "count": 33
+    }
+  ],
+  "fixtureCycleReview": {
+    "revision": 7,
+    "publishedAt": "2026-11-15 18:37:50.801194+00:00",
+    "nextPrescriptionId": "91a41a69-02ba-49d6-8145-49d68ab3ca96"
+  },
+  "otherPatientsAiBriefs": {
+    "count": 0,
+    "digest": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "fixtureAiBriefs": [
+    {
+      "id": "57a057b1-d2b5-4967-88f1-e8ee0c84de24",
+      "state": "draft",
+      "language": "es",
+      "generatedAt": "2026-11-15T19:53:13.535777+00:00",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    {
+      "id": "1bc55ae4-cdfd-489d-8c3e-b84a726fb3c2",
+      "state": "draft",
+      "language": "en",
+      "generatedAt": "2026-11-15T19:53:39.032483+00:00",
+      "model": "claude-haiku-4-5-20251001"
+    }
+  ],
+  "unchangedIntake": true,
+  "unchangedCycleReview": true,
+  "unchangedOtherPatientsAiBriefs": true,
+  "onlyTwoNewDraftsInFixture": true
+}
