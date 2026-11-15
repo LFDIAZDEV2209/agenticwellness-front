@@ -1,0 +1,68 @@
+{
+  "date": "2026-11-15",
+  "complete": false,
+  "erpBase": "39a86c5864882ba54e4913ac19d49960a4fd4949",
+  "backend": "eb181a8",
+  "aiService": "51fb0d0",
+  "app": "24f8eb4",
+  "apiInterception": false,
+  "fixture": {
+    "patientId": "0c487f75-a462-4fda-894d-61c031441884",
+    "cycleId": "f06b7491-1bb7-4798-b560-fa8a8d9aaacf",
+    "intakeLogsAfterFailure": 0,
+    "targetReviewPublishedAt": null,
+    "targetReviewRevision": 2,
+    "preservedR7IntakeLogs": 33
+  },
+  "preflight": {
+    "passed": 1,
+    "failed": 0,
+    "roles": ["patient", "nutritionist", "coordinator", "foreignNutritionist"],
+    "ownAccessStatus": 200,
+    "foreignNutritionistStatus": 404,
+    "coordinatorPhotosPermission": false,
+    "authAudiencesVerified": ["app", "erp"]
+  },
+  "storage": {
+    "provider": "S3 efectivo, comprobado por codex-back",
+    "privateUpload": true,
+    "signedDownload": true,
+    "sameBytes": 32686,
+    "visibleToPatient": false
+  },
+  "fullJourney": {
+    "passed": 0,
+    "failed": 1,
+    "lastCompletedStage": "Login UI APP, Nutrición, Foto IA, selección JPEG y envío real de análisis",
+    "request": "POST /api/v1/foodai/analyze?language=es",
+    "status": 500,
+    "correlationId": "6e08da7fb38a44cfb051497031309799",
+    "failedUtc": "2026-11-15T12:48:03Z",
+    "upstream": "http://localhost:8010/analyze",
+    "cause": "HttpRequestException / SocketException 10061: connection refused",
+    "pending": "Orquestador levanta y verifica Food AI 8010; repetir recorrido completo sin stubs."
+  },
+  "mcpBeforePublication": {
+    "languages": ["es", "en"],
+    "widths": [320, 390, 1440],
+    "source": "Publicación anterior real de la fixture",
+    "plan": "ready",
+    "history": "empty",
+    "pageErrors": 0,
+    "horizontalOverflow": false,
+    "console": "Se observaron avisos; CDP mostró401/502 previos sin atribución de ruta. No se afirma consola limpia integral. Ventana posterior de recarga sinHTTP>=400."
+  },
+  "checks": {
+    "lint": "passed",
+    "typecheck": "passed",
+    "build": "passed",
+    "i18nMissing": 0
+  },
+  "cleanup": {
+    "ownBrowsers": "closed",
+    "ownServers3056And5182": "stopped",
+    "ownCdp9236": "stopped",
+    "sharedStack": "untouched",
+    "qaFixtureAndCredentials": "preserved for resumption"
+  }
+}
