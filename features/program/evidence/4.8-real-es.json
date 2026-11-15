@@ -1,0 +1,47 @@
+{
+  "live": true,
+  "apiInterception": false,
+  "language": "es",
+  "httpStatus": 200,
+  "status": "ok",
+  "draft": {
+    "id": "c5feb743-6b7e-454f-9a43-b7a8aa4f729d",
+    "model": "claude-haiku-4-5-20251001",
+    "generatedAt": "2026-11-15T20:40:45.140431+00:00",
+    "isEstimate": true,
+    "stale": false,
+    "language": "es",
+    "planVersion": "d050f121a9c0cf44d8d66364b4561242d6b46ac4453187926ffd4533f4edaa59",
+    "startDate": "2026-11-16",
+    "endDate": "2026-11-22",
+    "suggestions": [
+      {
+        "index": 0,
+        "date": "2026-11-16",
+        "slotKind": "podcast",
+        "kind": "podcast",
+        "resourceId": "8a63f672-b6f5-4898-84ef-ad1c109e62c5",
+        "state": "draft"
+      },
+      {
+        "index": 1,
+        "date": "2026-11-19",
+        "slotKind": "podcast",
+        "kind": "podcast",
+        "resourceId": "1de2fa75-c6e0-40bf-a309-c5674466b180",
+        "state": "draft"
+      },
+      {
+        "index": 2,
+        "date": "2026-11-20",
+        "slotKind": "podcast",
+        "kind": "podcast",
+        "resourceId": "3593c356-252f-42f5-abbc-e4c8ae2ddb0f",
+        "state": "draft"
+      }
+    ]
+  },
+  "cacheControl": "no-store,no-cache",
+  "estimateLabelVisible": true,
+  "uiDate": "2026-11-15T20:40:45.140431+00:00"
+}

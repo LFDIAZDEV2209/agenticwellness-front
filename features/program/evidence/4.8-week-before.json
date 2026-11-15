@@ -1,0 +1,395 @@
+{
+  "live": true,
+  "enrollmentId": "81fffb60-6164-4820-ba1e-780c60739c1f",
+  "weekNumber": 2,
+  "weekMetadataDigest": "8dc956096f707a5e7c1fef6eb6d1ea52644cfcd6f2a67940fbfcc57282f6973d",
+  "days": {
+    "2026-11-16": "98f0eaaae5369e4d5912f8a16d34c2fcf8f97696d0f904622eb8c1bb0d6cc271",
+    "2026-11-17": "481098b15416df1bb487f50dacdec5b2cb75d2c399899febccc9e994c052e065",
+    "2026-11-18": "d9073d6483e09fa315ef3f7cfa15e1e3c800afe1142907a0c4487816d36d98e8",
+    "2026-11-19": "a7c444892190ae7d96fd532d4f4c264125bcf02ab0a525d5150c8e983a8a8b53",
+    "2026-11-20": "9e31d1e69ed0b18e51307c93322811d037928f397a140662fabe62364f8e8526",
+    "2026-11-21": "5868ece400036984cf72cf0a6789731f4dc3f23516632643a71fd1d92687fb56",
+    "2026-11-22": "a322bc50d4694fbb710fa192b763dc23de35d25489522d7e7abadc374e6e91c7"
+  },
+  "cells": [
+    {
+      "date": "2026-11-16",
+      "code": "podcast",
+      "digest": "20d7898dd1f0186714c96dcdd9b136b5c27d0b03ee930251d5396f11b66dcd92",
+      "points": 0,
+      "scheduledPoints": 80,
+      "source": "missing",
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-16",
+      "code": "vitals",
+      "digest": "de6aeb0a44067663bc10431ba31b0e3b49e5c26f0d19f365da2622dd1aedcbd4",
+      "points": 0,
+      "scheduledPoints": 120,
+      "source": null,
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-16",
+      "code": "nut",
+      "digest": "586d50c74c3d78f7f582b869f9959cc4fc191fc72fc85ac1afd8a0230e86f0ba",
+      "points": 0,
+      "scheduledPoints": 150,
+      "source": "prescription",
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-16",
+      "code": "ejercicio",
+      "digest": "5807926625222113a6a88688fae4ac9a467eb8b03e1c6321834e17cabd1478d3",
+      "points": 0,
+      "scheduledPoints": 150,
+      "source": "template_generic",
+      "resourceId": "616875c0-9eb0-4f59-85d0-759d2ec7b8b6"
+    },
+    {
+      "date": "2026-11-16",
+      "code": "nutraceutico",
+      "digest": "2bbf95c36240ec6757d5376cd3a7e120cc77cfcf261ac58af5ba63858681d170",
+      "points": 0,
+      "scheduledPoints": 80,
+      "source": null,
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-16",
+      "code": "emocional",
+      "digest": "354acbaf852e235e6fe3f675139568183f0b6ef5d8db1f060ded34f627c1c3a4",
+      "points": 0,
+      "scheduledPoints": 120,
+      "source": null,
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-17",
+      "code": "podcast",
+      "digest": "e4c9559ef7aa99d9dd9d48316b2e5924456b1e6424d1ecb5d5a1f9c02a14100b",
+      "points": 0,
+      "scheduledPoints": 80,
+      "source": "template_generic",
+      "resourceId": "8a63f672-b6f5-4898-84ef-ad1c109e62c5"
+    },
+    {
+      "date": "2026-11-17",
+      "code": "vitals",
+      "digest": "de6aeb0a44067663bc10431ba31b0e3b49e5c26f0d19f365da2622dd1aedcbd4",
+      "points": 0,
+      "scheduledPoints": 120,
+      "source": null,
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-17",
+      "code": "nut",
+      "digest": "586d50c74c3d78f7f582b869f9959cc4fc191fc72fc85ac1afd8a0230e86f0ba",
+      "points": 0,
+      "scheduledPoints": 150,
+      "source": "prescription",
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-17",
+      "code": "ejercicio",
+      "digest": "a25d7f0eac7b507f21995886ef057934d51ee5088c8d7d055fcdec7f5406df9f",
+      "points": 0,
+      "scheduledPoints": 150,
+      "source": "template_generic",
+      "resourceId": "7b659252-93e3-4f69-8d8a-95a9212cac65"
+    },
+    {
+      "date": "2026-11-17",
+      "code": "nutraceutico",
+      "digest": "2bbf95c36240ec6757d5376cd3a7e120cc77cfcf261ac58af5ba63858681d170",
+      "points": 0,
+      "scheduledPoints": 80,
+      "source": null,
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-17",
+      "code": "emocional",
+      "digest": "354acbaf852e235e6fe3f675139568183f0b6ef5d8db1f060ded34f627c1c3a4",
+      "points": 0,
+      "scheduledPoints": 120,
+      "source": null,
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-18",
+      "code": "podcast",
+      "digest": "20d7898dd1f0186714c96dcdd9b136b5c27d0b03ee930251d5396f11b66dcd92",
+      "points": 0,
+      "scheduledPoints": 80,
+      "source": "missing",
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-18",
+      "code": "vitals",
+      "digest": "de6aeb0a44067663bc10431ba31b0e3b49e5c26f0d19f365da2622dd1aedcbd4",
+      "points": 0,
+      "scheduledPoints": 120,
+      "source": null,
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-18",
+      "code": "nut",
+      "digest": "586d50c74c3d78f7f582b869f9959cc4fc191fc72fc85ac1afd8a0230e86f0ba",
+      "points": 0,
+      "scheduledPoints": 150,
+      "source": "prescription",
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-18",
+      "code": "ejercicio",
+      "digest": "e14a207e735df08ce10b8a4c1b46131ab35479242783512806cee47a47cbb60f",
+      "points": 0,
+      "scheduledPoints": 150,
+      "source": "template_generic",
+      "resourceId": "c2750ded-8711-48cf-a645-f2cccf1b9d06"
+    },
+    {
+      "date": "2026-11-18",
+      "code": "nutraceutico",
+      "digest": "2bbf95c36240ec6757d5376cd3a7e120cc77cfcf261ac58af5ba63858681d170",
+      "points": 0,
+      "scheduledPoints": 80,
+      "source": null,
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-18",
+      "code": "emocional",
+      "digest": "354acbaf852e235e6fe3f675139568183f0b6ef5d8db1f060ded34f627c1c3a4",
+      "points": 0,
+      "scheduledPoints": 120,
+      "source": null,
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-19",
+      "code": "podcast",
+      "digest": "20d7898dd1f0186714c96dcdd9b136b5c27d0b03ee930251d5396f11b66dcd92",
+      "points": 0,
+      "scheduledPoints": 80,
+      "source": "missing",
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-19",
+      "code": "vitals",
+      "digest": "de6aeb0a44067663bc10431ba31b0e3b49e5c26f0d19f365da2622dd1aedcbd4",
+      "points": 0,
+      "scheduledPoints": 120,
+      "source": null,
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-19",
+      "code": "nut",
+      "digest": "586d50c74c3d78f7f582b869f9959cc4fc191fc72fc85ac1afd8a0230e86f0ba",
+      "points": 0,
+      "scheduledPoints": 150,
+      "source": "prescription",
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-19",
+      "code": "ejercicio",
+      "digest": "6e5d76727b2796477c7df12c8f798ed0981269527c947c7d9d3c6441ec7aa5f9",
+      "points": 0,
+      "scheduledPoints": 150,
+      "source": "template_generic",
+      "resourceId": "854dd054-1d19-4d5b-a4db-dee1ca3271f7"
+    },
+    {
+      "date": "2026-11-19",
+      "code": "nutraceutico",
+      "digest": "2bbf95c36240ec6757d5376cd3a7e120cc77cfcf261ac58af5ba63858681d170",
+      "points": 0,
+      "scheduledPoints": 80,
+      "source": null,
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-19",
+      "code": "emocional",
+      "digest": "354acbaf852e235e6fe3f675139568183f0b6ef5d8db1f060ded34f627c1c3a4",
+      "points": 0,
+      "scheduledPoints": 120,
+      "source": null,
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-20",
+      "code": "podcast",
+      "digest": "20d7898dd1f0186714c96dcdd9b136b5c27d0b03ee930251d5396f11b66dcd92",
+      "points": 0,
+      "scheduledPoints": 80,
+      "source": "missing",
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-20",
+      "code": "vitals",
+      "digest": "de6aeb0a44067663bc10431ba31b0e3b49e5c26f0d19f365da2622dd1aedcbd4",
+      "points": 0,
+      "scheduledPoints": 120,
+      "source": null,
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-20",
+      "code": "nut",
+      "digest": "586d50c74c3d78f7f582b869f9959cc4fc191fc72fc85ac1afd8a0230e86f0ba",
+      "points": 0,
+      "scheduledPoints": 150,
+      "source": "prescription",
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-20",
+      "code": "ejercicio",
+      "digest": "3c689124973b6120ede4f25a20d60183745285163663229c2bd4bf6045d8966a",
+      "points": 0,
+      "scheduledPoints": 150,
+      "source": "template_generic",
+      "resourceId": "2cc7b85b-ed26-47e9-965e-29220bce4489"
+    },
+    {
+      "date": "2026-11-20",
+      "code": "nutraceutico",
+      "digest": "2bbf95c36240ec6757d5376cd3a7e120cc77cfcf261ac58af5ba63858681d170",
+      "points": 0,
+      "scheduledPoints": 80,
+      "source": null,
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-20",
+      "code": "emocional",
+      "digest": "354acbaf852e235e6fe3f675139568183f0b6ef5d8db1f060ded34f627c1c3a4",
+      "points": 0,
+      "scheduledPoints": 120,
+      "source": null,
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-21",
+      "code": "podcast",
+      "digest": "20d7898dd1f0186714c96dcdd9b136b5c27d0b03ee930251d5396f11b66dcd92",
+      "points": 0,
+      "scheduledPoints": 80,
+      "source": "missing",
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-21",
+      "code": "vitals",
+      "digest": "de6aeb0a44067663bc10431ba31b0e3b49e5c26f0d19f365da2622dd1aedcbd4",
+      "points": 0,
+      "scheduledPoints": 120,
+      "source": null,
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-21",
+      "code": "nut",
+      "digest": "586d50c74c3d78f7f582b869f9959cc4fc191fc72fc85ac1afd8a0230e86f0ba",
+      "points": 0,
+      "scheduledPoints": 150,
+      "source": "prescription",
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-21",
+      "code": "ejercicio",
+      "digest": "3c689124973b6120ede4f25a20d60183745285163663229c2bd4bf6045d8966a",
+      "points": 0,
+      "scheduledPoints": 150,
+      "source": "template_generic",
+      "resourceId": "2cc7b85b-ed26-47e9-965e-29220bce4489"
+    },
+    {
+      "date": "2026-11-21",
+      "code": "nutraceutico",
+      "digest": "2bbf95c36240ec6757d5376cd3a7e120cc77cfcf261ac58af5ba63858681d170",
+      "points": 0,
+      "scheduledPoints": 80,
+      "source": null,
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-21",
+      "code": "emocional",
+      "digest": "354acbaf852e235e6fe3f675139568183f0b6ef5d8db1f060ded34f627c1c3a4",
+      "points": 0,
+      "scheduledPoints": 120,
+      "source": null,
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-22",
+      "code": "podcast",
+      "digest": "7c1c55bbbbbbf9c2cd7de7c5ae2804e5210ef7d65018de7d24c12197c55288b1",
+      "points": 0,
+      "scheduledPoints": 80,
+      "source": "template_generic",
+      "resourceId": "ed1e3490-1e91-41a9-ba17-611941b0dd31"
+    },
+    {
+      "date": "2026-11-22",
+      "code": "vitals",
+      "digest": "de6aeb0a44067663bc10431ba31b0e3b49e5c26f0d19f365da2622dd1aedcbd4",
+      "points": 0,
+      "scheduledPoints": 120,
+      "source": null,
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-22",
+      "code": "nut",
+      "digest": "586d50c74c3d78f7f582b869f9959cc4fc191fc72fc85ac1afd8a0230e86f0ba",
+      "points": 0,
+      "scheduledPoints": 150,
+      "source": "prescription",
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-22",
+      "code": "ejercicio",
+      "digest": "3c689124973b6120ede4f25a20d60183745285163663229c2bd4bf6045d8966a",
+      "points": 0,
+      "scheduledPoints": 150,
+      "source": "template_generic",
+      "resourceId": "2cc7b85b-ed26-47e9-965e-29220bce4489"
+    },
+    {
+      "date": "2026-11-22",
+      "code": "nutraceutico",
+      "digest": "2bbf95c36240ec6757d5376cd3a7e120cc77cfcf261ac58af5ba63858681d170",
+      "points": 0,
+      "scheduledPoints": 80,
+      "source": null,
+      "resourceId": null
+    },
+    {
+      "date": "2026-11-22",
+      "code": "emocional",
+      "digest": "354acbaf852e235e6fe3f675139568183f0b6ef5d8db1f060ded34f627c1c3a4",
+      "points": 0,
+      "scheduledPoints": 120,
+      "source": null,
+      "resourceId": null
+    }
+  ]
+}

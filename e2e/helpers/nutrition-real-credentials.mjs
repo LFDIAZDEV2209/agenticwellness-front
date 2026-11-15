@@ -5,7 +5,7 @@ import { execFileSync } from "node:child_process";
  * @returns {string}
  */
 export function readQaPassword(target) {
-  if (!["CoppAddresd/QA/3.20/", "CoppAddresd/QA/4.7/"].some(prefix => target.startsWith(prefix)))
+  if (!["CoppAddresd/QA/3.20/", "CoppAddresd/QA/4.7/", "CoppAddresd/QA/4.8/"].some(prefix => target.startsWith(prefix)))
     throw new Error("Credencial ajena a las fixtures QA autorizadas.");
   const code = [
     "import ctypes, ctypes.wintypes as w, json, sys",

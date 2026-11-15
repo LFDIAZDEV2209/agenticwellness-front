@@ -1,0 +1,88 @@
+{
+  "simulated": true,
+  "postContrastCorrection": true,
+  "contrast": [
+    {
+      "tag": "H2",
+      "slot": "alert-dialog-title",
+      "ratio": 16.68
+    },
+    {
+      "tag": "P",
+      "slot": "alert-dialog-description",
+      "ratio": 7.58
+    },
+    {
+      "tag": "P",
+      "slot": null,
+      "ratio": 16.68
+    },
+    {
+      "tag": "H3",
+      "slot": null,
+      "ratio": 7.58
+    },
+    {
+      "tag": "P",
+      "slot": null,
+      "ratio": 16.68
+    },
+    {
+      "tag": "H3",
+      "slot": null,
+      "ratio": 7.12
+    },
+    {
+      "tag": "P",
+      "slot": null,
+      "ratio": 15.67
+    },
+    {
+      "tag": "P",
+      "slot": null,
+      "ratio": 16.68
+    },
+    {
+      "tag": "BUTTON",
+      "slot": "alert-dialog-cancel",
+      "ratio": 14.86
+    },
+    {
+      "tag": "BUTTON",
+      "slot": "alert-dialog-action",
+      "ratio": 6.15
+    }
+  ],
+  "results": [
+    {
+      "lang": "en",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "lang": "en",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "lang": "en",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "lang": "es",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "lang": "es",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "lang": "es",
+      "width": 1440,
+      "overflow": false
+    }
+  ]
+}

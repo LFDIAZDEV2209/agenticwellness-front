@@ -1,0 +1,212 @@
+{
+  "live": true,
+  "apiInterception": false,
+  "role": "generator",
+  "patientId": "0c487f75-a462-4fda-894d-61c031441884",
+  "week": 2,
+  "ready": true,
+  "events": [
+    {
+      "method": "GET",
+      "path": "/api/v1/program/erp/enrollments/81fffb60-6164-4820-ba1e-780c60739c1f/weeks/2/ai-suggestions",
+      "httpStatus": 200,
+      "status": "empty",
+      "draftId": null,
+      "language": null,
+      "generatedAt": null,
+      "model": null,
+      "stale": null,
+      "suggestions": null,
+      "appliedIndex": null,
+      "cacheControl": "no-store,no-cache"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/program/erp/enrollments/81fffb60-6164-4820-ba1e-780c60739c1f/weeks/2/ai-suggestions",
+      "httpStatus": 200,
+      "status": "ok",
+      "draftId": "58b43033-5f52-4610-ba73-96364ac46f51",
+      "language": "en",
+      "generatedAt": "2026-11-15T20:40:14.250137+00:00",
+      "model": "claude-haiku-4-5-20251001",
+      "stale": false,
+      "suggestions": [],
+      "appliedIndex": null,
+      "cacheControl": "no-store,no-cache"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/program/erp/enrollments/81fffb60-6164-4820-ba1e-780c60739c1f/weeks/2/ai-suggestions",
+      "httpStatus": 200,
+      "status": "empty",
+      "draftId": null,
+      "language": null,
+      "generatedAt": null,
+      "model": null,
+      "stale": null,
+      "suggestions": null,
+      "appliedIndex": null,
+      "cacheControl": "no-store,no-cache"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/program/erp/enrollments/81fffb60-6164-4820-ba1e-780c60739c1f/weeks/2/ai-suggestions",
+      "httpStatus": 200,
+      "status": "ok",
+      "draftId": "c5feb743-6b7e-454f-9a43-b7a8aa4f729d",
+      "language": "es",
+      "generatedAt": "2026-11-15T20:40:45.140431+00:00",
+      "model": "claude-haiku-4-5-20251001",
+      "stale": false,
+      "suggestions": [
+        {
+          "index": 0,
+          "date": "2026-11-16",
+          "kind": "podcast",
+          "state": "draft",
+          "appliedAt": null,
+          "appliedBy": null
+        },
+        {
+          "index": 1,
+          "date": "2026-11-19",
+          "kind": "podcast",
+          "state": "draft",
+          "appliedAt": null,
+          "appliedBy": null
+        },
+        {
+          "index": 2,
+          "date": "2026-11-20",
+          "kind": "podcast",
+          "state": "draft",
+          "appliedAt": null,
+          "appliedBy": null
+        }
+      ],
+      "appliedIndex": null,
+      "cacheControl": "no-store,no-cache"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/program/erp/enrollments/81fffb60-6164-4820-ba1e-780c60739c1f/weeks/2/ai-suggestions/c5feb743-6b7e-454f-9a43-b7a8aa4f729d/suggestions/0/apply",
+      "httpStatus": 200,
+      "status": "applied",
+      "draftId": "c5feb743-6b7e-454f-9a43-b7a8aa4f729d",
+      "language": null,
+      "generatedAt": null,
+      "model": null,
+      "stale": null,
+      "suggestions": null,
+      "appliedIndex": 0,
+      "cacheControl": "no-store,no-cache"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/program/erp/enrollments/81fffb60-6164-4820-ba1e-780c60739c1f/weeks/2/ai-suggestions",
+      "httpStatus": 200,
+      "status": "ok",
+      "draftId": "c5feb743-6b7e-454f-9a43-b7a8aa4f729d",
+      "language": "es",
+      "generatedAt": "2026-11-15T20:40:45.140431+00:00",
+      "model": "claude-haiku-4-5-20251001",
+      "stale": false,
+      "suggestions": [
+        {
+          "index": 0,
+          "date": "2026-11-16",
+          "kind": "podcast",
+          "state": "applied",
+          "appliedAt": "2026-11-15T20:42:32.9639597+00:00",
+          "appliedBy": "01a1e0c2-3b80-7997-b2a8-7eb8897e5bc6"
+        },
+        {
+          "index": 1,
+          "date": "2026-11-19",
+          "kind": "podcast",
+          "state": "draft",
+          "appliedAt": null,
+          "appliedBy": null
+        },
+        {
+          "index": 2,
+          "date": "2026-11-20",
+          "kind": "podcast",
+          "state": "draft",
+          "appliedAt": null,
+          "appliedBy": null
+        }
+      ],
+      "appliedIndex": null,
+      "cacheControl": "no-store,no-cache"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/program/erp/enrollments/81fffb60-6164-4820-ba1e-780c60739c1f/weeks/2/ai-suggestions",
+      "httpStatus": 200,
+      "status": "ok",
+      "draftId": "58b43033-5f52-4610-ba73-96364ac46f51",
+      "language": "en",
+      "generatedAt": "2026-11-15T20:40:14.250137+00:00",
+      "model": "claude-haiku-4-5-20251001",
+      "stale": true,
+      "suggestions": [],
+      "appliedIndex": null,
+      "cacheControl": "no-store,no-cache"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/program/erp/enrollments/81fffb60-6164-4820-ba1e-780c60739c1f/weeks/2/ai-suggestions",
+      "httpStatus": 200,
+      "status": "ok",
+      "draftId": "58b43033-5f52-4610-ba73-96364ac46f51",
+      "language": "en",
+      "generatedAt": "2026-11-15T20:40:14.250137+00:00",
+      "model": "claude-haiku-4-5-20251001",
+      "stale": true,
+      "suggestions": [],
+      "appliedIndex": null,
+      "cacheControl": "no-store,no-cache"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/program/erp/enrollments/81fffb60-6164-4820-ba1e-780c60739c1f/weeks/2/ai-suggestions",
+      "httpStatus": 200,
+      "status": "ok",
+      "draftId": "c5feb743-6b7e-454f-9a43-b7a8aa4f729d",
+      "language": "es",
+      "generatedAt": "2026-11-15T20:40:45.140431+00:00",
+      "model": "claude-haiku-4-5-20251001",
+      "stale": false,
+      "suggestions": [
+        {
+          "index": 0,
+          "date": "2026-11-16",
+          "kind": "podcast",
+          "state": "applied",
+          "appliedAt": "2026-11-15T20:42:32.9639597+00:00",
+          "appliedBy": "01a1e0c2-3b80-7997-b2a8-7eb8897e5bc6"
+        },
+        {
+          "index": 1,
+          "date": "2026-11-19",
+          "kind": "podcast",
+          "state": "draft",
+          "appliedAt": null,
+          "appliedBy": null
+        },
+        {
+          "index": 2,
+          "date": "2026-11-20",
+          "kind": "podcast",
+          "state": "draft",
+          "appliedAt": null,
+          "appliedBy": null
+        }
+      ],
+      "appliedIndex": null,
+      "cacheControl": "no-store,no-cache"
+    }
+  ],
+  "pageErrors": []
+}

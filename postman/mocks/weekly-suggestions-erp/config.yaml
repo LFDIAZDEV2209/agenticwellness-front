@@ -1,0 +1,10 @@
+version: 1
+name: weekly-suggestions-erp
+slug: weekly-suggestions-erp
+protocol: http
+port: 4540
+interceptRequests: true
+scenarios:
+  - name: default
+    path: ./default.js
+    default: true

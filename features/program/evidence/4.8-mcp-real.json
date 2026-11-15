@@ -1,0 +1,74 @@
+{
+  "live": true,
+  "apiInterception": false,
+  "postWrapCorrection": true,
+  "results": [
+    {
+      "language": "en",
+      "width": 320,
+      "viewportHeight": 1000,
+      "panelWidth": 238,
+      "horizontalOverflow": false,
+      "bodyHorizontalOverflow": false,
+      "suggestionCount": 0,
+      "uiDate": "2026-11-15T20:40:14.250137+00:00"
+    },
+    {
+      "language": "en",
+      "width": 390,
+      "viewportHeight": 1000,
+      "panelWidth": 308,
+      "horizontalOverflow": false,
+      "bodyHorizontalOverflow": false,
+      "suggestionCount": 0,
+      "uiDate": "2026-11-15T20:40:14.250137+00:00"
+    },
+    {
+      "language": "en",
+      "width": 1440,
+      "viewportHeight": 1000,
+      "panelWidth": 1102,
+      "horizontalOverflow": false,
+      "bodyHorizontalOverflow": false,
+      "suggestionCount": 0,
+      "uiDate": "2026-11-15T20:40:14.250137+00:00"
+    },
+    {
+      "language": "es",
+      "width": 320,
+      "viewportHeight": 1000,
+      "panelWidth": 238,
+      "horizontalOverflow": false,
+      "bodyHorizontalOverflow": false,
+      "suggestionCount": 3,
+      "uiDate": "2026-11-15T20:40:45.140431+00:00",
+      "confirmationWidth": 288,
+      "cancelInitiallyFocused": true
+    },
+    {
+      "language": "es",
+      "width": 390,
+      "viewportHeight": 1000,
+      "panelWidth": 308,
+      "horizontalOverflow": false,
+      "bodyHorizontalOverflow": false,
+      "suggestionCount": 3,
+      "uiDate": "2026-11-15T20:40:45.140431+00:00",
+      "confirmationWidth": 358,
+      "cancelInitiallyFocused": true
+    },
+    {
+      "language": "es",
+      "width": 1440,
+      "viewportHeight": 1000,
+      "panelWidth": 1102,
+      "horizontalOverflow": false,
+      "bodyHorizontalOverflow": false,
+      "suggestionCount": 3,
+      "uiDate": "2026-11-15T20:40:45.140431+00:00",
+      "confirmationWidth": 512,
+      "cancelInitiallyFocused": true
+    }
+  ],
+  "englishDraftHasNoInventedAlternatives": true
+}

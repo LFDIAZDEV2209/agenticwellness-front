@@ -1,0 +1,11 @@
+{
+  "simulated": true,
+  "provider": "Postman ERP4.5b",
+  "scope": "Initial and final runs combined, including expected negative cases",
+  "uiRequestCount": 345,
+  "lookupCount": 297,
+  "generationCount": 15,
+  "applicationCount": 33,
+  "undefinedEndpointResponses": 0,
+  "mcpAutomaticPostCount": 0
+}

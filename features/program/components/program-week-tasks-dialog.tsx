@@ -20,6 +20,7 @@ import {
   type SelectedAgendaCell,
 } from "../hooks/use-week-agenda-editor";
 import { WeekAgendaCellPanel } from "./week-agenda-cell-panel";
+import { WeeklyAiSuggestions } from "./weekly-ai-suggestions";
 import { ProgramBulkAssignDialog } from "./editorial-agenda/program-bulk-assign-dialog";
 import { fetchEnrollmentWeek } from "../services/program-content-service";
 import type {
@@ -217,6 +218,7 @@ export function WeekTasksDialog({
   const key = `${enrollmentId}:${week.weekNumber}`;
   const [reload, setReload] = useState(0);
   const [copyOpen, setCopyOpen] = useState(false);
+  const [aiBusy, setAiBusy] = useState(false);
   const [resource, setResource] = useState<{
     key: string;
     data: EnrollmentWeekResponse | null;
@@ -254,7 +256,7 @@ export function WeekTasksDialog({
     },
   });
   const changeOpen = (next: boolean) => {
-    if (editor.saving) return;
+    if (editor.saving || aiBusy) return;
     if (!next) setResource(null);
     onOpenChange(next);
   };
@@ -274,7 +276,7 @@ export function WeekTasksDialog({
             <Button
               variant="outline"
               className="mt-3 min-h-11 self-start"
-              disabled={editor.saving}
+              disabled={editor.saving || aiBusy}
               onClick={() => setCopyOpen(true)}
             >
               {t("Copiar a otras semanas")}
@@ -282,6 +284,10 @@ export function WeekTasksDialog({
           )}
         </DialogHeader>
         <DialogBody className="flex flex-col gap-4" aria-busy={!current}>
+          {open && current?.data && <WeeklyAiSuggestions enrollmentId={enrollmentId} week={current.data}
+            editable={editor.editable} restEnabled={editor.restEnabled} disabled={editor.saving || !!editor.selected || copyOpen}
+            onBusyChange={setAiBusy} onReloadWeek={() => setReload(value => value + 1)}
+            onWeekChanged={(data) => { setResource({ key, data, error: false }); onChanged?.(); }} />}
           {!current ? (
             <div
               aria-label={t("Cargando agenda")}
@@ -317,7 +323,7 @@ export function WeekTasksDialog({
                 <AgendaDay
                   key={day.localDate}
                   day={day}
-                  onSelect={editor.canEdit ? editor.select : undefined}
+                  onSelect={editor.canEdit && !aiBusy ? editor.select : undefined}
                 />
               ))}
             </div>
@@ -340,7 +346,7 @@ export function WeekTasksDialog({
               {editor.undo && (
                 <Button
                   variant="outline"
-                  disabled={editor.saving}
+                  disabled={editor.saving || aiBusy}
                   onClick={editor.undoChange}
                 >
                   {t("Deshacer")}
@@ -350,7 +356,7 @@ export function WeekTasksDialog({
           )}
           <Button
             variant="outline"
-            disabled={editor.saving}
+            disabled={editor.saving || aiBusy}
             onClick={() => changeOpen(false)}
           >
             {t("Cerrar")}

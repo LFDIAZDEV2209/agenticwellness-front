@@ -1,0 +1,49 @@
+{
+  "simulated": true,
+  "provider": "Postman4.5b",
+  "results": [
+    {
+      "lang": "es",
+      "width": 320,
+      "overflow": false,
+      "cancelInitiallyFocused": true,
+      "focusRestored": true
+    },
+    {
+      "lang": "es",
+      "width": 390,
+      "overflow": false,
+      "cancelInitiallyFocused": true,
+      "focusRestored": true
+    },
+    {
+      "lang": "es",
+      "width": 1440,
+      "overflow": false,
+      "cancelInitiallyFocused": true,
+      "focusRestored": true
+    },
+    {
+      "lang": "en",
+      "width": 320,
+      "overflow": false,
+      "cancelInitiallyFocused": true,
+      "focusRestored": true
+    },
+    {
+      "lang": "en",
+      "width": 390,
+      "overflow": false,
+      "cancelInitiallyFocused": true,
+      "focusRestored": true
+    },
+    {
+      "lang": "en",
+      "width": 1440,
+      "overflow": false,
+      "cancelInitiallyFocused": true,
+      "focusRestored": true
+    }
+  ],
+  "applicationActions": 0
+}

@@ -1,0 +1,78 @@
+{
+  "live": true,
+  "replayStatus": "already_applied",
+  "auditCountBeforeReplay": 1,
+  "auditCountAfterReplay": 1,
+  "audit": {
+    "id": "1829eb7a-ee13-4be6-839d-9563398fdfe4",
+    "actorMatchesFixture": true,
+    "oldAndNewDiffer": true,
+    "metadata": {
+      "brief_id": "c5feb743-6b7e-454f-9a43-b7a8aa4f729d",
+      "confirmed": true,
+      "input_hash": "a8591f53451d06584e5018cf64c6135bff4e5a76fc65f0a9fd921b6ff8b7016b",
+      "plan_version": "d050f121a9c0cf44d8d66364b4561242d6b46ac4453187926ffd4533f4edaa59",
+      "suggestion_index": 0
+    }
+  },
+  "totalCells": 42,
+  "changedAssignments": [
+    {
+      "date": "2026-11-16",
+      "taskCode": "podcast",
+      "oldResourceId": null,
+      "newResourceId": "8a63f672-b6f5-4898-84ef-ad1c109e62c5",
+      "source": "individual"
+    }
+  ],
+  "unchangedOtherAssignments": 41,
+  "sourceOnlyNormalization": [
+    {
+      "date": "2026-11-16",
+      "taskCode": "ejercicio",
+      "before": "template_generic",
+      "after": "snapshot"
+    },
+    {
+      "date": "2026-11-17",
+      "taskCode": "ejercicio",
+      "before": "template_generic",
+      "after": "snapshot"
+    },
+    {
+      "date": "2026-11-18",
+      "taskCode": "ejercicio",
+      "before": "template_generic",
+      "after": "snapshot"
+    },
+    {
+      "date": "2026-11-19",
+      "taskCode": "ejercicio",
+      "before": "template_generic",
+      "after": "snapshot"
+    },
+    {
+      "date": "2026-11-20",
+      "taskCode": "ejercicio",
+      "before": "template_generic",
+      "after": "snapshot"
+    },
+    {
+      "date": "2026-11-21",
+      "taskCode": "ejercicio",
+      "before": "template_generic",
+      "after": "snapshot"
+    },
+    {
+      "date": "2026-11-22",
+      "taskCode": "ejercicio",
+      "before": "template_generic",
+      "after": "snapshot"
+    }
+  ],
+  "allEarnedAndScheduledXpUnchanged": true,
+  "dayAndWeekMetadataUnchanged": true,
+  "appliedActorMatchesFixture": true,
+  "esPartialDraftStale": false,
+  "enOtherDraftStale": true
+}

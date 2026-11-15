@@ -1,0 +1,6 @@
+simulation: weekly-suggestions-erp
+routing: header
+mocks:
+  - name: weekly-suggestions-erp
+    routeKey: weekly-erp
+    path: postman/mocks/weekly-suggestions-erp

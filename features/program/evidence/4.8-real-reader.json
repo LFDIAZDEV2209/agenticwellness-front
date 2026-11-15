@@ -1,0 +1,28 @@
+{
+  "live": true,
+  "apiInterception": false,
+  "role": "reader",
+  "suggestionCount": 3,
+  "aiActionCount": 0,
+  "reviewButtonCount": 0,
+  "generatedAt": "2026-11-15T20:40:45.140431+00:00",
+  "localSourceFocused": true,
+  "samePatient": true,
+  "viewports": [
+    {
+      "width": 320,
+      "panelWidth": 238,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "panelWidth": 307.71875,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "panelWidth": 1102,
+      "overflow": false
+    }
+  ]
+}

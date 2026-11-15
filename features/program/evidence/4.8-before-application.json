@@ -1,0 +1,21 @@
+{
+  "live": true,
+  "generationDidNotChangeAnyCell": true,
+  "humanConfirmationRequired": 422,
+  "readback": [
+    {
+      "language": "es",
+      "sameId": true,
+      "sameGeneratedAt": true,
+      "suggestionCount": 3,
+      "stale": false
+    },
+    {
+      "language": "en",
+      "sameId": true,
+      "sameGeneratedAt": true,
+      "suggestionCount": 0,
+      "stale": false
+    }
+  ]
+}

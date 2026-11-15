@@ -1,0 +1,22 @@
+{
+  "live": true,
+  "apiInterception": false,
+  "rows": [
+    {
+      "role": "reader",
+      "getStatus": 200,
+      "hasDraft": true,
+      "generationPostStatus": 403
+    },
+    {
+      "role": "coordinator",
+      "getStatus": 403,
+      "hasDraft": false
+    },
+    {
+      "role": "foreignReader",
+      "getStatus": 404,
+      "hasDraft": false
+    }
+  ]
+}

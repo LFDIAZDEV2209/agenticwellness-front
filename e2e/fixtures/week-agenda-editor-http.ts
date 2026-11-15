@@ -8,7 +8,7 @@ import type { EnrollmentWeekResponse } from "../../features/program/types";
 
 export async function mockWeekAgendaEditor(
   page: Page,
-  options: { readOnly?: boolean } = {},
+  options: { readOnly?: boolean; additionalPermissions?: string[]; english?: boolean } = {},
 ) {
   const http = await mockProfile360Http(page, {
     permissions: [
@@ -18,7 +18,9 @@ export async function mockWeekAgendaEditor(
       "Wellness.View",
       "Media.View",
       ...(options.readOnly ? [] : ["Program.Edit"]),
+      ...(options.additionalPermissions ?? []),
     ],
+    english: options.english,
   });
   await page.clock.setFixedTime(new Date("2026-11-14T15:00:00Z"));
   const routineA = "00000000-0000-4000-8000-000000000901";
@@ -246,17 +248,17 @@ export async function mockWeekAgendaEditor(
   );
   const open = async (week = 2) => {
     await page.goto(`/patients/${profilePatientId}/360`);
-    await page.getByRole("tab", { name: "Plan semanal", exact: true }).click();
+    await page.getByRole("tab", { name: /^(Plan semanal|Weekly plan)$/ }).click();
     await page
       .getByRole("row")
       .filter({
         has: page.getByRole("cell", {
-          name: new RegExp(`^${week} Ver tareas$`),
+          name: new RegExp(`^${week} (Ver tareas|View tasks)$`),
         }),
       })
-      .getByRole("button", { name: "Ver tareas", exact: true })
+      .getByRole("button", { name: /^(Ver tareas|View tasks)$/ })
       .click();
-    return page.getByRole("dialog", { name: `Semana ${week}`, exact: true });
+    return page.getByRole("dialog", { name: new RegExp(`^(Semana|Week) ${week}$`) });
   };
   return { ...http, state, details, routineA, routineB, open };
 }

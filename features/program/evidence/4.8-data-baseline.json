@@ -1,0 +1,25 @@
+{
+  "readOnly": true,
+  "intake": [
+    {
+      "patientId": "0c487f75-a462-4fda-894d-61c031441884",
+      "count": 1,
+      "digest": "ba48451a60c7772cb76d4e7214a2569a"
+    },
+    {
+      "patientId": "ef59c692-d01a-4105-b3ea-05c07ff76279",
+      "count": 33,
+      "digest": "c1e92322cb44bb2b6c1a8e780ae5673d"
+    }
+  ],
+  "fixtureCycleReview": {
+    "revision": 7,
+    "publishedAt": "2026-11-15 18:37:50.801194+00:00",
+    "nextPrescriptionId": "91a41a69-02ba-49d6-8145-49d68ab3ca96",
+    "digest": "c87ad3e545fd2fd800edcf56ed859f36"
+  },
+  "allOtherAiBriefs": {
+    "count": 2,
+    "digest": "1e761fd800b24c29b7b3bb464caba5eb"
+  }
+}

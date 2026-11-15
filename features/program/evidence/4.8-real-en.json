@@ -1,0 +1,23 @@
+{
+  "live": true,
+  "apiInterception": false,
+  "language": "en",
+  "httpStatus": 200,
+  "status": "ok",
+  "pendingDisabled": true,
+  "draft": {
+    "id": "58b43033-5f52-4610-ba73-96364ac46f51",
+    "model": "claude-haiku-4-5-20251001",
+    "generatedAt": "2026-11-15T20:40:14.250137+00:00",
+    "isEstimate": true,
+    "stale": false,
+    "language": "en",
+    "planVersion": "d050f121a9c0cf44d8d66364b4561242d6b46ac4453187926ffd4533f4edaa59",
+    "startDate": "2026-11-16",
+    "endDate": "2026-11-22",
+    "suggestions": []
+  },
+  "cacheControl": "no-store,no-cache",
+  "estimateLabelVisible": true,
+  "uiDate": "2026-11-15T20:40:14.250137+00:00"
+}

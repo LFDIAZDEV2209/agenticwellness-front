@@ -1,0 +1,30 @@
+purpose:
+  stands_in_for: ERP 4.5b de BACK 7810eb7, incluido en 4c7a811.
+  unblocks: Confirmación individual, conflictos y recuperación de la UI 4.8 sin mutar el stack real.
+assumptions:
+  - id: human-confirmation
+    status: verified
+    claim: Abrir, listar, generar y cancelar no aplican cambios; solo confirmar envía confirmed=true por sugerencia.
+    reason: Consumidor ejecutado contra el sustituto local y contra el runtime real.
+    verification: 35/35 E2E, cancelación sin POST, cuerpo de aplicación confirmed=true, POST UI real200/applied y ausencia de confirmación422.
+    source: BACK docs/modules/program-progress/WEEKLY-SUGGESTIONS.md
+    updated_at: "2026-11-15"
+  - id: conflict-and-uncertainty
+    status: verified
+    claim: Un 409 o resultado incierto impide aplicar de nuevo sin consultar; una respuesta perdida tras escribir se recupera por GET.
+    reason: La simulación representa escritura seguida de 500, distinta de un fallo previo a escribir.
+    verification: E2E de409/422/500 y commit500; recarga semana y borrador antes de permitir otro intento, sin duplicar aplicación.
+    source: postman/mocks/weekly-suggestions-erp/default.js
+    updated_at: "2026-11-15"
+  - id: live-provider
+    status: verified
+    claim: El runtime aplica una celda y marca el borrador y la bitácora sin mutar otras celdas ni historial.
+    reason: Recorrido real de fixture con Auth, API5122, IA8000 y PostgreSQL. No prueba cada frase, revocación de consentimiento durante red o todas las carreras posibles.
+    verification: Generación ES200/ok con3 sugerencias y EN200/ok con lista vacía; una aplicación ES200, replays already_applied y una sola bitácora con actor y ai_application.41 asignaciones/XP intactos;7 orígenes rutina se normalizan a snapshot. Comida/cierre/R7 y otros resúmenes con hashes intactos. Lector200/POST403, sinAiView403, ajeno404.
+    source: features/program/evidence/4.8-application-verification.json; 4.8-data-after.json; 4.8-real-permissions.json
+    updated_at: "2026-11-15"
+fingerprints:
+  - id: frontend-48
+    date: "2026-11-15"
+    commit: 0ee6873 más cambios locales 4.8
+    cli: "1.76.0; status no implementado, sin búsqueda de mock cloud ni publicación"

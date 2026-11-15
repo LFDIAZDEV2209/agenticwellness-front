@@ -1,0 +1,17 @@
+{
+  "live": true,
+  "apiInterception": false,
+  "confirmationEnabled": true,
+  "httpStatus": 200,
+  "status": "applied",
+  "briefId": "c5feb743-6b7e-454f-9a43-b7a8aa4f729d",
+  "index": 0,
+  "requestBody": {
+    "confirmed": true
+  },
+  "weekNumber": 2,
+  "cacheControl": "no-store,no-cache",
+  "uiApplied": true,
+  "unappliedReviewButtons": 2,
+  "originalGeneratedAt": "2026-11-15T20:40:45.140431+00:00"
+}
