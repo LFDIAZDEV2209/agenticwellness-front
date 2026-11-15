@@ -105,13 +105,25 @@ test("3.20 · Foto IA corregida → ERP con alcance real → publicación conjun
   const fixture = JSON.parse(readFileSync(metadataPath, "utf8")) as Fixture;
   for (const id of [fixture.patientId, fixture.cycleId, fixture.sourcePrescriptionId, fixture.nextPrescriptionId])
     expect(id).toMatch(/^[a-f0-9-]{36}$/i);
+  // Reanudar solo una ejecución que ya guardó la comida; nunca duplicarla.
+  const resume = process.env.E2E_320_RESUME
+    ? JSON.parse(readFileSync(process.env.E2E_320_RESUME, "utf8")) as {
+      complete: boolean; fixture: { patientId: string; cycleId: string };
+      analysis: { provider: string; analysisId: string }; stages: string[];
+    } : null;
+  if (resume) {
+    expect(resume.complete).toBe(false);
+    expect(resume.fixture).toEqual({ patientId: fixture.patientId, cycleId: fixture.cycleId });
+    expect(resume.stages).toEqual(["APP: análisis real y registro corregido con referencia al análisis"]);
+    expect(resume.analysis.analysisId).toMatch(/^[a-f0-9-]{36}$/i);
+  }
   const contexts: BrowserContext[] = [];
   const events: { actor: string; method: string; path: string; status: number }[] = [];
   const errors: { actor: string; message: string }[] = [];
   const consoleCounts: Record<string, { warnings: number; errors: number }> = {};
-  const stages: string[] = [];
+  const stages: string[] = [...(resume?.stages ?? [])];
   let complete = false;
-  let analysisEvidence: { provider: string; analysisId: string } | null = null;
+  let analysisEvidence: { provider: string; analysisId: string } | null = resume?.analysis ?? null;
   const identities: Record<string, { token: string; permissions: string[] }> = {};
   async function actor(name: keyof Fixture["accounts"], origin: string) {
     const context = await browser.newContext({ serviceWorkers: "block", locale: "es-CO", timezoneId: "America/Bogota", viewport: { width: 1440, height: 1000 } });
@@ -148,43 +160,51 @@ test("3.20 · Foto IA corregida → ERP con alcance real → publicación conjun
     await patient.page.getByRole("button", { name: "Nutrición", exact: true }).click();
     expect((await initialRead).status()).toBe(200);
     const before = await (await patient.context.request.get(app + recommendationsPath, { headers: patient.headers })).json() as Recommendations;
-    expect(before.current, "La fixture debe conservar una publicación anterior real para el historial").not.toBeNull();
-    const meal = patient.page.locator("article").filter({ has: patient.page.locator(".meal-title", { hasText: /^Almuerzo$/ }) });
-    await meal.getByRole("button", { name: "Foto IA", exact: true }).click();
+    expect(before.current, "La fixture debe conservar la publicación histórica preparada").not.toBeNull();
     const jpeg = process.env.E2E_320_IMAGE ?? resolve(__dirname, "../../../food-ai-service/tests/assets/pizza.jpg");
-    await patient.page.locator("input[data-gallery-input]").setInputFiles(jpeg);
-    const analysisResponse = patient.page.waitForResponse(at("/api/v1/foodai/analyze"), { timeout: 120_000 });
-    await patient.page.getByRole("button", { name: "Usar foto y analizar", exact: true }).click();
-    const analyzed = await analysisResponse;
-    expect(analyzed.status(), "El análisis debe ejecutarse contra el proveedor real").toBe(200);
-    const analysis = await analyzed.json();
+    let analysis = resume?.analysis;
+    if (!resume) {
+      const meal = patient.page.locator("article").filter({ has: patient.page.locator(".meal-title", { hasText: /^Almuerzo$/ }) });
+      await meal.getByRole("button", { name: "Foto IA", exact: true }).click();
+      await patient.page.locator("input[data-gallery-input]").setInputFiles(jpeg);
+      const analysisResponse = patient.page.waitForResponse(at("/api/v1/foodai/analyze"), { timeout: 120_000 });
+      await patient.page.getByRole("button", { name: "Usar foto y analizar", exact: true }).click();
+      const analyzed = await analysisResponse;
+      expect(analyzed.status(), "El análisis debe ejecutarse contra el proveedor real").toBe(200);
+      const analyzedBody = await analyzed.json();
+      analysis = { provider: analyzedBody.provider, analysisId: analyzedBody.analysisId };
+      expect(analyzedBody.foods.length).toBeGreaterThan(0);
+      expect(analyzedBody.analysisId).toBeTruthy();
+      await patient.page.getByRole("button", { name: "Editar valores", exact: true }).click();
+      await patient.page.locator(".meal-intake-calories input").fill("623");
+      await patient.page.locator(".meal-intake-proteinG input").fill("31");
+      const saved = patient.page.waitForResponse(response => at("/api/v1/program/nutrition/log")(response) && response.request().method() === "POST");
+      await patient.page.getByRole("button", { name: "Guardar Almuerzo", exact: true }).click();
+      const intakeResponse = await saved;
+      expect(intakeResponse.status()).toBe(200);
+      const intakeRequest = intakeResponse.request().postDataJSON();
+      expect(intakeRequest.intake.foodAnalysisId).toBe(analysis.analysisId);
+      expect(intakeRequest.intake.calories).toBe(623);
+      expect(intakeRequest.clientRequestId).toBeTruthy();
+      stages.push("APP: análisis real y registro corregido con referencia al análisis");
+      await patient.page.screenshot({ path: info.outputPath("app-corrected-intake.png"), fullPage: true });
+    }
+    if (!analysis) throw new Error("Falta el análisis real del registro QA.");
     analysisEvidence = { provider: analysis.provider, analysisId: analysis.analysisId };
-    expect(analysis.foods.length).toBeGreaterThan(0);
-    expect(analysis.analysisId).toBeTruthy();
-    await patient.page.getByRole("button", { name: "Editar valores", exact: true }).click();
-    await patient.page.locator(".meal-intake-calories input").fill("623");
-    await patient.page.locator(".meal-intake-proteinG input").fill("31");
-    const saved = patient.page.waitForResponse(response => at("/api/v1/program/nutrition/log")(response) && response.request().method() === "POST");
-    await patient.page.getByRole("button", { name: "Guardar Almuerzo", exact: true }).click();
-    const intakeResponse = await saved;
-    expect(intakeResponse.status()).toBe(200);
-    const intakeRequest = intakeResponse.request().postDataJSON();
-    expect(intakeRequest.intake.foodAnalysisId).toBe(analysis.analysisId);
-    expect(intakeRequest.intake.calories).toBe(623);
-    expect(intakeRequest.clientRequestId).toBeTruthy();
-    stages.push("APP: análisis real y registro corregido con referencia al análisis");
-    await patient.page.screenshot({ path: info.outputPath("app-corrected-intake.png"), fullPage: true });
 
     const professional = await actor("nutritionist", erp);
     expect(identities.nutritionist.permissions).toEqual(expect.arrayContaining(["Nutrition.Approve", "Nutrition.PhotosView", "Nutrition.RecordsView"]));
     const intakePath = `/api/v1/nutrition/patients/${fixture.patientId}/intake`;
-    const intakeRead = professional.page.waitForResponse(at(intakePath));
+    // El almuerzo de hoy está en continuidad, no en la primera respuesta del ciclo cerrado.
+    const intakeRead = professional.page.waitForResponse(response => at(intakePath)(response)
+      && new URL(response.url()).searchParams.get("from") === fixture.localDate);
     await professional.page.goto(`${erp}/nutrition/${fixture.patientId}?prescriptionId=${fixture.sourcePrescriptionId}&tab=registros`);
     const intakePage = await (await intakeRead).json();
     const record = intakePage.days.flatMap((day: { records: { id: string; analysis: { analysisId: string } | null; recorded: { calories: number }; patientCorrection: boolean; photo: { url: string } | null }[] }) => day.records)
       .find((row: { analysis: { analysisId: string } | null }) => row.analysis?.analysisId === analysis.analysisId);
     expect(record).toBeTruthy();
     expect(record.recorded.calories).toBe(623);
+    expect(record.recorded.proteinG).toBe(31);
     expect(record.patientCorrection).toBe(true);
     expect(record.photo).not.toBeNull();
     await professional.page.locator(".nutrition-intake-meals").getByRole("button", { name: /^Almuerzo/ }).click();

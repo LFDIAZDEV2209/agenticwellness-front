@@ -1,0 +1,33 @@
+{
+  "complete": false,
+  "fixture": {
+    "patientId": "0c487f75-a462-4fda-894d-61c031441884",
+    "cycleId": "f06b7491-1bb7-4798-b560-fa8a8d9aaacf"
+  },
+  "stages": [
+    "APP: análisis real y registro corregido con referencia al análisis"
+  ],
+  "analysis": null,
+  "events": [
+    {
+      "actor": "patient",
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "status": 502
+    },
+    {
+      "actor": "patient",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 502
+    }
+  ],
+  "pageErrors": [],
+  "consoleCounts": {
+    "patient": {
+      "warnings": 0,
+      "errors": 2
+    }
+  },
+  "apiInterception": false
+}

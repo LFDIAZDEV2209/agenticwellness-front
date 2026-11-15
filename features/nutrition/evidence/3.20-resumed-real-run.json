@@ -1,0 +1,66 @@
+{
+    "date":  "2026-11-15",
+    "complete":  false,
+    "base":  "58d33c2",
+    "apiInterception":  false,
+    "completed":  [
+                      "FoodAI analyze real HTTP 200",
+                      "Registro APP real HTTP 200 con foodAnalysisId y corrección"
+                  ],
+    "analysis":  {
+                     "analysisId":  "0d26469f-57b0-4cdb-9a00-3aa73ac23598",
+                     "provider":  "legacy"
+                 },
+    "database":  {
+                     "patientId":  "0c487f75-a462-4fda-894d-61c031441884",
+                     "calories":  623,
+                     "preservedR7IntakeLogs":  33,
+                     "targetPublishedAt":  null,
+                     "intakeLogs":  1,
+                     "cycleId":  "f06b7491-1bb7-4798-b560-fa8a8d9aaacf",
+                     "targetReviewRevision":  2,
+                     "proteinG":  31,
+                     "intakeRecordId":  "ad45e0a0-fde7-4171-853d-182d963fc2a3"
+                 },
+    "journey":  {
+                    "complete":  false,
+                    "pending":  [
+                                    "Foto/corrección en ERP",
+                                    "Permisos fotos coordinación y 404 ajeno sobre comida",
+                                    "Revisión y publicación conjunta",
+                                    "APP nueva publicación e historial ES/EN 320/390/1440",
+                                    "MCP visual posterior a publicar"
+                                ],
+                    "firstStop":  "Guion esperaba primera respuesta intake del ciclo cerrado en lugar de continuidad de hoy; espera corregida",
+                    "resumeStop":  "Login APP HTTP502; no listeners Gateway5080 Auth5123 API5122 FoodAI8010"
+                },
+    "checks":  {
+                   "build":  "passed",
+                   "typecheck":  "passed",
+                   "impeccable":  "unavailable: launcher exit127; PRODUCT.md/DESIGN.md ausentes",
+                   "pageErrorsOnIntakeAttempt":  0,
+                   "lint":  "passed",
+                   "i18nMissing":  0
+               },
+    "console":  {
+                    "observed":  [
+                                     "APP refresh401 inicial sin sesión",
+                                     "APP telemedicine502 fuera stack mínimo",
+                                     "ERP agents/executions403 ajeno al recorrido",
+                                     "Tras caída: APP auth502 y ERP refresh500 por ECONNREFUSED5080"
+                                 ],
+                    "clean":  false
+                },
+    "resume":  {
+                   "environment":  "E2E_320_RESUME",
+                   "fixture":  ".ai/operations/organizar-experiencia-bienestar/3.20-fixture.json",
+                   "duplicateIntake":  false,
+                   "checkpoint":  "features/nutrition/evidence/3.20-intake-checkpoint.json"
+               },
+    "cleanup":  {
+                    "app5182":  "belongs to codex-app",
+                    "sharedStack":  "untouched",
+                    "ownChromePage":  "closed: isolated codex-front-320 page; test contexts closed",
+                    "ownErp3056":  "stopped: own verified PIDs 57680/62292; listener absent"
+                }
+}

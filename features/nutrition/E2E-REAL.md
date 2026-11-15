@@ -12,6 +12,30 @@ cuatro identidades y lectura APP anterior a publicar sí se comprobaron.
 Resultados sanitizados: [evidence/3.20-first-real-run.json](evidence/3.20-first-real-run.json).
 El resto del guion necesita ejecutarse cuando el orquestador habilite 8010.
 
+**Reanudación del 15-11-2026: análisis y comida guardados.** FoodAI devolvió
+200 y el registro real persistió 623 kcal, 31 g de proteína y su análisis.
+El guion esperaba la primera respuesta de registros (el ciclo termina ayer),
+pero la comida llega en la respuesta de continuidad de hoy. La espera se
+corrigió sin modificar producto. Antes de poder continuar, el stack compartido
+dejó de escuchar en 5080/5123/5122/8010 y el login devolvió 502. El paciente
+tiene **una comida**; el cierre objetivo sigue sin publicar, revisión 2, y los
+33 registros R7 siguen intactos. 3.20 continúa **incompleta**.
+
+La evidencia de la comida está en
+[evidence/3.20-intake-checkpoint.json](evidence/3.20-intake-checkpoint.json).
+Al restablecer el stack, reanudar con esa evidencia para omitir análisis y
+registro; no ejecutar otra vez el tramo que escribe la comida:
+
+```powershell
+$env:E2E_320_RESUME=(Resolve-Path 'features/nutrition/evidence/3.20-intake-checkpoint.json').Path
+corepack yarn e2e --config playwright.nutrition-real.config.ts --grep 'Foto IA corregida'
+```
+
+La reanudación valida paciente/ciclo y la etapa guardada, y comprueba el
+registro persistido y su foto en la respuesta real de continuidad. Esta opción
+solo admite el checkpoint posterior a registrar, anterior a revisar/publicar.
+Si el cierre ya cambió, consultar su estado antes de volver a ejecutar.
+
 ## Preparación y secretos
 
 - ERP de este checkout y APP F3 de producto, con sus proxies al gateway local.
