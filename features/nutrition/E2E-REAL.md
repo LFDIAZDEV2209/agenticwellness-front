@@ -1,110 +1,81 @@
-# 3.20 — recorrido real APP → ERP → APP
+# 3.20 — recorrido real APP → ERP → APP completado
 
-Base del ERP: `39a86c5`. La configuración dedicada
-`playwright.nutrition-real.config.ts` no arranca servidores ni intercepta APIs.
-Los procesos compartidos pertenecen exclusivamente al orquestador; no se
-arrancan, reinician ni detienen desde estas pruebas.
+**Completado el 15-11-2026.** El análisis y la comida originales se conservaron;
+la reanudación desde 7683e77 con E2E_320_RESUME completó el recorrido pendiente
+sin reanalizar ni duplicar la comida. APP cc093ac; API con fix 1a14083 sobre eb181a8.
 
-**Primera ejecución, 15-11-2026: 3.20 incompleta.** Preflight real 1/1 correcto;
-recorrido completo 0/1, detenido en análisis HTTP500 por conexión rechazada al
-proveedor 8010. No se registró comida ni se publicó el cierre. Storage privado,
-cuatro identidades y lectura APP anterior a publicar sí se comprobaron.
-Resultados sanitizados: [evidence/3.20-first-real-run.json](evidence/3.20-first-real-run.json).
-El resto del guion necesita ejecutarse cuando el orquestador habilite 8010.
+## Resultado comprobado
 
-**Reanudación del 15-11-2026: análisis y comida guardados.** FoodAI devolvió
-200 y el registro real persistió 623 kcal, 31 g de proteína y su análisis.
-El guion esperaba la primera respuesta de registros (el ciclo termina ayer),
-pero la comida llega en la respuesta de continuidad de hoy. La espera se
-corrigió sin modificar producto. Antes de poder continuar, el stack compartido
-dejó de escuchar en 5080/5123/5122/8010 y el login devolvió 502. El paciente
-tiene **una comida**; el cierre objetivo sigue sin publicar, revisión 2, y los
-33 registros R7 siguen intactos. 3.20 continúa **incompleta**.
+- Foto firmada real y corrección visibles en ERP: 623 kcal, 31 g de proteína.
+  La estimación original sigue separada del registro final.
+- Coordinación lee la misma comida sin fotos; nutricionista ajeno recibe 404.
+  Cuatro identidades reales y audiencias app/erp comprobadas.
+- Publicación conjunta real del siguiente plan y mensaje ES/EN: HTTP 200.
+  PostgreSQL confirma cierre revisión 7 publicado y plan siguiente aprobado/publicado.
+- APP lee la nueva recomendación con una imagen decodificada y conserva el ciclo
+  histórico preparado en el historial. No recibe notas internas ni adjuntos privados.
+- Playwright MCP posterior: Plan e Historial en ES/EN a 320/390/1440, sin
+  pageerrors ni overflow del documento o ion-content. Capturas con transiciones finalizadas.
+- MCP ERP posterior confirma de nuevo la foto y la corrección.
+- Una sola comida QA y los 33 registros R7 conservados.
 
-La evidencia de la comida está en
-[evidence/3.20-intake-checkpoint.json](evidence/3.20-intake-checkpoint.json).
-Al restablecer el stack, reanudar con esa evidencia para omitir análisis y
-registro; no ejecutar otra vez el tramo que escribe la comida:
+## Evidencia y límites
 
-```powershell
-$env:E2E_320_RESUME=(Resolve-Path 'features/nutrition/evidence/3.20-intake-checkpoint.json').Path
-corepack yarn e2e --config playwright.nutrition-real.config.ts --grep 'Foto IA corregida'
-```
+Los JSON de evidence/ contienen el recorrido final (3.20-complete-journey.json),
+MCP APP y ERP, SELECT posterior y la recuperación de la foto. El directorio
+compartido openspec/changes/organizar-experiencia-bienestar/revision-3.20-real/
+conserva resultados.json, README.md y capturas/ (12 capturas MCP APP y dos ERP
+de esta validación, además de las capturas históricas).
 
-La reanudación valida paciente/ciclo y la etapa guardada, y comprueba el
-registro persistido y su foto en la respuesta real de continuidad. Esta opción
-solo admite el checkpoint posterior a registrar, anterior a revisar/publicar.
-Si el cierre ya cambió, consultar su estado antes de volver a ejecutar.
+El análisis inicial devolvió 200 y guardó la comida real. Se detectó después que
+LocalImageStorage devolvía el ETag de S3 como image_key. El fix BACK 1a14083
+devuelve la clave lógica después del PUT exitoso (imagen y máscara), sin cambiar
+el contrato del proveedor genérico. Codex-back recuperó por compare-and-set
+una sola referencia del análisis existente tras validar objeto, ETag, propietario
+y enlace; no alteró la comida, sus macros ni la revisión. Las evidencias previas
+se mantienen como historial; no sustituyen el recorrido final.
 
-## Preparación y secretos
+No se afirma consola global vacía: hubo refresh 401 inicial sin cookie,
+telemedicine 502 del stack mínimo y agents/executions 403 ajeno al recorrido.
+La ventana MCP APP no registró fallos HTTP de nutrición y el ERP posterior
+solo respuestas correctas en las lecturas observadas; pageerrors: 0.
+La prueba no acredita cámara física, iOS ni entrega de notificaciones push.
+Impeccable automático no disponible (lanzador 127); revisión visual manual realizada.
+Lint, TypeScript, build e i18n (0 claves faltantes) pasan.
 
-- ERP de este checkout y APP F3 de producto, con sus proxies al gateway local.
-- Auth, API, PostgreSQL y Valkey reales. Foto IA requiere además el proveedor
-  configurado en el backend; en `eb181a8` es Food AI `8010`, no AI `8000`.
-- Storage efectivo con lectura y escritura privada. La capacidad firmada debe
-  devolver y permitir decodificar la imagen real, sin sustituirla en la red.
-- Fixture QA aislada: paciente con inscripción activa y sin almuerzo hoy,
-  nutricionista asignado, coordinación asignada sin PhotosView y nutricionista
-  ajeno con permisos de nutrición. El ciclo a revisar terminó antes de hoy,
-  sigue en continuidad, no está publicado su cierre y tiene preparado n+1.
-  Una publicación anterior permite comprobar el historial tras publicar.
+## Reproducción con una fixture nueva
 
-`E2E_320_FIXTURE` apunta a JSON **sin secretos**. Campos: `patientId`, `cycleId`,
-`sourcePrescriptionId`, `nextPrescriptionId`, `localDate` y `accounts` con
-`patient`, `nutritionist`, `coordinator`, `foreignNutritionist`. Cada cuenta
-indica `login` y `credentialTarget`; el paciente añade `documentNumber`.
-Credential Manager de Windows conserva las contraseñas bajo
-`CoppAddresd/QA/3.20/<run>/<rol>`. El helper las lee exclusivamente en memoria.
-No exportar sesiones, tokens ni capacidades de Storage a logs, HAR o trazas.
-La configuración desactiva trace y vídeo incluso ante fallo.
+**La fixture actual ya está publicada. No volver a ejecutar el recorrido de
+escrituras ni E2E_320_RESUME con ella.** Crear otra fixture QA para una ejecución
+completa futura. La recomendación histórica de preparación fue sembrada por SQL;
+la publicación nueva de este recorrido se ejecutó por UI/API reales.
 
-El consentimiento sigue la configuración vigente del producto y sus rutas
-reales. La prueba no inventa textos, aceptaciones ni políticas y no cambia
-flags para eludir un fallo. `available=false` por sí solo no demuestra que
-esté activo el enforcement; debe comprobarse la configuración efectiva.
+La configuración playwright.nutrition-real.config.ts no inicia servicios ni
+intercepta APIs. El orquestador administra exclusivamente el stack compartido.
+E2E_320_FIXTURE apunta a metadata sin secretos; las contraseñas se leen de Windows
+Credential Manager exclusivamente en memoria. Trace y vídeo permanecen desactivados;
+no exportar cookies, tokens ni capacidades de Storage a logs/HAR.
 
-## Ejecución
-
-```powershell
-$env:E2E_320_FIXTURE='<ruta absoluta a metadata sin secretos>'
-$env:E2E_BASE_URL='http://localhost:3056'
+~~~powershell
+$env:E2E_320_FIXTURE='<ruta absoluta a una fixture nueva, sin secretos>'
+$env:E2E_BASE_URL='http://127.0.0.1:3056'
 $env:E2E_APP_BASE_URL='http://127.0.0.1:5182'
-corepack yarn e2e --config playwright.nutrition-real.config.ts --grep preflight
-corepack yarn e2e --config playwright.nutrition-real.config.ts --grep 'Foto IA corregida'
-```
+Remove-Item Env:E2E_320_RESUME -ErrorAction SilentlyContinue
+corepack yarn e2e --config playwright.nutrition-real.config.ts
+~~~
 
-El primer caso verifica identidades, permisos y alcance contra Auth/API reales.
-El segundo usa login UI en ambas interfaces, selecciona un JPEG de alimento,
-analiza, corrige, guarda y comprueba la referencia del análisis en el payload.
-Después comprueba foto/corrección en ERP, ocultación a coordinación y 404 ajeno,
-prepara n+1 y publica mensaje ES/EN con una imagen visible y otra privada.
-La APP debe leer la nueva publicación, decodificar la imagen y mostrar el
-anterior en historial. El cambio de idioma se hace mediante la UI de Inicio.
-El JPEG por defecto es `food-ai-service/tests/assets/pizza.jpg`; se puede
-seleccionar otro con `E2E_320_IMAGE`.
+E2E_320_RESUME solo admite evidencia de una ejecución que guardó la comida y aún
+no revisó/publicó el cierre: valida paciente/ciclo, etapa e ID de análisis y omite
+el registro. Consultar el estado real antes de reanudar cualquier fallo de escrituras.
 
-Es una prueba con escrituras clínicas **solo QA**: ejecutar el recorrido
-completo una vez por fixture. Si falla después de registrar o publicar, consultar
-primero BD/estado real y preparar una fixture nueva cuando corresponda; no
-repetir indiscriminadamente una publicación. El preflight es de lectura salvo
-el login y puede repetirse. Los datos QA de rondas previas quedan intactos.
+## Inspección MCP sin secretos
 
-## Playwright MCP y evidencia
+scripts/qa/nutrition-real-open.mjs <metadata> [puerto CDP] [rol] inicia sesión
+por UI y deja Nutrición abierta. Roles: patient (defecto), nutritionist o coordinator.
+ERP usa E2E_BASE_URL y APP E2E_APP_BASE_URL. Lanzar en background con ventana
+oculta, registrar PID y usar un puerto 9200..9299 distinto por rol. El MCP
+Playwright puede conectar con browserType().connectOverCDP al puerto local.
+No se transmiten contraseñas ni tokens en argumentos de herramientas.
 
-`scripts/qa/nutrition-real-open.mjs <metadata> [puerto CDP]` abre un navegador
-local, inicia sesión por UI y deja Nutrición disponible para inspección MCP.
-Lanzarlo en background, con ventana oculta y PID registrado. MCP puede conectar
-con `browserType().connectOverCDP('http://127.0.0.1:9236')`; no se transmiten
-contraseñas ni tokens en argumentos de herramientas. Las capturas se toman
-después del login. Cerrar el navegador, recoger sus hijos y comprobar que no
-queda su listener. Solo detener PIDs propios verificados por ruta y argumentos.
-
-La prueba guarda `preflight.json` y `evidence.json` sanitizados, con métodos,
-rutas sin query, estados, etapas y conteos de consola. No guarda cabeceras de
-autorización ni cuerpos de auth. `complete:false` es un recorrido inconcluso,
-aunque otras comprobaciones hayan pasado. Una firma real, una fila en BD o
-una lectura anterior no sustituyen la aceptación bidireccional completa.
-
-Los avisos de Community/Telemedicine no disponibles en el stack mínimo se
-registran aparte de errores del recorrido nutricional. La prueba web no
-acredita cámara física, iOS ni entrega de notificaciones push.
+Cerrar navegadores y PIDs propios verificados por ruta/argumentos, nunca procesos
+por nombre o por puerto. No reiniciar ni detener el stack compartido.

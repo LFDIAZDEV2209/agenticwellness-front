@@ -1,0 +1,100 @@
+{
+  "postPublication": true,
+  "apiInterception": false,
+  "results": [
+    {
+      "lang": "es",
+      "width": 320,
+      "imageDecoded": true,
+      "historyCount": 1,
+      "plan": {
+        "documentOverflow": false,
+        "contentOverflow": false
+      },
+      "history": {
+        "documentOverflow": false,
+        "contentOverflow": false
+      }
+    },
+    {
+      "lang": "es",
+      "width": 390,
+      "imageDecoded": true,
+      "historyCount": 1,
+      "plan": {
+        "documentOverflow": false,
+        "contentOverflow": false
+      },
+      "history": {
+        "documentOverflow": false,
+        "contentOverflow": false
+      }
+    },
+    {
+      "lang": "es",
+      "width": 1440,
+      "imageDecoded": true,
+      "historyCount": 1,
+      "plan": {
+        "documentOverflow": false,
+        "contentOverflow": false
+      },
+      "history": {
+        "documentOverflow": false,
+        "contentOverflow": false
+      }
+    },
+    {
+      "lang": "en",
+      "width": 320,
+      "imageDecoded": true,
+      "historyCount": 1,
+      "plan": {
+        "documentOverflow": false,
+        "contentOverflow": false
+      },
+      "history": {
+        "documentOverflow": false,
+        "contentOverflow": false
+      }
+    },
+    {
+      "lang": "en",
+      "width": 390,
+      "imageDecoded": true,
+      "historyCount": 1,
+      "plan": {
+        "documentOverflow": false,
+        "contentOverflow": false
+      },
+      "history": {
+        "documentOverflow": false,
+        "contentOverflow": false
+      }
+    },
+    {
+      "lang": "en",
+      "width": 1440,
+      "imageDecoded": true,
+      "historyCount": 1,
+      "plan": {
+        "documentOverflow": false,
+        "contentOverflow": false
+      },
+      "history": {
+        "documentOverflow": false,
+        "contentOverflow": false
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleCounts": {
+    "warnings": 3,
+    "errors": 1
+  },
+  "httpFailures": [],
+  "nutritionFailures": [],
+  "animationsSettled": true,
+  "reminderDismissedByUi": true,
+  "settledCaptures": [{"lang":"es","width":320,"historyCount":1,"overflow":false},{"lang":"es","width":390,"historyCount":1,"overflow":false},{"lang":"es","width":1440,"historyCount":1,"overflow":false},{"lang":"en","width":320,"historyCount":1,"overflow":false},{"lang":"en","width":390,"historyCount":1,"overflow":false},{"lang":"en","width":1440,"historyCount":1,"overflow":false}]
+}

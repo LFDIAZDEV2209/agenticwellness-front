@@ -222,7 +222,9 @@ test("3.20 · Foto IA corregida → ERP con alcance real → publicación conjun
     const coordinated = await coordinator.context.request.get(`${erp}${intakePath}?${qs}`, { headers: coordinator.headers });
     expect(coordinated.status()).toBe(200);
     const coordinatedBody = await coordinated.json();
-    expect(coordinatedBody.days.flatMap((day: { records: { photo: unknown }[] }) => day.records).every((row: { photo: unknown }) => row.photo === null)).toBe(true);
+    const coordinatedRecords = coordinatedBody.days.flatMap((day: { records: { id: string; photo: unknown }[] }) => day.records);
+    expect(coordinatedRecords.find((row: { id: string }) => row.id === record.id), "Coordinación debe leer la misma comida").toBeTruthy();
+    expect(coordinatedRecords.every((row: { photo: unknown }) => row.photo === null)).toBe(true);
     await coordinator.page.goto(`${erp}/nutrition/${fixture.patientId}?prescriptionId=${fixture.sourcePrescriptionId}&tab=registros`);
     await expect(coordinator.page.getByRole("button", { name: "Ampliar foto de la comida", exact: true })).toHaveCount(0);
     const foreign = await actor("foreignNutritionist", erp);
@@ -279,6 +281,12 @@ test("3.20 · Foto IA corregida → ERP con alcance real → publicación conjun
       await expect(patient.page.getByTestId("nutrition-recommendation-caption")).toHaveText("QA 3.20: ejemplo visible revisado");
       expect(await patient.page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
       await patient.page.screenshot({ path: info.outputPath(`app-published-es-${width}.png`), fullPage: true });
+      await patient.page.getByTestId("nutrition-history-open").click();
+      await expect(patient.page.getByTestId("nutrition-history")).toHaveAttribute("data-state", "ready");
+      await expect(patient.page.getByTestId("nutrition-history-cycle").first().getByTestId("nutrition-recommendation-message")).toHaveText(before.current!.patientMessage);
+      expect(await patient.page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
+      await patient.page.screenshot({ path: info.outputPath(`app-history-es-${width}.png`), fullPage: true });
+      await patient.page.getByTestId("nutrition-history-back").click();
     }
     const afterResponse = await patient.context.request.get(app + recommendationsPath, { headers: patient.headers });
     expect(afterResponse.status()).toBe(200);
@@ -314,6 +322,7 @@ test("3.20 · Foto IA corregida → ERP con alcance real → publicación conjun
       await patient.page.screenshot({ path: info.outputPath(`app-published-en-${width}.png`), fullPage: true });
       await patient.page.getByTestId("nutrition-history-open").click();
       await expect(patient.page.getByTestId("nutrition-history-cycle").first().getByTestId("nutrition-recommendation-message")).toHaveText(englishRecommendations.previous[0].patientMessage);
+      expect(await patient.page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
       await patient.page.screenshot({ path: info.outputPath(`app-history-en-${width}.png`), fullPage: true });
       await patient.page.getByTestId("nutrition-history-back").click();
     }

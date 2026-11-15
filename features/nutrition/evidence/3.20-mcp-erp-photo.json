@@ -1,0 +1,79 @@
+{
+  "postPublication": true,
+  "imageDecoded": true,
+  "calories": 623,
+  "proteinG": 31,
+  "patientCorrectionVisible": true,
+  "originalEstimateRetained": true,
+  "pageErrors": [],
+  "reads": [
+    {
+      "path": "/nutrition/0c487f75-a462-4fda-894d-61c031441884",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/nutrition/intake/unreviewed-count",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/nutrition/inbox",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/nutrition/inbox",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/nutrition/inbox",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/nutrition/patients/0c487f75-a462-4fda-894d-61c031441884/prescriptions",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/nutrition/inbox",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/nutrition/inbox",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/nutrition/inbox",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/nutrition/inbox",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/nutrition/inbox",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/nutrition/foods",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/nutrition/inbox",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/nutrition/patients/0c487f75-a462-4fda-894d-61c031441884/workspace",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/nutrition/patients/0c487f75-a462-4fda-894d-61c031441884/intake",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/nutrition/cycles/1b579a36-3bd3-4b11-b7ad-1f94dfc64333/highlights",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/nutrition/cycles/1b579a36-3bd3-4b11-b7ad-1f94dfc64333/days/reviews",
+      "status": 200
+    }
+  ]
+}

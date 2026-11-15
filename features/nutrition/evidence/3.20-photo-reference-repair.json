@@ -1,0 +1,24 @@
+{
+  "capturedAt": "2026-11-15T18:23:32.0422217+00:00",
+  "apply": true,
+  "rowsChanged": 1,
+  "s3ObjectValidated": true,
+  "contentLength": 32686,
+  "ownershipAndLinkValidated": true,
+  "previousReferenceWasEtag": true,
+  "logicalKeyPersisted": true,
+  "mealCountBefore": 1,
+  "mealCountAfter": 1,
+  "mealUnchanged": true,
+  "reviewsUnchanged": true,
+  "reviewRevisions": [
+    {
+      "Revision": 1,
+      "published": true
+    },
+    {
+      "Revision": 2,
+      "published": false
+    }
+  ]
+}

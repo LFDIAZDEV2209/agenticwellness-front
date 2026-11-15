@@ -1,0 +1,466 @@
+{
+  "complete": false,
+  "fixture": {
+    "patientId": "0c487f75-a462-4fda-894d-61c031441884",
+    "cycleId": "f06b7491-1bb7-4798-b560-fa8a8d9aaacf"
+  },
+  "stages": [
+    "APP: análisis real y registro corregido con referencia al análisis"
+  ],
+  "analysis": {
+    "provider": "legacy",
+    "analysisId": "0d26469f-57b0-4cdb-9a00-3aa73ac23598"
+  },
+  "events": [
+    {
+      "actor": "patient",
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "status": 401
+    },
+    {
+      "actor": "patient",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "actor": "patient",
+      "method": "GET",
+      "path": "/api/auth/me",
+      "status": 200
+    },
+    {
+      "actor": "patient",
+      "method": "GET",
+      "path": "/api/v1/me/patient-profile",
+      "status": 200
+    },
+    {
+      "actor": "patient",
+      "method": "GET",
+      "path": "/api/v1/professionals-catalog",
+      "status": 200
+    },
+    {
+      "actor": "patient",
+      "method": "GET",
+      "path": "/api/v1/program/notifications",
+      "status": 200
+    },
+    {
+      "actor": "patient",
+      "method": "GET",
+      "path": "/api/v1/program/me/scores-history",
+      "status": 200
+    },
+    {
+      "actor": "patient",
+      "method": "GET",
+      "path": "/api/v1/program/me/metrics-history",
+      "status": 200
+    },
+    {
+      "actor": "patient",
+      "method": "GET",
+      "path": "/api/v1/program/scores",
+      "status": 200
+    },
+    {
+      "actor": "patient",
+      "method": "GET",
+      "path": "/api/v1/me/nutrition-plan/status",
+      "status": 200
+    },
+    {
+      "actor": "patient",
+      "method": "GET",
+      "path": "/api/v1/me/nutrition/cycles/recommendations",
+      "status": 200
+    },
+    {
+      "actor": "patient",
+      "method": "GET",
+      "path": "/api/v1/me/nutrition-plan",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "status": 401
+    },
+    {
+      "actor": "patient",
+      "method": "GET",
+      "path": "/api/v1/program/me/snapshot",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/auth/me",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/auth/me/preferences",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/auth/me/preferences",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/auth/me",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/auth/me",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/auth/me/preferences",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/auth/me/preferences",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/agents/executions",
+      "status": 403
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/agents/executions",
+      "status": 403
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/agents/active",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/agents/executions",
+      "status": 403
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/agents/executions",
+      "status": 403
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/agents/active",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/agents/executions",
+      "status": 403
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/agents/executions",
+      "status": 403
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/agents/executions",
+      "status": 403
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/agents/active",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/agents/active",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/agents/executions",
+      "status": 403
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/agents/executions",
+      "status": 403
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/dashboard/kpis",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/agents/executions",
+      "status": 403
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/agents/executions",
+      "status": 403
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/agents/executions",
+      "status": 403
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/me/context",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/dashboard/kpis",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/me/context",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/patients/dashboard",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/nutrition/inbox",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/patients/dashboard",
+      "status": 200
+    },
+    {
+      "actor": "patient",
+      "method": "GET",
+      "path": "/api/v1/telemedicine/me",
+      "status": 502
+    },
+    {
+      "actor": "patient",
+      "method": "GET",
+      "path": "/api/v1/professionals-catalog",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/auth/me",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/auth/me",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/auth/me/preferences",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/auth/me/preferences",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/me/context",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/me/context",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/nutrition/inbox",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/nutrition/inbox",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/nutrition/inbox",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/nutrition/inbox",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/nutrition/inbox",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/nutrition/inbox",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/nutrition/inbox",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/nutrition/inbox",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/nutrition/intake/unreviewed-count",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/nutrition/inbox",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/nutrition/patients/0c487f75-a462-4fda-894d-61c031441884/prescriptions",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/nutrition/foods",
+      "status": 200
+    },
+    {
+      "actor": "patient",
+      "method": "GET",
+      "path": "/api/v1/threads/proactive-01a1df3c-4660-7ad6-a0e6-852c8b8d478f/messages",
+      "status": 200
+    },
+    {
+      "actor": "patient",
+      "method": "GET",
+      "path": "/api/v1/threads/proactive-01a1df3c-4660-7ad6-a0e6-852c8b8d478f/messages",
+      "status": 200
+    },
+    {
+      "actor": "patient",
+      "method": "GET",
+      "path": "/api/v1/threads/proactive-01a1df3c-4660-7ad6-a0e6-852c8b8d478f/messages",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/nutrition/patients/0c487f75-a462-4fda-894d-61c031441884/workspace",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/nutrition/patients/0c487f75-a462-4fda-894d-61c031441884/intake",
+      "status": 200
+    },
+    {
+      "actor": "nutritionist",
+      "method": "GET",
+      "path": "/api/v1/nutrition/patients/0c487f75-a462-4fda-894d-61c031441884/intake",
+      "status": 200
+    }
+  ],
+  "pageErrors": [],
+  "consoleCounts": {
+    "patient": {
+      "warnings": 1,
+      "errors": 2
+    },
+    "nutritionist": {
+      "warnings": 0,
+      "errors": 13
+    }
+  },
+  "apiInterception": false
+}

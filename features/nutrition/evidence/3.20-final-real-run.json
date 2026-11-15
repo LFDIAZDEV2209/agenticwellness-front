@@ -1,0 +1,118 @@
+{
+  "date": "2026-11-15",
+  "complete": true,
+  "erpBase": "7683e77",
+  "backend": "1a14083db9398f7e3a9a0dde5e34974613b17f0a",
+  "app": "cc093ac5e49d5afea99dbbba4b8f72b1de030a06",
+  "apiInterception": false,
+  "journey": {
+    "passed": 1,
+    "failed": 0,
+    "seconds": 25.1,
+    "execution": "Reanudación real con E2E_320_RESUME; análisis y comida del checkpoint original conservados.",
+    "initialCheckpoint": "3.20-intake-checkpoint.json",
+    "finalEvidence": "3.20-complete-journey.json",
+    "photoReferenceRepair": "3.20-photo-reference-repair.json",
+    "photoSignedAndDecoded": true,
+    "patientCorrection": {
+      "calories": 623,
+      "proteinG": 31,
+      "analysisId": "0d26469f-57b0-4cdb-9a00-3aa73ac23598"
+    },
+    "coordinatorSameRecordWithoutPhotos": true,
+    "foreignNutritionistStatus": 404,
+    "publicationStatus": 200,
+    "mobileInternalFieldsAbsent": true
+  },
+  "database": {
+    "evidence": "3.20-database-after-publication.json",
+    "intakeLogs": 1,
+    "preservedR7IntakeLogs": 33,
+    "reviewRevision": 7,
+    "publishedAt": "2026-11-15T18:37:50.801194+00:00",
+    "nextPrescriptionId": "91a41a69-02ba-49d6-8145-49d68ab3ca96",
+    "nextPlanPublished": true,
+    "visibleAttachments": 1,
+    "privateAttachments": 2
+  },
+  "mcp": {
+    "postPublication": true,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "widths": [
+      320,
+      390,
+      1440
+    ],
+    "surfaces": [
+      "APP Plan",
+      "APP Historial"
+    ],
+    "appScreenshots": 12,
+    "erpIndependentPhotoRead": true,
+    "animationsSettled": true,
+    "pageErrors": 0,
+    "documentOverflow": false,
+    "contentOverflow": false,
+    "nutritionHttpFailures": 0,
+    "evidence": [
+      "3.20-mcp-post-publication.json",
+      "3.20-mcp-erp-photo.json"
+    ]
+  },
+  "checks": {
+    "lint": {
+      "command": "corepack yarn lint",
+      "exit": 0
+    },
+    "typecheck": {
+      "command": "corepack yarn exec tsc --noEmit",
+      "exit": 0
+    },
+    "build": {
+      "command": "corepack yarn build",
+      "exit": 0
+    },
+    "i18n": {
+      "command": "corepack yarn i18n:check",
+      "exit": 0,
+      "missing": 0
+    },
+    "impeccable": {
+      "automatic": "unavailable: launcher exit127",
+      "manualVisualReview": "passed"
+    }
+  },
+  "console": {
+    "globallyEmpty": false,
+    "journeyObserved": [
+      "Refresh401 sin cookie inicial",
+      "Telemedicine502 en stack mínimo",
+      "Agents/executions403 para rol ajeno a ese módulo"
+    ],
+    "mcpApp": {
+      "warnings": 3,
+      "errors": 1,
+      "preciseConsoleAttribution": false,
+      "httpFailures": 0,
+      "pageErrors": 0
+    },
+    "note": "No se afirma consola global vacía; se acredita ausencia de pageerrors y fallos HTTP nutricionales en las ventanas MCP observadas."
+  },
+  "limits": [
+    "Ciclo histórico previo preparado por SQL; cierre nuevo publicado por UI/API real.",
+    "No acredita cámara física, iOS o entrega de notificaciones push.",
+    "No repetir escrituras con la fixture ya publicada."
+  ],
+  "cleanup": {
+    "ownErp3056": "stopped; verified PIDs17284/34572",
+    "ownBrowsers": "CDP9236/9237 closed; helpers4588/14104 exited; isolated Chrome page closed",
+    "ownListeners3056And9236And9237": "absent",
+    "app5182": "left to codex-app; PID22820 alive at cleanup",
+    "sharedStack": "untouched; active under orchestrator/watchdog"
+  },
+  "noPush": true,
+  "tasksMdUnchanged": true
+}
