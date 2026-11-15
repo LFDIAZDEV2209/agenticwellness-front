@@ -183,6 +183,7 @@ function PatientWorkspace({
     retrySave,
   } = useNutritionEditor(initial, catalog, canManage, canApprove);
   const [review, setReview] = useState<"approve" | "return" | null>(null);
+  const [closingLocked, setClosingLocked] = useState(false);
   const [tab, setTab] = useState<DetailTab>(() => {
     const value =
       typeof window !== "undefined"
@@ -263,7 +264,8 @@ function PatientWorkspace({
   }
   const criticalCount =
     cycle?.alerts.filter((alert) => alert.severity === "critical").length ?? 0;
-  const locked = busy || saveStatus !== "saved" || reloadRequired;
+  const locked =
+    busy || saveStatus !== "saved" || reloadRequired || closingLocked;
   useEffect(() => {
     onNavigationLock?.(locked);
     return () => onNavigationLock?.(false);
@@ -317,6 +319,7 @@ function PatientWorkspace({
         timezone={patient.timeZone ?? null}
         onBack={() => changeTab("resultados")}
         openInbox={() => changeTab("registros")}
+        onNavigationLock={setClosingLocked}
       />
     );
 
@@ -788,6 +791,7 @@ function PatientWorkspace({
               selectedId={cycle?.id}
               today={today}
               timezone={patient.timeZone ?? null}
+              onStartReview={cycle && canManage && !locked ? () => changeTab("cierre") : undefined}
             />
           </div>
         </TabsContent>

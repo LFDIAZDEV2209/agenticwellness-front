@@ -18,7 +18,7 @@ import type {
   IntakeRecord,
 } from "../types/nutrition-intake";
 import { useNutritionDate, useNutritionNumber } from "./nutrition-shared";
-import { isOutsideIntakeMenu } from "./nutrition-intake-filters";
+import { isOutsideIntakeMenu, sortIntakeRecords } from "./nutrition-intake-filters";
 
 export function IntakeMealName({ code }: { code: string }) {
   const t = useT();
@@ -183,8 +183,9 @@ export function NutritionIntakeDay({
   const date = useNutritionDate();
   const number = useNutritionNumber();
   const [selected, setSelected] = useState<string | null>(null);
+  const records = sortIntakeRecords(visibleRecords);
   const current =
-    visibleRecords.find((row) => row.id === selected) ?? visibleRecords[0];
+    records.find((row) => row.id === selected) ?? records[0];
   const planned = current
     ? day.menu?.meals.find((meal) => meal.mealCode === current.mealCode)
     : null;
@@ -227,7 +228,7 @@ export function NutritionIntakeDay({
             </p>
           )}
           <ul className="nutrition-intake-meals">
-            {visibleRecords.map((row) => {
+            {records.map((row) => {
               const menu = day.menu?.meals.find(
                 (meal) => meal.mealCode === row.mealCode,
               );
@@ -254,12 +255,14 @@ export function NutritionIntakeDay({
                     <span>
                       {t("Registrado: {value}", {
                         value:
-                          row.recorded.calories === null
+                          row.mealCode === "agua"
+                            ? row.waterMl === null ? t("Sin dato") : `${number(row.waterMl)} ml`
+                          : row.recorded.calories === null
                             ? t("Sin dato")
                             : `${number(row.recorded.calories)} kcal`,
                       })}
                     </span>
-                    <span className="text-muted-foreground">
+                    {row.mealCode !== "agua" && <span className="text-muted-foreground">
                       {menu
                         ? t("Menú: {name} · {value}", {
                             name: menu.name || t("Sin nombre"),
@@ -269,7 +272,7 @@ export function NutritionIntakeDay({
                                 : `${number(menu.planned.calories)} kcal`,
                           })
                         : t("Sin comida planificada equivalente.")}
-                    </span>
+                    </span>}
                     {row.patientCorrection && (
                       <span className="nutrition-intake-correction">
                         {t("El paciente corrigió el análisis")}
@@ -280,14 +283,16 @@ export function NutritionIntakeDay({
                         {t("Fuera del plan · sin equivalente en el menú")}
                       </span>
                     )}
-                    {menu?.planned.calories != null &&
-                      row.recorded.calories != null && (
-                        <span>
-                          {t("Desvío respecto al menú: {value} kcal", {
+                    {menu && row.mealCode !== "agua" && (
+                      <span className="nutrition-intake-in-plan">
+                        {t("En el plan")}
+                        {menu.planned.calories != null && row.recorded.calories != null && (
+                          <span>{" · "}{t("Desvío respecto al menú: {value} kcal", {
                             value: `${row.recorded.calories - menu.planned.calories > 0 ? "+" : ""}${number(row.recorded.calories - menu.planned.calories)}`,
-                          })}
-                        </span>
-                      )}
+                          })}</span>
+                        )}
+                      </span>
+                    )}
                   </button>
                 </li>
               );
@@ -334,7 +339,7 @@ export function NutritionIntakeDay({
             />
             <IntakeOrigin origin={current.origin} />
             <h5>{t("Registro final")}</h5>
-            <Macros value={current.recorded} />
+            {current.mealCode !== "agua" && <Macros value={current.recorded} />}
             {current.waterMl !== null && (
               <p>{t("Agua: {value} ml", { value: number(current.waterMl) })}</p>
             )}
@@ -381,7 +386,7 @@ export function NutritionIntakeDay({
                 {t("Este registro no tiene análisis de foto.")}
               </p>
             )}
-            {renderRecordActions?.(current)}
+            {current.mealCode !== "agua" && renderRecordActions?.(current)}
           </aside>
         )}
       </div>

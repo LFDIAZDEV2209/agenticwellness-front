@@ -159,7 +159,11 @@ export async function apiFetch<T>(
     if (activeClinicId && !headers.has("X-Clinic-Id")) {
       headers.set("X-Clinic-Id", activeClinicId);
     }
-    if (fetchInit.body && !headers.has("Content-Type")) {
+    if (
+      fetchInit.body &&
+      !(fetchInit.body instanceof FormData) &&
+      !headers.has("Content-Type")
+    ) {
       headers.set("Content-Type", "application/json");
     }
 
@@ -414,7 +418,10 @@ export async function refreshAccessToken(): Promise<RefreshOutcome> {
   if (!refreshPromise) {
     refreshPromise = (async (): Promise<RefreshOutcome> => {
       if (typeof navigator !== "undefined" && navigator.locks)
-        return await navigator.locks.request(`copp-refresh-${env.applicationCode}`, doRefresh);
+        return await navigator.locks.request(
+          `copp-refresh-${env.applicationCode}`,
+          doRefresh,
+        );
       return await doRefresh();
     })().finally(() => {
       refreshPromise = null;

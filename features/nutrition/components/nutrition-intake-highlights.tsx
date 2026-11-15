@@ -93,8 +93,9 @@ export function NutritionIntakeHighlightActions({
   const inFlight = useRef<AbortController | null>(null);
   useEffect(() => () => inFlight.current?.abort(), []);
   const notesAllowed = can("Nutrition.NotesView");
+  const isWater = day.records.some(row => row.id === recordId && row.mealCode === "agua");
   async function save() {
-    if (!day.cycleId || !ready || !can("Nutrition.Manage") || inFlight.current)
+    if (isWater || !day.cycleId || !ready || !can("Nutrition.Manage") || inFlight.current)
       return;
     const controller = new AbortController();
     inFlight.current = controller;
@@ -118,6 +119,7 @@ export function NutritionIntakeHighlightActions({
       if (inFlight.current === controller) inFlight.current = null;
     }
   }
+  if (isWater) return null;
   return (
     <section
       className="nutrition-intake-highlight"

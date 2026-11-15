@@ -15,6 +15,7 @@ import type {
 export async function fetchCycleAdherence(
   cycleId: string,
   signal: AbortSignal,
+  today: string,
 ) {
   const endpoint = `/api/v1/nutrition/cycles/${encodeURIComponent(cycleId)}/adherence`;
   let wire: CycleAdherence;
@@ -31,6 +32,9 @@ export async function fetchCycleAdherence(
     });
   }
   try {
+    const calendarDays = wire?.from && wire?.through
+      ? intakeDates(wire.from, wire.through).length : 0;
+    const inProgress = calendarDays - wire?.elapsedDays;
     const count = (n: unknown) =>
       typeof n === "number" && Number.isInteger(n) && n >= 0;
     if (
@@ -59,17 +63,13 @@ export async function fetchCycleAdherence(
       wire.page !== 1 ||
       wire.pageSize !== 100 ||
       !Array.isArray(wire.days) ||
-      wire.days.length !== Math.min(100, wire.elapsedDays)
+      wire.days.length !== Math.min(100, calendarDays) ||
+      !(inProgress === 0 || (inProgress === 1 && wire.through === today))
     )
       throw new Error("cycle-adherence-contract");
     for (const date of [wire.startDate, wire.endDate, wire.from, wire.through])
       if (date !== null) intakeDate(date);
-    if (
-      wire.elapsedDays &&
-      (!wire.from ||
-        !wire.through ||
-        intakeDates(wire.from, wire.through).length !== wire.elapsedDays)
-    )
+    if (wire.elapsedDays && (!wire.from || !wire.through))
       throw new Error("cycle-range-contract");
     for (const [index, day] of wire.days.entries()) {
       if (
@@ -81,6 +81,8 @@ export async function fetchCycleAdherence(
         ) ||
         typeof day.continuity !== "boolean" ||
         typeof day.interruption !== "boolean" ||
+        (day.date === today && day.recordedMeals === 0 && day.interruption) ||
+        (inProgress === 1 && day.date === today && day.recordedMeals !== 0) ||
         !(
           day.adherence === null ||
           (Number.isFinite(day.adherence) && day.adherence >= 0)
@@ -108,8 +110,8 @@ export async function fetchNutritionPeriod(
   timezone: string,
   signal: AbortSignal,
 ): Promise<NutritionPeriodRead> {
-  const adherence = await fetchCycleAdherence(cycleId, signal);
-  if (!adherence.from || !adherence.through || !adherence.elapsedDays)
+  const adherence = await fetchCycleAdherence(cycleId, signal, today);
+  if (!adherence.from || !adherence.through)
     return { adherence, days: [] };
   const days: NutritionPeriodRead["days"] = [];
   // Ventanas de hasta 100 días, dentro del máximo 366 de 3.7. Sin petición por día.

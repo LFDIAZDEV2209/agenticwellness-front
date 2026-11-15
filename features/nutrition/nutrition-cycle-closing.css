@@ -1,0 +1,250 @@
+.nutrition-closing-fields,
+.nutrition-closing-plan {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+.nutrition-closing-fields textarea {
+  resize: vertical;
+  min-width: 0;
+  max-width: 100%;
+  background: var(--card);
+  line-height: 1.6;
+}
+.nutrition-closing-fields textarea:disabled {
+  opacity: 0.85;
+}
+.nutrition-closing-fields button,
+.nutrition-closing-plan button {
+  min-height: 44px;
+  height: auto;
+  white-space: normal;
+  text-align: center;
+}
+.nutrition-closing-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.nutrition-closing-private,
+.nutrition-closing-ai,
+.nutrition-closing-message,
+.nutrition-closing-upload {
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+}
+.nutrition-closing-private {
+  border-left: 3px solid var(--primary);
+  background: var(--muted);
+}
+.nutrition-closing-ai {
+  border-left: 3px solid #bd8731;
+}
+.nutrition-closing-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.nutrition-closing-private label,
+.nutrition-closing-message legend,
+.nutrition-closing-upload > label,
+.nutrition-closing-field > span {
+  font-weight: 600;
+}
+.nutrition-closing-private p,
+.nutrition-closing-message > p {
+  font-size: 0.8125rem;
+  color: var(--muted-foreground);
+}
+.nutrition-closing-bilingual {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 1rem;
+}
+.nutrition-closing-bilingual > label,
+.nutrition-closing-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  min-width: 0;
+}
+.nutrition-closing-plan select,
+.nutrition-closing-fields select {
+  background: var(--card);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.625rem;
+  min-height: 44px;
+  max-width: 100%;
+  min-width: 0;
+  font-size: 0.875rem;
+}
+.nutrition-closing-fields input[type="file"] {
+  width: 100%;
+  max-width: 100%;
+  font-size: 0.8125rem;
+  padding: 0.75rem;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.nutrition-closing-check {
+  display: flex;
+  align-items: start;
+  gap: 0.75rem;
+  padding: 0.875rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.875rem;
+}
+.nutrition-closing-check input {
+  width: 20px;
+  height: 20px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  accent-color: var(--primary);
+}
+.nutrition-closing-attachments,
+.nutrition-closing-visible-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 1rem;
+}
+.nutrition-closing-attachments > li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  min-width: 0;
+}
+.nutrition-closing-attachments img,
+.nutrition-closing-preview img {
+  width: 100%;
+  max-height: 320px;
+  object-fit: contain;
+  background: var(--muted);
+  border-radius: 10px;
+}
+.nutrition-closing-caption,
+.nutrition-closing-visible-images figcaption {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.75;
+}
+.nutrition-closing-preview {
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--primary);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  min-width: 0;
+  background: var(--card);
+}
+.nutrition-closing-preview > p:not(.nutrition-closing-caption) {
+  font-size: 0.8125rem;
+  color: var(--muted-foreground);
+}
+.nutrition-closing-preview h3 {
+  font-weight: 700;
+  font-size: 1rem;
+}
+.nutrition-closing-visible-images figure {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+.nutrition-closing-requirements {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.nutrition-closing-requirements li {
+  display: flex;
+  align-items: start;
+  gap: 0.625rem;
+}
+.nutrition-closing-requirements li > span:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+}
+.nutrition-closing-requirements strong {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+.nutrition-closing-success {
+  display: flex;
+  align-items: start;
+  gap: 0.75rem;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--primary);
+  padding: 1rem;
+  border-radius: 10px;
+}
+.nutrition-closing-success svg {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 3px;
+}
+.nutrition-closing-alerts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+.nutrition-closing-alerts li {
+  border-left: 3px solid var(--border);
+  padding: 0.625rem 0.875rem;
+  background: var(--muted);
+  border-radius: 6px;
+}
+.nutrition-closing-alerts li[data-severity="critical"] {
+  border-color: var(--destructive);
+}
+.nutrition-closing-editor {
+  max-height: 94dvh;
+  overflow: auto;
+}
+.nutrition-closing-editor-scroll {
+  min-width: 0;
+  overflow: visible;
+}
+.nutrition-closing-editor .nutrition-editor-body {
+  min-width: 0;
+}
+.nutrition-closing-fields details > summary {
+  cursor: pointer;
+  min-height: 44px;
+  font-weight: 600;
+}
+@media (max-width: 600px) {
+  .nutrition-closing-preview,
+  .nutrition-closing-private,
+  .nutrition-closing-message,
+  .nutrition-closing-upload,
+  .nutrition-closing-ai {
+    padding: 0.875rem;
+  }
+  .nutrition-closing-requirements li {
+    flex-wrap: wrap;
+  }
+  .nutrition-closing-editor {
+    padding: 1rem;
+  }
+}

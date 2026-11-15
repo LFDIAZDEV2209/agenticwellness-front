@@ -6,6 +6,7 @@ import { intakePatient, intakeToday } from "./fixtures/nutrition-intake-http";
 async function open(page: Page) {
   await page.goto(`/nutrition/${intakePatient}?tab=registros`);
   await page.getByRole("button", { name: /^Día 33 ·/ }).click();
+  await page.locator(".nutrition-intake-meals").getByRole("button", { name: /^Almuerzo/ }).click();
 }
 const recordId = `${intakeToday}-synthetic-alm`;
 
@@ -47,6 +48,7 @@ test("3.15 · anclar nota, recargar, conservar tras corrección y quitar con 3.8
   );
   await page.reload();
   await page.getByRole("button", { name: /^Día 33 ·/ }).click();
+  await page.locator(".nutrition-intake-meals").getByRole("button", { name: /^Almuerzo/ }).click();
   await expect(
     page.getByRole("region", { name: "Ejemplo para el cierre", exact: true }),
   ).toContainText("Porción revisada con el paciente");
@@ -54,6 +56,7 @@ test("3.15 · anclar nota, recargar, conservar tras corrección y quitar con 3.8
   await page
     .getByRole("button", { name: "Actualizar registros", exact: true })
     .click();
+  await page.locator(".nutrition-intake-meals").getByRole("button", { name: /^Almuerzo/ }).click();
   await expect(
     page.getByRole("button", { name: "Quitar ejemplo anclado", exact: true }),
   ).toBeEnabled();

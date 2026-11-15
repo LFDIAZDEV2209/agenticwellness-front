@@ -27,7 +27,7 @@ import {
   IntakePhoto,
   NutritionIntakeDay,
 } from "./nutrition-intake-day";
-import { isOutsideIntakeMenu } from "./nutrition-intake-filters";
+import { isOutsideIntakeMenu, sortIntakeRecords } from "./nutrition-intake-filters";
 import { useNutritionDate, useNutritionNumber } from "./nutrition-shared";
 import type { IntakeDay, IntakeRecord } from "../types/nutrition-intake";
 
@@ -36,10 +36,12 @@ export function NutritionCycleRecords({
   days,
   retry,
   openInbox,
+  navigationLocked = false,
 }: {
   days: IntakeDay[];
   retry: () => void;
   openInbox: () => void;
+  navigationLocked?: boolean;
 }) {
   const t = useT();
   const date = useNutritionDate();
@@ -63,7 +65,7 @@ export function NutritionCycleRecords({
       ?.items.find((item) => item.recordId === recordId);
   const rows = [...days]
     .sort((a, b) => b.localDate.localeCompare(a.localDate))
-    .flatMap((day) => day.records.map((record) => ({ day, record })));
+    .flatMap((day) => sortIntakeRecords(day.records).map((record) => ({ day, record })));
   const matching = rows.filter(
     ({ day, record }) =>
       filter === "all" ||
@@ -225,12 +227,14 @@ export function NutritionCycleRecords({
                     <p>
                       {t("Registrado: {value}", {
                         value:
-                          record.recorded.calories === null
+                          record.mealCode === "agua"
+                            ? record.waterMl === null ? t("Sin dato") : `${number(record.waterMl)} ml`
+                          : record.recorded.calories === null
                             ? t("Sin dato")
                             : `${number(record.recorded.calories)} kcal`,
                       })}
                     </p>
-                    <p>
+                    {record.mealCode !== "agua" && <p>
                       {planned
                         ? t("Menú: {name} · {value}", {
                             name: planned.name || t("Sin nombre"),
@@ -240,7 +244,7 @@ export function NutritionCycleRecords({
                                 : `${number(planned.planned.calories)} kcal`,
                           })
                         : t("Sin comida planificada equivalente.")}
-                    </p>
+                    </p>}
                     {isOutsideIntakeMenu(day, record) && (
                       <p>{t("Fuera del plan · sin equivalente en el menú")}</p>
                     )}
@@ -305,7 +309,11 @@ export function NutritionCycleRecords({
             {t("Cargar más registros")}
           </Button>
         )}
-        <Button variant="outline" onClick={openInbox}>
+        <Button
+          variant="outline"
+          onClick={openInbox}
+          disabled={navigationLocked}
+        >
           {t("Abrir la bandeja de registros")}
         </Button>
       </div>

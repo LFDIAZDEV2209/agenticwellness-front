@@ -11,6 +11,7 @@ export interface CycleAdherence {
   through: string | null;
   adherence: number | null;
   daysWithData: number;
+  /** R7-03: hoy local vacío sigue en days, pero no suma elapsedDays ni interruptions. */
   elapsedDays: number;
   interruptions: number;
   daysWithUnknownMenu: number;

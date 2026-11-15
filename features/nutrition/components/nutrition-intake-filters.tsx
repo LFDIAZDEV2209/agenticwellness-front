@@ -25,7 +25,17 @@ export const hasIntakeFilters = (filters: IntakeFilters) =>
   filters.mealCode !== "all";
 /** Decisión de Luis: mismo mealCode, sin umbral calórico ni clasificación clínica. */
 export function isOutsideIntakeMenu(day: IntakeDay, record: IntakeRecord) {
-  return !day.menu?.meals.some((meal) => meal.mealCode === record.mealCode);
+  return record.mealCode !== "agua" &&
+    !day.menu?.meals.some((meal) => meal.mealCode === record.mealCode);
+}
+/** Orden clínico de presentación; el DTO 3.7 no incluye hora del registro. */
+export function sortIntakeRecords(records: IntakeRecord[]) {
+  const order = ["des", "alm", "mer", "cen", "agua"];
+  const rank = (code: string) => {
+    const index = order.indexOf(code);
+    return index < 0 ? order.length : index;
+  };
+  return [...records].sort((a, b) => rank(a.mealCode) - rank(b.mealCode));
 }
 export function filterIntakeRecords(
   day: IntakeDay,
@@ -47,12 +57,14 @@ export function NutritionIntakeFilters({
   canPhotos,
   reviewsReady,
   count,
+  counts,
 }: {
   value: IntakeFilters;
   onChange: (value: IntakeFilters) => void;
   canPhotos: boolean;
   reviewsReady: boolean;
   count: number | null;
+  counts: { photo: number | null; unreviewed: number | null; outsidePlan: number };
 }) {
   const t = useT();
   const id = useId();
@@ -77,7 +89,7 @@ export function NutritionIntakeFilters({
           ).map((item) => (
             <label
               key={item.key}
-              className="nutrition-intake-filter-toggle"
+                className="nutrition-intake-filter-toggle"
               title={
                 !item.enabled
                   ? t(
@@ -90,6 +102,8 @@ export function NutritionIntakeFilters({
             >
               <input
                 type="checkbox"
+                className="nutrition-intake-chip-input"
+                aria-label={t(item.label)}
                 name={item.key}
                 checked={value[item.key]}
                 disabled={!item.enabled}
@@ -98,6 +112,9 @@ export function NutritionIntakeFilters({
                 }
               />
               <span>{t(item.label)}</span>
+              <span aria-hidden="true" className="nutrition-intake-filter-count">
+                {counts[item.key] ?? "—"}
+              </span>
             </label>
           ))}
           <div className="nutrition-intake-meal-filter">
@@ -136,13 +153,13 @@ export function NutritionIntakeFilters({
       </fieldset>
       <p>
         {t(
-          "Fuera del plan: sin una comida del mismo tipo en el menú de ese día. El desvío calórico no filtra.",
+          "Fuera del plan: comida sin equivalente en el menú de ese día. El agua se muestra aparte y el desvío calórico no filtra.",
         )}
       </p>
       <p role="status">
         {count === null
           ? t("El filtro sin revisar está pendiente de una lectura válida.")
-          : t("{count} comidas en los días cargados", { count: String(count) })}
+          : t("{count} registros en los días cargados", { count: String(count) })}
       </p>
       <p>
         {t(

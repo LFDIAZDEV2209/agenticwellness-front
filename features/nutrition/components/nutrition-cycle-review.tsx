@@ -1,14 +1,14 @@
 "use client";
 
-import { useCallback, useId, useRef, useState } from "react";
 import {
-  ArrowLeft,
-  ArrowRight,
-  BarChart3,
-  ClipboardList,
-  LockKeyhole,
-  RefreshCw,
-} from "lucide-react";
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
+import { ArrowLeft, ArrowRight, ClipboardList, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAppContext } from "@/providers/context-provider";
@@ -21,12 +21,14 @@ import {
   NutritionPeriodComparison,
 } from "./nutrition-period-summary";
 import { NutritionCycleRecords } from "./nutrition-cycle-records";
+import { NutritionCycleClosing } from "./nutrition-cycle-closing";
 import {
   useNutritionDate,
   useNutritionNumber,
   NutritionPatientAvatar,
 } from "./nutrition-shared";
 import "../nutrition-cycle-review.css";
+import "../nutrition-cycle-closing.css";
 
 interface Props {
   patientId: string;
@@ -37,6 +39,7 @@ interface Props {
   timezone: string | null;
   onBack: () => void;
   openInbox: () => void;
+  onNavigationLock?: (locked: boolean) => void;
 }
 const steps = [
   "Resumen del período",
@@ -102,17 +105,24 @@ function ReviewScreen({
   patientId,
   patientName,
   headers,
+  selectedId,
   cycleId,
   today,
   timezone,
   onBack,
   openInbox,
+  onNavigationLock,
 }: Props & { cycleId: string; today: string; timezone: string }) {
   const t = useT();
   const date = useNutritionDate();
   const number = useNutritionNumber();
   const id = useId();
   const [active, setActive] = useState(0);
+  const [closingLocked, setClosingLocked] = useState(false);
+  useEffect(() => {
+    onNavigationLock?.(closingLocked);
+    return () => onNavigationLock?.(false);
+  }, [closingLocked, onNavigationLock]);
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
   const load = useCallback(
     (signal: AbortSignal) =>
@@ -184,13 +194,13 @@ function ReviewScreen({
   return (
     <div className="nutrition-cycle-review">
       <div className="nutrition-review-toolbar">
-        <Button variant="ghost" onClick={onBack}>
+        <Button variant="ghost" onClick={onBack} disabled={closingLocked}>
           <ArrowLeft className="size-4" aria-hidden="true" />
           {t("Volver a la ficha")}
         </Button>
         <Button
           variant="outline"
-          disabled={current.loading}
+          disabled={current.loading || closingLocked}
           onClick={() => {
             current.retry();
             previous.retry();
@@ -248,7 +258,7 @@ function ReviewScreen({
       </header>
       <p className="nutrition-review-read-notice">
         {t(
-          "Consulta de los pasos 1 a 3. La revisión diaria y los ejemplos no cierran ni publican el ciclo.",
+          "Revisa el período, prepara el plan siguiente y valida el mensaje. Guardar el cierre no lo publica.",
         )}
       </p>
       <div className="nutrition-review-layout">
@@ -259,21 +269,11 @@ function ReviewScreen({
                 <li key={label}>
                   <button
                     type="button"
-                    disabled={index > 2}
                     aria-current={active === index ? "step" : undefined}
                     onClick={() => go(index)}
                   >
-                    <span aria-hidden="true">
-                      {index > 2 ? (
-                        <LockKeyhole className="size-4" />
-                      ) : (
-                        index + 1
-                      )}
-                    </span>
-                    <span>
-                      {t(label)}
-                      {index > 2 && <small>{t("Siguiente etapa")}</small>}
-                    </span>
+                    <span aria-hidden="true">{index + 1}</span>
+                    <span>{t(label)}</span>
                   </button>
                 </li>
               ))}
@@ -281,7 +281,7 @@ function ReviewScreen({
           </nav>
           <p>
             {t(
-              "Los ejemplos se guardan tras la confirmación del servidor. Puedes volver a la ficha y consultar de nuevo.",
+              "Guarda la evaluación y el mensaje para retomar el cierre. La publicación conjunta requiere confirmación.",
             )}
           </p>
         </aside>
@@ -400,33 +400,40 @@ function ReviewScreen({
                 <div className="nutrition-review-section-body">
                   <NutritionCycleRecords
                     days={current.data.days}
-                    retry={current.retry}
+                    retry={() => {
+                      if (!closingLocked) current.retry();
+                    }}
                     openInbox={openInbox}
+                    navigationLocked={closingLocked}
                   />
                 </div>
               </section>
-              <section
-                className="nutrition-review-section nutrition-review-next"
-                aria-label={t("Evaluación pendiente")}
-              >
-                <div className="nutrition-review-section-body">
-                  <h2>
-                    <BarChart3 className="size-5" aria-hidden="true" />
-                    {t("4 · Evaluación")}
-                  </h2>
-                  <p>
-                    {t(
-                      "La evaluación y el borrador de IA se completarán en la siguiente etapa.",
-                    )}
-                  </p>
-                  <Button
-                    disabled
-                    title={t("Disponible en la siguiente etapa")}
+              <NutritionCycleClosing
+                patientId={patientId}
+                cycleId={cycleId}
+                sourceId={
+                  selectedId ??
+                  headers.find((row) => row.cycleId === cycleId)?.id ??
+                  ""
+                }
+                period={current.data.adherence}
+                today={today}
+                timezone={timezone}
+                onLock={setClosingLocked}
+                section={(index: number, body: ReactNode) => (
+                  <section
+                    key={index}
+                    ref={(element) => {
+                      sectionRefs.current[index] = element;
+                    }}
+                    className="nutrition-review-section"
+                    aria-labelledby={`${id}-${index}`}
                   >
-                    {t("Continuar a evaluación")}
-                  </Button>
-                </div>
-              </section>
+                    {header(index)}
+                    <div className="nutrition-review-section-body">{body}</div>
+                  </section>
+                )}
+              />
             </>
           )}
         </div>

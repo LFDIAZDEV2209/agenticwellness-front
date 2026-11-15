@@ -7,6 +7,7 @@ import {
   CircleMinus,
   Clock3,
   RefreshCw,
+  Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -49,6 +50,7 @@ interface Props {
   selectedId?: string;
   today: string | null;
   timezone: string | null;
+  onStartReview?: () => void;
 }
 type DayState =
   "complete" | "partial" | "no_data" | "interruption" | "future" | "unplanned";
@@ -68,8 +70,9 @@ function dayState(
   today: string,
 ): DayState {
   if (date > today) return "future";
-  if (!day?.records.length) return date < today ? "interruption" : "no_data";
-  if (!day.menu?.meals.length) return "unplanned";
+  const food = day?.records.filter(row => row.mealCode !== "agua") ?? [];
+  if (!food.length) return date < today ? "interruption" : "no_data";
+  if (!day?.menu?.meals.length) return "unplanned";
   return day.menu.meals.every((meal) =>
     day.records.some((row) => row.mealCode === meal.mealCode),
   )
@@ -136,6 +139,7 @@ export function NutritionIntake(props: Props) {
       timezone={props.timezone}
       hasCycle={!!period}
       canPhotos={can("Nutrition.PhotosView")}
+      onStartReview={props.onStartReview}
     />
   );
 }
@@ -149,6 +153,7 @@ function IntakeReader({
   timezone,
   hasCycle,
   canPhotos,
+  onStartReview,
 }: {
   patientId: string;
   start: string;
@@ -158,6 +163,7 @@ function IntakeReader({
   timezone: string;
   hasCycle: boolean;
   canPhotos: boolean;
+  onStartReview?: () => void;
 }) {
   const t = useT();
   const date = useNutritionDate();
@@ -168,9 +174,7 @@ function IntakeReader({
           .sort()
           .at(-1)!
       : null;
-  const [selected, setSelected] = useState(
-    today >= start && today <= end ? today : end < today ? end : start,
-  );
+  const [chosenDate, setSelected] = useState<string | null>(null);
   const load = useCallback(
     async (signal: AbortSignal) => {
       const cycle = fetchNutritionIntake(
@@ -207,6 +211,19 @@ function IntakeReader({
     !reviews.loading &&
     !reviews.error &&
     !!data?.some((day) => day.cycleId);
+  const selected = chosenDate ?? [...(data ?? [])]
+    .filter(day => day.records.length)
+    .sort((a,b) => b.localDate.localeCompare(a.localDate))[0]?.localDate ??
+    (today >= start && today <= end ? today : end < today ? end : start);
+  const allRecords = (data ?? []).flatMap(day => day.records);
+  const counts = {
+    photo: canPhotos && data ? allRecords.filter(row => row.photo).length : null,
+    unreviewed: reviewsReady ? (data ?? []).reduce((sum, day) =>
+      sum + (reviewByDate.get(day.localDate)?.unreviewed ? day.records.length : 0), 0) : null,
+    outsidePlan: (data ?? []).reduce((sum,day) => sum + filterIntakeRecords(day, {
+      ...emptyIntakeFilters, outsidePlan: true,
+    }).length, 0),
+  };
   const [filters, setFilters] = useState<IntakeFilters>(emptyIntakeFilters);
   const matchingDays = (data ?? [])
     .filter(
@@ -266,6 +283,9 @@ function IntakeReader({
       state: t(stateLabels[state]),
     });
     const review = reviewByDate.get(dayDate);
+    const pinned = day?.records.some(record => record.mealCode !== "agua" && highlights.data
+      ?.find(group => group.cycleId === day.cycleId)?.items.some(item => item.recordId === record.id));
+    const fullLabel = `${label}${dayDate === today ? ` · ${t("Hoy, en curso")}` : ""}${review ? ` · ${t(review.modifiedSinceReview ? "Modificado tras tu revisión" : review.unreviewed ? "Sin revisar" : review.reviewedAt ? "Revisado" : "Sin registros que revisar")}` : ""}${pinned ? ` · ${t("Ejemplo anclado")}` : ""}`;
     return (
       <li key={dayDate}>
         <button
@@ -275,8 +295,8 @@ function IntakeReader({
           data-today={dayDate === today || undefined}
           aria-current={dayDate === today ? "date" : undefined}
           aria-pressed={selected === dayDate}
-          aria-label={`${label}${review ? ` · ${t(review.modifiedSinceReview ? "Modificado tras tu revisión" : review.unreviewed ? "Sin revisar" : review.reviewedAt ? "Revisado" : "Sin registros que revisar")}` : ""}`}
-          title={label}
+          aria-label={fullLabel}
+          title={fullLabel}
           onClick={() => setSelected(dayDate)}
         >
           <strong>{ordinal}</strong>
@@ -287,6 +307,7 @@ function IntakeReader({
               {review.modifiedSinceReview ? "!" : "✓"}
             </span>
           )}
+          {pinned && <Star className="size-3" aria-hidden="true" />}
         </button>
       </li>
     );
@@ -302,6 +323,13 @@ function IntakeReader({
               "Compara lo registrado con el menú publicado vigente en cada fecha.",
             )}
           </p>
+          {data && !error && !loading && (
+            <ul className="nutrition-intake-counts" aria-label={t("Resumen de registros cargados")}>
+              <li>{t("{count} registros", {count: String(allRecords.length)})}</li>
+              <li>{counts.unreviewed === null ? t("Sin revisar: no disponible") : t("{count} registros sin revisar", {count: String(counts.unreviewed)})}</li>
+              {canPhotos && <li>{t("{count} con foto", {count: String(counts.photo)})}</li>}
+            </ul>
+          )}
         </div>
         <Button variant="outline" onClick={retry} disabled={loading}>
           <RefreshCw aria-hidden="true" className="size-4" />
@@ -353,6 +381,11 @@ function IntakeReader({
                 : ""}
               {date(start)} – {date(end)} · {timezone}
             </p>
+            {hasCycle && onStartReview && (
+              <Button variant="outline" onClick={onStartReview}>
+                {t("Iniciar revisión del ciclo")}
+              </Button>
+            )}
             <ol
               className="nutrition-intake-dates"
               aria-label={t("30 días del ciclo")}
@@ -426,6 +459,9 @@ function IntakeReader({
                   {t(stateLabels[state])}
                 </li>
               ))}
+              <li><Check className="size-4" aria-hidden="true" />{t("Revisado")}</li>
+              <li><span aria-hidden="true">!</span>{t("Modificado tras tu revisión")}</li>
+              <li><Star className="size-4" aria-hidden="true" />{t("Ejemplo anclado")}</li>
             </ul>
             <p className="nutrition-intake-rule">
               {t(
@@ -439,6 +475,7 @@ function IntakeReader({
             canPhotos={canPhotos}
             reviewsReady={reviewsReady}
             count={filteredCount}
+            counts={counts}
           />
           {hasIntakeFilters(filters) && filteredCount !== null && (
             <nav

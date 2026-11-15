@@ -6,6 +6,7 @@ test.use({ timezoneId: "Asia/Tokyo" });
 async function open(page: Page) {
   await page.goto(`/nutrition/${intakePatient}?tab=registros`);
   await page.getByRole("button", { name: /^Día 33 ·/ }).click();
+  await detail(page).getByRole("button", { name: /^Almuerzo/ }).click();
 }
 const detail = (page: Page) =>
   page.getByRole("region", { name: "Detalle del día", exact: true });

@@ -42,6 +42,7 @@ export async function mockIntakeHttp(
     canManage?: boolean;
     transformDay?: (day: IntakeDay) => IntakeDay;
     cycleId?: string;
+    canApprove?: boolean;
   } = {},
 ) {
   await page.clock.install({ time: new Date("2026-11-14T17:00:00Z") });
@@ -50,6 +51,7 @@ export async function mockIntakeHttp(
     ...(options.noRecordsPermission ? [] : ["Nutrition.RecordsView"]),
     ...(options.noPhotos ? [] : ["Nutrition.PhotosView"]),
     ...(options.canManage ? ["Nutrition.Manage", "Nutrition.NotesView"] : []),
+    ...(options.canApprove ? ["Nutrition.Approve"] : []),
   ];
   const base = await mockNutritionHttp(page, permissions, {
     english: options.english,

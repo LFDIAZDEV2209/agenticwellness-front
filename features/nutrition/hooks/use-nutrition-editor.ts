@@ -21,6 +21,7 @@ export function useNutritionEditor(
   catalog: NutritionFood[],
   canManage: boolean,
   canApprove: boolean,
+  updateLocation = true,
 ) {
   const [patient, setPatient] = useState(initial);
   const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "error">(
@@ -96,6 +97,7 @@ export function useNutritionEditor(
             server.current.revision,
             catalog,
             signal,
+            updateLocation,
           );
           server.current = result;
           if (signal.aborted) return;
@@ -160,6 +162,7 @@ export function useNutritionEditor(
         catalog,
         options,
         signal,
+        updateLocation,
       );
       if (signal.aborted) return null;
       current.current = result;

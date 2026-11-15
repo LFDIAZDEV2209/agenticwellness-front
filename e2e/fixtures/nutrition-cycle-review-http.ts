@@ -33,7 +33,9 @@ export async function mockCycleReviewHttp(
     longContinuity?: boolean;
     noPhotos?: boolean;
     readonly?: boolean;
+    canApprove?: boolean;
     unknownMenu?: boolean;
+    todayEmpty?: boolean;
   } = {},
 ) {
   const start = plus(intakeToday, options.longContinuity ? -129 : -32);
@@ -61,7 +63,7 @@ export async function mockCycleReviewHttp(
       (Date.parse(localDate) - Date.parse(cycleStart)) / 86400000 + 1;
     const codes = ["des", "alm", "mer", "cen"];
     const active =
-      !options.empty &&
+      !options.empty && !(options.todayEmpty && localDate === intakeToday) &&
       (ordinal === 1 ||
         ordinal === 2 ||
         localDate === intakeToday ||
@@ -114,13 +116,11 @@ export async function mockCycleReviewHttp(
               prescriptionId: ordinal <= 15 ? "published-v1" : "published-v2",
               version: ordinal <= 15 ? 1 : 2,
               dayNumber: Math.min(30, ordinal),
-              meals: codes
-                .slice(0, ordinal === 2 ? 3 : 4)
-                .map((mealCode) => ({
-                  mealCode,
-                  name: `Menú histórico ${mealCode}`,
-                  planned: values(500),
-                })),
+              meals: codes.slice(0, ordinal === 2 ? 3 : 4).map((mealCode) => ({
+                mealCode,
+                name: `Menú histórico ${mealCode}`,
+                planned: values(500),
+              })),
             },
       records,
     };
@@ -129,10 +129,18 @@ export async function mockCycleReviewHttp(
     english: options.english,
     noPhotos: options.noPhotos,
     readonly: options.readonly,
+    canApprove: options.canApprove,
     cycleId: reviewCycleId,
     transformDay: (day) => dayFor(day.localDate),
   });
   const patient = base.store.get(intakePatient)!;
+  await page.route("**/nutrition/cycles/*/review", (route) =>
+    route.fulfill({
+      status: route.request().method() === "GET" ? 200 : 403,
+        contentType: "application/json",
+      json: null,
+    }),
+  );
   patient.cycle!.startDate = start;
   patient.cycle!.endDate = end;
   patient.publishedCycle = structuredClone(patient.cycle);
@@ -198,13 +206,13 @@ export async function mockCycleReviewHttp(
           food.length && day.menu
             ? Math.round((food.length / day.menu.meals.length) * 100) / 100
             : null,
-        interruption: !food.length,
+        interruption: !food.length && day.localDate < intakeToday,
         prescriptionId: day.menu?.prescriptionId ?? null,
         menuDay: day.menu?.dayNumber ?? null,
         intakeIds: food.map((row) => row.id),
       };
     });
-    const withFood = daily.filter((day) => !day.interruption);
+    const withFood = daily.filter((day) => day.recordedMeals > 0);
     const unknown = withFood.filter((day) => day.adherence === null).length;
     return route.fulfill({
       json: {
@@ -224,8 +232,8 @@ export async function mockCycleReviewHttp(
                   100,
               ) / 100,
         daysWithData: withFood.length,
-        elapsedDays: days.length,
-        interruptions: days.length - withFood.length,
+        elapsedDays: daily.filter(day => day.recordedMeals > 0 || day.date < intakeToday).length,
+        interruptions: daily.filter(day => day.interruption).length,
         daysWithUnknownMenu: unknown,
         page: 1,
         pageSize: 100,

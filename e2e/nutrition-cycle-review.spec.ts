@@ -54,9 +54,14 @@ test("3.16 · entrada desde ficha, resumen real y siguiente etapa sin IA ni escr
     summary(page).locator(".nutrition-review-origins"),
   ).toContainText("1.100 kcal");
   await expect(
-    page.getByRole("button", { name: "Continuar a evaluación", exact: true }),
+    page.getByRole("button", { name: "Generar borrador de IA", exact: true }),
   ).toBeDisabled();
-  await expect(page.locator("textarea")).toHaveCount(0);
+  await expect(
+    page.getByRole("textbox", {
+      name: "Evaluación interna (obligatoria para publicar)",
+      exact: true,
+    }),
+  ).toBeDisabled();
   await expect(page).toHaveURL(/tab=cierre/);
   expect(commands).toEqual([]);
   expect(http.state.writes).toEqual([]);
@@ -182,7 +187,7 @@ test("3.16 · sin comidas, agua sola y menú desconocido conservan la semántica
 }) => {
   await mockCycleReviewHttp(page, { waterOnly: true });
   await open(page);
-  await expect(summary(page)).toContainText("0 de 33");
+  await expect(summary(page)).toContainText("0 de 32");
   const stats = summary(page).locator(".nutrition-review-stats");
   await expect(stats).toContainText("Sin dato");
   await expect(stats).toContainText("500 ml");
@@ -194,7 +199,7 @@ test("3.16 · sin comidas, agua sola y menú desconocido conservan la semántica
 test("3.16 · período vacío y galería vacía explícitos", async ({ page }) => {
   await mockCycleReviewHttp(page, { empty: true });
   await open(page);
-  await expect(summary(page)).toContainText("0 de 33");
+  await expect(summary(page)).toContainText("0 de 32");
   await expect(records(page)).toContainText(
     "No hay comidas ni registros para mostrar en este período.",
   );

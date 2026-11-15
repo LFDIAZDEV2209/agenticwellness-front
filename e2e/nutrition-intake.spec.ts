@@ -61,6 +61,7 @@ test("3.14 · 30 días, continuidad, menú histórico, orígenes y foto ampliabl
     }),
   ).toBeFocused();
   await choose(page, 33);
+  await page.locator(".nutrition-intake-meals").getByRole("button", { name: /^Almuerzo/ }).click();
   const day = page.getByRole("region", {
     name: "Detalle del día",
     exact: true,
@@ -185,6 +186,7 @@ test("3.14 · una foto que caduca abierta se retira y permite solicitar otra URL
 }) => {
   await mockIntakeHttp(page);
   await open(page);
+  await choose(page, 1);
   await page
     .getByRole("button", { name: "Ampliar foto de la comida", exact: true })
     .click();
@@ -227,6 +229,7 @@ test("3.14 · foto caducada se renueva consultando intake, sin ruta de firma gen
 }) => {
   const http = await mockIntakeHttp(page, { expiredPhoto: true });
   await open(page);
+  await choose(page, 1);
   await expect(
     page.getByText("La foto caducó o no está disponible.", { exact: true }),
   ).toBeVisible();
@@ -311,6 +314,7 @@ test("3.14 · inglés conserva orígenes, estados y mensajes traducidos", async 
 }) => {
   await mockIntakeHttp(page, { english: true });
   await page.goto(`/nutrition/${intakePatient}?tab=registros`);
+  await page.getByRole("button", { name: /^Day 1 ·/ }).click();
   await expect(
     page.getByRole("heading", { name: "Meal records", exact: true }),
   ).toBeVisible();

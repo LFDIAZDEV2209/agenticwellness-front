@@ -191,7 +191,11 @@ export async function mockNutritionHttp(
           }
         : null,
     }));
-    const queue = mockNutritionQueue(query, summaries, options.legacyInboxOrder);
+    const queue = mockNutritionQueue(
+      query,
+      summaries,
+      options.legacyInboxOrder,
+    );
     return {
       total: queue.total,
       page: queue.page,
@@ -407,7 +411,7 @@ export async function mockNutritionHttp(
               saved: "save",
               submitted: "submit",
               approved: "approve",
-    published: "publish",
+              published: "publish",
               returned: "return",
               version_created: "createversion",
               regenerated: "regenerate",
@@ -486,7 +490,7 @@ export async function mockNutritionHttp(
           saved: "save",
           submitted: "submit",
           approved: "approve",
-    published: "publish",
+          published: "publish",
           returned: "return",
           version_created: "createversion",
           regenerated: "regenerate",
@@ -641,5 +645,5 @@ export async function mockNutritionHttp(
       return reply({ detail: "Transición o revisión inválida" }, 409);
     }
   });
-  return { writes, store };
+  return { writes, store, viewOf };
 }

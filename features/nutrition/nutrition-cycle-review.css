@@ -423,7 +423,6 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.25rem;
   }
-  .nutrition-review-sidebar li:nth-child(n + 4),
   .nutrition-review-sidebar > p {
     display: none;
   }

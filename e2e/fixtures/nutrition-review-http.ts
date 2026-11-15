@@ -16,6 +16,7 @@ export async function mockIntakeReviewHttp(
     noCycle?: boolean;
     longContinuity?: boolean;
     cycleId?: string;
+    canApprove?: boolean;
     transformDay?: (day: IntakeDay) => IntakeDay;
   } = {},
 ) {
@@ -43,6 +44,7 @@ export async function mockIntakeReviewHttp(
   state.release = release;
   const base = await mockIntakeHttp(page, {
     cycleId: options.cycleId,
+    canApprove: options.canApprove,
     longContinuity: options.longContinuity,
     canManage: !options.readonly,
     noPhotos: options.noPhotos,

@@ -113,7 +113,7 @@ async function fetchNutritionWindow(
     ),
   );
   const start = offset % query.pageSize;
-  return pages.flatMap(page => page.items).slice(start, start + take);
+  return pages.flatMap((page) => page.items).slice(start, start + take);
 }
 
 export async function fetchNutritionQueue(
@@ -123,13 +123,24 @@ export async function fetchNutritionQueue(
   if (query.state === "all") {
     // Compatible con la API desplegada que aún coloca sin_plan al principio.
     // Se pagina sobre estados disjuntos; no se ordena una página ya recortada.
-    const priority = ["aprobado", "por_renovar", "en_aprobacion", "borrador_ia", "devuelto", "sin_plan"] as const;
+    const priority = [
+      "aprobado",
+      "por_renovar",
+      "en_aprobacion",
+      "borrador_ia",
+      "devuelto",
+      "sin_plan",
+    ] as const;
     const states = ["all", ...priority] as const;
-    const counts = await Promise.all(states.map(state =>
-      fetchNutritionPage({ ...query, state, page: 1, pageSize: 1 }, signal),
-    ));
+    const counts = await Promise.all(
+      states.map((state) =>
+        fetchNutritionPage({ ...query, state, page: 1, pageSize: 1 }, signal),
+      ),
+    );
     const result = counts[0];
-    states.forEach((state, index) => { result.counts[state] = counts[index].total; });
+    states.forEach((state, index) => {
+      result.counts[state] = counts[index].total;
+    });
     let offset = (query.page - 1) * query.pageSize;
     let remaining = query.pageSize;
     const windows: ReturnType<typeof fetchNutritionWindow>[] = [];
@@ -140,7 +151,9 @@ export async function fetchNutritionQueue(
         continue;
       }
       const take = Math.min(remaining, total - offset);
-      windows.push(fetchNutritionWindow({ ...query, state }, offset, take, signal));
+      windows.push(
+        fetchNutritionWindow({ ...query, state }, offset, take, signal),
+      );
       remaining -= take;
       offset = 0;
       if (remaining === 0) break;
@@ -202,7 +215,10 @@ export function fetchNutritionCurrentSummary(
         if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value))
           throw new Error("nutrition-date-contract");
         const time = Date.parse(`${value}T00:00:00Z`);
-        if (!Number.isFinite(time) || new Date(time).toISOString().slice(0, 10) !== value)
+        if (
+          !Number.isFinite(time) ||
+          new Date(time).toISOString().slice(0, 10) !== value
+        )
           throw new Error("nutrition-date-contract");
         return time;
       };
@@ -212,27 +228,53 @@ export function fetchNutritionCurrentSummary(
       if (wire.currentPublished === null) return { current: null };
       const current = wire.currentPublished;
       if (
-        !current || current.patientId !== patientId || current.isPublished !== true ||
-        !current.startDate || !current.endDate || !current.targets
-      ) throw new Error("nutrition-current-contract");
+        !current ||
+        current.patientId !== patientId ||
+        current.isPublished !== true ||
+        !current.startDate ||
+        !current.endDate ||
+        !current.targets
+      )
+        throw new Error("nutrition-current-contract");
       const start = civilDate(current.startDate);
       const end = civilDate(current.endDate);
       const day = (today - start) / 86_400_000 + 1;
       const of = (end - start) / 86_400_000 + 1;
       const target = current.targets;
       if (
-        of !== 30 || day < 1 || day > of ||
-        ![target.k, target.c, target.p, target.f, target.fi, target.vasos].every(
-          (value) => typeof value === "number" && Number.isFinite(value) && value >= 0,
-        ) || target.k <= 0
-      ) throw new Error("nutrition-current-contract");
-      return { current: {
-        startDate: current.startDate,
-        endDate: current.endDate,
-        day,
-        of,
-        targets: { kcal: target.k, carbsG: target.c, proteinG: target.p, fatG: target.f, fiberG: target.fi, waterGlasses: target.vasos },
-      } };
+        of !== 30 ||
+        day < 1 ||
+        day > of ||
+        ![
+          target.k,
+          target.c,
+          target.p,
+          target.f,
+          target.fi,
+          target.vasos,
+        ].every(
+          (value) =>
+            typeof value === "number" && Number.isFinite(value) && value >= 0,
+        ) ||
+        target.k <= 0
+      )
+        throw new Error("nutrition-current-contract");
+      return {
+        current: {
+          startDate: current.startDate,
+          endDate: current.endDate,
+          day,
+          of,
+          targets: {
+            kcal: target.k,
+            carbsG: target.c,
+            proteinG: target.p,
+            fatG: target.f,
+            fiberG: target.fi,
+            waterGlasses: target.vasos,
+          },
+        },
+      };
     },
   );
 }
@@ -413,6 +455,7 @@ async function mutate(
   body: unknown,
   signal?: AbortSignal,
   identity?: NutritionCycle,
+  updateLocation = true,
 ) {
   const result = await request<
     NutritionViewWire,
@@ -461,7 +504,10 @@ async function mutate(
     revision: result.revision,
   };
   const url = new URL(window.location.href);
-  if (url.pathname === `/nutrition/${encodeURIComponent(patient.patientId)}`) {
+  if (
+    updateLocation &&
+    url.pathname === `/nutrition/${encodeURIComponent(patient.patientId)}`
+  ) {
     url.searchParams.set("prescriptionId", cycle.id);
     window.history.replaceState(null, "", url);
   }
@@ -476,6 +522,7 @@ export function saveNutritionDraft(
   revision: number,
   catalog: NutritionFood[],
   signal?: AbortSignal,
+  updateLocation = true,
 ) {
   if (!Number.isInteger(revision) || revision < 1)
     throw new NutritionRequestError({
@@ -490,6 +537,7 @@ export function saveNutritionDraft(
     { revision, edit: toNutritionEdit(cycle, previous) },
     signal,
     cycle,
+    updateLocation,
   );
 }
 
@@ -500,10 +548,19 @@ export function performNutritionAction(
   catalog: NutritionFood[],
   options: NutritionActionOptions = {},
   signal?: AbortSignal,
+  updateLocation = true,
 ) {
   const base = prescriptions(patient.patientId);
   if (action === "create")
-    return mutate(patient, catalog, base, options.generate ?? {}, signal);
+    return mutate(
+      patient,
+      catalog,
+      base,
+      options.generate ?? {},
+      signal,
+      undefined,
+      updateLocation,
+    );
   if (!patient.cycle)
     throw new NutritionRequestError({
       kind: "contract",
@@ -531,7 +588,9 @@ export function performNutritionAction(
       : {}),
     ...(action === "approve" || action === "publish"
       ? {
-          ...(action === "approve" ? { criticalConfirmed: options.criticalConfirmed === true } : {}),
+          ...(action === "approve"
+            ? { criticalConfirmed: options.criticalConfirmed === true }
+            : {}),
           ...(options.startDate ? { startDate: options.startDate } : {}),
         }
       : {}),
@@ -550,6 +609,8 @@ export function performNutritionAction(
     `${base}/${encodeURIComponent(patient.cycle.id)}/${verb}`,
     body,
     signal,
+    undefined,
+    updateLocation,
   );
 }
 // GET /api/v1/me/nutrition-plan: DTO móvil congelado; solo referencia CONTRACT §14.
