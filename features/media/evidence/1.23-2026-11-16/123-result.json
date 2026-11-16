@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "impact": {
+    "pacientes": 2,
+    "plantillas": 1
+  },
+  "initialDelete": 409,
+  "invalidReplacements": [
+    422,
+    422,
+    422
+  ],
+  "deleteWithReplacement": 409,
+  "deleteAtomic": true,
+  "unpublish": 200,
+  "activeTemplateReplaced": true,
+  "futureProgramReplaced": true,
+  "individualPreserved": true,
+  "startedWeeksPreserved": true,
+  "draftPreserved": true,
+  "picker": "Solo Podcast Published distinto del original; destino programa",
+  "targets": [
+    3000,
+    5080,
+    5122
+  ],
+  "mocks": 0,
+  "pageErrors": []
+}

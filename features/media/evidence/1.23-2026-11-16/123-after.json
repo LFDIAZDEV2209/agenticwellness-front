@@ -1,0 +1,253 @@
+{
+  "template": [
+    "Active",
+    7,
+    null
+  ],
+  "weeks": [
+    [
+      "1d1851b2-513b-497b-b126-ff9be721e089",
+      1,
+      "Active",
+      [
+        {
+          "rest": null,
+          "origin": "program",
+          "points": 10,
+          "weekday": 1,
+          "media_id": "3eff99e6-9e05-4366-8e27-baf94e50c638",
+          "edited_at": null,
+          "edited_by": null,
+          "task_code": "podcast",
+          "routine_id": null,
+          "sort_order": 1,
+          "backfill_version": null,
+          "nutrition_plan_id": null
+        },
+        {
+          "rest": null,
+          "origin": "program",
+          "points": 10,
+          "weekday": 2,
+          "media_id": "3eff99e6-9e05-4366-8e27-baf94e50c638",
+          "edited_at": null,
+          "edited_by": null,
+          "task_code": "podcast",
+          "routine_id": null,
+          "sort_order": 2,
+          "backfill_version": null,
+          "nutrition_plan_id": null
+        }
+      ]
+    ],
+    [
+      "1d1851b2-513b-497b-b126-ff9be721e089",
+      2,
+      "Locked",
+      [
+        {
+          "rest": null,
+          "origin": "program",
+          "points": 10,
+          "weekday": 1,
+          "media_id": "8a04f612-7452-49ea-b98d-af04f820c15d",
+          "edited_at": null,
+          "edited_by": null,
+          "task_code": "podcast",
+          "routine_id": null,
+          "sort_order": 1,
+          "backfill_version": null,
+          "nutrition_plan_id": null
+        },
+        {
+          "rest": null,
+          "origin": "program",
+          "points": 10,
+          "weekday": 2,
+          "media_id": "8a04f612-7452-49ea-b98d-af04f820c15d",
+          "edited_at": null,
+          "edited_by": null,
+          "task_code": "podcast",
+          "routine_id": null,
+          "sort_order": 2,
+          "backfill_version": null,
+          "nutrition_plan_id": null
+        }
+      ]
+    ],
+    [
+      "39f14b8e-507d-407e-9b6e-d12c586b2495",
+      1,
+      "Active",
+      [
+        {
+          "rest": null,
+          "origin": "program",
+          "points": 10,
+          "weekday": 1,
+          "media_id": "3eff99e6-9e05-4366-8e27-baf94e50c638",
+          "edited_at": null,
+          "edited_by": null,
+          "task_code": "podcast",
+          "routine_id": null,
+          "sort_order": 1,
+          "backfill_version": null,
+          "nutrition_plan_id": null
+        },
+        {
+          "rest": null,
+          "origin": "program",
+          "points": 10,
+          "weekday": 2,
+          "media_id": "3eff99e6-9e05-4366-8e27-baf94e50c638",
+          "edited_at": null,
+          "edited_by": null,
+          "task_code": "podcast",
+          "routine_id": null,
+          "sort_order": 2,
+          "backfill_version": null,
+          "nutrition_plan_id": null
+        }
+      ]
+    ],
+    [
+      "39f14b8e-507d-407e-9b6e-d12c586b2495",
+      2,
+      "Locked",
+      [
+        {
+          "rest": null,
+          "origin": "individual",
+          "points": 10,
+          "weekday": 1,
+          "media_id": "3eff99e6-9e05-4366-8e27-baf94e50c638",
+          "edited_at": null,
+          "edited_by": null,
+          "task_code": "podcast",
+          "routine_id": null,
+          "sort_order": 1,
+          "backfill_version": null,
+          "nutrition_plan_id": null
+        },
+        {
+          "rest": null,
+          "origin": "program",
+          "points": 10,
+          "weekday": 2,
+          "media_id": "8a04f612-7452-49ea-b98d-af04f820c15d",
+          "edited_at": null,
+          "edited_by": null,
+          "task_code": "podcast",
+          "routine_id": null,
+          "sort_order": 2,
+          "backfill_version": null,
+          "nutrition_plan_id": null
+        }
+      ]
+    ]
+  ],
+  "references": [
+    [
+      "0ad223c4-25c9-4a64-8aad-5073d2c7ab09",
+      null,
+      1,
+      "3eff99e6-9e05-4366-8e27-baf94e50c638"
+    ],
+    [
+      "0ad223c4-25c9-4a64-8aad-5073d2c7ab09",
+      null,
+      2,
+      "3eff99e6-9e05-4366-8e27-baf94e50c638"
+    ],
+    [
+      "0ad223c4-25c9-4a64-8aad-5073d2c7ab09",
+      null,
+      3,
+      "3eff99e6-9e05-4366-8e27-baf94e50c638"
+    ],
+    [
+      "0ad223c4-25c9-4a64-8aad-5073d2c7ab09",
+      null,
+      4,
+      "3eff99e6-9e05-4366-8e27-baf94e50c638"
+    ],
+    [
+      "0ad223c4-25c9-4a64-8aad-5073d2c7ab09",
+      null,
+      5,
+      "3eff99e6-9e05-4366-8e27-baf94e50c638"
+    ],
+    [
+      "0ad223c4-25c9-4a64-8aad-5073d2c7ab09",
+      null,
+      6,
+      "3eff99e6-9e05-4366-8e27-baf94e50c638"
+    ],
+    [
+      "0ad223c4-25c9-4a64-8aad-5073d2c7ab09",
+      null,
+      7,
+      "3eff99e6-9e05-4366-8e27-baf94e50c638"
+    ],
+    [
+      "bcde360b-91a3-4ae7-b662-65544db9d9ea",
+      null,
+      1,
+      "8a04f612-7452-49ea-b98d-af04f820c15d"
+    ],
+    [
+      "bcde360b-91a3-4ae7-b662-65544db9d9ea",
+      null,
+      2,
+      "8a04f612-7452-49ea-b98d-af04f820c15d"
+    ],
+    [
+      "bcde360b-91a3-4ae7-b662-65544db9d9ea",
+      null,
+      3,
+      "8a04f612-7452-49ea-b98d-af04f820c15d"
+    ],
+    [
+      "bcde360b-91a3-4ae7-b662-65544db9d9ea",
+      null,
+      4,
+      "8a04f612-7452-49ea-b98d-af04f820c15d"
+    ],
+    [
+      "bcde360b-91a3-4ae7-b662-65544db9d9ea",
+      null,
+      5,
+      "8a04f612-7452-49ea-b98d-af04f820c15d"
+    ],
+    [
+      "bcde360b-91a3-4ae7-b662-65544db9d9ea",
+      null,
+      6,
+      "8a04f612-7452-49ea-b98d-af04f820c15d"
+    ],
+    [
+      "bcde360b-91a3-4ae7-b662-65544db9d9ea",
+      null,
+      7,
+      "8a04f612-7452-49ea-b98d-af04f820c15d"
+    ]
+  ],
+  "media": [
+    [
+      "3eff99e6-9e05-4366-8e27-baf94e50c638",
+      "Draft"
+    ],
+    [
+      "8a04f612-7452-49ea-b98d-af04f820c15d",
+      "Published"
+    ],
+    [
+      "abf53466-f90c-4c03-a203-c066f08f4bfa",
+      "Published"
+    ],
+    [
+      "ae7b57df-eeca-445f-8b69-ab45292c7405",
+      "Draft"
+    ]
+  ]
+}

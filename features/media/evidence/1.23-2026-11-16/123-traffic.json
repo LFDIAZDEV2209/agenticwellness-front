@@ -1,0 +1,47 @@
+[
+  {
+    "method": "GET",
+    "path": "/api/v1/media",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/media/3eff99e6-9e05-4366-8e27-baf94e50c638/references",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/media/3eff99e6-9e05-4366-8e27-baf94e50c638/retirement-impact",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/program/templates/bcde360b-91a3-4ae7-b662-65544db9d9ea",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/program/templates/0ad223c4-25c9-4a64-8aad-5073d2c7ab09",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/media",
+    "status": 200
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/media/3eff99e6-9e05-4366-8e27-baf94e50c638",
+    "status": 409
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/media/3eff99e6-9e05-4366-8e27-baf94e50c638/unpublish",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/media",
+    "status": 200
+  }
+]
