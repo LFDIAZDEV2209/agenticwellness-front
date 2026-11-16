@@ -1,12 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Plus, Trash2, GripVertical, Library } from "lucide-react";
-import { useT } from "@/providers/i18n-provider";
+import { useState, useEffect, useRef } from "react";
+import { Plus, Trash2, GripVertical, Library, UsersRound } from "lucide-react";
+import { useI18n, useT } from "@/providers/i18n-provider";
+import { useAppContext } from "@/providers/context-provider";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogBody,
+  DialogFooter,
   DialogDescription,
   DialogHeader,
   DialogTitle,
@@ -43,6 +46,7 @@ import {
 } from "../services/nutrition-plans-service";
 import { ExerciseMediaPicker } from "./exercise-media-picker";
 import { RoutineExerciseCatalog } from "./routine-exercise-catalog";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ExerciseRoutineFormDialogProps {
   open: boolean;
@@ -67,6 +71,7 @@ interface ExerciseRoutineFormFieldsProps {
   ) => Promise<void>;
   /** Compatibilidad con contenedores anteriores; este formulario ya no asigna pacientes. */
   onCreated?: (patientName: string) => void;
+  onUsageLoaded?: (count: number | null) => void;
 }
 
 interface ExerciseFormData {
@@ -128,6 +133,7 @@ export function ExerciseRoutineFormFields({
   saving,
   onCancel,
   onSubmit,
+  onUsageLoaded,
 }: ExerciseRoutineFormFieldsProps) {
   const isEditing = Boolean(routine);
   const t = useT();
@@ -172,6 +178,8 @@ export function ExerciseRoutineFormFields({
       .then((full) => {
         if (cancelled) return;
         if (full) {
+          // No inferir cero si el contrato aún no incluye usageCount o el dato no es válido.
+          onUsageLoaded?.(typeof full.usageCount === "number" && Number.isSafeInteger(full.usageCount) && full.usageCount >= 0 ? full.usageCount : null);
           setName(full.name);
           setDescription(full.description ?? "");
           setContraindications(full.contraindications ?? "");
@@ -202,7 +210,7 @@ export function ExerciseRoutineFormFields({
     return () => {
       cancelled = true;
     };
-  }, [routine, detailAttempt]);
+  }, [routine, detailAttempt, onUsageLoaded]);
 
   const addExercise = () => {
     setExercises((prev) => [...prev, { ...EMPTY_EXERCISE }]);
@@ -727,6 +735,7 @@ export function ExerciseRoutineFormFields({
         </Button>
         <Button
           type="button"
+          data-routine-save
           onClick={handleSubmit}
           disabled={
             saving ||
@@ -761,33 +770,93 @@ export function ExerciseRoutineFormDialog({
   onCreated,
 }: ExerciseRoutineFormDialogProps) {
   const t = useT();
+  const { lang } = useI18n();
+  const { can } = useAppContext();
+  const [usageCount, setUsageCount] = useState<number | null>(null);
+  const [pending, setPending] = useState<UpdateExerciseRoutineInput | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [saveError, setSaveError] = useState(false);
+  const busy = useRef(false);
+  const mounted = useRef(true);
+  const heading = useRef<HTMLHeadingElement>(null);
+  const fields = useRef<HTMLDivElement>(null);
+  const wasReviewing = useRef(false);
+  useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
+  useEffect(() => {
+    if (pending) heading.current?.focus();
+    else if (wasReviewing.current) fields.current?.querySelector<HTMLButtonElement>("[data-routine-save]")?.focus();
+    wasReviewing.current = Boolean(pending);
+  }, [pending]);
+
+  async function confirm() {
+    if (!pending || !routine || !can("Wellness.Manage") || busy.current || saving) return;
+    busy.current = true;
+    setSubmitting(true);
+    setSaveError(false);
+    try {
+      await onSubmit(pending, routine.id);
+      if (mounted.current) onOpenChange(false);
+    } catch {
+      if (mounted.current) setSaveError(true);
+    } finally {
+      busy.current = false;
+      if (mounted.current) setSubmitting(false);
+    }
+  }
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent size="lg" className="overflow-hidden p-0">
+    <Dialog open={open && can("Wellness.Manage")} onOpenChange={next => { if (!busy.current && !saving) onOpenChange(next); }}>
+      <DialogContent size={pending ? "default" : "lg"} className="overflow-hidden p-0" showCloseButton={!submitting && !saving}>
         <DialogHeader className="px-6 pb-1 pt-5">
-          <DialogTitle>
-            {routine
+          <DialogTitle ref={heading} tabIndex={-1}>
+            {pending ? t("Revisar impacto de la edición") : routine
               ? t("Editar rutina de ejercicio")
               : t("Nueva rutina de ejercicio")}
           </DialogTitle>
           <DialogDescription>
-            {routine
+            {pending ? t("Antes de guardar, revisa cómo se aplicarán estos cambios.") : routine
               ? t("Modifica los datos de la rutina y sus ejercicios.")
               : t("Crea una nueva rutina con sus ejercicios.")}
           </DialogDescription>
         </DialogHeader>
-        <div className="min-h-0 flex-1 overflow-y-auto">
+        <div ref={fields} hidden={Boolean(pending)} className="min-h-0 flex-1 overflow-y-auto">
           <ExerciseRoutineFormFields
             routine={routine}
+            onUsageLoaded={setUsageCount}
             saving={saving}
             onCancel={() => onOpenChange(false)}
             onSubmit={async (input, id) => {
+              if (!can("Wellness.Manage")) return;
+              if (id) {
+                setSaveError(false);
+                setPending(input);
+                return;
+              }
               await onSubmit(input, id);
               onOpenChange(false);
             }}
             onCreated={onCreated}
           />
         </div>
+        {pending && <>
+          <DialogBody className="flex flex-col gap-5" aria-busy={submitting}>
+            <p className="break-words font-semibold">{pending.name}</p>
+            <Alert role="status">
+              <UsersRound aria-hidden />
+              <AlertDescription>
+                <p className="font-semibold text-foreground">{usageCount === null ? t("Uso no disponible") : usageCount === 1 ? t("Usada en 1 paciente con semanas activas") : t("Usada en {count} pacientes con semanas activas", { count: usageCount.toLocaleString(lang === "en" ? "en-US" : "es-CO") })}</p>
+                <p>{usageCount === null ? t("El número de pacientes afectados no está disponible.") : t("El uso puede cambiar antes del guardado.")}</p>
+              </AlertDescription>
+            </Alert>
+            <p>{t("Los cambios se verán en las sesiones aún no completadas que utilicen esta rutina.")}</p>
+            <p className="text-muted-foreground">{t("El detalle registrado de las sesiones completadas se conserva.")}</p>
+            {saveError && <Alert variant="destructive"><AlertDescription>{t("No se pudo confirmar el guardado. Comprueba el estado de la rutina antes de reintentar.")}</AlertDescription></Alert>}
+          </DialogBody>
+          <DialogFooter className="m-0 rounded-none px-6 py-4">
+            <Button variant="outline" disabled={submitting || saving} onClick={() => { setSaveError(false); setPending(null); }}>{t("Volver a editar")}</Button>
+            <Button disabled={submitting || saving} onClick={() => void confirm()}>{submitting || saving ? t("Guardando...") : t("Confirmar y guardar")}</Button>
+          </DialogFooter>
+        </>}
       </DialogContent>
     </Dialog>
   );

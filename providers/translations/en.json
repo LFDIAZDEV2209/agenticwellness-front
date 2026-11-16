@@ -5953,5 +5953,16 @@
   "Asignando rutina…": "Assigning routine…",
   "Asignar rutina": "Assign routine",
   "Las semanas iniciadas se omiten y los pacientes fuera de tu alcance no se modifican.": "Started weeks are skipped and patients outside your scope are not changed.",
-  "Volver a editar": "Back to editing"
+  "Volver a editar": "Back to editing",
+  "Revisar impacto de la edición": "Review the impact of this edit",
+  "Antes de guardar, revisa cómo se aplicarán estos cambios.": "Before saving, review how these changes will apply.",
+  "El número de pacientes afectados no está disponible.": "The number of affected patients is unavailable.",
+  "Los cambios se verán en las sesiones aún no completadas que utilicen esta rutina.": "These changes will appear in sessions that use this routine and have not been completed yet.",
+  "No se pudo confirmar el guardado. Comprueba el estado de la rutina antes de reintentar.": "The save could not be confirmed. Check the routine before trying again.",
+  "Confirmar y guardar": "Confirm and save",
+  "Uso no disponible": "Usage unavailable",
+  "Usada en 1 paciente con semanas activas": "Used by 1 patient with active weeks",
+  "Usada en {count} pacientes con semanas activas": "Used by {count} patients with active weeks",
+  "El uso puede cambiar antes del guardado.": "Usage may change before you save.",
+  "El detalle registrado de las sesiones completadas se conserva.": "The recorded details of completed sessions are preserved."
 }

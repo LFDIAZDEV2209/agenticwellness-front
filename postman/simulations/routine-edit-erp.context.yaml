@@ -1,0 +1,19 @@
+purpose:
+  stands_in_for: PUT de edición de rutina en F4 e0a9c29.
+  unblocks: Verificar revisión local, consentimiento y fallos del guardado.
+assumptions:
+  - id: update-contract
+    status: supported
+    claim: Wellness.Manage autoriza PUT del DTO actual; revisión local no requiere mutación.
+    source: WellnessController.cs; WellnessDtos.cs; exercise-routines-service.ts
+    verification: 28 aprobadas, 1 fixme real; 15 nuevas y 13 regresiones. PUT 200/403/409/503 por HTTP Postman, sin PUT al revisar/cancelar y sin reintentos automáticos.
+  - id: active-patient-count
+    status: unknown
+    claim: Existe una cifra de pacientes distintos con sesiones pendientes en semanas activas que usan la rutina.
+    reason: 2.11 solo añade detail_snapshot; GET detalle/listado no tienen cifra ni existe ruta de uso en el controlador inspeccionado.
+    verification: No simular un endpoint inexistente ni contar asignaciones antiguas como uso del programa. Requiere contrato BACK.
+    consumer_ready: usageCount opcional en DTO existente, autorizado por Luis; 0/1/27/1234 y valores inválidos son sintéticos. Si BACK entrega ruta separada se adaptará su lectura.
+fingerprints:
+  - frontend_base: 544e9f8
+    backend_inspected: e0a9c29
+    cli: Postman 1.76.0; sin workspace/publicación cloud.

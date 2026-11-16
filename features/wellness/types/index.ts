@@ -189,6 +189,8 @@ export interface RoutineExercise {
 
 /** Rutina de ejercicio. */
 export interface ExerciseRoutine {
+  /** Conteo read-only de pacientes con semanas activas; ausencia no equivale a cero. */
+  usageCount?: number | null;
   contraindications?: string | null;
   id: string;
   name: string;

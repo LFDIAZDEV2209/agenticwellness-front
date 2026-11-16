@@ -107,6 +107,7 @@ test("2.20b · fallo al publicar conserva el archivo y reintenta el mismo borrad
   await page
     .getByRole("button", { name: "Guardar cambios", exact: true })
     .click();
+  await page.getByRole("button", { name: "Confirmar y guardar", exact: true }).click();
   await expect.poll(() => http.state.saves.length).toBe(1);
   expect(http.state.saves[0].exercises?.[0].mediaId).toBe(http.file.id);
 });
@@ -142,6 +143,7 @@ test("2.20b · enlace existente se conserva al editar y se reproduce en detalle 
   await page
     .getByRole("button", { name: "Guardar cambios", exact: true })
     .click();
+  await page.getByRole("button", { name: "Confirmar y guardar", exact: true }).click();
   await expect.poll(() => http.state.saves.length).toBe(1);
   expect(http.state.saves[0].exercises?.[0].mediaId).toBe(external.id);
   await page.getByTitle("Ver detalles", { exact: true }).click();

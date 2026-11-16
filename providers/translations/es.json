@@ -5953,5 +5953,16 @@
   "Asignando rutina…": "Asignando rutina…",
   "Asignar rutina": "Asignar rutina",
   "Las semanas iniciadas se omiten y los pacientes fuera de tu alcance no se modifican.": "Las semanas iniciadas se omiten y los pacientes fuera de tu alcance no se modifican.",
-  "Volver a editar": "Volver a editar"
+  "Volver a editar": "Volver a editar",
+  "Revisar impacto de la edición": "Revisar impacto de la edición",
+  "Antes de guardar, revisa cómo se aplicarán estos cambios.": "Antes de guardar, revisa cómo se aplicarán estos cambios.",
+  "El número de pacientes afectados no está disponible.": "El número de pacientes afectados no está disponible.",
+  "Los cambios se verán en las sesiones aún no completadas que utilicen esta rutina.": "Los cambios se verán en las sesiones aún no completadas que utilicen esta rutina.",
+  "No se pudo confirmar el guardado. Comprueba el estado de la rutina antes de reintentar.": "No se pudo confirmar el guardado. Comprueba el estado de la rutina antes de reintentar.",
+  "Confirmar y guardar": "Confirmar y guardar",
+  "Uso no disponible": "Uso no disponible",
+  "Usada en 1 paciente con semanas activas": "Usada en 1 paciente con semanas activas",
+  "Usada en {count} pacientes con semanas activas": "Usada en {count} pacientes con semanas activas",
+  "El uso puede cambiar antes del guardado.": "El uso puede cambiar antes del guardado.",
+  "El detalle registrado de las sesiones completadas se conserva.": "El detalle registrado de las sesiones completadas se conserva."
 }

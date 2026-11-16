@@ -17,6 +17,7 @@ test("2.20c · editar conserva las contraindicaciones y enviarlas vacías las el
   await page
     .getByRole("button", { name: "Guardar cambios", exact: true })
     .click();
+  await page.getByRole("button", { name: "Confirmar y guardar", exact: true }).click();
   await expect.poll(() => http.state.saves.length).toBe(1);
   expect(http.state.saves[0]).toMatchObject({
     contraindications,
@@ -27,6 +28,7 @@ test("2.20c · editar conserva las contraindicaciones y enviarlas vacías las el
   await page
     .getByRole("button", { name: "Guardar cambios", exact: true })
     .click();
+  await page.getByRole("button", { name: "Confirmar y guardar", exact: true }).click();
   await expect.poll(() => http.state.saves.length).toBe(2);
   expect(http.state.saves[1].contraindications).toBe("");
 });
@@ -86,6 +88,7 @@ test("2.20c · duplicar usa clone una vez, abre borrador y conserva ejercicios y
   await page
     .getByRole("button", { name: "Guardar cambios", exact: true })
     .click();
+  await page.getByRole("button", { name: "Confirmar y guardar", exact: true }).click();
   await expect.poll(() => http.state.saves.length).toBe(1);
   expect(http.state.saves[0]).toMatchObject({
     status: "Draft",

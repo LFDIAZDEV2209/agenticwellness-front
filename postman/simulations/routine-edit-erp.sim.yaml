@@ -1,0 +1,6 @@
+simulation: routine-edit-erp
+routing: header
+mocks:
+  - name: routine-edit-erp
+    routeKey: routine-edit
+    path: postman/mocks/routine-edit-erp

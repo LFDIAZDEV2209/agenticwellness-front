@@ -14,6 +14,7 @@ import {
 import { cloneExerciseRoutine } from "../services/exercise-routines-service";
 import { useT } from "@/providers/i18n-provider";
 import { useAppContext } from "@/providers/context-provider";
+import { useAuth } from "@/providers/auth-provider";
 import { PageHeader } from "@/components/layout/page-header";
 import { SectionHeader } from "@/components/layout/section-header";
 import {
@@ -60,7 +61,8 @@ import type { ExerciseRoutineListItem } from "../types";
 export function ExerciseRoutinesPage() {
   const t = useT();
   const router = useRouter();
-  const { can } = useAppContext();
+  const { can, activeClinicId } = useAppContext();
+  const { user } = useAuth();
   const {
     result,
     loading,
@@ -429,7 +431,7 @@ export function ExerciseRoutinesPage() {
         </p>
       )}
       <ExerciseRoutineFormDialog
-        key={`${editing?.id ?? "new"}-${formOpen}`}
+        key={`${editing?.id ?? "new"}-${formOpen}-${user?.id}-${activeClinicId}-${can("Wellness.Manage")}`}
         open={formOpen}
         routine={editing}
         saving={actionLoading}

@@ -66,6 +66,7 @@ test("editing keeps exercise demonstration and routine cover", async ({ page }, 
   await expect(page.getByLabel("Nombre del ejercicio *")).toHaveValue("Movimiento de prueba");
   await page.screenshot({ path: testInfo.outputPath("exercise-erp-edit-desktop.png"), fullPage: true });
   await page.getByRole("button", { name: "Guardar cambios", exact: true }).click();
+  await page.getByRole("button", { name: "Confirmar y guardar", exact: true }).click();
   await expect.poll(() => writes.find((entry) => entry.method === "PUT")?.body).toMatchObject({
     mediaId: videoId, exercises: [{ mediaId: imageId, name: "Movimiento de prueba", weightKg: 2, tempo: "2-1-2", rpe: 4 }],
   });

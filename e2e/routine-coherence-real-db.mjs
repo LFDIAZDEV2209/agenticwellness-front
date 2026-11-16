@@ -29,7 +29,7 @@ try{
  await page.getByRole('button',{name:'Editar rutina',exact:true}).click();
  await expect(page.getByLabel('Tips de forma',{exact:true})).toHaveValue('Técnica QA conservada');
  await page.getByLabel('Tips de forma',{exact:true}).fill('Técnica QA editada');await page.getByLabel('Tempo (ej: 2-1-2)',{exact:true}).fill('3-1-3');
- const edited=page.waitForResponse(r=>r.request().method()==='PUT'&&r.url().endsWith('/api/v1/wellness/exercise-routines/'+id));await page.getByRole('button',{name:'Guardar cambios',exact:true}).click();assert.equal((await edited).status(),200);
+ const edited=page.waitForResponse(r=>r.request().method()==='PUT'&&r.url().endsWith('/api/v1/wellness/exercise-routines/'+id));await page.getByRole('button',{name:'Guardar cambios',exact:true}).click();await page.getByRole('button',{name:'Confirmar y guardar',exact:true}).click();assert.equal((await edited).status(),200);
  const persisted=await (await c.request.get(origin+'/api/v1/wellness/exercise-routines/'+id,{headers})).json();
  assert.equal(persisted.exercises[0].tips,'Técnica QA editada');assert.equal(persisted.exercises[0].tempo,'3-1-3');assert.equal(persisted.targetMuscles,'Piernas QA');assert.equal(persisted.exercises[0].rpe,4);
  await page.getByTitle('Ver detalles',{exact:true}).first().click();await page.getByRole('button',{name:'Asignar a paciente',exact:true}).click();

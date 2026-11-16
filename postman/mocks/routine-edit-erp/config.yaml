@@ -1,0 +1,10 @@
+version: 1
+name: routine-edit-erp
+slug: routine-edit-erp
+protocol: http
+port: 4557
+interceptRequests: true
+scenarios:
+  - name: default
+    path: ./default.js
+    default: true
