@@ -58,7 +58,7 @@ export async function uploadInstructionsDocument(
     agentId: string;
     agentName: string;
     findAgentBase: () => { id: string } | null;
-    createAgentBase: (input: KnowledgeBaseRequest) => Promise<{ id: string } | void>;
+    createAgentBase: (input: KnowledgeBaseRequest) => Promise<{ id: string }>;
     registerDocument: (kbId: string, input: {
       storageKey: string;
       fileName: string;
@@ -69,16 +69,15 @@ export async function uploadInstructionsDocument(
 ): Promise<{ knowledgeBaseId: string; storageKey: string; fileName: string }> {
   let kb = ctx.findAgentBase();
   if (!kb) {
-    const created = await ctx.createAgentBase({
+    kb = await ctx.createAgentBase({
       name: `Instrucciones de ${ctx.agentName}`,
       description: "Instrucciones del agente cargadas como documento (RAG).",
       scope: "Agent",
       agentTypeId: ctx.agentId,
       status: "Activo",
     });
-    // El hook refresca sus bases tras crear; se re-busca por nombre.
-    kb = created ?? ctx.findAgentBase();
-    if (!kb) {
+    // El ID de la respuesta es autoritativo; no dependemos del próximo render del hook.
+    if (!kb?.id) {
       throw new Error("No se pudo crear la knowledge base de instrucciones.");
     }
   }

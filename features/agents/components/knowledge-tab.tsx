@@ -53,7 +53,7 @@ interface KnowledgeTabProps {
     deletingId: string | null;
     registeringDoc: boolean;
     refetch: () => void;
-    handleCreateBase: (input: KnowledgeBaseRequest) => Promise<void>;
+    handleCreateBase: (input: KnowledgeBaseRequest) => Promise<KnowledgeBase>;
     handleDeleteBase: (id: string) => Promise<void>;
     loadDocuments: (knowledgeBaseId: string) => Promise<AgentDocument[]>;
     handleRegisterDocument: (

@@ -1,13 +1,17 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useId, useState, type FormEvent } from "react";
 import { LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 import { useT } from "@/providers/i18n-provider";
 import type { AgentType, AgentTypeRequest } from "../types";
 import { AgentIconPicker } from "./agent-icon-picker";
+import { parseAgentRouting, toAgentRoutingMetadata, validRoutingValues } from "../services/agent-routing-utils";
 
 interface AgentFormFieldsProps {
   /** Agente en edición (undefined = creación). */
@@ -38,11 +42,30 @@ export function AgentFormFields({
   const [iconKey, setIconKey] = useState(agent?.iconKey ?? "Bot");
   const [status, setStatus] = useState(agent?.status ?? "Borrador");
   const [validationError, setValidationError] = useState<string | null>(null);
+  const routingId = useId();
+  const [routing, setRouting] = useState(() => parseAgentRouting(agent?.metadata ?? null));
+  const [invalidRoutingField, setInvalidRoutingField] = useState<"topics" | "keywords" | null>(null);
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!name.trim()) {
       setValidationError(t('El nombre del agente es obligatorio.'));
+      return;
+    }
+    if (routing.enabled) {
+      const invalid = !validRoutingValues(routing.topics) ? "topics"
+        : !validRoutingValues(routing.keywords) ? "keywords" : null;
+      if (invalid) {
+        setInvalidRoutingField(invalid);
+        (event.currentTarget.elements.namedItem(invalid) as HTMLTextAreaElement)?.focus();
+        return;
+      }
+    }
+    let metadata: string | null;
+    try {
+      metadata = toAgentRoutingMetadata(agent?.metadata ?? null, routing);
+    } catch {
+      setValidationError(t('No se puede modificar la selección de Vita porque los metadatos existentes no son un objeto válido. Conserva la configuración anterior y solicita su revisión.'));
       return;
     }
     setValidationError(null);
@@ -52,7 +75,7 @@ export function AgentFormFields({
       specialty: specialty.trim() || null,
       iconKey: iconKey.trim() || null,
       status,
-      metadata: agent?.metadata ?? null,
+      metadata,
     });
   };
 
@@ -108,6 +131,48 @@ export function AgentFormFields({
           disabled={saving}
         />
       </Field>
+
+      <fieldset className="flex min-w-0 flex-col gap-3 rounded-2xl border border-border p-4" disabled={saving}>
+        <legend className="px-2 text-sm font-semibold">{t('Selección del agente en Vita')}</legend>
+        <p className="text-xs text-muted-foreground">
+          {t('Orienta la selección por tema y canal. Requiere agente y versión activos, sincronización y asignación autorizada al paciente; no concede permisos.')}
+        </p>
+        <div className="flex items-center justify-between gap-3">
+          <Label htmlFor={`${routingId}-enabled`}>{t('Personalizar selección en Vita')}</Label>
+          <Switch id={`${routingId}-enabled`} checked={routing.enabled} disabled={saving}
+            onCheckedChange={(enabled) => { setRouting((current) => ({ ...current, enabled })); setInvalidRoutingField(null); setValidationError(null); }} />
+        </div>
+        {!routing.enabled ? (
+          <p className="text-xs text-muted-foreground">{t('Sin personalización: conserva la selección existente y admite texto y voz cuando no hay routing.')}</p>
+        ) : (
+          <>
+            <p id={`${routingId}-help`} className="text-xs text-muted-foreground">{t('Un valor por línea. Máximo 32 valores por campo, de 1 a 80 caracteres cada uno. Las líneas vacías se omiten.')}</p>
+            {(["topics", "keywords"] as const).map((field) => (
+              <div key={field} className="flex flex-col gap-1.5" data-invalid={invalidRoutingField === field || undefined}>
+                <Label htmlFor={`${routingId}-${field}`}>{field === "topics" ? t('Temas') : t('Palabras clave')}</Label>
+                <Textarea id={`${routingId}-${field}`} name={field} value={routing[field]} rows={3}
+                  aria-describedby={`${routingId}-help${invalidRoutingField === field ? ` ${routingId}-error` : ""}`}
+                  aria-invalid={invalidRoutingField === field} disabled={saving}
+                  onChange={(event) => { setRouting((current) => ({ ...current, [field]: event.target.value })); setInvalidRoutingField(null); }} />
+              </div>
+            ))}
+            {invalidRoutingField && <p id={`${routingId}-error`} role="alert" className="text-sm text-destructive">{t('Revisa los valores: máximo 32 por campo y 80 caracteres por valor.')}</p>}
+            <fieldset className="flex flex-col gap-2">
+              <legend className="mb-2 text-sm font-medium">{t('Canales')}</legend>
+              <div className="flex flex-wrap gap-4">
+                {(["text", "voice"] as const).map((channel) => (
+                  <div key={channel} className="flex min-h-9 items-center gap-2">
+                    <Checkbox id={`${routingId}-${channel}`} checked={routing.channels.includes(channel)} disabled={saving}
+                      onCheckedChange={(checked) => setRouting((current) => ({ ...current, channels: checked ? [...current.channels, channel] : current.channels.filter((value) => value !== channel) }))} />
+                    <Label htmlFor={`${routingId}-${channel}`}>{channel === "text" ? t('Texto') : t('Voz')}</Label>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-muted-foreground">{t('Sin canales seleccionados, Vita no seleccionará este agente para texto ni voz.')}</p>
+            </fieldset>
+          </>
+        )}
+      </fieldset>
 
       {validationError && (
         <p

@@ -21,7 +21,7 @@ interface UseAgentKnowledgeReturn {
   deletingId: string | null;
   registeringDoc: boolean;
   refetch: () => void;
-  handleCreateBase: (input: KnowledgeBaseRequest) => Promise<void>;
+  handleCreateBase: (input: KnowledgeBaseRequest) => Promise<KnowledgeBase>;
   handleUpdateBase: (id: string, input: KnowledgeBaseRequest) => Promise<void>;
   handleDeleteBase: (id: string) => Promise<void>;
   loadDocuments: (knowledgeBaseId: string) => Promise<AgentDocument[]>;
@@ -74,9 +74,10 @@ export function useAgentKnowledge(
     async (input: KnowledgeBaseRequest) => {
       setCreating(true);
       try {
-        await createKnowledgeBase(input);
+        const created = await createKnowledgeBase(input);
         setLoading(true);
         setRefreshKey((key) => key + 1);
+        return created;
       } finally {
         setCreating(false);
       }
