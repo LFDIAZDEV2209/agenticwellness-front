@@ -189,8 +189,6 @@ export interface RoutineExercise {
 
 /** Rutina de ejercicio. */
 export interface ExerciseRoutine {
-  /** Conteo read-only de pacientes con semanas activas; ausencia no equivale a cero. */
-  usageCount?: number | null;
   contraindications?: string | null;
   id: string;
   name: string;
@@ -209,6 +207,14 @@ export interface ExerciseRoutine {
   createdAt: string;
   updatedAt: string | null;
   exercises: RoutineExercise[];
+}
+
+/** Agregado read-only en el alcance del actor; contrato BACK 9b901d7. */
+export interface RoutineUsageDto {
+  routineId: string;
+  patientCount: number;
+  enrollmentCount: number;
+  activeWeekCount: number;
 }
 
 /** Item del listado de rutinas. */

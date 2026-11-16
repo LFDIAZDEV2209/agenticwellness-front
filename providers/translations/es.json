@@ -5964,5 +5964,7 @@
   "Usada en 1 paciente con semanas activas": "Usada en 1 paciente con semanas activas",
   "Usada en {count} pacientes con semanas activas": "Usada en {count} pacientes con semanas activas",
   "El uso puede cambiar antes del guardado.": "El uso puede cambiar antes del guardado.",
-  "El detalle registrado de las sesiones completadas se conserva.": "El detalle registrado de las sesiones completadas se conserva."
+  "El detalle registrado de las sesiones completadas se conserva.": "El detalle registrado de las sesiones completadas se conserva.",
+  "Consultando uso de la rutina…": "Consultando uso de la rutina…",
+  "El conteo incluye solo pacientes de tu alcance, no el total global.": "El conteo incluye solo pacientes de tu alcance, no el total global."
 }

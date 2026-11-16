@@ -5964,5 +5964,7 @@
   "Usada en 1 paciente con semanas activas": "Used by 1 patient with active weeks",
   "Usada en {count} pacientes con semanas activas": "Used by {count} patients with active weeks",
   "El uso puede cambiar antes del guardado.": "Usage may change before you save.",
-  "El detalle registrado de las sesiones completadas se conserva.": "The recorded details of completed sessions are preserved."
+  "El detalle registrado de las sesiones completadas se conserva.": "The recorded details of completed sessions are preserved.",
+  "Consultando uso de la rutina…": "Checking routine usage…",
+  "El conteo incluye solo pacientes de tu alcance, no el total global.": "This count includes only patients in your scope, not the global total."
 }

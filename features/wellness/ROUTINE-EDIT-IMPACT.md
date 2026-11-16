@@ -1,67 +1,86 @@
 # Aviso de impacto al editar rutinas — 2.22
 
-**Frontend preparado; integración del conteo pendiente del SHA/contrato BACK.**
-Luis confirmó que F4 e0a9c29 todavía no expone la cifra. 2.11 añade la captura
-histórica de las sesiones completadas; no proporciona un conteo de uso.
+Integrado con BACK **9b901d7**. El controlador y su documentación declaran
+GET /api/v1/program/routines/{id}/usage, con Wellness.View. La ruta citada
+inicialmente bajo wellness/exercise-routines no existe en ese commit.
+Se conserva el GET de detalle y se consulta el uso por separado al revisar.
 
-Al guardar una edición, el diálogo conserva una copia de los cambios y presenta
-una revisión antes del PUT existente. Volver a editar conserva todos los campos
-y devuelve el foco a Guardar cambios. Confirmar y guardar envía una sola petición;
-durante ella se bloquean doble clic, Escape, cierre y vuelta al formulario.
-Los errores conservan la revisión y no provocan reintentos automáticos.
-Crear una rutina mantiene su flujo anterior. Se exige Wellness.Manage.
+## Contrato y comportamiento
 
-## Adaptador preparado
+RoutineUsageDto contiene routineId, patientCount, enrollmentCount y activeWeekCount.
+parseRoutineUsage valida el ID solicitado y tres enteros seguros no negativos.
+La UI presenta patientCount; no confunde inscripciones o semanas con pacientes.
+No usa el antiguo usageCount opcional del DTO de detalle: se retiró esa suposición.
+Cero es un resultado válido del servidor y está limitado al alcance del actor.
+El aviso declara ese alcance y que el conteo puede cambiar antes de guardar.
 
-El detalle `ExerciseRoutine` admite `usageCount?: number | null`. Se consume del
-GET existente `/api/v1/wellness/exercise-routines/{id}` cuando BACK lo incluya.
-Solo un entero seguro no negativo se muestra como cifra; cero es válido.
-Ausencia, null, string, negativo o decimal producen **Uso no disponible**.
-No se cuentan asignaciones antiguas, no se enumeran pacientes y no se envía
-usageCount en el PUT. La cifra se localiza en ES/EN y diferencia un paciente.
-El aviso aclara que el uso puede cambiar antes de guardar: no reserva el alcance.
+Cada revisión hace una lectura fresca, cancelable al volver/cerrar/cambiar contexto.
+Mientras carga muestra skeleton/estado y deshabilita Confirmar y guardar. Red,
+403/404/5xx o respuesta inválida muestran Uso no disponible con Reintentar;
+no se convierten en cero ni bloquean permanentemente la edición. El fallo de
+esta lectura no altera los campos ni dispara un PUT. Reintentar solo consulta.
 
-Si BACK entrega `GET /api/v1/program/routines/{id}/usage` en lugar de ampliar el
-DTO, adaptar la lectura a esa ruta y su permiso/alcance documentados; no está
-inventada ni invocada en este commit. La UI ya acepta la cifra mediante
-`onUsageLoaded`; no presupone su semántica global o un alcance distinto del actor.
+Guardar cambios conserva una copia local y presenta la revisión. Volver a editar
+conserva campos/foco. Confirmar y guardar es la única acción de guardado; bloquea
+doble envío/cierre durante el PUT y mantiene la revisión ante errores, sin retry
+automático. Crear mantiene su flujo anterior; editar requiere Wellness.Manage.
+El PUT conserva su contrato y nunca incluye el DTO de uso ni IDs de pacientes.
 
-Pendiente de integración: contrastar contrato, definición de semana activa,
-pacientes distintos, sesiones completadas/legado y alcance/permiso con el SHA
-entregado; verificar cero y un caso N positivo contra runtime/BD. No cerrar
-globalmente 2.22 hasta entonces. La prueba real pendiente figura como fixme.
+## Verificación
 
-## Diseño y verificación
+- **54/54** adaptador/UI/HTTP Postman, 0 omitidas/fallos/flaky; 38,82 s.
+  Incluye 21 casos del adaptador, 20 de revisión y 13 regresiones 2.20a/b/c.
+- **3/3** integración con host QA del backend exacto 9b901d7 y PostgreSQL READ ONLY:
+  HTTP 401/403/404 y UI con conteo positivo/cero por alcance; 4,40 s.
+- Build, lint completo, TypeScript, i18n y detector Impeccable verdes; dos claves
+  nuevas en esta integración, paridad ES/EN. Sentinelas 3.20/R7 conservadas por hash.
+- La captura real fue 301 pacientes / 301 inscripciones / 979 semanas. Es evidencia
+  de esta consulta y actor QA, no un número fijo del producto.
 
-Skills **design-taste-frontend (taste)**, **impeccable**,
-**modern-web-guidance**, **i18n-translations** y **accessibility** aplicadas.
-Modo Operate/Refine: continuidad del editor clínico, tokens y controles Base UI,
-aviso textual y acciones claras, sin nuevo sistema visual ni animaciones.
-modern-web-guidance se consultó antes de CSS/JS (guía accessibility); no se añaden
-container queries, :has ni View Transitions. El path global de esa skill estaba
-ausente y se reutilizó la del repositorio. Impeccable context ya había fallado
-en esta sesión; se siguieron sus referencias y el código existente, sin repetir
-el lanzador. Detector local exit 0, auditoría visual acotada y sin nuevo pulido.
+El host usa controlador, MediatR, guard, store, resolver y EF reales. JWT y
+ICurrentContext/IPatientScopeActor son adaptadores QA sintéticos; no acredita
+login Auth, introspección scoped real ni despliegue a 5122. Catálogo y formulario
+son sintéticos en la UI, el GET de uso atraviesa HTTP hasta PostgreSQL real.
+No se escribieron rutinas ni datos de negocio reales en esta entrega.
+La API compartida e0a9c29 se conserva; el orquestador despliega BACK cuando proceda.
 
-28 pruebas aprobadas: 15 nuevas de la revisión y 13 regresiones de catálogo,
-contraindicaciones, duplicación y demostraciones. Una prueba real pendiente.
-Valores usageCount, Auth y catálogo sintéticos; cuatro PUT cruzan HTTP Postman
-en la ejecución final (200/403/409/503). No acreditan un conteo ni persistencia
-reales. El script de coherencia real se adaptó al nuevo paso y solo se comprobó
-su sintaxis; no se ejecutó contra DB en esta entrega.
+## Diseño y evidencia
 
-Build, lint completo, TypeScript e i18n verdes, paridad ES/EN y 11 claves nuevas.
-Playwright MCP verifica 320/390/1440 px, foco y tema oscuro con tokens reales;
-Chrome DevTools inspecciona una fixture de solo lectura. No se declara ensayo
-con dispositivo físico, lector de pantalla ni conformidad WCAG exhaustiva.
+Skills aplicadas: **design-taste-frontend (taste)**, **impeccable**,
+**modern-web-guidance**, **i18n-translations** y **accessibility**.
+Operate/Refine conserva identidad, controles Base UI y tokens. Guidance consultada
+antes de JS/CSS, guía dialog, adaptada al componente compartido sin migrar
+primitivas fuera de alcance. Sin nuevas container queries, :has ni transiciones.
+Impeccable context ya había fallado en esta sesión: referencias/código existente,
+detector local 0 y una inspección visual acotada. No nuevo sistema visual.
+Playwright MCP: 320/390/1440, oscuro, fallback 403, foco y controles; DevTools:
+fixture de lectura sin errores/avisos. No certificación WCAG integral ni prueba AT.
 
-Evidencia del workspace: `revision-2.22-front/README.md`.
-Con preview propio en 3067 y simulación propia en 4556 ya iniciados:
+Evidencia: revision-2.22-front/integracion-9b901d7/README.md del workspace.
+El histórico a9cde7f se conserva en previous-a9cde7f. La integración elimina el
+fixme anterior; no quedan pruebas de conteo silenciadas en la suite.
 
-```powershell
-corepack yarn exec playwright test --config playwright.routine-edit.config.ts
-```
+## Reproducción
 
-La configuración no inicia servicios. La simulación
-`postman/simulations/routine-edit-erp.sim.yaml` debe lanzarse en background con
-Start-Process/Hidden. No hay publicación cloud, push ni cambios a tasks.md.
+Con preview propio 3067 y Postman propio 4556 ya iniciados:
+
+    corepack yarn exec playwright test --config playwright.routine-edit.config.ts
+
+Simulación: postman/simulations/routine-edit-erp.sim.yaml. Lanzar siempre en
+background con Start-Process/Hidden; la configuración de pruebas no inicia nada.
+
+Para la integración real, scripts/qa/routine-usage-host/RoutineUsageHost.csproj
+referencia un checkout BACK exacto mediante -p:BackendSource=<ruta-9b901d7>.
+Compilar con dotnet build a un output QA propio. Antes de arrancar el DLL con
+Start-Process/Hidden, definir COP_222_SETTINGS como el appsettings.Development.json
+local existente y COP_222_PRIVATE_CONFIG como una ruta privada temporal. El host
+solo escucha en 127.0.0.1:5196, fuerza PostgreSQL local READ ONLY y genera el JWT
+sintético en ese archivo; nunca imprimirlo ni añadirlo al repo. Esperar /health
+y el archivo privado antes de ejecutar:
+
+    corepack yarn exec playwright test --config playwright.routine-usage-real.config.ts
+
+Ese runner exige COP_222_PRIVATE_CONFIG y no tiene skip/fallback silencioso.
+El helper routine-usage-snapshot.py compara sentinelas antes/después, solo lectura.
+Al terminar cerrar únicamente los PIDs propios comprobados y retirar el archivo
+privado. No reiniciar servicios compartidos, publicar, hacer push ni tocar tasks.md.

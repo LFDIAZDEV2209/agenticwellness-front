@@ -21,6 +21,8 @@ for (const usage of [0, 1, 27]) test(`2.22 · usageCount sintético ${usage} mue
   await expect(review.getByText(usage === 1 ? "Usada en 1 paciente con semanas activas" : `Usada en ${usage} pacientes con semanas activas`, { exact: true })).toBeVisible();
   await expect(review.getByText("Uso no disponible", { exact: true })).toHaveCount(0);
   await expect(review.getByText("El detalle registrado de las sesiones completadas se conserva.")).toBeVisible();
+  await expect(review.getByText("El conteo incluye solo pacientes de tu alcance, no el total global.")).toBeVisible();
+  expect(qa.usageCalls).toEqual([{ path: `/api/v1/program/routines/${qa.routine.id}/usage`, status: 200 }]);
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toHaveCount(0);
   expect(qa.calls).toHaveLength(0);
@@ -74,6 +76,39 @@ test("2.22 · lector no puede abrir edición ni confirmar", async ({ page }) => 
   expect(qa.calls).toHaveLength(0);
 });
 
-test.fixme("2.22 · contrato BACK real: conteo autorizado de pacientes distintos en semanas activas, sin sesiones completadas", async () => {
-  // Pendiente SHA/contrato BACK; los valores de usageCount anteriores son sintéticos.
+for (const usageStatus of [403, 404, 503]) test(`2.22 · GET uso ${usageStatus}: fallback real, formulario conservado y reintento explícito`, async ({ page }) => {
+  const qa = await mockRoutineEdit(page, { usageStatus });
+  const review = await reviewRoutineEdit(page);
+  await expect(review.getByText("Uso no disponible", { exact: true })).toBeVisible();
+  expect(qa.usageCalls).toHaveLength(1); expect(qa.usageCalls[0].status).toBe(usageStatus);
+  expect(qa.calls).toHaveLength(0);
+  qa.setUsage(3);
+  await review.getByRole("button", { name: "Reintentar", exact: true }).click();
+  await expect(review.getByText("Usada en 3 pacientes con semanas activas", { exact: true })).toBeVisible();
+  await review.getByRole("button", { name: "Volver a editar", exact: true }).click();
+  await expect(page.locator("#routine-name")).toHaveValue("Rutina revisada QA");
+  expect(qa.usageCalls).toHaveLength(2); expect(qa.calls).toHaveLength(0);
+});
+
+test("2.22 · GET uso sin red muestra fallback sin PUT", async ({ page }) => {
+  const qa = await mockRoutineEdit(page, { usageNetwork: true });
+  const review = await reviewRoutineEdit(page);
+  await expect(review.getByText("Uso no disponible", { exact: true })).toBeVisible();
+  expect(qa.calls).toHaveLength(0); expect(qa.usageCalls).toHaveLength(1);
+});
+
+test("2.22 · carga de uso pendiente no muestra fallback ni permite guardar; cancelar descarta respuesta tardía", async ({ page }) => {
+  const qa = await mockRoutineEdit(page, { usage: 9, usageDelay: 800 });
+  const review = await reviewRoutineEdit(page);
+  await expect(review.getByText("Consultando uso de la rutina…", { exact: true })).toBeVisible();
+  await expect(review.getByText("Uso no disponible", { exact: true })).toHaveCount(0);
+  await expect(review.getByRole("button", { name: "Confirmar y guardar", exact: true })).toBeDisabled();
+  await review.getByRole("button", { name: "Volver a editar", exact: true }).click();
+  qa.setUsage(1);
+  await page.getByRole("button", { name: "Guardar cambios", exact: true }).click();
+  await expect(review.getByText("Usada en 1 paciente con semanas activas", { exact: true })).toBeVisible();
+  expect(qa.calls).toHaveLength(0); expect(qa.usageCalls).toHaveLength(2);
+  // El puente HTTP de QA termina la lectura anterior aunque el fetch del producto ya se canceló.
+  await expect.poll(() => qa.usageCalls.every(call => call.status === 200)).toBe(true);
+  await expect(review.getByText("Usada en 1 paciente con semanas activas", { exact: true })).toBeVisible();
 });

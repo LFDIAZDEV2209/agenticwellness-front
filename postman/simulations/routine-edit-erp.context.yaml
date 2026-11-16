@@ -1,19 +1,24 @@
 purpose:
-  stands_in_for: PUT de edición de rutina en F4 e0a9c29.
-  unblocks: Verificar revisión local, consentimiento y fallos del guardado.
+  stands_in_for: GET uso BACK 9b901d7 y PUT edición existente.
+  unblocks: Revisión local, adaptador del agregado, fallback/reintento y guardado explícito.
 assumptions:
-  - id: update-contract
+  - id: usage-contract
     status: supported
-    claim: Wellness.Manage autoriza PUT del DTO actual; revisión local no requiere mutación.
-    source: WellnessController.cs; WellnessDtos.cs; exercise-routines-service.ts
-    verification: 28 aprobadas, 1 fixme real; 15 nuevas y 13 regresiones. PUT 200/403/409/503 por HTTP Postman, sin PUT al revisar/cancelar y sin reintentos automáticos.
-  - id: active-patient-count
-    status: unknown
-    claim: Existe una cifra de pacientes distintos con sesiones pendientes en semanas activas que usan la rutina.
-    reason: 2.11 solo añade detail_snapshot; GET detalle/listado no tienen cifra ni existe ruta de uso en el controlador inspeccionado.
-    verification: No simular un endpoint inexistente ni contar asignaciones antiguas como uso del programa. Requiere contrato BACK.
-    consumer_ready: usageCount opcional en DTO existente, autorizado por Luis; 0/1/27/1234 y valores inválidos son sintéticos. Si BACK entrega ruta separada se adaptará su lectura.
+    claim: GET /api/v1/program/routines/{id}/usage devuelve routineId/patientCount/enrollmentCount/activeWeekCount, con Wellness.View y alcance del actor.
+    source: BACK 9b901d7 RoutineUsageController y ROUTINE-USAGE-2.22.md.
+    verification: 54 pruebas adaptador/UI; HTTP Postman con N, cero, datos inválidos, 403/404/503 y cancelación; no simula la ruta wellness/exercise-routines/{id}/usage que no existe.
+  - id: actual-back-integration
+    status: supported
+    claim: El cliente muestra patientCount desde el controlador/handler/guard/store/resolver/EF reales sobre PostgreSQL READ ONLY.
+    reason: Host QA aislado compilado desde checkout 9b901d7, sin desplegar 5122.
+    verification: 3/3 HTTP+UI, 401/403/404, 301 pacientes/301 inscripciones/979 semanas y cero en actor sin perfil clínico; sentinelas protegidas idénticas.
+    limits: JWT e identidad/contexto QA sintéticos; catálogo/Auth UI sintéticos; no prueba login Auth/introspección scoped ni despliegue compartido.
+  - id: explicit-update
+    status: supported
+    claim: Revisar/cancelar solo leen; confirmar envía un PUT sin DTO de uso ni datos de pacientes y sin reintentos automáticos de mutación.
+    source: e2e/routine-edit-impact.spec.ts; default.js; revision-2.22-front/integracion-9b901d7.
+    verification: Doble confirmación, cierre en curso y PUT 200/403/409/503 por HTTP Postman.
 fingerprints:
-  - frontend_base: 544e9f8
-    backend_inspected: e0a9c29
-    cli: Postman 1.76.0; sin workspace/publicación cloud.
+  - frontend_base: 243f6f4
+    backend: 9b901d710e8a575e404c2247370f5a67960867f0
+    cli: Postman 1.76.0; status no implementado; simulación local sin publicación cloud.

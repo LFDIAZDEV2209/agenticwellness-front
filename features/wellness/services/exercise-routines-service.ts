@@ -7,6 +7,7 @@ import type {
   CreateExerciseRoutineInput,
   UpdateExerciseRoutineInput,
   PaginatedResult,
+  RoutineUsageDto,
 } from "../types";
 
 const PATH = `${env.apiUrl}/api/v1/wellness/exercise-routines`;
@@ -38,6 +39,23 @@ export async function getExerciseRoutine(
   signal?: AbortSignal,
 ): Promise<ExerciseRoutine> {
   return apiFetch<ExerciseRoutine>(`${PATH}/${id}`, { signal });
+}
+
+/** Valida el agregado antes de presentar cero o una cifra como datos del servidor. */
+export function parseRoutineUsage(value: unknown, routineId: string): RoutineUsageDto {
+  if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("ROUTINE_USAGE_INVALID");
+  const data = value as Record<string, unknown>;
+  if (typeof data.routineId !== "string" || data.routineId.toLowerCase() !== routineId.toLowerCase()
+    || [data.patientCount, data.enrollmentCount, data.activeWeekCount].some(count => typeof count !== "number" || !Number.isSafeInteger(count) || count < 0)) {
+    throw new Error("ROUTINE_USAGE_INVALID");
+  }
+  return { routineId: data.routineId, patientCount: data.patientCount as number,
+    enrollmentCount: data.enrollmentCount as number, activeWeekCount: data.activeWeekCount as number };
+}
+
+export async function getRoutineUsage(id: string, signal?: AbortSignal): Promise<RoutineUsageDto> {
+  const data = await apiFetch<unknown>(`${env.apiUrl}/api/v1/program/routines/${id}/usage`, { signal });
+  return parseRoutineUsage(data, id);
 }
 
 /** Copia de catálogo en borrador; no envía patientId ni crea asignaciones. */
