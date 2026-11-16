@@ -1,0 +1,37 @@
+[
+  {
+    "method": "GET",
+    "path": "/api/v1/program/templates",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/program/templates",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/program/templates/ad5b8452-5265-4993-9bf9-820837b15e8e/publish?preview=true",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/program/templates/ad5b8452-5265-4993-9bf9-820837b15e8e/publish",
+    "status": 422
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/program/templates/ad5b8452-5265-4993-9bf9-820837b15e8e/publish?preview=true",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/program/templates/ad5b8452-5265-4993-9bf9-820837b15e8e/publish",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/program/templates",
+    "status": 200
+  }
+]

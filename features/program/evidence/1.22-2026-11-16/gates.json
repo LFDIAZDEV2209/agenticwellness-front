@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-16",
+  "frontendBase": "bba29ea4c6d1eb44d316948c2edf69b30cd3b6c4",
+  "backendCheckoutObserved": "b7f15592c2a1d77ebbdb66d50084a01b2999c5a9",
+  "stack": { "front": 3000, "gateway": 5080, "api": 5122, "auth": 5123, "postgres": 5432 },
+  "checks": [
+    { "command": "node node_modules/typescript/bin/tsc --noEmit", "exitCode": 0 },
+    { "command": "node node_modules/eslint/bin/eslint.js .", "exitCode": 0 },
+    { "command": "node node_modules/next/dist/bin/next build", "exitCode": 0, "pages": 91 },
+    { "command": "node scripts/i18n-scan.mjs", "exitCode": 0, "missingEnglishKeys": 0 },
+    { "command": "node node_modules/@playwright/test/cli.js test --config=playwright.program-publication-retirement-real.config.ts", "exitCode": 0, "passed": 2, "mocks": 0 },
+    { "command": "node node_modules/@playwright/test/cli.js test program-template-impact.spec.ts media-retirement.spec.ts --project=chromium-desktop --output=qa-reports/publication-retirement-mocked --reporter=list", "exitCode": 0, "passed": 16, "syntheticHttp": true }
+  ],
+  "environment": [
+    "Auth respondió inicialmente 400 transitorio; luego volvió a responder sin reinicio.",
+    "Se restauraron dependencias del lockfile mediante instalación aislada y copia, excluyendo binarios nativos cargados. No cambió package.json ni yarn.lock.",
+    "Los comandos usan binarios locales porque el worktree carecía inicialmente del estado de instalación de Yarn. Al final corepack yarn exec tsc --version y corepack yarn i18n:check vuelven a funcionar (exit 0).",
+    "Storage heredado S3 detectado: se detuvieron subidas y se eliminaron solo versiones/markers propios; ver S3-CLEANUP.md. Los E2E definitivos no escriben en storage."
+  ],
+  "productChanges": false,
+  "tasksMdChanged": false,
+  "push": false,
+  "ownServersStarted": 0,
+  "fixtureCleanupVerified": true
+}

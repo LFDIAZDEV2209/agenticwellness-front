@@ -1,0 +1,15 @@
+
+Running 2 tests using 1 worker
+
+node : (node:852) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:2 char:1
++ node node_modules/@playwright/test/cli.js test --config=playwright.pr ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ((node:852) Warn... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 e2e\media-retirement-real.spec.ts:5:5 › 1.23 · DELETE 409, sustituto válido obligatorio y retiro conserva historia/personalización (1.5m)
+  ok 2 e2e\program-template-impact-real.spec.ts:5:5 › 1.22 · impacto y hueco reales; 422 conserva estado, reparar publica una sola versión (7.0s)
+
+  2 passed (1.6m)

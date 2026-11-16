@@ -1,5 +1,37 @@
 # Publicación de plantillas — 1.22
 
+## Cierre con stack real — 16 de noviembre de 2026
+
+El E2E `e2e/program-template-impact-real.spec.ts` pasa contra front 3000,
+gateway 5080, API 5122 y Auth 5123, sin interceptores HTTP ni mocks. El login
+y la restauración de sesión son reales. La fixture aislada contiene dos
+pacientes, una personalización futura, dos semanas iniciadas y un único hueco
+de podcast el día 8. Usa el idioma real de la cuenta sin cambiar su preferencia.
+
+- El impacto devuelve y muestra `2 / 1 / 2`, idéntico en los tres puntos de entrada.
+  Consultarlo conserva versión, estado, referencias y snapshots.
+- Publicar devuelve 422, lista `día 8 / semana 2 / lunes / podcast`, deshabilita
+  confirmar y mantiene `Draft`, versión 7 y todas las semanas intactas.
+- Corregir únicamente esa celda y reabrir permite publicar por teclado: `Active`,
+  versión 8 y fecha de publicación. Los snapshots previos se conservan.
+- La preparación reutiliza claves de medios existentes. No sube ni borra blobs.
+  El `finally` elimina solo las filas QA propias y verifica que no quedan filas.
+
+```powershell
+node node_modules/@playwright/test/cli.js test --config=playwright.program-publication-retirement-real.config.ts program-template-impact-real.spec.ts
+node node_modules/typescript/bin/tsc --noEmit
+node node_modules/eslint/bin/eslint.js .
+node node_modules/next/dist/bin/next build
+node scripts/i18n-scan.mjs
+```
+
+La configuración E2E reutiliza el stack existente; no inicia servidores.
+Requiere Python con `psycopg`, las configuraciones locales de Auth/API y, si el
+workspace cambia, `COP_WORKSPACE_ROOT` apuntando a `Repos`. Los secretos solo
+se leen en memoria. Evidencia: [resultados, capturas y estados de BD](evidence/1.22-2026-11-16/122-result.json).
+La incidencia inicial del storage heredado y la lista exacta de objetos retirados
+se documentan en [S3-CLEANUP.md](evidence/1.22-2026-11-16/S3-CLEANUP.md).
+
 La acción Publicar de la lista de plantillas abre una vista de impacto con el estilo del
 PNG «Vista de impacto al publicar» y `mockups/canvas-fuente/Impacto.dc.html` del change
 `organizar-experiencia-bienestar`. Reutiliza Dialog de Base UI y los tokens del ERP.

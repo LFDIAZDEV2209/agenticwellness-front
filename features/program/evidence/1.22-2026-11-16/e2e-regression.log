@@ -1,0 +1,29 @@
+
+Running 16 tests using 1 worker
+
+node : (node:5672) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:2 char:1
++ node node_modules/@playwright/test/cli.js test program-template-impac ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ((node:5672) War... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [chromium-desktop] › e2e\media-retirement.spec.ts:309:5 › 1.23 · despublicar exige sustituto, filtra candidatos y muestra impacto confirmado (3.9s)
+  ok  2 [chromium-desktop] › e2e\media-retirement.spec.ts:344:5 › 1.23 · DELETE 409 conserva historial y permite archivar con el sustituto (3.2s)
+  ok  3 [chromium-desktop] › e2e\media-retirement.spec.ts:385:5 › 1.23 · sin uso permite eliminar sin enviar un sustituto (1.6s)
+  ok  4 [chromium-desktop] › e2e\media-retirement.spec.ts:402:5 › 1.23 · carrera 409 actualiza conteos y un sustituto caducado 422 exige nueva selección (3.9s)
+  ok  5 [chromium-desktop] › e2e\media-retirement.spec.ts:437:5 › 1.23 · impacto fallido recuperable y catálogo sin candidatos mantienen el bloqueo (1.9s)
+  ok  6 [chromium-desktop] › e2e\media-retirement.spec.ts:468:5 › 1.23 · demostración usa destino Rutinas y exige el mismo tipo publicado (2.4s)
+  ok  7 [chromium-desktop] › e2e\media-retirement.spec.ts:488:5 › 1.23 · petición en curso no se cierra ni se envía dos veces (2.3s)
+  ok  8 [chromium-desktop] › e2e\media-retirement.spec.ts:521:5 › 1.23 · inglés a 320px, selección por teclado y cancelar sin mutaciones (2.1s)
+  ok  9 [chromium-desktop] › e2e\media-retirement.spec.ts:546:5 › 1.23 · lectura no permite retirar ni consulta el impacto (1.2s)
+  ok 10 [chromium-desktop] › e2e\program-template-impact.spec.ts:124:5 › 1.22 · impacto real del contrato, carga bloqueada, cancelar y confirmar una vez (2.1s)
+  ok 11 [chromium-desktop] › e2e\program-template-impact.spec.ts:168:5 › 1.22 · 422 lista todos los huecos del backend y bloquea sin publicar (2.6s)
+  ok 12 [chromium-desktop] › e2e\program-template-impact.spec.ts:214:5 › 1.22 · impacto fallido no habilita publicar; recupera ceros sin datos inventados (1.4s)
+  ok 13 [chromium-desktop] › e2e\program-template-impact.spec.ts:235:5 › 1.22 · fallo al publicar conserva impacto y permite reintento explícito (1.6s)
+  ok 14 [chromium-desktop] › e2e\program-template-impact.spec.ts:254:5 › 1.22 · sin Program.Edit no ofrece publicación ni consulta impacto (1.0s)
+  ok 15 [chromium-desktop] › e2e\program-template-impact.spec.ts:265:5 › 1.22 · confirmación en curso bloquea doble envío y cierre accidental (1.2s)
+  ok 16 [chromium-desktop] › e2e\program-template-impact.spec.ts:285:5 › 1.22 · inglés, 320px, teclado y foco al cerrar (1.1s)
+
+  16 passed (35.0s)

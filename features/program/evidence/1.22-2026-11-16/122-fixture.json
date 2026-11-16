@@ -1,0 +1,21 @@
+{
+  "run": "qa122-83aa013a",
+  "mode": "122",
+  "template": "ad5b8452-5265-4993-9bf9-820837b15e8e",
+  "draft": "94aa6f25-b396-4c47-9d62-d41c6e6879e5",
+  "original": "7be8dba4-75e9-458f-9f02-3db26b3d04ac",
+  "replacement": "8d13b28b-5837-4b22-a60c-75a1c644c974",
+  "wrongType": "b6f024f5-b2bb-447c-8765-2d128ea9c42d",
+  "unpublished": "9529018e-e422-4f28-b882-d9eb275111df",
+  "routine": "6f8610bb-f9d1-4e6c-a790-52d21f9d6d6b",
+  "plan": "39b32482-ff8b-430b-b8aa-72e8e2baefa6",
+  "patient1": "db7b5658-f1bf-44d8-9422-7f5aa76608d0",
+  "patient2": "459b3ad3-f544-4f5c-a940-16f1f73b8479",
+  "enrollment1": "497db3b1-8b8b-4444-ac70-333d99bc4cfa",
+  "enrollment2": "781530d4-8e6a-481a-92d9-62f0e62a42fc",
+  "reusedMediaIds": [
+    "891767f2-0913-4df6-8137-282f24969e37",
+    "c9eaf7ee-088a-4079-adb8-9a26bf49beaf",
+    "0e73ef48-92ce-4477-8290-083ba6581f35"
+  ]
+}

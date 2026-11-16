@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "impact": {
+    "pacientesQueCambian": 2,
+    "conPersonalizacionesFuturas": 1,
+    "semanasOmitidasIniciadas": 2
+  },
+  "gaps": [
+    {
+      "day": 8,
+      "weekNumber": 2,
+      "weekday": 1,
+      "taskCode": "podcast"
+    }
+  ],
+  "rejectedStatus": 422,
+  "rejectedStateUnchanged": true,
+  "publishedVersion": 8,
+  "snapshotsUnchanged": true,
+  "targets": [
+    3000,
+    5080,
+    5122
+  ],
+  "mocks": 0,
+  "pageErrors": []
+}
