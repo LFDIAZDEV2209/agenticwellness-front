@@ -1,7 +1,10 @@
 param(
     [string]$WorkspaceRoot = (Resolve-Path "$PSScriptRoot/../../../..").Path,
     [string]$BackendSource = '',
-    [string]$EvidenceDirectory = ''
+    [string]$EvidenceDirectory = '',
+    [string]$AppUrl = 'http://127.0.0.1:5182',
+    [string]$ErpUrl = 'http://127.0.0.1:3071',
+    [string]$UiMetadata = ''
 )
 $ErrorActionPreference = 'Stop'
 $qa411Repo = (Resolve-Path "$PSScriptRoot/../..").Path
@@ -36,6 +39,12 @@ function Stop-Qa411Simulation($Owned) {
 }
 
 try {
+    # Previews de UI ya existentes: este runner no los arranca ni los detiene.
+    foreach ($qa411Url in @($AppUrl,$ErpUrl)) {
+        $qa411Uri = [Uri]$qa411Url
+        if ($qa411Uri.Host -notin @('127.0.0.1','localhost')) { throw '4.11 UI solo admite previews locales' }
+        Invoke-WebRequest -Uri $qa411Url -TimeoutSec 20 -UseBasicParsing | Out-Null
+    }
     # Nunca arrancar/reiniciar API, Auth, AI, APP o Gateway. Puertos ocupados => detener este runner.
     if (Get-NetTCPConnection -State Listen -LocalPort 4552,4553 -ErrorAction SilentlyContinue) {
         throw '4552/4553 ocupado: no se mata ni se reutiliza un proveedor ajeno'
@@ -60,6 +69,9 @@ try {
     $env:COP_WORKSPACE_ROOT = $WorkspaceRoot
     $env:COP_F4_SOURCE = $BackendSource
     $env:COP_411_EVIDENCE = $EvidenceDirectory
+    $env:E2E_APP_BASE_URL = $AppUrl
+    $env:E2E_BASE_URL = $ErpUrl
+    if ($UiMetadata) { $env:COP411_UI_METADATA = $UiMetadata }
     $env:PLAYWRIGHT_JSON_OUTPUT_NAME = Join-Path $EvidenceDirectory 'playwright.json'
     Push-Location $qa411Repo
     try {
@@ -68,7 +80,7 @@ try {
     } finally { Pop-Location }
 } finally {
     foreach ($qa411Simulation in $qa411Owned) { Stop-Qa411Simulation $qa411Simulation }
-    $qa411Result = @{exitCode=$qa411Exit;apiAndDbOnly=$true;uiPending=$true;sharedStackManaged=$false;ownedSimulations=$qa411Owned}
+    $qa411Result = @{exitCode=$qa411Exit;apiAndDbOnly=$false;uiPending=($qa411Exit -ne 0);sharedStackManaged=$false;ownedSimulations=$qa411Owned;appUrl=$AppUrl;erpUrl=$ErpUrl}
     [IO.File]::WriteAllText((Join-Path $EvidenceDirectory 'runner.json'),($qa411Result | ConvertTo-Json -Depth 4),[Text.UTF8Encoding]::new($false))
 }
 exit $qa411Exit

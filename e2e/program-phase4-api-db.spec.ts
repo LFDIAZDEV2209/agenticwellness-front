@@ -56,7 +56,7 @@ async function call(api: APIRequestContext, method: "GET" | "POST", route: strin
   return { body: JSON.parse(raw.toString()), headers: response.headers() };
 }
 
-test.describe("4.11 · API/BD real; UI pendiente de rediseño", () => {
+test.describe("4.11 · API/BD y UI premium", () => {
   test.describe.configure({ mode: "serial" });
 
   test.beforeAll(async ({ playwright }) => {
@@ -186,15 +186,31 @@ test.describe("4.11 · API/BD real; UI pendiente de rediseño", () => {
       sharedAiStopped: false, controllersWithInjectedFailureVerified: false, uiVerified: false });
   });
 
-  test.fixme("UI APP: finalizar batería y mostrar pendiente clínico/plan sin inventar misiones activas", async () => {
-    // Adaptar selectores y transiciones al rediseño cerrado, con fixture NUEVA 8/9.
-    throw new Error("Pendiente de rediseño: no consumir/resetear la fixture BACK 9/9");
+  async function runPremiumUi(scenario: string) {
+    const appRoot = path.join(workspace, ".worktrees/app-f3");
+    execFileSync(process.execPath, [path.join(appRoot, "scripts/qa/program-assignment/ui.mjs"), scenario], {
+      cwd: appRoot, encoding: "utf8", timeout: 230_000,
+      env: { ...process.env, COP411_UI_EVIDENCE: path.join(evidence, "ui") },
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    const result = JSON.parse(readFileSync(path.join(evidence, "ui", `${scenario}-results.json`), "utf8"));
+    expect(result.passed).toBe(true);
+    expect(result.pageErrors).toEqual([]);
+    expect(result.after.protected).toEqual(result.before.protected);
+  }
+
+  test("UI APP: finalizar batería y mostrar pendiente clínico/plan sin inventar misiones activas", async () => {
+    test.setTimeout(240_000);
+    // Fixture UI independiente: no consumir ni resetear APP aparcada/BACK9/9.
+    await runPremiumUi("assignment");
   });
-  test.fixme("UI ERP: consultar/cancelar sugerencia conserva plan sin POST apply", async () => {
-    throw new Error("Pendiente de adaptar Perfil360/editor y probar teclado/foco");
+  test("UI ERP: consultar/cancelar sugerencia conserva plan sin POST apply", async () => {
+    test.setTimeout(240_000);
+    await runPremiumUi("unapplied");
   });
-  test.fixme("UI: omitir IA unavailable y conservar APP/Perfil360/editor manual navegables", async () => {
-    // Solo envelopes IA en navegador propio; no interceptar programa, tests o nutrición.
-    throw new Error("Pendiente de UI; inyección de envelope no acredita caída de proveedor en backend");
+  test("UI: omitir IA unavailable y conservar APP/Perfil360/editor manual navegables", async () => {
+    test.setTimeout(240_000);
+    // Solo envelopes IA; la prueba HTTP503 de handlers permanece separada.
+    await runPremiumUi("outage");
   });
 });

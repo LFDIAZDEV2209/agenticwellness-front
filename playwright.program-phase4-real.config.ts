@@ -1,6 +1,6 @@
 import { defineConfig } from "@playwright/test";
 
-/** API/BD 4.11: stack y proveedores Postman propios ya iniciados; nunca webServer. */
+/** 4.11 API/BD + UI premium: previews existentes y proveedores propios; nunca webServer. */
 export default defineConfig({
   testDir: "./e2e",
   testMatch: "program-phase4-api-db.spec.ts",
