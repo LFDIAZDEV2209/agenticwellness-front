@@ -1,0 +1,59 @@
+
+Running 6 tests using 1 worker
+
+(node:19924) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 e2e\program-phase4-api-db.spec.ts:106:7 › 4.11 · API/BD y UI premium › 9/9 tests: plan publicado y propuesta única de rutina/podcasts; replay no duplica (1.4s)
+  ok 2 e2e\program-phase4-api-db.spec.ts:140:7 › 4.11 · API/BD y UI premium › consultar una sugerencia draft no cambia semana, contenido, XP ni auditoría (1.3s)
+  ok 3 e2e\program-phase4-api-db.spec.ts:168:7 › 4.11 · API/BD y UI premium › HTTP IA503: handlers F4 unavailable, DB intacta y API de producto navegable (12.4s)
+  x  4 e2e\program-phase4-api-db.spec.ts:202:7 › 4.11 · API/BD y UI premium › UI APP: finalizar batería y mostrar pendiente clínico/plan sin inventar misiones activas (7.0s)
+  -  5 e2e\program-phase4-api-db.spec.ts:207:7 › 4.11 · API/BD y UI premium › UI ERP: consultar/cancelar sugerencia conserva plan sin POST apply
+  -  6 e2e\program-phase4-api-db.spec.ts:211:7 › 4.11 · API/BD y UI premium › UI: omitir IA unavailable y conservar APP/Perfil360/editor manual navegables
+
+
+  1) e2e\program-phase4-api-db.spec.ts:202:7 › 4.11 · API/BD y UI premium › UI APP: finalizar batería y mostrar pendiente clínico/plan sin inventar misiones activas
+
+    Error: Command failed: C:\Program Files\nodejs\node.exe C:\Users\Luis\Documents\CoppAddresd\Repos\.worktrees\app-f3\scripts\qa\program-assignment\ui.mjs assignment
+    (node:55132) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+    (Use `node --trace-warnings ...` to show where the warning was created)
+    node:internal/modules/run_main:107
+        triggerUncaughtException(
+        ^
+
+    AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+    401 !== 200
+
+
+      189 |   async function runPremiumUi(scenario: string) {
+      190 |     const appRoot = path.join(workspace, ".worktrees/app-f3");
+    > 191 |     execFileSync(process.execPath, [path.join(appRoot, "scripts/qa/program-assignment/ui.mjs"), scenario], {
+          |                 ^
+      192 |       cwd: appRoot, encoding: "utf8", timeout: 230_000,
+      193 |       env: { ...process.env, COP411_UI_EVIDENCE: path.join(evidence, "ui") },
+      194 |       stdio: ["ignore", "pipe", "pipe"],
+        at actor (file:///C:/Users/Luis/Documents/CoppAddresd/Repos/.worktrees/app-f3/scripts/qa/program-assignment/ui.mjs:55:12)
+        at runNextTicks (node:internal/process/task_queues:65:5)
+        at process.processImmediate (node:internal/timers:472:9)
+        at async file:///C:/Users/Luis/Documents/CoppAddresd/Repos/.worktrees/app-f3/scripts/qa/program-assignment/ui.mjs:69:19 {
+      generatedMessage: true,
+      code: 'ERR_ASSERTION',
+      actual: 401,
+      expected: 200,
+      operator: 'strictEqual',
+      diff: 'simple'
+    }
+
+    Node.js v24.14.0
+
+        at runPremiumUi (C:\Users\Luis\Documents\CoppAddresd\Repos\.worktrees\front-f3\e2e\program-phase4-api-db.spec.ts:191:17)
+        at C:\Users\Luis\Documents\CoppAddresd\Repos\.worktrees\front-f3\e2e\program-phase4-api-db.spec.ts:205:11
+
+    Error Context: qa-reports\program-phase4-real\program-phase4-api-db-4-11-53042-n-inventar-misiones-activas\error-context.md
+
+    Error Context: qa-reports\program-phase4-real\program-phase4-api-db-4-11-53042-n-inventar-misiones-activas\error-context.md
+
+  1 failed
+    e2e\program-phase4-api-db.spec.ts:202:7 › 4.11 · API/BD y UI premium › UI APP: finalizar batería y mostrar pendiente clínico/plan sin inventar misiones activas
+  2 did not run
+  3 passed (26.2s)

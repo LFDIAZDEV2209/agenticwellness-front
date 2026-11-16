@@ -1,0 +1,2 @@
+import { defineConfig } from '@playwright/test';
+export default defineConfig({testDir:"C:/Users/Luis/Documents/CoppAddresd/Repos/.worktrees/front-f3",testMatch:['e2e/routine-usage-adapter.spec.ts','features/agents/tests/config-roundtrip.spec.ts'],workers:1,retries:0,reporter:[['list'],['json',{outputFile:"C:/Users/Luis/Documents/CoppAddresd/Repos/.worktrees/front-f3/qa-reports/release-preflight/unit-recheck.json"}]]});

@@ -1,0 +1,130 @@
+▲ Next.js 16.3.0 (Turbopack)
+✓ Running next.config.ts took 46ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 3.9s
+  Running TypeScript ...
+  Finished TypeScript in 4.5s ...
+  Collecting page data using 15 workers ...
+  Generating static pages using 15 workers (0/91) ...
+  Generating static pages using 15 workers (22/91)
+  Generating static pages using 15 workers (45/91)
+  Generating static pages using 15 workers (68/91)
+✓ Generating static pages using 15 workers (91/91) in 687ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /agents
+├ ƒ /agents/[id]
+├ ƒ /agents/[id]/knowledge/new
+├ ƒ /agents/[id]/playground
+├ ƒ /agents/[id]/versions/new
+├ ƒ /agents/knowledge
+├ ƒ /agents/knowledge/new
+├ ƒ /agents/monitoring
+├ ƒ /agents/new
+├ ƒ /agents/playground
+├ ƒ /api/i18n/missing
+├ ƒ /appointments
+├ ƒ /appointments/admin
+├ ƒ /appointments/admin/citas
+├ ƒ /appointments/admin/profesionales
+├ ƒ /appointments/admin/sesiones
+├ ƒ /appointments/admin/solicitudes
+├ ƒ /appointments/agenda
+├ ƒ /appointments/alertas
+├ ƒ /appointments/calendario
+├ ƒ /appointments/citas
+├ ƒ /appointments/citas/[id]
+├ ƒ /appointments/room/[id]
+├ ƒ /appointments/solicitudes
+├ ƒ /community
+├ ƒ /community/clubs
+├ ƒ /community/clubs/[id]
+├ ƒ /community/clubs/new
+├ ƒ /community/dashboard
+├ ƒ /community/diagnostics
+├ ƒ /community/feed
+├ ƒ /community/groups
+├ ƒ /community/inactive
+├ ƒ /community/members
+├ ƒ /community/moderation
+├ ƒ /community/networks
+├ ƒ /community/posts
+├ ƒ /community/regions
+├ ƒ /community/rewards
+├ ƒ /community/streaks
+├ ƒ /dashboard
+├ ƒ /employees
+├ ƒ /employees/[id]
+├ ƒ /firebase-messaging-sw.js
+├ ƒ /health-tests
+├ ƒ /health-tests/alertas
+├ ƒ /health-tests/alertas/notificaciones
+├ ƒ /health-tests/alertas/notificar
+├ ƒ /health-tests/alertas/plantillas
+├ ƒ /health-tests/analisis
+├ ƒ /health-tests/baterias
+├ ƒ /health-tests/baterias/[id]
+├ ƒ /health-tests/baterias/new
+├ ƒ /health-tests/catalogo
+├ ƒ /health-tests/cobertura
+├ ƒ /health-tests/dofa
+├ ƒ /health-tests/indicadores
+├ ƒ /health-tests/pacientes
+├ ƒ /health-tests/pacientes/[id]
+├ ƒ /health-tests/pacientes/[id]/evaluaciones/[evalId]
+├ ƒ /health-tests/seguimiento
+├ ƒ /inventory
+├ ƒ /inventory/entries
+├ ƒ /inventory/exits
+├ ƒ /inventory/movements
+├ ƒ /inventory/new
+├ ƒ /inventory/reports
+├ ƒ /invitaciones
+├ ƒ /login
+├ ƒ /media
+├ ƒ /media/[id]
+├ ƒ /media/[id]/edit
+├ ƒ /media/new
+├ ƒ /nutrition
+├ ƒ /nutrition/[patientId]
+├ ƒ /nutrition/cycles-preview
+├ ƒ /onboarding
+├ ƒ /patients
+├ ƒ /patients/[id]
+├ ƒ /patients/[id]/360
+├ ƒ /patients/[id]/edit
+├ ƒ /patients/appointments
+├ ƒ /patients/new
+├ ƒ /patients/prescriptions
+├ ƒ /people/importar
+├ ƒ /people/new
+├ ƒ /program/adherencia
+├ ƒ /program/clinica
+├ ƒ /program/dashboard
+├ ƒ /program/gestion
+├ ƒ /roles
+├ ƒ /roles/new
+├ ƒ /settings
+├ ƒ /sos/alertas
+├ ƒ /store
+├ ƒ /store/featured
+├ ƒ /store/preview
+├ ƒ /users
+├ ƒ /users/[id]
+├ ƒ /users/[id]/editar
+├ ƒ /users/nuevo
+├ ƒ /wellness/assignments
+├ ƒ /wellness/assignments/new
+├ ƒ /wellness/exercise-routines
+├ ƒ /wellness/exercise-routines/new
+├ ƒ /wellness/nutrition-plans
+└ ƒ /wellness/nutrition-plans/new
+
+
+ƒ Proxy (Middleware)
+
+ƒ  (Dynamic)  server-rendered on demand

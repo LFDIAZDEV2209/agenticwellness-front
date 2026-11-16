@@ -1,0 +1,6 @@
+{
+  "initialSha": "793bfd5a1a960ace15e51d32633ffc7fa4e25b7f",
+  "currentSha": "7c65b8f7c1b479087c0a14a2f098d09c375d3d55",
+  "currentStatus": "",
+  "note": "APP tuvo merge concurrente de dev; artefacto QA propio compilado en .tmp, sin editar código APP. No certifica un SHA puro APP; este preflight certifica FRONT4f317a6. Proxy QA se conecta directo a API5122/Auth5123 y no reinicia Gateway."
+}

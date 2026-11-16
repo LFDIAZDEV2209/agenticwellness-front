@@ -1,0 +1,12 @@
+✔ la configuración real de deploy contiene orígenes sin rutas (5.0983ms)
+✔ rechaza el prefijo que duplicaba la ruta GraphQL en producción (0.7094ms)
+✔ acepta gateway local, origen con slash final y override omitido (0.111ms)
+✔ rechaza valores inválidos o componentes que cambian el endpoint (0.1836ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 102.0501

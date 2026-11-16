@@ -1,0 +1,1 @@
+export default {build:{outDir:"C:/Users/Luis/Documents/CoppAddresd/Repos/.tmp/front-release-app-dist"},preview:{host:'127.0.0.1',port:5182,strictPort:true,proxy:{'/api/auth':{target:'http://127.0.0.1:5123',changeOrigin:true},'/api':{target:'http://127.0.0.1:5122',changeOrigin:true}}}};

@@ -1,0 +1,20 @@
+{
+  "e2e/bienestar-fase1.spec.ts": 5,
+  "e2e/exercise-demo-link.spec.ts": 3,
+  "e2e/exercise-media.spec.ts": 3,
+  "e2e/exercise-routine-catalog.spec.ts": 2,
+  "e2e/media-bulk-upload.spec.ts": 6,
+  "e2e/media-pages.spec.ts": 7,
+  "e2e/patient-ai-summary.spec.ts": 25,
+  "e2e/patient-routines.spec.ts": 14,
+  "e2e/podcast-metadata.spec.ts": 19,
+  "e2e/program-week-cell-editor.spec.ts": 6,
+  "e2e/routine-contraindications.spec.ts": 5,
+  "e2e/routine-edit-impact.spec.ts": 20,
+  "e2e/routine-usage-adapter.spec.ts": 21,
+  "e2e/weekly-ai-suggestions.spec.ts": 29,
+  "features/agents/tests/agent-assignment.spec.ts": 11,
+  "features/agents/tests/agent-forms.spec.ts": 6,
+  "features/agents/tests/config-roundtrip.spec.ts": 8,
+  "features/media/tests/media-editor.spec.ts": 5
+}

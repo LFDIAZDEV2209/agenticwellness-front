@@ -1,0 +1,186 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\Luis\\Documents\\CoppAddresd\\Repos\\.worktrees\\front-f3\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "--config",
+      "playwright.routine-usage-real.config.ts",
+      "--reporter=list,json"
+    ],
+    "configFile": "C:\\Users\\Luis\\Documents\\CoppAddresd\\Repos\\.worktrees\\front-f3\\playwright.routine-usage-real.config.ts",
+    "rootDir": "C:/Users/Luis/Documents/CoppAddresd/Repos/.worktrees/front-f3/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/Luis/Documents/CoppAddresd/Repos/.worktrees/front-f3/qa-reports/routine-usage-final/real-tests",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "C:/Users/Luis/Documents/CoppAddresd/Repos/.worktrees/front-f3/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "routine-usage-real.spec.ts"
+        ],
+        "timeout": 45000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.62.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "routine-usage-real.spec.ts",
+      "file": "routine-usage-real.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "2.22 · HTTP del controlador real valida 401/403/404, agregado N positivo y cero por alcance",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 899,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:01:29.722Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "aca1b673e3f71ac47e8b-3d3fc6c00feffeb95a6a",
+          "file": "routine-usage-real.spec.ts",
+          "line": 12,
+          "column": 5
+        },
+        {
+          "title": "2.22 · UI consume agregado N positivo desde controlador/store/DB reales",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2316,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:01:30.661Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "aca1b673e3f71ac47e8b-6874716af4377c329f6e",
+          "file": "routine-usage-real.spec.ts",
+          "line": 29,
+          "column": 39
+        },
+        {
+          "title": "2.22 · UI consume agregado cero acotado desde controlador/store/DB reales",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1219,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:01:33.186Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "aca1b673e3f71ac47e8b-fe781419484c53ec78d9",
+          "file": "routine-usage-real.spec.ts",
+          "line": 29,
+          "column": 39
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-16T04:01:29.074Z",
+    "duration": 5472.574,
+    "expected": 3,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

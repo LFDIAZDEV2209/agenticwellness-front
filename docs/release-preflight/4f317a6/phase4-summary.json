@@ -1,0 +1,27 @@
+{
+  "assignment": {
+    "passed": true,
+    "transition": "relectura del submit UI previamente registrado",
+    "cases": 13,
+    "pageErrors": [],
+    "stubs": false,
+    "protectedEqual": true,
+    "appSha": "7c65b8f7c1b479087c0a14a2f098d09c375d3d55"
+  },
+  "unapplied": {
+    "passed": true,
+    "cases": 4,
+    "pageErrors": [],
+    "stubs": "solo GET IA: borrador sintetico vigente para comprobar cancelacion; lectura real stale conservada",
+    "protectedEqual": true,
+    "appSha": "7c65b8f7c1b479087c0a14a2f098d09c375d3d55"
+  },
+  "outage": {
+    "passed": true,
+    "cases": 5,
+    "pageErrors": [],
+    "stubs": "solo envelopes ERP IA",
+    "protectedEqual": true,
+    "appSha": "7c65b8f7c1b479087c0a14a2f098d09c375d3d55"
+  }
+}

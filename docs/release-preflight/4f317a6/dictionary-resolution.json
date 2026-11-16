@@ -1,0 +1,18 @@
+{
+  "es": {
+    "base": 5310,
+    "ours": 5968,
+    "dev": 5346,
+    "merged": 6004,
+    "missingOursChanged": [],
+    "missingDevChanged": []
+  },
+  "en": {
+    "base": 5323,
+    "ours": 5968,
+    "dev": 5359,
+    "merged": 6004,
+    "missingOursChanged": [],
+    "missingDevChanged": []
+  }
+}

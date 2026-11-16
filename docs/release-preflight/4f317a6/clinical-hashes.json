@@ -1,0 +1,27 @@
+[
+  {
+    "path": "features/patients",
+    "ours": "ffdcad468f9084138aaa07b9ef04a5bfee069ed2",
+    "merged": "ffdcad468f9084138aaa07b9ef04a5bfee069ed2"
+  },
+  {
+    "path": "features/wellness",
+    "ours": "1c4d2de3a3ae3933909cc1a923b192a6870e9f1d",
+    "merged": "1c4d2de3a3ae3933909cc1a923b192a6870e9f1d"
+  },
+  {
+    "path": "e2e/program-phase4-api-db.spec.ts",
+    "ours": "bad2b939eb2e1bccc105931ca78f3f0bd73a55b2",
+    "merged": "bad2b939eb2e1bccc105931ca78f3f0bd73a55b2"
+  },
+  {
+    "path": "scripts/qa/program-phase4-real.ps1",
+    "ours": "903ed03aeeba99e607b10b2dae0377abaf6ee15c",
+    "merged": "903ed03aeeba99e607b10b2dae0377abaf6ee15c"
+  },
+  {
+    "path": "scripts/qa/routine-usage-host",
+    "ours": "22e357a07062b17ad4fc394f40466c62a162bb4f",
+    "merged": "22e357a07062b17ad4fc394f40466c62a162bb4f"
+  }
+]

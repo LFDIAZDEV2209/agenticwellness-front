@@ -1,0 +1,158 @@
+{
+  "subjectSha": "4f317a622c52907a24bc50d3ab7f14481772841d",
+  "subjectParents": [
+    "c1a23e51f4e02730d02d028c13e5be936ff49aec",
+    "2f3471cc71cde40130e153057f20b5c21d187d3b"
+  ],
+  "fetchedDev": "2f3471cc71cde40130e153057f20b5c21d187d3b",
+  "conflicts": [
+    "providers/translations/es.json",
+    "providers/translations/en.json"
+  ],
+  "resolution": "Unión de cambios de tres vías; cero colisiones de valores; conserva ambas ramas",
+  "baseGates": {
+    "typecheck": {
+      "command": "corepack yarn exec tsc --noEmit",
+      "exitCode": 0,
+      "log": "typecheck.txt"
+    },
+    "lint": {
+      "command": "corepack yarn lint",
+      "exitCode": 0,
+      "log": "lint.txt"
+    },
+    "build": {
+      "command": "corepack yarn build",
+      "exitCode": 0,
+      "log": "build.txt"
+    },
+    "i18n": {
+      "command": "corepack yarn i18n:check",
+      "exitCode": 0,
+      "missing": 0,
+      "esKeys": 6004,
+      "enKeys": 6004
+    }
+  },
+  "unit": {
+    "nodeTest": {
+      "command": "corepack yarn config:test",
+      "underlying": "node --test scripts/check-service-urls.test.mjs",
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0
+    },
+    "playwrightPure": {
+      "command": "corepack yarn exec playwright test --config qa-reports/release-preflight/unit-recheck.config.ts",
+      "passed": 29,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "stats": {
+        "startTime": "2026-11-16T04:20:39.334Z",
+        "duration": 1473.966,
+        "expected": 29,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "alreadyIncludedIn195": true,
+      "files": [
+        "e2e/routine-usage-adapter.spec.ts",
+        "features/agents/tests/config-roundtrip.spec.ts"
+      ]
+    }
+  },
+  "suites": {
+    "combined": {
+      "command": "corepack yarn exec playwright test --config qa-reports/release-preflight/playwright.release.config.ts",
+      "exitCode": 0,
+      "stats": {
+        "startTime": "2026-11-16T04:01:29.163Z",
+        "duration": 176813.886,
+        "expected": 195,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "pureUnit": 29,
+      "uiHttp": 166,
+      "report": "playwright-195.json"
+    },
+    "usageIntegration": {
+      "command": "corepack yarn exec playwright test --config playwright.routine-usage-real.config.ts --reporter=list,json",
+      "exitCode": 0,
+      "stats": {
+        "startTime": "2026-11-16T04:01:29.074Z",
+        "duration": 5472.574,
+        "expected": 3,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "report": "playwright-usage-3.json",
+      "identity": "JWT/contexto QA sintéticos; controlador/guard/store/resolver/EF/PostgreSQL READ ONLY reales"
+    },
+    "phase4": {
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/qa/program-phase4-real.ps1 -EvidenceDirectory <evidencia>/phase4-relay -AppUrl http://127.0.0.1:5182 -ErpUrl http://localhost:3067",
+      "environment": {
+        "NODE_OPTIONS": "--import=file:///C:/Users/Luis/Documents/CoppAddresd/Repos/.tmp/release-playwright-relay.mjs"
+      },
+      "exitCode": 0,
+      "stats": {
+        "startTime": "2026-11-16T04:11:43.404Z",
+        "duration": 44256.756,
+        "expected": 6,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0,
+        "exit": 0,
+        "transport": "QA relay solo HTTP; bodies/status reales; no certificado CORS Gateway5080"
+      },
+      "report": "playwright-phase4-6.json",
+      "limitation": "Transporte relay QA real; no certifica CORS/routing Gateway5080"
+    }
+  },
+  "earlierFailedRuns": [
+    {
+      "profile": "Gateway local original",
+      "passed": 3,
+      "failed": 1,
+      "notRun": 2,
+      "cause": "APP login401",
+      "log": "phase4-first-failed.txt"
+    },
+    {
+      "profile": "APP proxy directo, ERP nativo producción3067→Gateway5080",
+      "passed": 4,
+      "failed": 1,
+      "notRun": 1,
+      "cause": "CORS ERP; timeout esperando login",
+      "log": "phase4-second-failed.txt"
+    }
+  ],
+  "finalExecutedGatesPassed": true,
+  "nativeGatewayCorsVerified": false,
+  "releaseInfrastructureCertified": false,
+  "productFixesAfterMerge": [],
+  "uniqueCases": {
+    "unit": 33,
+    "uiHttpIntegration": 175,
+    "total": 208,
+    "note": "29 unit Playwright forman parte de195; no se suman dos veces por reejecutarlos."
+  },
+  "closureAudit": {
+    "ownPortsFree": true,
+    "previousClosureIncomplete": true,
+    "correction": "Siete procesos QA propios omitidos por array JSON anidado; cerrados por PID/comando/descendencia en esta auditoría.",
+    "proof": "closure-audit.json",
+    "sharedProcessesPreserved": [
+      40556,
+      20808,
+      35056
+    ]
+  },
+  "noPush": true,
+  "tasksMdEdited": false
+}

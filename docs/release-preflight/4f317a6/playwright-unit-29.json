@@ -1,0 +1,1082 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\Luis\\Documents\\CoppAddresd\\Repos\\.worktrees\\front-f3\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "--config",
+      "qa-reports/release-preflight/unit-recheck.config.ts"
+    ],
+    "configFile": "C:\\Users\\Luis\\Documents\\CoppAddresd\\Repos\\.worktrees\\front-f3\\qa-reports\\release-preflight\\unit-recheck.config.ts",
+    "rootDir": "C:/Users/Luis/Documents/CoppAddresd/Repos/.worktrees/front-f3",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/Luis/Documents/CoppAddresd/Repos/.worktrees/front-f3/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "C:/Users/Luis/Documents/CoppAddresd/Repos/.worktrees/front-f3",
+        "testIgnore": [],
+        "testMatch": [
+          "e2e/routine-usage-adapter.spec.ts",
+          "features/agents/tests/config-roundtrip.spec.ts"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "C:/Users/Luis/Documents/CoppAddresd/Repos/.worktrees/front-f3/qa-reports/release-preflight/unit-recheck.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.62.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "e2e\\routine-usage-adapter.spec.ts",
+      "file": "e2e/routine-usage-adapter.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "2.22 · adaptador conserva los tres conteos y no confunde semanas con pacientes",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.393Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d437055658367344b8d0-dc616c39b829bc95c8ab",
+          "file": "e2e/routine-usage-adapter.spec.ts",
+          "line": 6,
+          "column": 5
+        },
+        {
+          "title": "2.22 · adaptador rechaza undefined",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.433Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d437055658367344b8d0-d3581ff5ad448b0ae259",
+          "file": "e2e/routine-usage-adapter.spec.ts",
+          "line": 13,
+          "column": 7
+        },
+        {
+          "title": "2.22 · adaptador rechaza null",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.442Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d437055658367344b8d0-925d7aa8aff15a4a6381",
+          "file": "e2e/routine-usage-adapter.spec.ts",
+          "line": 13,
+          "column": 7
+        },
+        {
+          "title": "2.22 · adaptador rechaza []",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.451Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d437055658367344b8d0-0c8ee827c09a1a17c525",
+          "file": "e2e/routine-usage-adapter.spec.ts",
+          "line": 13,
+          "column": 7
+        },
+        {
+          "title": "2.22 · adaptador rechaza {}",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.460Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d437055658367344b8d0-347dcebd43956e5f02fd",
+          "file": "e2e/routine-usage-adapter.spec.ts",
+          "line": 13,
+          "column": 7
+        },
+        {
+          "title": "2.22 · adaptador rechaza {\"routineId\":\"otra-rutina\",\"patientCount\":2,\"enrollmentCount\":3,\"activeWeekCount\":4}",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.474Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d437055658367344b8d0-41f21f320e3a9da001b9",
+          "file": "e2e/routine-usage-adapter.spec.ts",
+          "line": 13,
+          "column": 7
+        },
+        {
+          "title": "2.22 · adaptador rechaza {\"routineId\":\"00000000-0000-4000-8000-000000000851\",\"patientCount\":-1,\"enrollmentCount\":3,\"activeWeekCount\":4}",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.484Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d437055658367344b8d0-77aff8c6e866f095715d",
+          "file": "e2e/routine-usage-adapter.spec.ts",
+          "line": 13,
+          "column": 7
+        },
+        {
+          "title": "2.22 · adaptador rechaza {\"routineId\":\"00000000-0000-4000-8000-000000000851\",\"patientCount\":1.5,\"enrollmentCount\":3,\"activeWeekCount\":4}",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.496Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d437055658367344b8d0-1ad520e046dbd0fd5e11",
+          "file": "e2e/routine-usage-adapter.spec.ts",
+          "line": 13,
+          "column": 7
+        },
+        {
+          "title": "2.22 · adaptador rechaza {\"routineId\":\"00000000-0000-4000-8000-000000000851\",\"patientCount\":\"3\",\"enrollmentCount\":3,\"activeWeekCount\":4}",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.517Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d437055658367344b8d0-081c6e8dcff585ca692a",
+          "file": "e2e/routine-usage-adapter.spec.ts",
+          "line": 13,
+          "column": 7
+        },
+        {
+          "title": "2.22 · adaptador rechaza {\"routineId\":\"00000000-0000-4000-8000-000000000851\",\"patientCount\":null,\"enrollmentCount\":3,\"activeWeekCount\":4}",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.527Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d437055658367344b8d0-683a7097f820927ac9a7",
+          "file": "e2e/routine-usage-adapter.spec.ts",
+          "line": 13,
+          "column": 7
+        },
+        {
+          "title": "2.22 · adaptador rechaza {\"routineId\":\"00000000-0000-4000-8000-000000000851\",\"patientCount\":9007199254740992,\"enrollmentCount\":3,\"activeWeekCount\":4}",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.534Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d437055658367344b8d0-0913e85c09fbeb8737f6",
+          "file": "e2e/routine-usage-adapter.spec.ts",
+          "line": 13,
+          "column": 7
+        },
+        {
+          "title": "2.22 · adaptador rechaza {\"routineId\":\"00000000-0000-4000-8000-000000000851\",\"patientCount\":2,\"enrollmentCount\":-1,\"activeWeekCount\":4}",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.542Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d437055658367344b8d0-647bcce84e5c8025da27",
+          "file": "e2e/routine-usage-adapter.spec.ts",
+          "line": 13,
+          "column": 7
+        },
+        {
+          "title": "2.22 · adaptador rechaza {\"routineId\":\"00000000-0000-4000-8000-000000000851\",\"patientCount\":2,\"enrollmentCount\":1.5,\"activeWeekCount\":4}",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.549Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d437055658367344b8d0-efd1216adab48b954278",
+          "file": "e2e/routine-usage-adapter.spec.ts",
+          "line": 13,
+          "column": 7
+        },
+        {
+          "title": "2.22 · adaptador rechaza {\"routineId\":\"00000000-0000-4000-8000-000000000851\",\"patientCount\":2,\"enrollmentCount\":\"3\",\"activeWeekCount\":4}",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.558Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d437055658367344b8d0-ff686dbba094eccd8b0a",
+          "file": "e2e/routine-usage-adapter.spec.ts",
+          "line": 13,
+          "column": 7
+        },
+        {
+          "title": "2.22 · adaptador rechaza {\"routineId\":\"00000000-0000-4000-8000-000000000851\",\"patientCount\":2,\"enrollmentCount\":null,\"activeWeekCount\":4}",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.567Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d437055658367344b8d0-cd8be4cf15e133faeb43",
+          "file": "e2e/routine-usage-adapter.spec.ts",
+          "line": 13,
+          "column": 7
+        },
+        {
+          "title": "2.22 · adaptador rechaza {\"routineId\":\"00000000-0000-4000-8000-000000000851\",\"patientCount\":2,\"enrollmentCount\":9007199254740992,\"activeWeekCount\":4}",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.582Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d437055658367344b8d0-9876440abb99cd44ef87",
+          "file": "e2e/routine-usage-adapter.spec.ts",
+          "line": 13,
+          "column": 7
+        },
+        {
+          "title": "2.22 · adaptador rechaza {\"routineId\":\"00000000-0000-4000-8000-000000000851\",\"patientCount\":2,\"enrollmentCount\":3,\"activeWeekCount\":-1}",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.593Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d437055658367344b8d0-0318febe9c8c4dd7e02a",
+          "file": "e2e/routine-usage-adapter.spec.ts",
+          "line": 13,
+          "column": 7
+        },
+        {
+          "title": "2.22 · adaptador rechaza {\"routineId\":\"00000000-0000-4000-8000-000000000851\",\"patientCount\":2,\"enrollmentCount\":3,\"activeWeekCount\":1.5}",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.602Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d437055658367344b8d0-dd42910e00fadba37535",
+          "file": "e2e/routine-usage-adapter.spec.ts",
+          "line": 13,
+          "column": 7
+        },
+        {
+          "title": "2.22 · adaptador rechaza {\"routineId\":\"00000000-0000-4000-8000-000000000851\",\"patientCount\":2,\"enrollmentCount\":3,\"activeWeekCount\":\"3\"}",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.611Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d437055658367344b8d0-e6147d82f7621843ae9c",
+          "file": "e2e/routine-usage-adapter.spec.ts",
+          "line": 13,
+          "column": 7
+        },
+        {
+          "title": "2.22 · adaptador rechaza {\"routineId\":\"00000000-0000-4000-8000-000000000851\",\"patientCount\":2,\"enrollmentCount\":3,\"activeWeekCount\":null}",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.619Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d437055658367344b8d0-8aa59119d3db3b85f958",
+          "file": "e2e/routine-usage-adapter.spec.ts",
+          "line": 13,
+          "column": 7
+        },
+        {
+          "title": "2.22 · adaptador rechaza {\"routineId\":\"00000000-0000-4000-8000-000000000851\",\"patientCount\":2,\"enrollmentCount\":3,\"activeWeekCount\":9007199254740992}",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.632Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d437055658367344b8d0-d16ad4f1dc7f29d6806b",
+          "file": "e2e/routine-usage-adapter.spec.ts",
+          "line": 13,
+          "column": 7
+        }
+      ]
+    },
+    {
+      "title": "features\\agents\\tests\\config-roundtrip.spec.ts",
+      "file": "features/agents/tests/config-roundtrip.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "metadata legada se conserva byte por byte al guardar sin editar routing",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.668Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b87b33ab531e2b5310d1-a6b9fecb4d460d159c6c",
+          "file": "features/agents/tests/config-roundtrip.spec.ts",
+          "line": 7,
+          "column": 5
+        },
+        {
+          "title": "editar routing conserva metadata ajena y opciones futuras del routing",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.681Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b87b33ab531e2b5310d1-360adc004f3628a7fb02",
+          "file": "features/agents/tests/config-roundtrip.spec.ts",
+          "line": 15,
+          "column": 5
+        },
+        {
+          "title": "desactivar routing restaura compatibilidad sin eliminar metadata ajena",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.695Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b87b33ab531e2b5310d1-e5e44de56982fbedc623",
+          "file": "features/agents/tests/config-roundtrip.spec.ts",
+          "line": 23,
+          "column": 5
+        },
+        {
+          "title": "32 valores de 80 caracteres son válidos; 33 valores u 81 caracteres se rechazan",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.706Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b87b33ab531e2b5310d1-c248d5f7658a69a06a68",
+          "file": "features/agents/tests/config-roundtrip.spec.ts",
+          "line": 30,
+          "column": 5
+        },
+        {
+          "title": "canales explícitos vacíos no se convierten en permisos; metadata inválida no se sobrescribe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.719Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b87b33ab531e2b5310d1-0222389d6465c070305b",
+          "file": "features/agents/tests/config-roundtrip.spec.ts",
+          "line": 40,
+          "column": 5
+        },
+        {
+          "title": "roundtrip conserva opciones desconocidas raíz, retrieval y memoria, y tools antiguas",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.733Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b87b33ab531e2b5310d1-9fcb70fc5b35c99b6108",
+          "file": "features/agents/tests/config-roundtrip.spec.ts",
+          "line": 46,
+          "column": 5
+        },
+        {
+          "title": "opciones nuevas no se autoañaden a configuraciones antiguas, vacías ni nuevas",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 14,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.744Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b87b33ab531e2b5310d1-69acbd1b0cf9ffbe81a8",
+          "file": "features/agents/tests/config-roundtrip.spec.ts",
+          "line": 56,
+          "column": 5
+        },
+        {
+          "title": "JSON parcial o inválido no rompe el editor",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:20:40.764Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b87b33ab531e2b5310d1-fbec880e395219c4a066",
+          "file": "features/agents/tests/config-roundtrip.spec.ts",
+          "line": 68,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-16T04:20:39.334Z",
+    "duration": 1473.966,
+    "expected": 29,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

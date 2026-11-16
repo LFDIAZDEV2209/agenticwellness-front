@@ -1,0 +1,10 @@
+
+Running 3 tests using 1 worker
+
+(node:19172) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 e2e\routine-usage-real.spec.ts:12:5 › 2.22 · HTTP del controlador real valida 401/403/404, agregado N positivo y cero por alcance (899ms)
+  ok 2 e2e\routine-usage-real.spec.ts:29:39 › 2.22 · UI consume agregado N positivo desde controlador/store/DB reales (2.3s)
+  ok 3 e2e\routine-usage-real.spec.ts:29:39 › 2.22 · UI consume agregado cero acotado desde controlador/store/DB reales (1.2s)
+
+  3 passed (5.5s)

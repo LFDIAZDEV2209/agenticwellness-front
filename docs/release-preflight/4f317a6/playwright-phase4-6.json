@@ -1,0 +1,297 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\Luis\\Documents\\CoppAddresd\\Repos\\.worktrees\\front-f3\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "--config",
+      "playwright.program-phase4-real.config.ts",
+      "--reporter=list,json"
+    ],
+    "configFile": "C:\\Users\\Luis\\Documents\\CoppAddresd\\Repos\\.worktrees\\front-f3\\playwright.program-phase4-real.config.ts",
+    "rootDir": "C:/Users/Luis/Documents/CoppAddresd/Repos/.worktrees/front-f3/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/Luis/Documents/CoppAddresd/Repos/.worktrees/front-f3/qa-reports/program-phase4-real",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "C:/Users/Luis/Documents/CoppAddresd/Repos/.worktrees/front-f3/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "program-phase4-api-db.spec.ts"
+        ],
+        "timeout": 180000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.62.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "program-phase4-api-db.spec.ts",
+      "file": "program-phase4-api-db.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "4.11 · API/BD y UI premium",
+          "file": "program-phase4-api-db.spec.ts",
+          "line": 59,
+          "column": 6,
+          "specs": [
+            {
+              "title": "9/9 tests: plan publicado y propuesta única de rutina/podcasts; replay no duplica",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 180000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1014,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-16T04:11:44.102Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "acdfb6c75e87e72a11c7-0b5b601597ce6c181c06",
+              "file": "program-phase4-api-db.spec.ts",
+              "line": 106,
+              "column": 7
+            },
+            {
+              "title": "consultar una sugerencia draft no cambia semana, contenido, XP ni auditoría",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 180000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1037,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-16T04:11:47.081Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "acdfb6c75e87e72a11c7-c44a0a8b425889bbe214",
+              "file": "program-phase4-api-db.spec.ts",
+              "line": 140,
+              "column": 7
+            },
+            {
+              "title": "HTTP IA503: handlers F4 unavailable, DB intacta y API de producto navegable",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 180000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 8842,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-16T04:11:48.128Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "acdfb6c75e87e72a11c7-7d0f25c4aab9f7158678",
+              "file": "program-phase4-api-db.spec.ts",
+              "line": 168,
+              "column": 7
+            },
+            {
+              "title": "UI APP: finalizar batería y mostrar pendiente clínico/plan sin inventar misiones activas",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 240000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 14388,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-16T04:11:56.979Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "acdfb6c75e87e72a11c7-7c09cd8b791df9248f71",
+              "file": "program-phase4-api-db.spec.ts",
+              "line": 202,
+              "column": 7
+            },
+            {
+              "title": "UI ERP: consultar/cancelar sugerencia conserva plan sin POST apply",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 240000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7969,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-16T04:12:11.377Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "acdfb6c75e87e72a11c7-3def090c68a2697041e2",
+              "file": "program-phase4-api-db.spec.ts",
+              "line": 207,
+              "column": 7
+            },
+            {
+              "title": "UI: omitir IA unavailable y conservar APP/Perfil360/editor manual navegables",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 240000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7343,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-16T04:12:19.359Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "acdfb6c75e87e72a11c7-27f17df0b5340c1813c9",
+              "file": "program-phase4-api-db.spec.ts",
+              "line": 211,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-16T04:11:43.404Z",
+    "duration": 44256.756,
+    "expected": 6,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

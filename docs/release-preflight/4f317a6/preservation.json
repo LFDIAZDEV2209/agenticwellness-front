@@ -1,0 +1,15 @@
+{
+  "merge": "4f317a622c52907a24bc50d3ab7f14481772841d",
+  "parents": [
+    "c1a23e51f4e02730d02d028c13e5be936ff49aec",
+    "2f3471cc71cde40130e153057f20b5c21d187d3b"
+  ],
+  "tree": "171f26ef1f28d3e912a62d685d3ae23f26af7f6c",
+  "worktreeChanges": "",
+  "clinicalUnchanged": "",
+  "devAgentsUnchanged": "",
+  "tasks": [],
+  "esKeys": 6004,
+  "enKeys": 6004,
+  "tasksNote": "No se editó tasks.md; los únicos ficheros del merge son agentes y diccionarios. No hay basename tasks.md versionado en este repo."
+}

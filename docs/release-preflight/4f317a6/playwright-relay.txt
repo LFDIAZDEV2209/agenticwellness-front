@@ -1,0 +1,13 @@
+import { chromium } from "file:///C:/Users/Luis/Documents/CoppAddresd/Repos/.worktrees/app-f3/node_modules/playwright/index.mjs";
+const launch = chromium.launch.bind(chromium);
+chromium.launch = async (...args) => {
+  const browser=await launch(...args),create=browser.newContext.bind(browser);
+  browser.newContext=async (...options)=>{const context=await create(...options);
+    await context.route(/^http:\/\/localhost:5080\/api\//,async route=>{
+      const source=new URL(route.request().url());
+      const target='http://127.0.0.1:'+(source.pathname.startsWith('/api/auth')?'5123':'5122')+source.pathname+source.search;
+      const response=await route.fetch({url:target});
+      const origin=new URL(route.request().frame().url()).origin;
+      if(!['http://localhost:3067','http://127.0.0.1:3067','http://127.0.0.1:5182'].includes(origin))throw new Error('QA origin outside scope');
+      await route.fulfill({response,headers:{...response.headers(),'access-control-allow-origin':origin,'access-control-allow-credentials':'true'}});
+    });return context;};return browser;};
