@@ -1,11 +1,11 @@
 import { execFileSync } from "node:child_process";
 
-/** Lee exclusivamente credenciales QA 3.20 en memoria; nunca registrar el resultado.
+/** Lee exclusivamente los prefijos QA permitidos en memoria; nunca registrar el resultado.
  * @param {string} target
  * @returns {string}
  */
 export function readQaPassword(target) {
-  if (!["CoppAddresd/QA/3.20/", "CoppAddresd/QA/4.7/", "CoppAddresd/QA/4.8/"].some(prefix => target.startsWith(prefix)))
+  if (!["CoppAddresd/QA/3.20/", "CoppAddresd/QA/4.7/", "CoppAddresd/QA/4.8/", "CoppAddresd/QA/4.11-back/"].some(prefix => target.startsWith(prefix)))
     throw new Error("Credencial ajena a las fixtures QA autorizadas.");
   const code = [
     "import ctypes, ctypes.wintypes as w, json, sys",
