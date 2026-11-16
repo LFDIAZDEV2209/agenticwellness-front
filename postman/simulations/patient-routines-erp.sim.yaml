@@ -1,0 +1,6 @@
+simulation: patient-routines-erp
+routing: header
+mocks:
+  - name: patient-routines-erp
+    routeKey: routines-erp
+    path: postman/mocks/patient-routines-erp

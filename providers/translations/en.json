@@ -5936,5 +5936,22 @@
   "Descartar": "Discard",
   "Generando sugerencias…": "Generating suggestions…",
   "Usar sugerencias": "Use suggestions",
-  "Sin etiquetas": "No tags"
+  "Sin etiquetas": "No tags",
+  "Asignar rutina en bloque": "Assign routine in bulk",
+  "Elige una rutina activa y las semanas. Nada se guarda hasta confirmar.": "Choose an active routine and the weeks. Nothing is saved until you confirm.",
+  "Rutina activa": "Active routine",
+  "Buscar rutina": "Search routines",
+  "Rutina seleccionada: {routine}": "Selected routine: {routine}",
+  "Cargando rutinas…": "Loading routines…",
+  "No se pudieron cargar las rutinas. Reintenta para elegir una rutina activa.": "Could not load routines. Retry to choose an active routine.",
+  "No hay rutinas activas para esta búsqueda.": "No active routines match this search.",
+  "Páginas de rutinas": "Routine pages",
+  "Se sustituye el ejercicio y se retira el descanso en las semanas editables del rango. Podcasts y nutrición se conservan.": "Exercise is replaced and rest is removed in editable weeks within the range. Podcasts and nutrition are preserved.",
+  "El resultado se calcula al confirmar. Las semanas iniciadas y el alcance se comprueban de nuevo en el servidor.": "The result is calculated when you confirm. Started weeks and patient access are checked again on the server.",
+  "La rutina ya no está activa o disponible. Elige otra rutina antes de continuar.": "The routine is no longer active or available. Choose another routine before continuing.",
+  "El programa cambió durante la asignación. Revisa de nuevo antes de confirmar.": "The program changed during assignment. Review it again before confirming.",
+  "Asignando rutina…": "Assigning routine…",
+  "Asignar rutina": "Assign routine",
+  "Las semanas iniciadas se omiten y los pacientes fuera de tu alcance no se modifican.": "Started weeks are skipped and patients outside your scope are not changed.",
+  "Volver a editar": "Back to editing"
 }

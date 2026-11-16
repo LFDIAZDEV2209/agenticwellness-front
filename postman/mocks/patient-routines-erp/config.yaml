@@ -1,0 +1,10 @@
+version: 1
+name: patient-routines-erp
+slug: patient-routines-erp
+protocol: http
+port: 4555
+interceptRequests: true
+scenarios:
+  - name: default
+    path: ./default.js
+    default: true

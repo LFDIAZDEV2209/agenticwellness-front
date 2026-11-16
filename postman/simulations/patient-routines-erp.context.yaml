@@ -1,0 +1,30 @@
+purpose:
+  stands_in_for: Endpoint ERP BACK 2.16 en e0a9c29.
+  unblocks: Confirmación y resultado de la asignación masiva de rutina sin mutar pacientes reales.
+assumptions:
+  - id: request-and-result
+    status: supported
+    claim: El consumidor envía patientIds, routineId y rango; interpreta los tres resultados agregados sin inventar resultados individuales.
+    reason: Contrato inspeccionado y cuerpos exactos observados por HTTP Postman y API real.
+    verification: 14 casos nuevos UI y cinco regresiones pasan; runtime real devuelve aplicadas1/iniciadas1 y cero omisiones por alcance para el paciente QA propio.
+    source: e2e/patient-routines.spec.ts; BACK DAILY-ROUTINES.md; revision-2.21-front/live-api-db.json
+    updated_at: "2026-11-15"
+  - id: consumer-explicit-action
+    status: supported
+    claim: En los escenarios ejecutados, abrir/revisar/cancelar no envían la asignación y confirmar produce una solicitud sin reintentos automáticos ante errores.
+    reason: El cliente real del frontend se ejecutó contra el sustituto HTTP con demoras, conflictos y respuestas inválidas.
+    verification: Doble clic, Escape durante envío, permisos, 403/409/422/503, respuesta inválida y resultado0; selección entre páginas y ES/EN.
+    source: e2e/patient-routines.spec.ts; postman/mocks/patient-routines-erp/default.js
+    updated_at: "2026-11-15"
+  - id: upstream-preserves-other-missions
+    status: conflicting
+    claim: Una asignación de rutina conserva las otras misiones del detalle semanal cuando el snapshot previo está vacío.
+    reason: DAILY-ROUTINES.md promete conservación; el runtime e0a9c29 deja de devolver70misiones no ejercicio en las dos semanas modificadas de una fixture nueva.
+    verification: Dos pacientes QA propios nuevos, semanas1-3; solo cambian2/3 y el replay conserva hashes, pero el detalle de cada día pasa de6misiones a1. Sin afirmar borrado del catálogo o plantilla ni alterar BACK.
+    source: revision-2.21-front/live-conservation-failure.json; revision-2.21-front/confirm-run/week-details-before.json; revision-2.21-front/confirm-run/week-details-after.json
+    updated_at: "2026-11-15"
+fingerprints:
+  - id: frontend-221
+    date: "2026-11-15"
+    commit: 9d62b7e más cambios locales2.21.
+    cli: "Postman1.76.0; simulación local; status no implementado; sin workspace/publicación cloud."

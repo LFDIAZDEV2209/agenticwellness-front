@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   BellRing,
   CalendarClock,
   ClipboardList,
+  Dumbbell,
   Eye,
   FilterX,
   Headphones,
@@ -73,6 +74,7 @@ import { useClinicalBoard } from "../hooks/use-clinical-board";
 import { deletePatient, fetchInsurers } from "../services/patients-service";
 import { PatientStatusToggle } from "./patient-status-toggle";
 import { PatientPodcastAssignmentDialog } from "./patient-podcast-assignment-dialog";
+import { PatientRoutineAssignmentDialog } from "./patient-routine-assignment-dialog";
 import {
   canAssignPatientPodcasts,
   MAX_BULK_PATIENTS,
@@ -255,11 +257,15 @@ export function ClinicalBoardView({
   const [assigning, setAssigning] = useState<PodcastAssignmentPatient[] | null>(
     null,
   );
+  const [assigningRoutine, setAssigningRoutine] = useState<PodcastAssignmentPatient[] | null>(null);
+  const routineTriggerRef = useRef<HTMLButtonElement>(null);
+  const boardRef = useRef<HTMLDivElement>(null);
   // La selección sobrevive a filtros y páginas, pero nunca a un cambio de contexto.
   if (selectionScope !== scope) {
     setSelectionScope(scope);
     setSelected(new Map());
     setAssigning(null);
+    setAssigningRoutine(null);
   }
   const pagePatients = result?.data ?? [];
   const selectedOnPage = pagePatients.filter((patient) =>
@@ -363,7 +369,7 @@ export function ClinicalBoardView({
   }
 
   return (
-    <div className="@container/clinical-board flex min-w-0 flex-col gap-4">
+    <div ref={boardRef} tabIndex={-1} className="@container/clinical-board flex min-w-0 flex-col gap-4">
       <section
         aria-label={t("Resumen clínico")}
         className="grid grid-cols-2 gap-3 @min-[600px]/clinical-board:grid-cols-3 @min-[1100px]/clinical-board:grid-cols-6"
@@ -1033,6 +1039,10 @@ export function ClinicalBoardView({
               <Headphones aria-hidden />
               {t("Asignar podcast")}
             </Button>
+            <Button ref={routineTriggerRef} variant="outline" onClick={() => setAssigningRoutine([...selected.values()])}>
+              <Dumbbell aria-hidden data-icon="inline-start" />
+              {t("Asignar rutina")}
+            </Button>
           </div>
         </div>
       )}
@@ -1045,6 +1055,16 @@ export function ClinicalBoardView({
             setSelected(new Map());
             retry();
           }}
+        />
+      )}
+      {canAssign && assigningRoutine && (
+        <PatientRoutineAssignmentDialog
+          key={scope}
+          patients={assigningRoutine}
+          includesOtherPages={assigningRoutine.some(patient => !pagePatients.some(visible => visible.patientId === patient.id))}
+          returnFocus={() => routineTriggerRef.current ?? boardRef.current}
+          onClose={() => setAssigningRoutine(null)}
+          onApplied={() => { setSelected(new Map()); retry(); }}
         />
       )}
 

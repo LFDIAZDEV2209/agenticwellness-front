@@ -5936,5 +5936,22 @@
   "Descartar": "Descartar",
   "Generando sugerencias…": "Generando sugerencias…",
   "Usar sugerencias": "Usar sugerencias",
-  "Sin etiquetas": "Sin etiquetas"
+  "Sin etiquetas": "Sin etiquetas",
+  "Asignar rutina en bloque": "Asignar rutina en bloque",
+  "Elige una rutina activa y las semanas. Nada se guarda hasta confirmar.": "Elige una rutina activa y las semanas. Nada se guarda hasta confirmar.",
+  "Rutina activa": "Rutina activa",
+  "Buscar rutina": "Buscar rutina",
+  "Rutina seleccionada: {routine}": "Rutina seleccionada: {routine}",
+  "Cargando rutinas…": "Cargando rutinas…",
+  "No se pudieron cargar las rutinas. Reintenta para elegir una rutina activa.": "No se pudieron cargar las rutinas. Reintenta para elegir una rutina activa.",
+  "No hay rutinas activas para esta búsqueda.": "No hay rutinas activas para esta búsqueda.",
+  "Páginas de rutinas": "Páginas de rutinas",
+  "Se sustituye el ejercicio y se retira el descanso en las semanas editables del rango. Podcasts y nutrición se conservan.": "Se sustituye el ejercicio y se retira el descanso en las semanas editables del rango. Podcasts y nutrición se conservan.",
+  "El resultado se calcula al confirmar. Las semanas iniciadas y el alcance se comprueban de nuevo en el servidor.": "El resultado se calcula al confirmar. Las semanas iniciadas y el alcance se comprueban de nuevo en el servidor.",
+  "La rutina ya no está activa o disponible. Elige otra rutina antes de continuar.": "La rutina ya no está activa o disponible. Elige otra rutina antes de continuar.",
+  "El programa cambió durante la asignación. Revisa de nuevo antes de confirmar.": "El programa cambió durante la asignación. Revisa de nuevo antes de confirmar.",
+  "Asignando rutina…": "Asignando rutina…",
+  "Asignar rutina": "Asignar rutina",
+  "Las semanas iniciadas se omiten y los pacientes fuera de tu alcance no se modifican.": "Las semanas iniciadas se omiten y los pacientes fuera de tu alcance no se modifican.",
+  "Volver a editar": "Volver a editar"
 }
