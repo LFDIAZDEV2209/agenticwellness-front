@@ -229,19 +229,19 @@ export function ProgramGamificacionTab({
 
       {/* Multiplier badge row (if active) */}
       {multiplierActive > 1 && (
-        <div className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm">
-          <div className="flex size-8 items-center justify-center rounded-lg bg-amber-500 text-white">
+        <div className="flex items-center gap-2 rounded-xl border border-warning/35 bg-warning-soft text-warning-soft-foreground px-4 py-3 text-sm">
+          <div className="flex size-8 items-center justify-center rounded-lg bg-warning text-warning-foreground">
             <Sparkles className="size-4" />
           </div>
-          <span className="font-semibold text-amber-800">
+          <span className="font-semibold text-warning-soft-foreground">
             {t("Multiplicador activo")} ×{multiplierActive}
           </span>
           {multiplierHours > 0 && (
-            <span className="text-xs text-amber-700">
+            <span className="text-xs text-warning-soft-foreground">
               · {t("quedan")} {multiplierHours}h
             </span>
           )}
-          <Badge className="ml-auto bg-amber-500 text-white">
+          <Badge className="ml-auto bg-warning text-warning-foreground">
             ×{multiplierActive}
           </Badge>
         </div>
@@ -478,14 +478,14 @@ export function ProgramGamificacionTab({
                         key={chest.days}
                         className={`flex items-center gap-3 rounded-xl border p-2.5 transition-colors ${
                           granted
-                            ? "border-amber-200 bg-amber-50/60"
+                            ? "border-warning/35 bg-warning-soft/60 text-warning-soft-foreground"
                             : "border-border bg-card"
                         }`}
                       >
                         <div
                           className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${
                             granted
-                              ? "bg-amber-500 text-white"
+                              ? "bg-warning text-warning-foreground"
                               : "bg-muted text-muted-foreground"
                           }`}
                         >
@@ -753,7 +753,7 @@ export function ProgramGamificacionTab({
                         title={title}
                         className={`flex aspect-square flex-col items-center justify-center rounded-lg border leading-none ${
                           dc.is_perfect_day
-                            ? "border-amber-300 bg-amber-50 text-amber-700"
+                            ? "border-warning/50 bg-warning-soft text-warning-soft-foreground"
                             : dc.total_points > 0
                               ? "border-success/20 bg-success-soft text-success-soft-foreground"
                               : "border-border bg-muted text-muted-foreground"

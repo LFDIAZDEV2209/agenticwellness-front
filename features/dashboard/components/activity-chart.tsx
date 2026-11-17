@@ -88,7 +88,7 @@ export function ActivityChart({ data }: ActivityChartProps) {
 
   return (
     <figure
-      className="@container/activity flex min-w-0 flex-1 flex-col gap-4 [--activity-peak-gradient:var(--brand-gradient)] dark:[--activity-peak-gradient:linear-gradient(180deg,#38bdf8,#0f766e)]"
+      className="@container/activity flex min-w-0 flex-1 flex-col gap-4 [--activity-peak-gradient:var(--brand-gradient)] dark:[--activity-peak-gradient:linear-gradient(180deg,var(--spectrum-sky-bright),var(--spectrum-teal-deep))]"
       aria-label={t("Actividad (30 días)")}
     >
       <figcaption className="flex flex-wrap items-center justify-between gap-x-5 gap-y-2 text-xs text-muted-foreground">
@@ -98,7 +98,7 @@ export function ActivityChart({ data }: ActivityChartProps) {
             className="h-2.5 w-5 rounded-sm"
             style={{
               backgroundImage:
-                "linear-gradient(90deg, #0369a1, #0f766e, #6d28d9, #b45309, #be185d)",
+                "linear-gradient(90deg, var(--spectrum-sky-chart), var(--spectrum-teal-chart), var(--spectrum-violet-chart), var(--spectrum-amber-chart), var(--spectrum-pink-chart))",
             }}
           />
           {t("Registros del día")}

@@ -187,7 +187,7 @@ export function UsersBulkBar({
               {t("Cancelar")}
             </AlertDialogCancel>
             <AlertDialogAction
-              className="bg-destructive text-white hover:bg-destructive/90"
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               disabled={busy}
               onClick={() => void onDelete().then(() => setPending(null))}
             >

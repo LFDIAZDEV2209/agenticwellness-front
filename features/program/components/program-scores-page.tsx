@@ -126,7 +126,7 @@ export function ProgramScoresPage() {
       />
 
       {/* Aviso de migración: los scores viven en Perfil 360 */}
-      <div className="flex items-start gap-2.5 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
+      <div className="flex items-start gap-2.5 rounded-xl border border-info/35 bg-info-soft px-4 py-3 text-sm text-info-soft-foreground">
         <Info className="mt-0.5 size-4 shrink-0 text-blue-500" />
         <p>
           Esta página se conserva por compatibilidad. Los scores clínicos ahora

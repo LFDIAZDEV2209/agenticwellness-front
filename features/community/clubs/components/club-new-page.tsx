@@ -176,7 +176,7 @@ export function ClubNewPage() {
             <span
               className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${
                 i === step
-                  ? "bg-primary text-white"
+                  ? "bg-primary text-primary-foreground"
                   : i < step
                     ? "bg-primary-soft text-primary-soft-foreground"
                     : "bg-muted text-muted-foreground"

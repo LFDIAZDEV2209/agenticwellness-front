@@ -328,7 +328,7 @@ function SectionHead({
   const tones = {
     primary: {
       bg: "bg-primary-soft text-primary-soft-foreground",
-      chip: "bg-primary text-white",
+      chip: "bg-primary text-primary-foreground",
     },
     warning: {
       bg: "bg-warning-soft text-warning-soft-foreground",

@@ -931,7 +931,7 @@ function MasterTable({
                         className={cn(
                           "size-8 rounded-full border",
                           expanded
-                            ? "border-primary bg-primary text-white hover:bg-primary/90 hover:text-white"
+                            ? "border-primary bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
                             : "border-border bg-card hover:bg-muted",
                         )}
                       >

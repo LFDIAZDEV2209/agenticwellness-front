@@ -36,7 +36,7 @@ export function CommunitySidebar({ onNavigate }: CommunitySidebarProps) {
     <div className="flex h-full w-[260px] shrink-0 flex-col bg-[var(--sidebar)] text-[var(--sidebar-foreground)]">
       {/* Brand */}
       <div className="flex items-center gap-2.5 border-b border-white/8 px-5 py-5">
-        <div className="flex size-9 items-center justify-center rounded-xl bg-primary text-sm font-black text-white">
+        <div className="flex size-9 items-center justify-center rounded-xl bg-primary text-sm font-black text-primary-foreground">
           A
         </div>
         <div className="flex flex-col leading-tight">
@@ -84,8 +84,8 @@ export function CommunitySidebar({ onNavigate }: CommunitySidebarProps) {
                         className={cn(
                           "flex size-[18px] items-center justify-center rounded-full text-[10px] font-bold",
                           item.badgeColor === "red"
-                            ? "bg-destructive text-white"
-                            : "bg-primary text-white",
+                            ? "bg-destructive text-destructive-foreground"
+                            : "bg-primary text-primary-foreground",
                         )}
                       >
                         {item.badge}
@@ -103,7 +103,7 @@ export function CommunitySidebar({ onNavigate }: CommunitySidebarProps) {
       <div className="border-t border-white/8 p-3">
         <div className="flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/5 p-2.5 transition-all duration-200 hover:bg-white/[0.07]">
           <Avatar className="size-8">
-            <AvatarFallback className="bg-primary text-[11px] font-bold text-white">
+            <AvatarFallback className="bg-primary text-[11px] font-bold text-primary-foreground">
               {user?.initials ?? "AR"}
             </AvatarFallback>
           </Avatar>

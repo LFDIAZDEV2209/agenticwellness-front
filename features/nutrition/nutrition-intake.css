@@ -113,8 +113,8 @@
   color: var(--muted-foreground);
 }
 .nutrition-intake [data-state="unplanned"] {
-  background: #fff4d5;
-  color: #734d08;
+  background: var(--warning-soft);
+  color: var(--warning-soft-foreground);
 }
 .nutrition-intake-continuity {
   padding: 0.875rem;
@@ -214,12 +214,12 @@
   color: var(--foreground);
 }
 .nutrition-intake-origin-ai_estimated {
-  background: #fff4d5;
-  color: #734d08;
+  background: var(--warning-soft);
+  color: var(--warning-soft-foreground);
 }
 .nutrition-intake-origin-patient_confirmed {
-  background: #d1fae5;
-  color: #065f46;
+  background: var(--success-soft);
+  color: var(--success-soft-foreground);
 }
 .nutrition-intake-origin-clinical {
   background: var(--primary-soft);
@@ -491,8 +491,8 @@
   color: var(--foreground);
 }
 .nutrition-intake-review-status[data-reviewed] {
-  background: #d1fae5;
-  color: #065f46;
+  background: var(--success-soft);
+  color: var(--success-soft-foreground);
 }
 .nutrition-intake-outside {
   font-size: 0.75rem;

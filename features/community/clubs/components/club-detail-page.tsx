@@ -268,56 +268,56 @@ export function ClubDetailPage({ clubId }: { clubId: string }) {
         <TabsList className="data-horizontal/tabs:h-10 gap-0.5">
           <TabsTrigger
             value="overview"
-            className="data-active:bg-primary data-active:text-white data-active:shadow-sm"
+            className="data-active:shadow-sm"
           >
             <LayoutDashboard data-icon="inline-start" />
             {t("Resumen")}
           </TabsTrigger>
           <TabsTrigger
             value="posts"
-            className="data-active:bg-primary data-active:text-white data-active:shadow-sm"
+            className="data-active:shadow-sm"
           >
             <FileText data-icon="inline-start" />
             {t("Publicaciones")}
           </TabsTrigger>
           <TabsTrigger
             value="events"
-            className="data-active:bg-primary data-active:text-white data-active:shadow-sm"
+            className="data-active:shadow-sm"
           >
             <CalendarPlus data-icon="inline-start" />
             {t("Eventos")}
           </TabsTrigger>
           <TabsTrigger
             value="lives"
-            className="data-active:bg-primary data-active:text-white data-active:shadow-sm"
+            className="data-active:shadow-sm"
           >
             <Radio data-icon="inline-start" />
             {t("Lives")}
           </TabsTrigger>
           <TabsTrigger
             value="members"
-            className="data-active:bg-primary data-active:text-white data-active:shadow-sm"
+            className="data-active:shadow-sm"
           >
             <UserCog data-icon="inline-start" />
             {t("Miembros")}
           </TabsTrigger>
           <TabsTrigger
             value="requests"
-            className="data-active:bg-primary data-active:text-white data-active:shadow-sm"
+            className="data-active:shadow-sm"
           >
             <Inbox data-icon="inline-start" />
             {t("Solicitudes")}
           </TabsTrigger>
           <TabsTrigger
             value="moderation"
-            className="data-active:bg-primary data-active:text-white data-active:shadow-sm"
+            className="data-active:shadow-sm"
           >
             <ShieldAlert data-icon="inline-start" />
             {t("Moderación")}
           </TabsTrigger>
           <TabsTrigger
             value="analytics"
-            className="data-active:bg-primary data-active:text-white data-active:shadow-sm"
+            className="data-active:shadow-sm"
           >
             <BarChart3 data-icon="inline-start" />
             {t("Analítica")}

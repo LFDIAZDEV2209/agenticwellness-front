@@ -283,13 +283,13 @@ export function BiometriaHeroSections({
                           key={code}
                           className="flex flex-col items-center gap-1.5 rounded-xl border border-destructive/20 bg-destructive-soft p-3 text-center"
                         >
-                          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-destructive text-white">
+                          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-destructive text-destructive-foreground">
                             <Lock className="size-4" />
                           </span>
                           <span className="text-xs font-medium leading-tight">
                             {MISSION_LABELS[code]}
                           </span>
-                          <span className="rounded-full bg-destructive px-2 py-0.5 text-[10px] font-semibold leading-none text-white">
+                          <span className="rounded-full bg-destructive px-2 py-0.5 text-[10px] font-semibold leading-none text-destructive-foreground">
                             Sin datos
                           </span>
                         </div>

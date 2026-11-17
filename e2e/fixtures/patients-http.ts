@@ -95,6 +95,7 @@ export interface PatientWorkspaceWrite extends PatientWorkspaceRequest {
 
 export interface PatientWorkspaceOptions {
   permissions?: string[];
+  roles?: string[];
   english?: boolean;
   /** Debe coincidir con el origen del servidor usado por Playwright. */
   baseUrl?: string;
@@ -263,7 +264,7 @@ export async function mockPatientsHttp(
         email: "workspace-qa@example.invalid",
         firstName: "Ana",
         lastName: "Pruebas",
-        roles: ["QA"],
+        roles: options.roles ?? ["QA"],
         permissions,
       });
     if (path === "/api/auth/me/preferences" && method === "GET")

@@ -652,7 +652,7 @@ export function ModerationPage() {
           onClick={() => setActiveTab("posts")}
           className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
             activeTab === "posts"
-              ? "bg-primary text-white shadow-md"
+              ? "bg-primary text-primary-foreground shadow-md"
               : "bg-muted text-muted-foreground hover:bg-muted/80"
           }`}
         >
@@ -663,7 +663,7 @@ export function ModerationPage() {
           onClick={() => setActiveTab("comments")}
           className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
             activeTab === "comments"
-              ? "bg-primary text-white shadow-md"
+              ? "bg-primary text-primary-foreground shadow-md"
               : "bg-muted text-muted-foreground hover:bg-muted/80"
           }`}
         >

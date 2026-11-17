@@ -35,7 +35,7 @@ export function SectionHeader({
       "bg-brand-gradient min-h-[72px] text-white rounded-none px-5 py-3.5",
     secondary: "bg-primary-soft text-foreground rounded-xl px-4 py-3",
     tertiary: "bg-transparent text-foreground px-0 py-2",
-    destructive: "bg-destructive text-white rounded-none px-4 py-3",
+    destructive: "bg-destructive text-destructive-foreground rounded-none px-4 py-3",
   };
 
   const iconStyles = {
@@ -43,7 +43,7 @@ export function SectionHeader({
     primary: "border border-white/30 bg-white/10 text-white rounded-full",
     secondary: "bg-primary/10 text-primary",
     tertiary: "bg-muted text-muted-foreground",
-    destructive: "bg-white text-destructive",
+    destructive: "bg-destructive-foreground/10 text-destructive-foreground",
   };
 
   const titleStyles = {
@@ -52,7 +52,7 @@ export function SectionHeader({
       "text-[13px] leading-5 font-bold uppercase tracking-[0.02em] text-white",
     secondary: "text-[13px] font-semibold text-foreground",
     tertiary: "text-[13px] font-semibold text-foreground",
-    destructive: "text-[13px] font-bold text-white",
+    destructive: "text-[13px] font-bold text-destructive-foreground",
   };
 
   const descStyles = {
@@ -60,7 +60,7 @@ export function SectionHeader({
     primary: "text-xs leading-5 text-white/85",
     secondary: "text-[11px] text-muted-foreground",
     tertiary: "text-[11px] text-muted-foreground",
-    destructive: "text-[11px] text-white/80",
+    destructive: "text-[11px] text-destructive-foreground",
   };
 
   return (
