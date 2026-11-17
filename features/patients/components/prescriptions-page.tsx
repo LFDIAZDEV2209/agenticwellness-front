@@ -171,7 +171,7 @@ export function PrescriptionsPage() {
             <>
               <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4">
                 <div className="flex items-center gap-3">
-                  <span className="flex size-10 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
+                  <span className="flex size-10 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
                     {selected.firstName[0]}
                     {selected.lastName[0]}
                   </span>

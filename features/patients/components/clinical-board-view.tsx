@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
+  ArrowUpRight,
   BellRing,
   CalendarClock,
   ClipboardList,
@@ -672,6 +673,7 @@ export function ClinicalBoardView({
             </div>
             <Table
               density="comfortable"
+              className="[&_td]:px-3 [&_td]:py-2.5"
               aria-label={t("Estado clínico por paciente")}
               containerProps={{
                 tabIndex: 0,
@@ -762,43 +764,74 @@ export function ClinicalBoardView({
                       </TableCell>
                     )}
                     <TableCell>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2.5">
                         <span
                           className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary-soft text-xs font-semibold text-primary-soft-foreground"
                           aria-hidden="true"
                         >
                           {initials(item.firstName, item.lastName)}
                         </span>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            router.push(`/patients/${item.patientId}`)
-                          }
-                          className="flex w-56 min-w-0 flex-col gap-1 rounded text-left focus-visible:outline-2 focus-visible:outline-ring"
-                        >
-                          <span className="whitespace-normal break-words text-sm font-semibold leading-snug text-foreground hover:text-primary">
-                            {item.firstName} {item.lastName}
-                          </span>
-                          <span className="max-w-full whitespace-normal break-all text-xs leading-snug text-muted-foreground">
-                            {item.medicalRecordNumber ??
-                              item.documentNumber ??
-                              "—"}
-                          </span>
-                        </button>
+                        <div className="flex w-[clamp(8rem,calc(100vw_-_13rem),14rem)] min-w-0 flex-col sm:w-56">
+                          <button
+                            type="button"
+                            title={`${item.firstName} ${item.lastName}`}
+                            onClick={() =>
+                              router.push(`/patients/${item.patientId}`)
+                            }
+                            className="group/patient-name flex min-h-6 w-full min-w-0 items-center rounded text-left focus-visible:outline-2 focus-visible:outline-ring"
+                          >
+                            <span className="block truncate text-sm font-semibold leading-5 text-foreground group-hover/patient-name:text-primary-soft-foreground">
+                              {item.firstName} {item.lastName}
+                            </span>
+                          </button>
+                          <div className="flex min-w-0 items-center gap-2">
+                            <span
+                              title={item.medicalRecordNumber ?? item.documentNumber ?? undefined}
+                              className="min-w-0 flex-1 truncate text-xs leading-5 text-muted-foreground"
+                            >
+                              {item.medicalRecordNumber ??
+                                item.documentNumber ??
+                                "—"}
+                            </span>
+                            {can("Program.Profile360View") && (
+                              <Link
+                                href={`/patients/${encodeURIComponent(item.patientId)}/360`}
+                                className="inline-flex min-h-11 shrink-0 items-center gap-0.5 rounded text-xs font-medium text-primary-soft-foreground underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:min-h-7 pointer-coarse:min-h-11"
+                              >
+                                {t("Perfil 360")}
+                                <ArrowUpRight aria-hidden="true" className="size-3" />
+                                <span className="sr-only"> · {item.firstName} {item.lastName}</span>
+                              </Link>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </TableCell>
                     <TableCell className="hidden @min-[1300px]/clinical-board:table-cell">
-                      <span className="block max-w-48 truncate">
+                      <span
+                        title={item.primaryDiagnosisDescription ?? item.primaryDiagnosisCode ?? undefined}
+                        className={cn("block max-w-48 truncate", !item.primaryDiagnosisDescription && !item.primaryDiagnosisCode && "text-muted-foreground")}
+                      >
                         {item.primaryDiagnosisDescription ??
                           item.primaryDiagnosisCode ??
                           t("Sin diagnóstico")}
                       </span>
                     </TableCell>
                     <TableCell className="hidden @min-[1300px]/clinical-board:table-cell">
-                      {item.stateName ?? item.stateCode ?? t("Sin asignar")}
+                      <span
+                        title={item.stateName ?? item.stateCode ?? undefined}
+                        className={cn("block max-w-32 truncate", !item.stateName && !item.stateCode && "text-muted-foreground")}
+                      >
+                        {item.stateName ?? item.stateCode ?? t("Sin asignar")}
+                      </span>
                     </TableCell>
                     <TableCell className="hidden @min-[900px]/clinical-board:table-cell">
-                      {item.insurerName ?? t("Sin aseguradora")}
+                      <span
+                        title={item.insurerName ?? undefined}
+                        className={cn("block max-w-44 truncate", !item.insurerName && "text-muted-foreground")}
+                      >
+                        {item.insurerName ?? t("Sin aseguradora")}
+                      </span>
                     </TableCell>
                     <TableCell>
                       {item.riskLevel ? (
@@ -881,7 +914,10 @@ export function ClinicalBoardView({
                     </TableCell>
                     {fullScope ? (
                       <TableCell className="hidden @min-[1300px]/clinical-board:table-cell">
-                        <span className="block max-w-40 truncate">
+                        <span
+                          title={item.professionalNames.length ? item.professionalNames.join(", ") : undefined}
+                          className={cn("block max-w-40 truncate", !item.professionalNames.length && "text-muted-foreground")}
+                        >
                           {item.professionalNames.length > 0
                             ? item.professionalNames.join(", ")
                             : t("Sin asignar")}
@@ -907,18 +943,6 @@ export function ClinicalBoardView({
                       )}
                     </TableCell>
                     <TableCell className="text-right">
-                      {can("Program.Profile360View") && (
-                        <Button
-                          variant="outline"
-                          className="mr-2 min-h-11"
-                          role="link"
-                          render={<Link href={`/patients/${encodeURIComponent(item.patientId)}/360`} />}
-                          nativeButton={false}
-                        >
-                          {t("Perfil 360")}
-                          <span className="sr-only"> · {item.firstName} {item.lastName}</span>
-                        </Button>
-                      )}
                       <DropdownMenu>
                         <DropdownMenuTrigger
                           render={
@@ -1102,7 +1126,7 @@ export function ClinicalBoardView({
               {t("Cancelar")}
             </AlertDialogCancel>
             <AlertDialogAction
-              className="bg-destructive text-white hover:bg-destructive/90"
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               disabled={deleteBusy}
               onClick={(event) => {
                 event.preventDefault();

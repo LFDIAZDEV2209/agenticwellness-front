@@ -712,7 +712,7 @@ function AlertsTable({
     <div className="overflow-x-auto">
       <Table className="w-full">
         <TableHeader
-          className="[&_th]:text-[var(--brand-navy)]"
+          className="[&_th]:text-foreground"
           style={{
             backgroundImage:
               "linear-gradient(90deg, color-mix(in srgb, var(--brand-navy) 9%, transparent), color-mix(in srgb, var(--brand-teal) 12%, transparent))",

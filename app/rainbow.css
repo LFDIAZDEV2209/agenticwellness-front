@@ -56,33 +56,51 @@
   --spectrum-orange-border: #fdba74;
 }
 .dark {
-  --spectrum-sky-soft: #082f49;
+  --spectrum-sky-chart: #38bdf8;
+  --spectrum-sky-deep: #0ea5e9;
+  --spectrum-sky-soft: #142e40;
   --spectrum-sky-fg: #bae6fd;
-  --spectrum-sky-border: #075985;
-  --spectrum-teal-soft: #042f2e;
+  --spectrum-sky-border: #2c5269;
+  --spectrum-teal-chart: #2dd4bf;
+  --spectrum-teal-deep: #14b8a6;
+  --spectrum-teal-soft: #163833;
   --spectrum-teal-fg: #99f6e4;
-  --spectrum-teal-border: #115e59;
-  --spectrum-violet-soft: #2e1065;
+  --spectrum-teal-border: #2c5b53;
+  --spectrum-violet-chart: #b7a1fa;
+  --spectrum-violet-deep: #a78bfa;
+  --spectrum-violet-soft: #2b2942;
   --spectrum-violet-fg: #ddd6fe;
-  --spectrum-violet-border: #6d28d9;
-  --spectrum-amber-soft: #451a03;
+  --spectrum-violet-border: #51466f;
+  --spectrum-amber-chart: #fbbf24;
+  --spectrum-amber-deep: #f59e0b;
+  --spectrum-amber-soft: #3b3020;
   --spectrum-amber-fg: #fde68a;
-  --spectrum-amber-border: #92400e;
-  --spectrum-pink-soft: #500724;
+  --spectrum-amber-border: #6b5530;
+  --spectrum-pink-chart: #f472b6;
+  --spectrum-pink-deep: #ec4899;
+  --spectrum-pink-soft: #392638;
   --spectrum-pink-fg: #fbcfe8;
-  --spectrum-pink-border: #9d174d;
-  --spectrum-green-soft: #052e16;
+  --spectrum-pink-border: #70425d;
+  --spectrum-green-chart: #4ade80;
+  --spectrum-green-deep: #22c55e;
+  --spectrum-green-soft: #1b3429;
   --spectrum-green-fg: #bbf7d0;
-  --spectrum-green-border: #166534;
-  --spectrum-slate-soft: #172033;
-  --spectrum-slate-fg: #cbd5e1;
-  --spectrum-slate-border: #475569;
-  --spectrum-rose-soft: #4c0519;
+  --spectrum-green-border: #345e47;
+  --spectrum-slate-chart: #a9b9cd;
+  --spectrum-slate-deep: #94a3b8;
+  --spectrum-slate-soft: #243244;
+  --spectrum-slate-fg: #d3deec;
+  --spectrum-slate-border: #4c617b;
+  --spectrum-rose-chart: #fda4af;
+  --spectrum-rose-deep: #fb7185;
+  --spectrum-rose-soft: #3c2731;
   --spectrum-rose-fg: #fecdd3;
-  --spectrum-rose-border: #9f1239;
-  --spectrum-orange-soft: #431407;
+  --spectrum-rose-border: #724354;
+  --spectrum-orange-chart: #fdba74;
+  --spectrum-orange-deep: #fb923c;
+  --spectrum-orange-soft: #3c2e24;
   --spectrum-orange-fg: #fed7aa;
-  --spectrum-orange-border: #9a3412;
+  --spectrum-orange-border: #755437;
 }
 .spectrum-card {
   background-color: color-mix(in srgb, var(--rainbow-soft) 65%, var(--card));
@@ -117,4 +135,11 @@
 }
 .dark {
   --spectrum-map-empty: #334155;
+}
+
+/* Iconos sobrios en oscuro; las series mantienen sus propios degradados legibles. */
+.dark .spectrum-icon {
+  color: var(--rainbow-fg);
+  background: var(--rainbow-soft);
+  border: 1px solid var(--rainbow-border);
 }

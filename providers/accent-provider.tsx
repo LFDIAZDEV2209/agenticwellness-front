@@ -42,9 +42,8 @@ function getInitialAccent(): string {
 
 /**
  * Aplica el acento al documento: `--accent-color` (del que derivan
- * primary/soft/strong/ring/sidebar en globals.css) y `--primary-foreground`
- * según contraste del acento (WCAG AA). El inline style sobre <html> gana al
- * cascade de `:root` y `.dark`, así un solo set aplica en ambos temas.
+ * primary/soft/strong/ring/sidebar en globals.css) y el texto sobre el acento
+ * en modo claro. El modo oscuro define su propio par de contraste en CSS.
  */
 function applyAccent(hex: string) {
   if (typeof document === "undefined") return;
@@ -52,7 +51,7 @@ function applyAccent(hex: string) {
   const option = findAccentOption(hex);
   root.style.setProperty("--accent-color", hex);
   root.style.setProperty(
-    "--primary-foreground",
+    "--accent-action-foreground",
     option?.foreground === "dark"
       ? PRIMARY_FOREGROUND_DARK
       : PRIMARY_FOREGROUND_LIGHT,

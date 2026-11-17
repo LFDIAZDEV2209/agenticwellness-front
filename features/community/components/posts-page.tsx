@@ -339,7 +339,7 @@ export function PostsPage() {
 
       {/* Composer - aparece al hacer clic en Nuevo post con animación */}
       {showComposer && canManage && (
-        <div className="relative origin-top overflow-hidden rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-strong)] shadow-lg shadow-primary/20 animate-in fade-in slide-in-from-top-2 duration-300 ease-out">
+        <div className="relative origin-top overflow-hidden rounded-2xl bg-brand-gradient shadow-lg shadow-primary/20 animate-in fade-in slide-in-from-top-2 duration-300 ease-out">
           <div className="relative flex items-center gap-3 border-b border-white/15 px-4 py-3.5">
             <span className="flex size-9 items-center justify-center rounded-xl bg-white/15 text-[15px] font-extrabold text-white ring-1 ring-white/25 shadow-lg shadow-black/10">
               A
@@ -371,7 +371,7 @@ export function PostsPage() {
                     onClick={() => setType(tip.key)}
                     className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-[12px] font-semibold transition-all hover:-translate-y-px ${
                       type === tip.key
-                        ? "border-white bg-white text-primary shadow-md shadow-black/10"
+                        ? "border-white bg-white text-brand-navy shadow-md shadow-black/10"
                         : "border-white/20 bg-white/10 text-white hover:bg-white/20"
                     }`}
                   >
@@ -502,7 +502,7 @@ export function PostsPage() {
                 <Checkbox checked={pinned} onCheckedChange={(c) => setPinned(Boolean(c))} className="border-white/40" />
                 <span className="text-xs">{t("Fijar al tope")}</span>
               </label>
-              <Button size="sm" onClick={handlePublish} disabled={!canPublish} className="ml-auto bg-white text-primary transition-all hover:-translate-y-px active:scale-[0.97] disabled:opacity-50">
+              <Button size="sm" onClick={handlePublish} disabled={!canPublish} className="ml-auto bg-white text-brand-navy transition-all hover:-translate-y-px active:scale-[0.97] disabled:opacity-50">
                 <Send data-icon="inline-start" />
                 {t(publishing ? "Publicando..." : "Publicar")}
               </Button>
@@ -526,7 +526,7 @@ export function PostsPage() {
               onClick={() => setSortBy(opt.key)}
               className={`rounded-full border px-2.5 py-1 text-[11px] font-medium transition-all ${
                 sortBy === opt.key
-                  ? "border-primary bg-primary text-white shadow-sm"
+                  ? "border-primary bg-primary text-primary-foreground shadow-sm"
                   : "border-border bg-muted/50 text-muted-foreground hover:bg-muted"
               }`}
             >
@@ -548,7 +548,7 @@ export function PostsPage() {
               onClick={() => setInterval(opt.key)}
               className={`rounded-full border px-2.5 py-1 text-[11px] font-medium transition-all ${
                 interval === opt.key
-                  ? "border-primary bg-primary text-white shadow-sm"
+                  ? "border-primary bg-primary text-primary-foreground shadow-sm"
                   : "border-border bg-muted/50 text-muted-foreground hover:bg-muted"
               }`}
             >

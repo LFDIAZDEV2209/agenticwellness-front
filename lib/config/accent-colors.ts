@@ -27,8 +27,8 @@ export const ACCENT_COLORS: AccentColorOption[] = [
   },
   { key: "indigo", name: "Índigo", hex: "#4B0082", foreground: "light" },
   { key: "violeta", name: "Violeta", hex: "#7C3AED", foreground: "light" },
-  { key: "teal", name: "Teal", hex: "#0D9488", foreground: "light" },
-  { key: "esmeralda", name: "Esmeralda", hex: "#10B981", foreground: "light" },
+  { key: "teal", name: "Teal", hex: "#0D9488", foreground: "dark" },
+  { key: "esmeralda", name: "Esmeralda", hex: "#10B981", foreground: "dark" },
   { key: "ambar", name: "Ámbar", hex: "#F59E0B", foreground: "dark" },
 ];
 
@@ -38,7 +38,7 @@ export const DEFAULT_ACCENT = "#023467";
 export const ACCENT_STORAGE_KEY = "copp-accent";
 
 export const PRIMARY_FOREGROUND_LIGHT = "#FFFFFF";
-export const PRIMARY_FOREGROUND_DARK = "#1A1D2E";
+export const PRIMARY_FOREGROUND_DARK = "#0B1420";
 
 /** Acentuado activo desde su hex (null si el hex no está en la paleta). */
 export function findAccentOption(hex: string): AccentColorOption | null {

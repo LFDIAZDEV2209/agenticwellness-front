@@ -171,7 +171,7 @@ export function Topbar({ onMenuClick, mobileOpen }: TopbarProps) {
               )}
               aria-label={t("Cambiar clínica activa")}
             >
-              <Building2 className={cn("size-4", "text-brand-teal")} />
+              <Building2 className={cn("size-4", "text-success")} />
               <span className="hidden max-w-[160px] flex-col gap-px sm:flex">
                 <span
                   className={cn(

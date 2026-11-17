@@ -127,7 +127,7 @@ export function Sidebar({ mobileOpen, onCloseMobile }: SidebarProps) {
             className="flex min-w-0 flex-1 items-center gap-2.5 rounded-lg focus-visible:outline-2 focus-visible:outline-ring"
             aria-label="Copp Adresd"
           >
-            <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-white">
+            <span className="sidebar-brand-mark flex size-12 shrink-0 items-center justify-center rounded-xl bg-white">
               <Image
                 src="/LogoIndividual.png"
                 alt=""
@@ -280,7 +280,7 @@ export function Sidebar({ mobileOpen, onCloseMobile }: SidebarProps) {
               aria-label={t("Mi perfil")}
               className={cn(
                 navRow,
-                "gap-2.5 bg-brand-gradient px-2.5 text-left text-white focus-visible:outline-white",
+                "sidebar-account gap-2.5 bg-brand-gradient px-2.5 text-left text-white focus-visible:outline-white dark:focus-visible:outline-ring",
               )}
             >
               <Avatar className="size-9 shrink-0">
@@ -294,10 +294,10 @@ export function Sidebar({ mobileOpen, onCloseMobile }: SidebarProps) {
                   !open && "sr-only",
                 )}
               >
-                <span className="truncate text-[13px] font-semibold text-white">
+                <span className="truncate text-[13px] font-semibold text-white dark:text-foreground">
                   {user?.name ?? t("Usuario")}
                 </span>
-                <span className="truncate text-xs text-white/80">
+                <span className="truncate text-xs text-white/80 dark:text-muted-foreground">
                   {user?.roles[0] ?? t("Sin rol")}
                 </span>
               </span>

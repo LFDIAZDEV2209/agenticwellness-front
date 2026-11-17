@@ -365,7 +365,7 @@ export function NotificationsPage() {
             <>
               <div className="overflow-x-auto">
                 <Table className="w-full">
-                  <TableHeader className="[&_th]:text-[var(--brand-navy)]">
+                  <TableHeader className="[&_th]:text-foreground">
                     <TableRow>
                       <TableHead>{t("Paciente")}</TableHead>
                       <TableHead>{t("Canal")}</TableHead>

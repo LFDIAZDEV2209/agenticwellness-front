@@ -53,27 +53,27 @@ type StatusVisual = {
 const statusVisual: Record<SosAlertStatus, StatusVisual> = {
   Activa: {
     label: "Activa",
-    rail: "#EF4444",
+    rail: "var(--destructive)",
     iconBg: "bg-destructive/10",
     iconColor: "text-destructive",
-    badgeBg: "#FCEBEC",
-    badgeText: "#B42318",
+    badgeBg: "var(--destructive-soft)",
+    badgeText: "var(--destructive-soft-foreground)",
   },
   Atendida: {
     label: "Atendida",
-    rail: "#10B981",
+    rail: "var(--success)",
     iconBg: "bg-success/10",
     iconColor: "text-success",
-    badgeBg: "#E6F7EF",
-    badgeText: "#0E7A4D",
+    badgeBg: "var(--success-soft)",
+    badgeText: "var(--success-soft-foreground)",
   },
   Cancelada: {
     label: "Cancelada",
-    rail: "#9CA3AF",
+    rail: "var(--muted-foreground)",
     iconBg: "bg-muted",
     iconColor: "text-muted-foreground",
-    badgeBg: "#F1F3F5",
-    badgeText: "#4B5563",
+    badgeBg: "var(--muted)",
+    badgeText: "var(--muted-foreground)",
   },
 };
 
@@ -82,14 +82,14 @@ const channelStatusVisual: Record<
   SosChannelStatus,
   { label: string; color: string; background: string }
 > = {
-  Pendiente: { label: "Pendiente", color: "#4B5563", background: "#F1F3F5" },
-  Enviado: { label: "Enviado", color: "#0E7A4D", background: "#E6F7EF" },
-  Fallido: { label: "Fallido", color: "#B42318", background: "#FCEBEC" },
-  Timeout: { label: "Timeout", color: "#92400E", background: "#FDF2E3" },
+  Pendiente: { label: "Pendiente", color: "var(--muted-foreground)", background: "var(--muted)" },
+  Enviado: { label: "Enviado", color: "var(--success-soft-foreground)", background: "var(--success-soft)" },
+  Fallido: { label: "Fallido", color: "var(--destructive-soft-foreground)", background: "var(--destructive-soft)" },
+  Timeout: { label: "Timeout", color: "var(--warning-soft-foreground)", background: "var(--warning-soft)" },
   NoConfigurado: {
     label: "No configurado",
-    color: "#4B5563",
-    background: "#F1F3F5",
+    color: "var(--muted-foreground)",
+    background: "var(--muted)",
   },
 };
 

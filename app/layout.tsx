@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { cookies } from "next/headers";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -60,6 +60,10 @@ const plexMono = localFont({
 export const metadata: Metadata = {
   title: "Copp Adresd — Admin",
   description: "Panel de administración clínica Copp Adresd",
+};
+
+export const viewport: Viewport = {
+  colorScheme: "light dark",
 };
 
 export default async function RootLayout({
@@ -156,18 +160,18 @@ export default async function RootLayout({
 })();`,
           }}
         />
-        {/* Acento pre-pintura: aplica --accent-color desde localStorage ANTES
-            de que React hidrate, evitando el flash del default navy. El
-            AccentProvider (cliente) mantiene el estado en runtime. */}
+        {/* Tema y acento antes de hidratar: evitan el destello claro al recargar
+            una sesión oscura. Sus providers mantienen la selección en runtime. */}
         <script
           dangerouslySetInnerHTML={{
             __html: `(function () {
   try {
+    document.documentElement.classList.toggle("dark", localStorage.getItem("copp-theme") === "dark");
     var v = localStorage.getItem("copp-accent");
     if (v && /^#[0-9a-fA-F]{6}$/.test(v)) {
       var s = document.documentElement.style;
       s.setProperty("--accent-color", v);
-      s.setProperty("--primary-foreground", v.toUpperCase() === "#F59E0B" ? "#1A1D2E" : "#FFFFFF");
+      s.setProperty("--accent-action-foreground", /^(#F59E0B|#0D9488|#10B981)$/.test(v.toUpperCase()) ? "#0B1420" : "#FFFFFF");
     }
   } catch (e) {}
 })();`,

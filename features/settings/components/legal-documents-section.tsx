@@ -228,7 +228,7 @@ export function LegalDocumentsSection() {
       <section className="rounded-2xl bg-primary-strong p-5">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-start gap-3">
-            <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary text-white">
+            <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
               <FileText className="size-5" />
             </div>
             <div>

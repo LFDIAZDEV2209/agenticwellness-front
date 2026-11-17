@@ -56,7 +56,7 @@ export function RecentActivityCard({ data }: RecentActivityCardProps) {
                   </div>
                   <span className="absolute -right-0.5 -bottom-0.5 flex size-3.5 items-center justify-center rounded-full border border-border bg-card">
                     <EventIcon
-                      className="size-2 text-brand-teal"
+                      className="size-2 text-success"
                       aria-hidden="true"
                     />
                   </span>

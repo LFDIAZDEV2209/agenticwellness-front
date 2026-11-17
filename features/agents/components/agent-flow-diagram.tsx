@@ -44,12 +44,12 @@ const EDGE_LABEL_KEYS: Record<string, string> = {
 };
 
 export const KIND_ACCENT: Record<AgentGraphNodeKind, string> = {
-  start: "bg-slate-100 text-slate-500",
-  guard: "bg-sky-50 text-sky-600",
-  llm: "bg-violet-50 text-violet-600",
-  tools: "bg-amber-50 text-amber-600",
-  memory: "bg-teal-50 text-teal-600",
-  end: "bg-slate-100 text-slate-500",
+  start: "bg-[var(--spectrum-slate-soft)] text-[var(--spectrum-slate-fg)]",
+  guard: "bg-[var(--spectrum-sky-soft)] text-[var(--spectrum-sky-fg)]",
+  llm: "bg-[var(--spectrum-violet-soft)] text-[var(--spectrum-violet-fg)]",
+  tools: "bg-[var(--spectrum-amber-soft)] text-[var(--spectrum-amber-fg)]",
+  memory: "bg-[var(--spectrum-teal-soft)] text-[var(--spectrum-teal-fg)]",
+  end: "bg-[var(--spectrum-slate-soft)] text-[var(--spectrum-slate-fg)]",
 };
 
 const CARD_BY_STATE: Record<FlowNodeState, string> = {
@@ -632,7 +632,7 @@ export function AgentFlowDiagram({
                         {state === "running" ? (
                           <LoaderCircle className="size-4 motion-safe:animate-spin" />
                         ) : state === "done" ? (
-                          <Check className="size-4 text-emerald-600" />
+                          <Check className="size-4 text-success" />
                         ) : state === "error" ? (
                           <X className="size-4 text-destructive" />
                         ) : (
@@ -681,7 +681,7 @@ export function AgentFlowDiagram({
         {t('En ejecución')}
       </span>
       <span className="inline-flex items-center gap-1">
-        <span className="size-2 rounded-full bg-emerald-500" />
+        <span className="size-2 rounded-full bg-success" />
         {t('Completado')}
       </span>
       <span className="inline-flex items-center gap-1">

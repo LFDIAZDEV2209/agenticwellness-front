@@ -37,7 +37,7 @@ export function NotificationsMenu({ scrolled }: NotificationsMenuProps) {
 
   const iconBtn = scrolled
     ? "text-white/70 hover:bg-white/10 hover:text-white"
-    : "text-slate-500 hover:bg-slate-100 hover:text-brand-navy";
+    : "text-muted-foreground hover:bg-muted hover:text-foreground";
 
   return (
     <DropdownMenu>
@@ -52,7 +52,7 @@ export function NotificationsMenu({ scrolled }: NotificationsMenuProps) {
         <span
           className={cn(
             "absolute right-[9px] top-[9px] size-[6px] rounded-full bg-destructive ring-2",
-            scrolled ? "ring-transparent" : "ring-white",
+            scrolled ? "ring-transparent" : "ring-card",
           )}
         />
       </DropdownMenuTrigger>
@@ -62,7 +62,7 @@ export function NotificationsMenu({ scrolled }: NotificationsMenuProps) {
           <BellRing
             className={cn(
               "size-4 shrink-0",
-              state === "granted" ? "text-brand-teal" : "text-muted-foreground",
+              state === "granted" ? "text-success" : "text-muted-foreground",
             )}
             aria-hidden
           />
