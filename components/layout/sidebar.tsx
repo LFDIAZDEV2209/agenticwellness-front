@@ -33,6 +33,7 @@ import {
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { NutritionPendingBadge } from "@/features/nutrition/components/nutrition-pending-badge";
+import { useMedicationCapabilities } from "@/features/medications/hooks";
 
 interface SidebarProps {
   mobileOpen: boolean;
@@ -61,6 +62,7 @@ export function Sidebar({ mobileOpen, onCloseMobile }: SidebarProps) {
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const { can } = useAppContext();
+  const medications = useMedicationCapabilities();
   const t = useT();
   const id = useId();
   const desktopRef = useRef<HTMLElement>(null);
@@ -75,7 +77,7 @@ export function Sidebar({ mobileOpen, onCloseMobile }: SidebarProps) {
   const [touchOpen, setTouchOpen] = useState(false);
   const expanded =
     !supportsHover || hovered || keyboardWithin || accountOpen || touchOpen;
-  const navModules = visibleNavModules(can);
+  const navModules = visibleNavModules(can, medications.canView);
   const [expandedModules, setExpandedModules] = useState<Set<string>>(
     new Set(),
   );

@@ -34,6 +34,7 @@ import { NutritionPatientSummary } from "@/features/nutrition/components/nutriti
 import { PatientAiSummaryPanel, patientSummarySectionLabels } from "./patient-ai-summary";
 import { formatSummaryDate } from "../services/patient-ai-summary-service";
 import type { PatientSummarySource } from "../types/patient-ai-summary";
+import { MedicationPatientLink } from "@/features/medications/components/medication-shared";
 
 interface ProgramPatientProfile360Props {
   patientId: string;
@@ -210,6 +211,7 @@ export function ProgramPatientProfile360({
           ))}
         </TabsList>
         <div className="ml-auto flex items-center gap-2">
+          <MedicationPatientLink patientId={patientId} />
           {onToggleSearch && (
             <Button
               variant="outline"

@@ -48,6 +48,7 @@ import { getPatient } from "../services/patients-service";
 import { PatientProfessionalsSection } from "./patient-professionals-section";
 import { ClinicalMeasurementsSection } from "./clinical-measurements-section";
 import type { EmergencyContact, Patient } from "../types";
+import { MedicationPatientLink } from "@/features/medications/components/medication-shared";
 
 /** Estilos de la caja de icono por tono semántico (colores representativos). */
 const TONES = {
@@ -162,6 +163,7 @@ export function PatientDetailPage({ id }: { id: string }) {
         icon={UserRound}
         actions={
           <>
+            <MedicationPatientLink patientId={patient.id} />
             <StatusBadge
               status={patient.status}
               color={statusColor(patient.status)}
