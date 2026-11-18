@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Search, ArrowUpRight, X } from "lucide-react";
 import { visibleNavModules, visibleNavItems } from "@/lib/config/navigation";
 import { useAppContext } from "@/providers/context-provider";
+import { useMedicationCapabilities } from "@/features/medications/hooks";
 import { useT } from "@/providers/i18n-provider";
 import { cn } from "@/lib/utils";
 const normalize = (text: string) =>
@@ -16,6 +17,7 @@ const normalize = (text: string) =>
 
 /** Búsqueda de navegación: usa exactamente el mismo alcance y permisos que el sidebar. */
 export function GlobalSearch() {
+  const medications = useMedicationCapabilities();
   const t = useT(),
     router = useRouter(),
     { can } = useAppContext();
@@ -28,7 +30,7 @@ export function GlobalSearch() {
   const id = useId();
   const entries = useMemo(() => {
     const seen = new Set<string>();
-    return visibleNavModules(can).flatMap((module) =>
+    return visibleNavModules(can, medications.canView).flatMap((module) =>
       visibleNavItems(module, can)
         .filter((item) => {
           if (seen.has(item.href)) return false;
@@ -44,7 +46,7 @@ export function GlobalSearch() {
           ),
         })),
     );
-  }, [can, t]);
+  }, [can, t, medications.canView]);
   const terms = normalize(query).split(/\s+/).filter(Boolean);
   const results = entries
     .filter((item) => terms.every((term) => item.search.includes(term)))

@@ -12,7 +12,7 @@ import { defineConfig } from "@playwright/test";
 export default defineConfig({
   testDir: "./e2e",
   // Visibilidad de citas y recorrido ERP/app tienen configuraciones dedicadas.
-  testIgnore: [/appointments-hidden\.spec\.ts/, /program-erp-app\.spec\.ts/, /nutrition-erp-app-real\.spec\.ts/],
+  testIgnore: [/appointments-hidden\.spec\.ts/, /program-erp-app\.spec\.ts/, /nutrition-erp-app-real\.spec\.ts/, /medications-cross-app-real\.spec\.ts/],
   outputDir: "test-results",
   // Seed único + estado compartido en el backend: una sola corrida a la vez.
   fullyParallel: false,

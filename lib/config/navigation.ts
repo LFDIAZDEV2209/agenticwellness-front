@@ -55,6 +55,7 @@ import {
   TrendingUp,
   PieChart,
   Trophy,
+  Pill,
 } from "lucide-react";
 
 export interface NavItem {
@@ -74,6 +75,7 @@ export interface NavItem {
 }
 
 export interface NavModule {
+  capability?: "medications";
   hidden?: boolean;
   label: string;
   icon: LucideIcon;
@@ -108,10 +110,11 @@ export function visibleNavItems(
 }
 
 /** Módulos visibles: con permiso de módulo y al menos un ítem visible. */
-export function visibleNavModules(can: (code: string) => boolean): NavModule[] {
+export function visibleNavModules(can: (code: string) => boolean, medicationsAvailable = false): NavModule[] {
   return navModules.filter(
     (module) =>
       !module.hidden &&
+      (module.capability !== "medications" || medicationsAvailable) &&
       hasNavPermission(module.permission, can) &&
       visibleNavItems(module, can).length > 0,
   );
@@ -144,6 +147,14 @@ export const navModules: NavModule[] = [
         permission: ["Nutrition.View", "Nutrition.Manage", "Nutrition.Approve"],
       },
     ],
+  },
+  {
+    label: "Control de medicamentos",
+    icon: Pill,
+    color: "#0F766E",
+    capability: "medications",
+    permission: "Medications.View",
+    items: [{ label: "Control de medicamentos", href: "/medications", icon: Pill, permission: "Medications.View" }],
   },
   {
     label: "Gestión",
@@ -655,6 +666,12 @@ export function getBreadcrumbSegments(
   if (pathname.startsWith("/nutrition/")) {
     segments.push({ label: "Nutrición", href: "/nutrition" });
     segments.push({ label: "Plan nutricional" });
+    return segments;
+  }
+
+  if (pathname.startsWith("/medications/")) {
+    segments.push({ label: "Control de medicamentos", href: "/medications" });
+    segments.push({ label: "Ficha del paciente" });
     return segments;
   }
 

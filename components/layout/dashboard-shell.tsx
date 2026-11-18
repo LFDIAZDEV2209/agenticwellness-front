@@ -11,6 +11,7 @@ import {
   useAppContext,
 } from "@/providers/context-provider";
 import { PermissionRouteGuard } from "@/components/feedback/permission-route-guard";
+import { MedicationCapabilitiesProvider } from "@/features/medications/hooks";
 
 /** Redirige a /onboarding si el profesional aún no completó su wizard. */
 function OnboardingGuard({ children }: { children: React.ReactNode }) {
@@ -46,35 +47,37 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
 
   return (
     <AppContextProvider>
-      <OnboardingGuard>
-        <div className="flex h-dvh overflow-hidden bg-background">
-          <a
-            href="#workspace-content"
-            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-card focus:px-4 focus:py-3 focus:text-foreground"
-          >
-            {t("Ir al contenido")}
-          </a>
-          <Sidebar
-            mobileOpen={mobileOpen}
-            onCloseMobile={() => setMobileOpen(false)}
-          />
-
-          <div className="flex flex-1 flex-col overflow-hidden min-w-0">
-            <Topbar
+      <MedicationCapabilitiesProvider>
+        <OnboardingGuard>
+          <div className="flex h-dvh overflow-hidden bg-background">
+            <a
+              href="#workspace-content"
+              className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-card focus:px-4 focus:py-3 focus:text-foreground"
+            >
+              {t("Ir al contenido")}
+            </a>
+            <Sidebar
               mobileOpen={mobileOpen}
-              onMenuClick={() => setMobileOpen(true)}
+              onCloseMobile={() => setMobileOpen(false)}
             />
 
-            <main
-              id="workspace-content"
-              tabIndex={-1}
-              className="@container/workspace relative min-h-0 min-w-0 flex-1 overflow-y-auto outline-none"
-            >
-              <PermissionRouteGuard>{children}</PermissionRouteGuard>
-            </main>
+            <div className="flex flex-1 flex-col overflow-hidden min-w-0">
+              <Topbar
+                mobileOpen={mobileOpen}
+                onMenuClick={() => setMobileOpen(true)}
+              />
+
+              <main
+                id="workspace-content"
+                tabIndex={-1}
+                className="@container/workspace relative min-h-0 min-w-0 flex-1 overflow-y-auto outline-none"
+              >
+                <PermissionRouteGuard>{children}</PermissionRouteGuard>
+              </main>
+            </div>
           </div>
-        </div>
-      </OnboardingGuard>
+        </OnboardingGuard>
+      </MedicationCapabilitiesProvider>
     </AppContextProvider>
   );
 }
