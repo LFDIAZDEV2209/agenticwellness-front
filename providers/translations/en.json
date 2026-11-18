@@ -6238,5 +6238,13 @@
   "Consulta sus tomas, horarios y adherencia.": "Review their doses, schedule and adherence.",
   "Vista semanal": "Weekly view",
   "Elegir paciente": "Choose a patient",
-  "Tomas": "Doses"
+  "Tomas": "Doses",
+  "Auto-reporte": "Self-reported",
+  "Auto-reporte · Chat": "Self-reported · Chat",
+  "Auto-reporte · Voz": "Self-reported · Voice",
+  "Auto-reporte · WhatsApp": "Self-reported · WhatsApp",
+  "Dispositivo": "Device",
+  "Reemplazado": "Superseded",
+  "Presión sistólica": "Systolic blood pressure",
+  "Presión diastólica": "Diastolic blood pressure"
 }

@@ -16,10 +16,12 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { SectionHeader } from "@/components/layout/section-header";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getDateLocale } from "@/lib/i18n/date-locale";
+import type { ClinicalMeasurement } from "../services/clinical-measurement-mapper";
 import { getPatientMeasurements } from "../services/patients-service";
-import type { ClinicalMeasurementDto } from "../types";
 
 /** Estilos de la caja de icono por tono semántico (misma paleta que la página). */
 const TONES = {
@@ -34,11 +36,6 @@ type Tone = keyof typeof TONES;
 
 /** Batches visibles por defecto; el resto queda bajo "Ver historial". */
 const VISIBLE_BATCHES = 3;
-
-/** Formato numérico de valores: como mucho 1 decimal (ej: 98.6, 120). */
-const valueFormatter = new Intl.NumberFormat("es", {
-  maximumFractionDigits: 1,
-});
 
 interface MetricVisual {
   icon: LucideIcon;
@@ -73,20 +70,25 @@ const FALLBACK_VISUAL: MetricVisual = {
   labelKey: null,
 };
 
-/**
- * Mediciones clínicas del paciente persistidas por la app móvil
- * (`app.clinical_measurements`, `Source='mobile'`). Sección autocargada
- * (patrón de PatientProfessionalsSection): el backend devuelve una lista
- * plana y el agrupamiento por batch (check-in) se hace acá con un Map que
- * preserva el orden de la API. La sección legacy de signos vitales no se toca.
- */
+/** Agrupa por lote en orden de la API. Cada medición sin lote va en su propia tarjeta. */
+function groupMeasurements(measurements: ClinicalMeasurement[]) {
+  const groups = new Map<string, ClinicalMeasurement[]>();
+  for (const measurement of measurements) {
+    const key = measurement.batchId ?? measurement.id;
+    const group = groups.get(key);
+    if (group) group.push(measurement);
+    else groups.set(key, [measurement]);
+  }
+  return [...groups.values()];
+}
+
 export function ClinicalMeasurementsSection({
   patientId,
 }: {
   patientId: string;
 }) {
   const t = useT();
-  const [measurements, setMeasurements] = useState<ClinicalMeasurementDto[]>(
+  const [measurements, setMeasurements] = useState<ClinicalMeasurement[]>(
     [],
   );
   const [loading, setLoading] = useState(true);
@@ -122,21 +124,21 @@ export function ClinicalMeasurementsSection({
     setReloadKey((key) => key + 1);
   }, []);
 
-  // Agrupación por batchId preservando el orden de la API (Map = inserción);
-  // batchId null → cada medición es su propia tarjeta (su id como clave).
-  const groups = useMemo(() => {
-    const map = new Map<string, ClinicalMeasurementDto[]>();
-    for (const measurement of measurements) {
-      const key = measurement.batchId ?? measurement.id;
-      const list = map.get(key);
-      if (list) list.push(measurement);
-      else map.set(key, [measurement]);
-    }
-    return [...map.values()];
+  const { historyGroups, recentGroups, currentCount } = useMemo(() => {
+    const current = measurements.filter((measurement) => !measurement.isSuperseded);
+    const historyGroups = groupMeasurements(measurements);
+    const currentGroups =
+      current.length === measurements.length ? historyGroups : groupMeasurements(current);
+    return {
+      historyGroups,
+      recentGroups: currentGroups.slice(0, VISIBLE_BATCHES),
+      currentCount: current.length,
+    };
   }, [measurements]);
 
-  const visibleGroups = expanded ? groups : groups.slice(0, VISIBLE_BATCHES);
-  const hiddenCount = groups.length - visibleGroups.length;
+  const visibleGroups = expanded ? historyGroups : recentGroups;
+  const hiddenCount = historyGroups.length - recentGroups.length;
+  const hasHistory = hiddenCount > 0 || currentCount < measurements.length;
 
   return (
     <section
@@ -146,7 +148,7 @@ export function ClinicalMeasurementsSection({
       <SectionHeader
         title={t("Mediciones clínicas")}
         description={t("{count} mediciones registradas", {
-          count: String(measurements.length),
+          count: String(currentCount),
         })}
         icon={HeartPulse}
         variant="primary"
@@ -168,21 +170,23 @@ export function ClinicalMeasurementsSection({
               {t("Reintentar")}
             </Button>
           </div>
-        ) : groups.length === 0 ? (
+        ) : historyGroups.length === 0 ? (
           <p className="text-xs text-muted-foreground">
             {t("Sin mediciones registradas.")}
           </p>
         ) : (
           <>
-            <ul className="flex flex-col gap-3">
-              {visibleGroups.map((group) => (
-                <MeasurementCard
-                  key={group[0].batchId ?? group[0].id}
-                  group={group}
-                />
-              ))}
-            </ul>
-            {(expanded || hiddenCount > 0) && (
+            {visibleGroups.length > 0 && (
+              <ul className="flex flex-col gap-3">
+                {visibleGroups.map((group) => (
+                  <MeasurementCard
+                    key={group[0].batchId ?? group[0].id}
+                    group={group}
+                  />
+                ))}
+              </ul>
+            )}
+            {hasHistory && (
               <Button
                 variant="outline"
                 size="sm"
@@ -198,7 +202,8 @@ export function ClinicalMeasurementsSection({
                 ) : (
                   <>
                     <ChevronDown data-icon="inline-start" />
-                    {t("Ver historial")} ({hiddenCount})
+                    {t("Ver historial")}
+                    {hiddenCount > 0 && ` (${hiddenCount})`}
                   </>
                 )}
               </Button>
@@ -210,27 +215,16 @@ export function ClinicalMeasurementsSection({
   );
 }
 
-/** Tarjeta de un check-in: fecha + badge de fuente + un chip por métrica. */
-function MeasurementCard({ group }: { group: ClinicalMeasurementDto[] }) {
+/** Tarjeta de un lote con la procedencia de cada medición. */
+function MeasurementCard({ group }: { group: ClinicalMeasurement[] }) {
   const t = useT();
-  const first = group[0];
-  const sourceLabel =
-    first.source === "mobile"
-      ? t("App móvil")
-      : first.source === "lab"
-      ? t("Examen de laboratorio")
-      : first.source;
+  const locale = getDateLocale();
   return (
-    <li className="rounded-xl border border-border bg-muted/30 p-3">
-      <div className="mb-3 flex items-center justify-between gap-2">
-        <p className="text-xs font-semibold text-foreground">
-          {formatDateTime(first.observedAt)}
-        </p>
-        <span className="shrink-0 rounded-full bg-info-soft px-2.5 py-0.5 text-[11px] font-medium text-info">
-          {sourceLabel}
-        </span>
-      </div>
-      <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-4">
+    <li className="@container rounded-xl border border-border bg-muted/30 p-3">
+      <p className="mb-3 text-xs font-semibold text-foreground">
+        {formatDateTime(group[0].observedAt, locale)}
+      </p>
+      <ul className="grid grid-cols-1 gap-2 @sm:grid-cols-2 @2xl:grid-cols-3 @5xl:grid-cols-4">
         {group.map((measurement) => {
           const visual =
             METRIC_MAP[measurement.metricCode] ?? FALLBACK_VISUAL;
@@ -238,30 +232,54 @@ function MeasurementCard({ group }: { group: ClinicalMeasurementDto[] }) {
           const label = visual.labelKey
             ? t(visual.labelKey)
             : `${measurement.metricName} · ${measurement.metricCode}`;
+          const sourceLabel = measurement.sourceLabel && t(measurement.sourceLabel);
+          const statusLabel = measurement.isSuperseded ? t("Reemplazado") : null;
+
           return (
             <li
               key={measurement.id}
-              className="flex items-center gap-2.5 rounded-lg bg-card px-2.5 py-2"
+              className="flex min-w-0 flex-col gap-2 rounded-lg bg-card px-2.5 py-2"
             >
-              <span
-                className={`flex size-8 shrink-0 items-center justify-center rounded-lg ${TONES[visual.tone]}`}
-              >
-                <Icon className="size-4" />
-              </span>
-              <span className="min-w-0">
-                <span className="block truncate text-[11px] text-muted-foreground">
-                  {label}
+              <div className="flex items-center gap-2.5">
+                <span
+                  className={`flex size-8 shrink-0 items-center justify-center rounded-lg ${TONES[visual.tone]}`}
+                >
+                  <Icon className="size-4" aria-hidden="true" />
                 </span>
-                <span className="block truncate text-sm font-semibold">
-                  {valueFormatter.format(measurement.value)}{" "}
-                  {measurement.unitSymbol}
+                <span className="min-w-0 wrap-anywhere">
+                  <span className="block text-xs text-muted-foreground">
+                    {label}
+                  </span>
+                  <span className="block text-sm font-semibold">
+                    {measurement.value.toLocaleString(locale, { maximumFractionDigits: 1 })}{" "}
+                    {measurement.unitSymbol}
+                  </span>
                 </span>
-              </span>
+              </div>
+              {(sourceLabel || statusLabel) && (
+                <div className="flex flex-wrap gap-1.5">
+                  {sourceLabel && <MeasurementBadge label={sourceLabel} />}
+                  {statusLabel && <MeasurementBadge label={statusLabel} historical />}
+                </div>
+              )}
             </li>
           );
         })}
       </ul>
     </li>
+  );
+}
+
+function MeasurementBadge({ label, historical }: { label: string; historical?: boolean }) {
+  return (
+    <Badge
+      variant={historical ? "outline" : "secondary"}
+      role="group"
+      aria-label={label}
+      className="h-auto min-h-5 max-w-full justify-start text-start whitespace-normal wrap-anywhere"
+    >
+      <span aria-hidden="true">{label}</span>
+    </Badge>
   );
 }
 
@@ -276,10 +294,10 @@ function MeasurementsSkeleton() {
   );
 }
 
-function formatDateTime(date: string): string {
+function formatDateTime(date: string, locale: string): string {
   const parsed = new Date(date);
   if (Number.isNaN(parsed.getTime())) return "—";
-  return parsed.toLocaleString("es", {
+  return parsed.toLocaleString(locale, {
     day: "2-digit",
     month: "short",
     year: "numeric",

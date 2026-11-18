@@ -1,5 +1,6 @@
 import { apiFetch } from "@/lib/api/http";
 import { env } from "@/lib/config/env";
+import { mapClinicalMeasurement } from "./clinical-measurement-mapper";
 import type {
   ClinicalBoardFilters,
   ClinicalBoardResult,
@@ -135,14 +136,15 @@ export async function deletePatient(id: string): Promise<void> {
 }
 
 /**
- * Mediciones clínicas del paciente (fuente: app móvil), planas y ordenadas por
+ * Mediciones clínicas del paciente, planas y ordenadas por
  * `observedAt` desc. El agrupamiento por batch (check-in) es responsabilidad
  * del frontend; el backend expone una lista plana.
  */
 export async function getPatientMeasurements(
   id: string,
-): Promise<ClinicalMeasurementDto[]> {
-  return apiFetch<ClinicalMeasurementDto[]>(`${PATH}/${id}/measurements`);
+) {
+  const measurements = await apiFetch<ClinicalMeasurementDto[]>(`${PATH}/${id}/measurements`);
+  return measurements.map(mapClinicalMeasurement);
 }
 
 // --- Asignación paciente ↔ profesional ("mis pacientes") ---

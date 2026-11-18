@@ -69,7 +69,7 @@ export interface PatientAllergy {
 }
 
 /**
- * Medición clínica persistida por la app móvil (espejo del DTO del backend
+ * Medición clínica del paciente (espejo del DTO del backend
  * `PatientMeasurementDto`, camelCase en el wire). `batchId` agrupa las
  * mediciones de un mismo check-in (anchor en `task_completions.vital_signs_batch_id`);
  * `null` indica una medición sin batch asociado.
@@ -84,6 +84,17 @@ export interface ClinicalMeasurementDto {
   observedAt: string;
   source: string;
   batchId: string | null;
+  sourceChannel?:
+    | "vita_chat"
+    | "vita_voice"
+    | "vita_whatsapp"
+    | "app_manual"
+    | "device"
+    | "professional"
+    | "lab"
+    | null;
+  reportedBy?: "patient" | "professional" | "device" | null;
+  status?: "confirmed" | "pending_confirmation" | "superseded";
 }
 
 /** Medición de signos vitales (unidades SI: cm, kg, °C). */
