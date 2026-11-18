@@ -7,6 +7,8 @@ export interface MedicationCapability {
   canView: boolean;
   canManage: boolean;
   canManageAccess: boolean;
+  canViewAudit?: boolean;
+  canExport?: boolean;
 }
 
 export interface MedicationCapabilities {
@@ -23,6 +25,7 @@ export interface MedicationTreatment {
   origin: "patient_reported" | "staff_recorded" | "legacy_import";
   revision: number;
   createdAt: string;
+  isRequired?: boolean;
   dosage: number;
   unit: string;
   route: string;
@@ -58,12 +61,27 @@ export interface MedicationEvent {
   origin: "patient_reported" | "staff_recorded";
 }
 
+export function isRequiredMedication(treatment: MedicationTreatment): boolean {
+  return treatment.isRequired ?? (treatment.origin === "staff_recorded" && treatment.productType !== "supplement");
+}
+
+export interface MedicationAdherence {
+  scheduledDoses: number;
+  dueDoses: number;
+  takenDoses: number;
+  omittedDoses: number;
+  unrecordedDoses: number;
+  percent: number | null;
+  offPlanTakenDoses: number;
+}
+
 export interface MedicationWorkspace {
   patient: { id: string; name: string; mrn: string };
   access: { enabled: boolean; revision: number };
   treatments: MedicationTreatment[];
   doses: MedicationDose[];
   history: MedicationEvent[];
+  adherence?: MedicationAdherence | null;
   summary: {
     activeTreatments: number;
     scheduledDoses: number;

@@ -87,7 +87,7 @@ export function MedicationTreatmentForm({
       <div className="medication-form-heading">
         <div>
           <h2 id="medication-form-title">{t("Nuevo tratamiento")}</h2>
-          <p>{t("Registra las indicaciones de la receta existente.")}</p>
+          <p>{t(productType === "supplement" ? "Nutracéutico adicional" : "Se asignará al plan obligatorio del paciente.")}</p>
         </div>
         <Button
           type="button"

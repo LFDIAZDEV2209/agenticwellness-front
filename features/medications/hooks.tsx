@@ -92,6 +92,8 @@ export function MedicationCapabilitiesProvider({
       canView: current.enabled && current.canView && can("Medications.View"),
       canManage:
         current.enabled && current.canManage && can("Medications.Manage"),
+      canViewAudit: Boolean(current.enabled && current.canViewAudit && can("Audit.View")),
+      canExport: Boolean(current.enabled && current.canExport && can("Medications.Export")),
       canManageAccess:
         current.enabled &&
         current.canManageAccess &&

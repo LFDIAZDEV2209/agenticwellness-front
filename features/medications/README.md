@@ -1,6 +1,6 @@
 # Control de medicamentos en el ERP
 
-Primer circuito: directorio de pacientes y ficha con Hoy, Tratamientos e Historial. El alta manual conserva las indicaciones registradas; no calcula dosis ni prescribe. Se habilita el acceso del paciente por separado de los permisos del personal. Una toma/omisión ya registrada se corrige con motivo obligatorio y revisión esperada; el historial conserva ambos eventos.
+Primer circuito: directorio de pacientes y ficha con Hoy, Tratamientos e Historial. El alta manual conserva las indicaciones registradas; no calcula dosis ni prescribe. El acceso está habilitado por defecto para pacientes activos, con restricciones explícitas separadas de los permisos del personal. Una toma/omisión ya registrada se corrige con motivo obligatorio y revisión esperada; el historial conserva ambos eventos.
 
 - `/medications`: búsqueda y paginación del directorio dentro del ámbito autorizado.
 - `/medications/[patientId]`: acceso en la app, alta de tratamiento, tomas/omisiones, historial y pausa/reactivación/finalización.
@@ -26,4 +26,33 @@ Esta suite usa respuestas HTTP sintéticas y prueba la UI, no acredita persisten
 
 La suite `playwright.medications-real.config.ts`, mantenida junto al host de integración, verifica aparte el circuito de app, ERP y PostgreSQL reales. No se atribuye a los fixtures sintéticos la entrega de notificaciones, la prueba de iOS físico ni la compatibilidad del binario enviado a Apple.
 
-Existencias, síntomas, recordatorios, fotografía e interacciones no se ofrecen como controles simulados; corresponden a las siguientes entregas del plan.
+Seguimiento diario, inventario global/individual, alertas, efectos reportados y auditoría están conectados al backend. Las reglas y límites se documentan en `coppAddresdBack/docs/modules/medications/MONITORING.md`. Recordatorios externos, fotografía e interacciones no se simulan.
+
+## Plan obligatorio y registros personales
+
+El personal con gestión asigna medicamentos/vitaminas desde ERP; se identifican
+como **Plan asignado**. Nutracéuticos permanecen adicionales. El paciente puede
+registrar productos propios y tomas/omisiones, pero no cambiar el estado del plan.
+La ficha muestra `adherence`, calculada por el backend sobre las dosis asignadas
+ya programadas del día seleccionado. Registros personales, nutracéuticos, futuras
+y canceladas no inflan ni reducen ese porcentaje. Sin dosis evaluables se muestra
+`—`. Tomar algo fuera del plan no satisface ninguna dosis asignada.
+
+La prueba `medications-assigned-plan-real.spec.ts` usa ERP/app reales con API/Auth
+y PostgreSQL sintéticos aislados. Cubre alta ERP, desvío/toma app, adherencia
+compartida, protección del plan y correcciones, sin enviar mensajes externos.
+
+
+## Secciones del HTML implementadas
+
+La navegación persistente incluye Inicio, Pacientes, Seguimiento diario,
+Inventario global, Alertas y Auditoría (requiere Audit.View). La ficha añade
+Semana y día, Inventario y Efectos reportados. Exportar seguimiento usa
+Medications.Export y registra su finalidad. El usuario de cada fila de auditoría
+permite filtrar por actor. Inventario y alertas son paginados y respetan el mismo
+ámbito clínico que el directorio. Modo oscuro usa tokens semánticos existentes.
+El indicador de acceso es una cifra simple, sin anillo que comprima el texto.
+
+`e2e/medications-monitoring-real.spec.ts` cubre el flujo con API/Auth/PostgreSQL
+reales. La bitácora registra consultas/operaciones desde esta entrega; los
+registros de escritura anteriores siguen en la auditoría general.

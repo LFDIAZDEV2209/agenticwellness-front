@@ -91,3 +91,26 @@ export const setMedicationTreatmentStatus = (
     `${patientRoot(patientId)}/treatments/${encodeURIComponent(treatmentId)}/status`,
     { method: "PUT", body: JSON.stringify({ status, expectedRevision }) },
   );
+
+export const fetchMedicationWeek = (patientId:string, from:string, timeZone:string, signal?:AbortSignal) =>
+  request<import('./monitoring-types').MedicationWeek>(`${patientRoot(patientId)}/tracking?${new URLSearchParams({from,timeZone})}`,{signal});
+export const fetchMedicationInventory = (query:string,page:number,patientId?:string,signal?:AbortSignal) =>
+  request<import('./monitoring-types').MedicationPage<import('./monitoring-types').MedicationSupply>>(`/api/v1/medications/inventory?${new URLSearchParams({query,page:String(page),pageSize:'20',...(patientId?{patientId}:{})})}`,{signal});
+export const fetchPatientInventory = (patientId:string,signal?:AbortSignal) =>
+  request<import('./monitoring-types').MedicationPage<import('./monitoring-types').MedicationSupply>>(`${patientRoot(patientId)}/inventory`,{signal});
+export const saveMedicationStock = (patientId:string,treatmentId:string,body:import('./monitoring-types').StockRequest) =>
+  request<import('./monitoring-types').MedicationSupply>(`${patientRoot(patientId)}/inventory/${encodeURIComponent(treatmentId)}/movements`,{method:'POST',body:JSON.stringify(body)});
+export const fetchMedicationMovements = (patientId:string,treatmentId:string,signal?:AbortSignal) =>
+  request<import('./monitoring-types').StockMovement[]>(`${patientRoot(patientId)}/inventory/${encodeURIComponent(treatmentId)}/movements`,{signal});
+export const fetchMedicationEffects = (patientId:string,signal?:AbortSignal) =>
+  request<import('./monitoring-types').MedicationEffect[]>(`${patientRoot(patientId)}/effects`,{signal});
+export const reviewMedicationEffect = (patientId:string,id:string,body:import('./monitoring-types').FollowUpRequest) =>
+  request<import('./monitoring-types').MedicationEffect>(`${patientRoot(patientId)}/effects/${encodeURIComponent(id)}/follow-ups`,{method:'POST',body:JSON.stringify(body)});
+export const fetchMedicationAlerts = (status:string,kind:string,page:number,signal?:AbortSignal) =>
+  request<import('./monitoring-types').MedicationPage<import('./monitoring-types').MedicationAlert>>(`/api/v1/medications/alerts?${new URLSearchParams({status,kind,page:String(page),pageSize:'20'})}`,{signal});
+export const followMedicationAlert = (patientId:string,id:string,body:import('./monitoring-types').FollowUpRequest) =>
+  request<import('./monitoring-types').MedicationAlert>(`${patientRoot(patientId)}/alerts/${encodeURIComponent(id)}/follow-ups`,{method:'POST',body:JSON.stringify(body)});
+export const fetchMedicationAudit = (filters:Record<string,string>,page:number,signal?:AbortSignal) =>
+  request<import('./monitoring-types').MedicationPage<import('./monitoring-types').MedicationAudit>>(`/api/v1/medications/audit?${new URLSearchParams({...filters,page:String(page),pageSize:'30'})}`,{signal});
+export const fetchMedicationExport = (patientId:string,from:string,timeZone:string,purpose:string) =>
+  request<string>(`${patientRoot(patientId)}/export?${new URLSearchParams({from,timeZone,purpose})}`);
