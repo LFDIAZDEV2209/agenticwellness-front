@@ -198,12 +198,12 @@ export async function fetchUserPermissionSummary(
 
 /**
  * Crea el usuario con sus roles y permisos en UNA llamada
- * (POST /api/auth/users, AllowAnonymous). El backend valida la existencia de los
- * ids y persiste todo en una transacción; si el caller es anónimo o no tiene
- * permisos de asignación y se envían roles/permisos → 403.
+ * (POST /api/auth/users/platform, solo ERP autorizado). El backend valida los
+ * ids y persiste cuenta, acceso y asignaciones en una transacción.
+ * Sin sesión → 401; sin audiencia/permisos de administración → 403.
  */
 export async function createUser(input: UserCreateInput): Promise<User> {
-  return apiFetch<User>(PATH, {
+  return apiFetch<User>(`${PATH}/platform`, {
     method: "POST",
     body: JSON.stringify(input),
   });
@@ -306,12 +306,12 @@ export interface BulkCreateUsersResult {
 
 /**
  * Crea usuarios de forma masiva.
- * POST /api/auth/users/bulk — cada fila se procesa de forma independiente.
+ * POST /api/auth/users/platform/bulk — cuenta y acceso ERP atómicos por fila.
  */
 export async function createBulkUsers(
   rows: BulkCreateUserRowInput[],
 ): Promise<BulkCreateUsersResult> {
-  return apiFetch<BulkCreateUsersResult>(`${PATH}/bulk`, {
+  return apiFetch<BulkCreateUsersResult>(`${PATH}/platform/bulk`, {
     method: "POST",
     body: JSON.stringify({ rows }),
   });
