@@ -31,6 +31,7 @@ interface CatalogComboboxProps<T extends { id?: string }> {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   allowClear?: boolean;
+  wrapOptions?: boolean;
   className?: string;
   /** Longitud mínima del texto para disparar la búsqueda remota (default 1). */
   minChars?: number;
@@ -60,6 +61,7 @@ function CatalogComboboxInner<T extends { id?: string }>({
   open,
   onOpenChange,
   allowClear = false,
+  wrapOptions = false,
   className,
   minChars = 1,
   debounceMs = REMOTE_DEBOUNCE_MS,
@@ -195,8 +197,11 @@ function CatalogComboboxInner<T extends { id?: string }>({
           return;
         }
 
-        // Debounce: una sola petición por ráfaga de escritura (250ms).
+        // Debounce: no presentar coincidencias de una búsqueda anterior.
         if (debounceRef.current) clearTimeout(debounceRef.current);
+        abortRef.current?.abort();
+        requestIdRef.current++;
+        setResults([]);
         setLoading(true);
         setFailed(false);
         const query = next;
@@ -211,10 +216,11 @@ function CatalogComboboxInner<T extends { id?: string }>({
         aria-label={ariaLabel}
         className={cn(
           "flex h-9 w-full items-center justify-between gap-1.5 rounded-md border border-input bg-background px-3 text-sm outline-none transition-colors select-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 data-placeholder:text-muted-foreground",
+          wrapOptions && "h-auto min-h-9 py-1.5 text-left",
           className,
         )}
       >
-        <span className="truncate">
+        <span className={cn("min-w-0", wrapOptions ? "break-words" : "truncate")}>
           <Combobox.Value placeholder={placeholder} />
         </span>
         <Combobox.Icon className="shrink-0">
@@ -266,7 +272,12 @@ function CatalogComboboxInner<T extends { id?: string }>({
                   value={item}
                   className="relative flex w-full cursor-default items-center gap-2 rounded-md py-1.5 pr-8 pl-2 text-sm outline-none select-none focus:bg-accent focus:text-accent-foreground data-highlighted:bg-accent data-highlighted:text-accent-foreground data-selected:font-medium"
                 >
-                  <span className="flex-1 truncate">{getLabel(item)}</span>
+                  <span className={cn(
+                      "min-w-0 flex-1",
+                      wrapOptions ? "break-words" : "truncate",
+                    )}>
+                    {getLabel(item)}
+                  </span>
                   <Combobox.ItemIndicator className="absolute right-2 flex size-4 items-center justify-center">
                     <CheckIcon className="size-4 text-primary" />
                   </Combobox.ItemIndicator>
@@ -296,6 +307,8 @@ function areCatalogComboboxPropsEqual<T extends { id?: string }>(
     prev.items === next.items &&
     prev.fetchItems === next.fetchItems &&
     prev.getLabel === next.getLabel &&
+    prev.ariaLabel === next.ariaLabel &&
+    prev.wrapOptions === next.wrapOptions &&
     prev.placeholder === next.placeholder &&
     prev.searchPlaceholder === next.searchPlaceholder &&
     prev.emptyText === next.emptyText &&

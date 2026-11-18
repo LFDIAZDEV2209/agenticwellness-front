@@ -6246,5 +6246,10 @@
   "Dispositivo": "Dispositivo",
   "Reemplazado": "Reemplazado",
   "Presión sistólica": "Presión sistólica",
-  "Presión diastólica": "Presión diastólica"
+  "Presión diastólica": "Presión diastólica",
+
+  "Buscar en catálogo de EE. UU.": "Buscar en catálogo de EE. UU.",
+  "Marca, ingrediente o RxCUI": "Marca, ingrediente o RxCUI",
+  "Escribir nombre manualmente": "Escribir nombre manualmente",
+  "Sin coincidencias en RxTerms.": "Sin coincidencias en RxTerms."
 }

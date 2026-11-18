@@ -9,10 +9,17 @@ import { NativeSelect } from "@/components/ui/native-select";
 import { Textarea } from "@/components/ui/textarea";
 import { ApiError } from "@/lib/api/http";
 import { useT } from "@/providers/i18n-provider";
+import { CatalogCombobox } from "@/features/patients/components/catalog-combobox";
 import { medicationErrorKey, useMedicationCapabilities } from "../hooks";
-import { createMedicationTreatment } from "../services";
+import {
+  createMedicationTreatment,
+  searchUsMedicationCatalog,
+  type RxTermsOption,
+} from "../services";
 import type { MedicationProductType } from "../types";
 import { MedicationError } from "./medication-shared";
+
+const rxTermsLabel = (item: RxTermsOption) => item.name;
 
 export function MedicationTreatmentForm({
   patientId,
@@ -27,6 +34,7 @@ export function MedicationTreatmentForm({
   const capabilities = useMedicationCapabilities();
   const [productType, setProductType] =
     useState<MedicationProductType>("medication");
+  const [selectedDrug, setSelectedDrug] = useState<RxTermsOption | null>(null);
   const [times, setTimes] = useState(["08:00"]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -40,7 +48,8 @@ export function MedicationTreatmentForm({
     const form = new FormData(event.currentTarget);
     const body = {
       medicationId: null,
-      name: String(form.get("name") ?? "").trim(),
+      rxCui: selectedDrug?.id,
+      name: selectedDrug?.name ?? String(form.get("name") ?? "").trim(),
       productType,
       dosage: Number(form.get("dosage")),
       unit: String(form.get("unit") ?? "").trim(),
@@ -103,17 +112,49 @@ export function MedicationTreatmentForm({
       {error && <MedicationError message={error} />}
       <FieldGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field>
-          <FieldLabel htmlFor="medication-name">
-            {t("Nombre del producto")}
-          </FieldLabel>
-          <Input
-            id="medication-name"
-            name="name"
-            required
-            maxLength={200}
-            autoFocus
-            disabled={saving}
-          />
+          {!selectedDrug && (
+            <>
+              <FieldLabel htmlFor="medication-name">
+                {t("Nombre del producto")}
+              </FieldLabel>
+              <Input
+                id="medication-name"
+                name="name"
+                required
+                maxLength={200}
+                autoFocus
+                disabled={saving}
+              />
+            </>
+          )}
+          {productType === "medication" && (
+            <CatalogCombobox
+              value={selectedDrug}
+              onSelect={setSelectedDrug}
+              fetchItems={searchUsMedicationCatalog}
+              getLabel={rxTermsLabel}
+              placeholder={t("Buscar en catálogo de EE. UU.")}
+              ariaLabel={t("Buscar en catálogo de EE. UU.")}
+              searchPlaceholder={t("Marca, ingrediente o RxCUI")}
+              emptyText={t("Sin coincidencias en RxTerms.")}
+              allowClear
+              wrapOptions
+              minChars={3}
+              disabled={saving}
+            />
+          )}
+          {selectedDrug && (
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              className="self-start"
+              onClick={() => setSelectedDrug(null)}
+              disabled={saving}
+            >
+              {t("Escribir nombre manualmente")}
+            </Button>
+          )}
         </Field>
         <Field>
           <FieldLabel>{t("Tipo de producto")}</FieldLabel>
@@ -121,7 +162,10 @@ export function MedicationTreatmentForm({
             ariaLabel={t("Tipo de producto")}
             value={productType}
             disabled={saving}
-            onChange={(value) => setProductType(value as MedicationProductType)}
+            onChange={(value) => {
+              setProductType(value as MedicationProductType);
+              if (value !== "medication") setSelectedDrug(null);
+            }}
             options={[
               { value: "medication", label: t("Medicamento") },
               { value: "vitamin", label: t("Vitamina") },
@@ -134,13 +178,14 @@ export function MedicationTreatmentForm({
             {t("Cantidad por toma")}
           </FieldLabel>
           <Input
+            key={selectedDrug?.id ?? "manual"}
             id="medication-quantity"
             name="dosage"
             type="number"
             min="0.001"
             max="1000000"
             step="any"
-            defaultValue="1"
+            defaultValue={selectedDrug ? "" : "1"}
             required
             disabled={saving}
           />
@@ -148,10 +193,11 @@ export function MedicationTreatmentForm({
         <Field>
           <FieldLabel htmlFor="medication-unit">{t("Unidad")}</FieldLabel>
           <Input
+            key={selectedDrug?.id ?? "manual"}
             id="medication-unit"
             name="unit"
             maxLength={40}
-            defaultValue="tableta"
+            defaultValue={selectedDrug ? "" : "tableta"}
             required
             disabled={saving}
           />
@@ -159,10 +205,12 @@ export function MedicationTreatmentForm({
         <Field>
           <FieldLabel htmlFor="medication-route">{t("Vía")}</FieldLabel>
           <Input
+            key={selectedDrug?.id ?? "manual"}
             id="medication-route"
             name="route"
             maxLength={80}
-            defaultValue="oral"
+            defaultValue={selectedDrug ? "" : "oral"}
+            required={selectedDrug !== null}
             disabled={saving}
           />
         </Field>

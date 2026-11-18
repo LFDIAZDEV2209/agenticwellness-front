@@ -6246,5 +6246,10 @@
   "Dispositivo": "Device",
   "Reemplazado": "Superseded",
   "Presión sistólica": "Systolic blood pressure",
-  "Presión diastólica": "Diastolic blood pressure"
+  "Presión diastólica": "Diastolic blood pressure",
+
+  "Buscar en catálogo de EE. UU.": "Search U.S. drug catalog",
+  "Marca, ingrediente o RxCUI": "Brand, ingredient, or RxCUI",
+  "Escribir nombre manualmente": "Enter name manually",
+  "Sin coincidencias en RxTerms.": "No RxTerms matches."
 }

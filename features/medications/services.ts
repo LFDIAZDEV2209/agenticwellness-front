@@ -92,6 +92,15 @@ export const setMedicationTreatmentStatus = (
     { method: "PUT", body: JSON.stringify({ status, expectedRevision }) },
   );
 
+export type RxTermsOption = { id: string; name: string };
+
+export function searchUsMedicationCatalog(search: string, signal: AbortSignal) {
+  return request<RxTermsOption[]>(
+    `/api/v1/medications/catalog/us?${new URLSearchParams({ search })}`,
+    { signal },
+  );
+}
+
 export const fetchMedicationWeek = (patientId:string, from:string, timeZone:string, signal?:AbortSignal) =>
   request<import('./monitoring-types').MedicationWeek>(`${patientRoot(patientId)}/tracking?${new URLSearchParams({from,timeZone})}`,{signal});
 export const fetchMedicationInventory = (query:string,page:number,patientId?:string,signal?:AbortSignal) =>

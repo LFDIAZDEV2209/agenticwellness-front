@@ -19,6 +19,7 @@ export interface MedicationCapabilities {
 export interface MedicationTreatment {
   id: string;
   medicationId: string | null;
+  rxCui?: string;
   name: string;
   productType: MedicationProductType;
   status: MedicationStatus;
@@ -118,6 +119,7 @@ export interface MedicationPatientPage {
 
 export interface CreateMedicationTreatment {
   clientRequestId: string;
+  rxCui?: string;
   medicationId: string | null;
   name: string;
   productType: MedicationProductType;
