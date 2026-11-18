@@ -2,12 +2,12 @@
 
 import { useCallback, useDeferredValue, useState } from "react";
 import Link from "next/link";
+import {useRouter} from "next/navigation";
+import {MedicationModuleNav} from "./medication-module-nav";
 import {
   ArrowRight,
   CalendarDays,
-  LayoutDashboard,
   Plus,
-  UsersRound,
   ChevronLeft,
   ChevronRight,
   Pill,
@@ -39,7 +39,7 @@ import {
 } from "./medication-shared";
 import "../medications.css";
 
-export function MedicationDirectory() {
+export function MedicationDirectory({initialView = "overview"}:{initialView?:"overview"|"patients"}) {
   const capabilities = useMedicationCapabilities();
   if (capabilities.loading)
     return (
@@ -53,14 +53,15 @@ export function MedicationDirectory() {
         <MedicationUnavailable />
       </div>
     );
-  return <MedicationDirectoryContent key={capabilities.scopeKey} />;
+  return <MedicationDirectoryContent key={capabilities.scopeKey} initialView={initialView} />;
 }
 
-function MedicationDirectoryContent() {
+function MedicationDirectoryContent({initialView}:{initialView:"overview"|"patients"}) {
+  const router=useRouter();
   const t = useT();
   const { lang } = useI18n();
   const capability = useMedicationCapabilities();
-  const [view, setView] = useState<"overview" | "patients">("overview");
+  const [view, setView] = useState<"overview" | "patients">(initialView);
   const [intent, setIntent] = useState<MedicationDirectoryIntent>("patients");
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
@@ -77,6 +78,7 @@ function MedicationDirectoryContent() {
   const { data, error, loading, retry } = useMedicationResource(load);
   const overview = useMedicationResource(overviewLoad);
   function openPatients(next: MedicationDirectoryIntent) {
+    if(next === "today") {router.push("/medications/tracking");return;}
     setIntent(next);
     setView("patients");
   }
@@ -132,28 +134,7 @@ function MedicationDirectoryContent() {
           )}
         </div>
       </header>
-      <nav
-        className="medication-home-nav"
-        aria-label={t("Vistas de medicamentos")}
-      >
-        <button
-          type="button"
-          aria-pressed={view === "overview"}
-          onClick={openOverview}
-        >
-          <LayoutDashboard aria-hidden />
-          {t("Inicio")}
-        </button>
-        <button
-          type="button"
-          aria-pressed={view === "patients"}
-          onClick={() => openPatients("patients")}
-        >
-          <UsersRound aria-hidden />
-          {t("Pacientes")}
-          {overview.data && <span>{overview.data.totalPatients}</span>}
-        </button>
-      </nav>
+      <MedicationModuleNav current={view} onHome={openOverview} onPatients={() => openPatients("patients")} />
       {view === "overview" ? (
         <>
           {overview.loading ? (

@@ -26,6 +26,12 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { NativeSelect } from "@/components/ui/native-select";
 import { Textarea } from "@/components/ui/textarea";
+import {MedicationModuleNav} from "./medication-module-nav";
+import {MedicationInventory} from "./medication-inventory";
+import {MedicationEffects} from "./medication-effects";
+import {MedicationTracking} from "./medication-tracking";
+import {fetchMedicationExport} from "../services";
+import { isRequiredMedication } from "../types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useI18n, useT } from "@/providers/i18n-provider";
 import { ApiError } from "@/lib/api/http";
@@ -95,6 +101,10 @@ function MedicationWorkspaceContent({
   initialCreate = false,
 }: MedicationInitialView) {
   const t = useT();
+  const [exporting,setExporting] = useState(false);
+  const [exportPurpose,setExportPurpose] = useState("Seguimiento clínico");
+  const exportMounted=useRef(true);
+  useEffect(()=>{exportMounted.current=true;return()=>{exportMounted.current=false}},[]);
   const { lang } = useI18n();
   const capability = useMedicationCapabilities();
   const [date, setDate] = useState(() =>
@@ -139,6 +149,19 @@ function MedicationWorkspaceContent({
       minute: "2-digit",
       timeZone,
     }).format(new Date(value));
+
+  async function exportTracking() {
+    if(exporting || !capability.canExport) return;
+    setExporting(true);setWriteError(null);
+    try {
+      const csv=await fetchMedicationExport(patientId,date,timeZone,exportPurpose);
+      if(!exportMounted.current)return;
+      const url=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+      const link=document.createElement("a");link.href=url;link.download="medicamentos-"+date+".csv";link.click();
+      window.setTimeout(()=>URL.revokeObjectURL(url),1000);
+    } catch(error) {if(exportMounted.current)setWriteError(t(medicationErrorKey(error)));}
+    finally {if(exportMounted.current)setExporting(false);}
+  }
 
   async function mutate(
     key: string,
@@ -213,6 +236,7 @@ function MedicationWorkspaceContent({
 
   return (
     <div className="medication-page">
+      <MedicationModuleNav current="patients" />
       <Link
         href="/medications"
         className={`${buttonVariants({ variant: "ghost", size: "sm" })} self-start`}
@@ -282,6 +306,7 @@ function MedicationWorkspaceContent({
                   )}
                 </Badge>
               )}
+              {capability.canExport && <><NativeSelect ariaLabel={t("Finalidad de exportación")} value={exportPurpose} onChange={setExportPurpose} options={[{value:"Seguimiento clínico",label:t("Seguimiento clínico")},{value:"Entrega al paciente",label:t("Entrega al paciente")}]} /><Button variant="outline" disabled={exporting} onClick={()=>void exportTracking()}>{t("Exportar seguimiento")}</Button></>}
               {capability.canManage && (
                 <Button
                   onClick={() => {
@@ -322,6 +347,14 @@ function MedicationWorkspaceContent({
               {t("Pendientes")}
             </span>
           </div>
+          {data.adherence && (
+            <section className="medication-summary" aria-label={t("Adherencia al plan")} aria-live="polite">
+              <span><CircleCheck aria-hidden /><strong>{data.adherence.percent === null ? "—" : `${data.adherence.percent}%`}</strong>{t("Adherencia al plan")}</span>
+              <span>{data.adherence.dueDoses > 0 ? t("{taken} de {total} tomas asignadas", { taken: String(data.adherence.takenDoses), total: String(data.adherence.dueDoses) }) : t("Sin tomas asignadas para evaluar")}</span>
+              {data.adherence.offPlanTakenDoses > 0 && <Badge variant="outline">{t("{count} tomas fuera del plan", {count: String(data.adherence.offPlanTakenDoses)})}</Badge>}
+              {data.adherence.offPlanTakenDoses > 0 && data.adherence.dueDoses > data.adherence.takenDoses && <Badge variant="outline">{t("Plan asignado sin cumplir")}</Badge>}
+            </section>
+          )}
           {message && (
             <p role="status" className="medication-notice">
               <Check aria-hidden />
@@ -358,6 +391,9 @@ function MedicationWorkspaceContent({
                   <Pill data-icon="inline-start" aria-hidden />
                   {t("Tratamientos")}
                 </TabsTrigger>
+                <TabsTrigger value="tracking">{t("Semana y día")}</TabsTrigger>
+                <TabsTrigger value="inventory">{t("Inventario")}</TabsTrigger>
+                <TabsTrigger value="effects">{t("Efectos reportados")}</TabsTrigger>
                 <TabsTrigger value="history">
                   <FileClock data-icon="inline-start" aria-hidden />
                   {t("Historial")}
@@ -412,7 +448,7 @@ function MedicationWorkspaceContent({
                           {dose.name}
                         </h3>
                         <p>
-                          {dose.dosage} {dose.unit}
+                          {dose.dosage} {dose.unit} · {t(data.treatments.some(treatment => treatment.id === dose.treatmentId && isRequiredMedication(treatment)) ? "Plan asignado" : "Adicional")}
                         </p>
                       </div>
                       <MedicationStatusBadge status={dose.status} />
@@ -486,6 +522,7 @@ function MedicationWorkspaceContent({
                             {treatment.route ? ` · ${treatment.route}` : ""}
                           </p>
                         </div>
+                        <Badge variant="outline">{t(isRequiredMedication(treatment) ? "Plan asignado" : treatment.productType === "supplement" ? "Adicional" : "Fuera del plan")}</Badge>
                         <MedicationStatusBadge status={treatment.status} />
                       </div>
                       <div className="medication-treatment-details">
@@ -567,6 +604,9 @@ function MedicationWorkspaceContent({
                 <MedicationEmpty kind="treatments" />
               )}
             </TabsContent>
+            <TabsContent value="tracking">{tab==="tracking" && <MedicationTracking initialPatientId={patientId}/>}</TabsContent>
+            <TabsContent value="inventory">{tab==="inventory" && <MedicationInventory patientId={patientId}/>}</TabsContent>
+            <TabsContent value="effects">{tab==="effects" && <MedicationEffects patientId={patientId}/>}</TabsContent>
             <TabsContent value="history" className="medication-panel">
               <div className="medication-panel-toolbar">
                 <h2>{t("Historial de tomas")}</h2>

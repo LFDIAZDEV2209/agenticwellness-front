@@ -1173,18 +1173,6 @@
   background: color-mix(in srgb, var(--brand-teal-mid) 72%, transparent);
   backdrop-filter: blur(14px);
 }
-.medication-home-ring { position: relative; width: 4.8rem; height: 4.8rem; flex-shrink: 0; }
-.medication-home-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
-.medication-home-ring circle { fill: none; stroke: #c5f3ef33; stroke-width: 5; }
-.medication-home-ring circle:last-child { stroke: #a3f1d7; stroke-linecap: round; }
-.medication-home-ring > span { display: flex; flex-direction: column; position: absolute; inset: 0; align-items: center; justify-content: center; }
-.medication-home-ring strong { font-family: var(--font-heading); font-size: 1.8rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; }
-.medication-home-ring small { font-size: .53rem; color: #e3f5f4; margin-top: .25rem; }
-.medication-home-access-progress > div:last-child { min-width: 0; }
-.medication-home-access-progress > div:last-child > strong { display: block; font-size: .82rem; font-weight: 600; }
-.medication-home-access-progress p { color: #d9efee; font-size: .72rem; margin-top: .25rem; }
-.medication-home-access-progress > div:last-child > span { display: flex; align-items: center; gap: .35rem; color: #b9f4de; font-size: .65rem; margin-top: .65rem; }
-.medication-home-access-progress > div:last-child svg { width: .8rem; height: .8rem; }
 .medication-home-access-button {
   margin-top: auto;
   justify-content: space-between;
@@ -1427,4 +1415,120 @@
   .medication-home-action:hover {
     transform: none;
   }
+}
+
+/* Cifra legible, sin anillo ni texto encerrado. */
+.medication-access-stat { display:flex;align-items:center;gap:1rem; padding:1.1rem 0 1.5rem;position:relative;z-index:1; }
+.medication-access-stat > strong { font-size:clamp(2.25rem,3vw,3rem);line-height:1;font-weight:650;letter-spacing:-.055em;font-variant-numeric:tabular-nums;color:inherit; }
+.medication-access-stat > div { display:flex;flex-direction:column;gap:.3rem; }
+.medication-access-stat span { font-size:.82rem;font-weight:600; }
+.medication-access-stat small { font-size:.75rem;opacity:.75; }
+
+/* Vistas operativas: navegación persistente, filas compactas y estados sobrios. */
+.medication-home-nav { flex-wrap:wrap; }
+.medication-home-nav > a { display:inline-flex;align-items:center;gap:.5rem;padding:.7rem .9rem;border-radius:.7rem;font-size:.8rem;color:var(--muted-foreground);white-space:nowrap; }
+.medication-home-nav > a > svg { width:1rem;height:1rem; }
+.medication-home-nav > a[aria-current="page"] { background:var(--primary);color:var(--primary-foreground); }
+.medication-home-nav > a:hover { background:var(--muted);color:var(--foreground); }
+.medication-monitoring-page { min-width:0; }
+.medication-monitoring-card { background:var(--card);border:1px solid var(--border);border-radius:1.1rem;min-width:0;overflow:hidden; }
+.medication-monitoring-toolbar { display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:1.1rem 1.25rem; }
+.medication-monitoring-toolbar h2,.medication-monitoring-toolbar h3 { display:flex;align-items:center;gap:.5rem;font-weight:600;font-size:1rem; }
+.medication-monitoring-toolbar h2 > svg { width:1.1rem;height:1.1rem;color:var(--primary); }
+.medication-monitoring-toolbar p,.medication-muted { display:block;font-size:.75rem;color:var(--muted-foreground);margin-top:.3rem; }
+.medication-inline-actions { display:flex;align-items:center;gap:.5rem;flex-wrap:wrap; }
+.medication-patient-picker,.medication-monitoring-filters { display:flex;align-items:center;gap:.75rem;flex-wrap:wrap; }
+.medication-patient-picker > *, .medication-monitoring-filters > * { flex:1;min-width:10rem; }
+.medication-monitoring-filters > label { display:grid;gap:.25rem;font-size:.75rem;color:var(--muted-foreground); }
+.medication-monitoring-filters > button { flex:0; }
+.medication-monitoring-stats { display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;padding:0 1.25rem 1.1rem;color:var(--muted-foreground);font-size:.8rem; }
+.medication-monitoring-stats > span { display:flex;align-items:center;gap:.55rem; }
+.medication-monitoring-stats strong { color:var(--foreground);font-size:1.1rem;font-variant-numeric:tabular-nums; }
+.medication-monitoring-stats > a { margin-left:auto;color:var(--primary); }
+.medication-week-grid { min-width:850px;table-layout:fixed; }
+.medication-week-grid th:first-child,.medication-week-grid td:first-child { width:220px; }
+.medication-week-grid td:first-child > span { display:block;font-size:.7rem;color:var(--muted-foreground);margin-top:.25rem; }
+.medication-week-grid th,.medication-week-grid td { padding:.55rem !important;text-align:center; }
+.medication-week-grid th:first-child,.medication-week-grid td:first-child { text-align:left; }
+.medication-week-cell { display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25rem;width:100%;height:3.7rem;border-radius:.65rem;border:1px solid var(--border);background:var(--muted);color:var(--muted-foreground);font-size:.65rem; }
+.medication-week-cell strong {font-size:.8rem;font-variant-numeric:tabular-nums;}
+.medication-week-cell.timing-on_time { background:var(--success-soft);color:var(--success-soft-foreground);border-color:var(--success-soft-foreground); }
+.medication-week-cell.timing-late,.medication-week-cell.timing-unrecorded { background:var(--warning-soft);color:var(--warning-soft-foreground); }
+.medication-week-cell.timing-omitted { border-style:dashed; }
+.medication-week-cell.timing-cancelled { opacity:.55; }
+.medication-week-cell:hover,.medication-week-cell:focus-visible { outline:2px solid var(--ring);outline-offset:2px; }
+.medication-empty-line {padding:1.5rem;color:var(--muted-foreground);font-size:.85rem;}
+.medication-monitoring-form { display:grid;gap:1rem;padding:1.25rem;background:var(--muted);border-block:1px solid var(--border); }
+.medication-monitoring-form > h3 {font-size:.95rem;font-weight:600;}
+.medication-ledger { border-top:1px solid var(--border); }
+.medication-effect-row { padding:1rem 1.25rem;border-top:1px solid var(--border); }
+.medication-effect-row > .medication-monitoring-toolbar { padding:0; }
+.medication-effect-row > p { margin-top:.5rem;font-size:.85rem; }
+.medication-followup-note { border-left:2px solid var(--border);padding:.5rem .75rem;margin-top:.65rem;font-size:.8rem; }
+.medication-followup-note > span {font-size:.7rem;color:var(--muted-foreground);}
+.medication-alert-row { display:flex;align-items:flex-start;gap:1rem;padding:1.2rem;border-bottom:1px solid var(--border); }
+.medication-alert-icon {display:grid;place-items:center;width:2.5rem;height:2.5rem;flex-shrink:0;border-radius:.75rem;background:var(--primary-soft);color:var(--primary-soft-foreground);}
+.medication-alert-icon svg {width:1.1rem;height:1.1rem;}
+.medication-alert-content { flex:1;min-width:0; }
+.medication-alert-content > div:first-child {display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;}
+.medication-alert-content h3 {font-size:.9rem;font-weight:600;}
+.medication-alert-content p {font-size:.8rem;margin-top:.35rem;}
+.medication-alert-content small {font-size:.7rem;color:var(--muted-foreground);}
+.medication-alert-content details {font-size:.75rem;margin-top:.6rem;}
+.medication-alert-content a {color:var(--primary);}
+.medication-header-actions > div:has(select) { max-width:12rem; }
+@media(max-width:760px) {
+ .medication-alert-row {flex-wrap:wrap;}
+ .medication-alert-row > .medication-inline-actions {margin-left:3.5rem;}
+ .medication-monitoring-toolbar {padding:1rem;}
+ .medication-monitoring-stats {gap:.75rem;}
+ .medication-home-nav {gap:.25rem;}
+ .medication-home-nav > a {padding:.6rem;font-size:.73rem;}
+}
+
+.medication-monitoring-toolbar > .medication-inline-actions { flex-wrap:nowrap; }
+.medication-monitoring-toolbar > .medication-inline-actions > input { width:18rem;max-width:100%; }
+.medication-monitoring-toolbar > .medication-inline-actions > button { flex-shrink:0; }
+
+/* Estado inicial del seguimiento: una invitación, sin métricas ni pacientes ficticios. */
+.medication-tracking-empty {
+  position:relative;isolation:isolate;overflow:hidden;display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);grid-template-rows:auto auto;
+  column-gap:3rem;row-gap:1.75rem;align-items:center;
+  padding:clamp(1.75rem,3.5vw,3.5rem);border-radius:1.25rem;
+  background:linear-gradient(115deg,var(--card) 45%,color-mix(in srgb,var(--primary-soft) 45%,var(--card)));
+}
+.medication-tracking-empty-copy { grid-column:1;grid-row:1;padding:0;gap:1rem;align-self:end; }
+.medication-tracking-empty-kicker { display:inline-flex;align-items:center;gap:.5rem;font-size:.75rem;font-weight:600;color:var(--primary-soft-foreground); }
+.medication-tracking-empty-kicker svg { width:1rem;height:1rem; }
+.medication-tracking-empty-copy h2 { max-width:23ch;font-size:clamp(1.6rem,2.5vw,2rem);font-weight:600;line-height:1.18;letter-spacing:-.045em;color:var(--foreground);text-wrap:balance; }
+.medication-tracking-empty-copy [data-slot="card-description"] { font-size:.9rem;line-height:1.6;color:var(--muted-foreground); }
+.medication-tracking-empty-footer { grid-column:1;grid-row:2;display:flex;flex-direction:column;align-items:flex-start;gap:1.75rem;padding:0;align-self:start;background:transparent;border:0;border-radius:0; }
+.medication-tracking-empty-features {display:flex;gap:1.25rem;flex-wrap:wrap;color:var(--muted-foreground);font-size:.75rem;}
+.medication-tracking-empty-features > span {display:inline-flex;align-items:center;gap:.4rem;}
+.medication-tracking-empty-features svg {width:.9rem;height:.9rem;color:var(--primary-soft-foreground);}
+.medication-tracking-empty-art { position:relative;grid-column:2;grid-row:1 / span 2;padding:1.5rem 1rem;max-width:30rem;width:100%;justify-self:center; }
+.medication-tracking-empty-art::before {content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(ellipse,color-mix(in srgb,var(--success-soft) 60%,transparent),transparent 72%);z-index:-1;}
+.medication-calendar-sheet {position:relative;padding:1.2rem;border:1px solid var(--border);border-radius:1rem;background:var(--card);box-shadow:0 16px 36px -24px color-mix(in srgb,var(--primary) 35%,transparent);transform:rotate(-2deg);}
+.medication-calendar-heading {display:flex;align-items:center;gap:.25rem;margin-bottom:1.4rem;color:var(--primary-soft-foreground);}
+.medication-calendar-heading > span {display:flex;align-items:center;gap:.5rem;margin-right:auto;font-size:.75rem;font-weight:600;}
+.medication-calendar-heading svg {width:1rem;height:1rem;}
+.medication-calendar-heading > i {width:3px;height:3px;border-radius:50%;background:var(--muted-foreground);opacity:.5;}
+.medication-calendar-days,.medication-calendar-body {display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:.4rem;}
+.medication-calendar-days {margin-bottom:.65rem;}
+.medication-calendar-days span {height:4px;width:45%;justify-self:center;border-radius:2px;background:var(--border);}
+.medication-calendar-body > span {display:grid;place-items:center;aspect-ratio:1.25;border:1px solid var(--border);border-radius:.4rem;background:color-mix(in srgb,var(--muted) 35%,var(--card));}
+.medication-calendar-body > span[data-column="3"] {border-color:color-mix(in srgb,var(--success-soft-foreground) 24%,var(--border));background:color-mix(in srgb,var(--success-soft) 65%,var(--card));}
+.medication-calendar-body i {width:20%;height:2px;background:var(--border);border-radius:2px;}
+.medication-calendar-body svg {width:1rem;height:1rem;color:var(--success-soft-foreground);transform:rotate(-25deg);}
+.medication-calendar-caption {display:flex;gap:.6rem;margin-top:1.2rem;}
+.medication-calendar-caption span {width:27%;height:5px;background:var(--border);border-radius:3px;}
+.medication-calendar-caption span:last-child {width:15%;opacity:.6;}
+.medication-calendar-accent {position:absolute;right:0;bottom:0;width:2.75rem;height:2.75rem;border:1px solid color-mix(in srgb,var(--primary) 20%,var(--border));border-radius:.8rem;background:var(--primary-soft);transform:rotate(8deg);z-index:-1;}
+@media(max-width:760px){
+ .medication-tracking-empty {grid-template-columns:minmax(0,1fr);gap:1.5rem;padding:1.5rem;}
+ .medication-tracking-empty-copy,.medication-tracking-empty-footer {grid-column:1;grid-row:auto;}
+ .medication-tracking-empty-art {grid-column:1;grid-row:3;max-width:24rem;padding:1rem .5rem;}
+ .medication-tracking-empty-footer {gap:1.25rem;}
+ .medication-tracking-empty-features {gap:1rem;}
 }

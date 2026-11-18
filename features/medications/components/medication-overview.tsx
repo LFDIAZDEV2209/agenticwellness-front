@@ -5,7 +5,6 @@ import {
   ArrowRight,
   ArrowUpRight,
   CalendarClock,
-  Check,
   CheckCheck,
   FileClock,
   Pill,
@@ -58,9 +57,6 @@ export function MedicationOverviewPanel({
     1,
     ...data.activity.map((day) => day.taken + day.omitted),
   );
-  const access = data.totalPatients
-    ? data.enabledPatients / data.totalPatients
-    : 0;
   const metrics = [
     {
       label: "Pacientes",
@@ -291,37 +287,9 @@ export function MedicationOverviewPanel({
           <h2 id="medication-access-title">
             {t("El seguimiento también va con ellos.")}
           </h2>
-          <div className="medication-home-access-progress">
-            <div className="medication-home-ring">
-              <svg viewBox="0 0 100 100" aria-hidden>
-                <circle cx="50" cy="50" r="42" />
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="42"
-                  pathLength="100"
-                  opacity={access > 0 ? 1 : 0}
-                  strokeDasharray={`${access * 100} 100`}
-                />
-              </svg>
-              <span>
-                <strong>{data.enabledPatients}</strong>
-                <small>{t("habilitados")}</small>
-              </span>
-            </div>
-            <div>
-              <strong>{t("Acceso en la app")}</strong>
-              <p>
-                {t("{enabled} de {total} pacientes", {
-                  enabled: String(data.enabledPatients),
-                  total: String(data.totalPatients),
-                })}
-              </p>
-              <span>
-                <Check aria-hidden />
-                {t("Acceso por paciente")}
-              </span>
-            </div>
+          <div className="medication-access-stat" aria-label={t("Acceso en la app")}>
+            <strong>{new Intl.NumberFormat(locale).format(data.enabledPatients)}</strong>
+            <div><span>{t("Pacientes con acceso")}</span><small>{t("de {total} pacientes", { total: new Intl.NumberFormat(locale).format(data.totalPatients) })}</small></div>
           </div>
           <Button
             variant="outline"
