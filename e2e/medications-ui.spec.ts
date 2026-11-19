@@ -534,3 +534,84 @@ test("inicio sin registros no inventa actividad y conserva el diseño en oscuro 
     });
   }
 });
+
+test("los atajos de frecuencia completan un horario editable y guardan el intervalo", async ({ page }) => {
+  const { writes } = await mockMedications(page);
+  await page.goto(`/medications/${patientId}`);
+  await page.getByRole("button", { name: "Nuevo tratamiento", exact: true }).click();
+  const form = page.getByRole("form", { name: "Nuevo tratamiento" });
+  const frequency = form.getByLabel("Frecuencia", { exact: true });
+  const firstTime = form.getByLabel("Horario 1", { exact: true });
+  await form.getByRole("button", { name: "Cada 8 horas", exact: true }).click({ timeout: 5000 });
+  await expect(frequency).toHaveValue("interval");
+  await expect(firstTime).toHaveValue("06:00");
+  await expect(form.getByLabel("Horas entre tomas")).toHaveValue("8");
+  await form.getByRole("button", { name: "1 vez al día", exact: true }).click();
+  await expect(frequency).toHaveValue("daily");
+  await expect(firstTime).toHaveValue("08:00");
+  await form.getByRole("button", { name: "Cada 12 horas", exact: true }).click();
+  await expect(form.getByLabel("Horas entre tomas")).toHaveValue("12");
+  await firstTime.fill("09:00");
+  await form.getByLabel("Nombre del producto", { exact: true }).fill("QA pauta de intervalo");
+  await form.getByRole("button", { name: "Guardar tratamiento", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "QA pauta de intervalo" })).toBeVisible();
+  expect(writes.find(item => item.path.endsWith("/treatments"))?.body).toMatchObject({
+    times: ["09:00"],
+    intervalHours: 12,
+  });
+});
+
+test.describe("seguimiento con una zona distinta a Bogotá", () => {
+  const zone = "America/Los_Angeles";
+  test.use({ timezoneId: zone });
+
+  test("muestra la fecha real de una toma tardía y permite reintentar solo el resumen mensual", async ({ page }) => {
+    await mockMedications(page);
+    const requests: string[] = [];
+    const localIso = new Intl.DateTimeFormat("sv-SE", { timeZone: zone }).format(new Date());
+    const nextDay = new Date(localIso + "T16:00:00Z");
+    nextDay.setUTCDate(nextDay.getUTCDate() + 1);
+    const displayDate = new Intl.DateTimeFormat("es-CO", {
+      day: "numeric", month: "short", year: "numeric", timeZone: "UTC",
+    }).format(nextDay);
+    await page.route("**/api/v1/medications/patients/*/version", route =>
+      route.fulfill({ status: 404, json: {} }),
+    );
+    await page.route("**/api/v1/medications/patients/*/tracking?*", route => {
+      const params = new URL(route.request().url()).searchParams;
+      requests.push("week:" + params.get("timeZone"));
+      return route.fulfill({ json: {
+        patient: { id: patientId, name: "Paciente de prueba", mrn: "QA" },
+        from: localIso, to: localIso, timeZone: zone, treatments: [],
+        days: [{ date: localIso, scheduled: 1, due: 1, taken: 1, omitted: 0, unrecorded: 0, percent: 100 }],
+        doses: [{
+          localDate: localIso, isRequired: true, timing: "late", delayMinutes: 1440,
+          dose: { id: doseId, treatmentId, name: "Vitamina de prueba", status: "taken",
+            scheduledAt: localIso + "T16:00:00Z", occurredAt: nextDay.toISOString(), channel: "whatsapp" },
+        }],
+      } });
+    });
+    let monthlyAvailable = false;
+    await page.route("**/api/v1/medications/patients/*/adherence?*", route => {
+      requests.push("adherence:" + new URL(route.request().url()).searchParams.get("timeZone"));
+      if (!monthlyAvailable) return route.fulfill({ status: 503, json: {} });
+      return route.fulfill({ json: {
+        last7Days: { due: 1, taken: 1, percent: 100 },
+        last30Days: { due: 4, taken: 3, percent: 75 },
+      } });
+    });
+    await page.goto(`/medications/${patientId}`);
+    await page.getByRole("tab", { name: "Semana y día", exact: true }).click();
+    const detail = page.getByRole("region", { name: "Detalle del día", exact: true });
+    await expect(detail.getByText("WhatsApp", { exact: true })).toBeVisible();
+    expect(requests).toEqual(expect.arrayContaining(["week:" + zone, "adherence:" + zone]));
+    await expect(detail.getByRole("cell").filter({ hasText: displayDate })).toBeVisible();
+    const summary = page.getByRole("group", { name: "Adherencia de 30 días", exact: true });
+    await expect(summary.getByText("No se pudo cargar el resumen.", { exact: true })).toBeVisible();
+    const weekCallsBeforeRetry = requests.filter(item => item.startsWith("week:")).length;
+    monthlyAvailable = true;
+    await summary.getByRole("button", { name: "Reintentar", exact: true }).click();
+    await expect(summary.getByText("75%", { exact: true })).toBeVisible();
+    expect(requests.filter(item => item.startsWith("week:"))).toHaveLength(weekCallsBeforeRetry);
+  });
+});

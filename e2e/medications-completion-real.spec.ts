@@ -26,7 +26,11 @@ test("ERP edits a prescription, the open app records and corrects it, and ERP up
     await expect(patient.locator(".wheel")).toBeVisible({ timeout: 40_000 });
     await patient.locator(".wheel").getByRole("button", { name: "Medicamentos", exact: true }).click();
 
-    await staff.goto(erp + "/medications/" + fixture.patientId);
+    await staff.goto(erp + "/patients/" + fixture.patientId);
+    const patientMedicationLink = staff.locator("#workspace-content")
+      .getByRole("link", { name: "Control de medicamentos", exact: true });
+    await expect(patientMedicationLink).toHaveAttribute("href", "/medications/" + fixture.patientId);
+    await patientMedicationLink.click();
     await staff.getByRole("button", { name: "Nuevo tratamiento", exact: true }).click();
     const name = "Plan QA " + randomUUID().slice(0, 8);
     await staff.getByLabel("Nombre del producto", { exact: true }).fill(name);
@@ -57,6 +61,9 @@ test("ERP edits a prescription, the open app records and corrects it, and ERP up
     await expect(record.getByText("Tomado", { exact: true })).toBeVisible();
     await dose.getByRole("button", { name: "Deshacer toma", exact: true }).click();
     await expect(record.getByText("Toma deshecha", { exact: true })).toBeVisible();
+    await due.getByRole("button", { name: "Omitir", exact: true }).click();
+    await expect(record.getByText("Omitido", { exact: true })).toBeVisible();
+    await expect(record.getByText("App", { exact: true })).toBeVisible();
     await staff.getByRole("tab", { name: "Semana y día", exact: true }).click();
     await expect(staff.getByText("Adherencia de 30 días", { exact: true })).toBeVisible();
 
@@ -167,6 +174,25 @@ test("an interval prescription supports durable snoozes and opted-in WhatsApp re
     const event = staff.locator(".medication-event-row").filter({ hasText: name });
     await expect(event).toHaveCount(1);
     await expect(event.getByText("WhatsApp", { exact: true })).toBeVisible();
+
+    const skippedName = "Omisión WhatsApp QA " + randomUUID().slice(0, 8);
+    await staff.getByRole("button", { name: "Nuevo tratamiento", exact: true }).click();
+    await staff.getByLabel("Nombre del producto", { exact: true }).fill(skippedName);
+    await staff.getByLabel("Horario 1", { exact: true }).fill(scheduled);
+    await staff.getByRole("button", { name: "Guardar tratamiento", exact: true }).click();
+    const skippedDose = patient.locator(".medications-dose").filter({ hasText: skippedName });
+    await expect(skippedDose).toBeVisible();
+    await staff.getByRole("tab", { name: "Historial", exact: true }).click();
+    const skipDelivery = (await sweep("whatsapp")).find(row => row.dose.name === skippedName);
+    expect(skipDelivery).toBeDefined();
+    const reply = await request.post(gateway + "/__qa/medications/whatsapp-reply", {
+      data: { id: skipDelivery!.id, action: "omitted" },
+    });
+    expect(await reply.json()).toEqual({ applied: true });
+    await expect(skippedDose.getByText("Omitido", { exact: true })).toBeVisible();
+    const skippedEvent = staff.locator(".medication-event-row").filter({ hasText: skippedName });
+    await expect(skippedEvent.getByText("Omitido", { exact: true })).toBeVisible();
+    await expect(skippedEvent.getByText("WhatsApp", { exact: true })).toBeVisible();
     await setWhatsAppReminder(patient, false);
   } finally {
     await Promise.all([staff.close(), patient.close()]);

@@ -21,6 +21,11 @@ import type { MedicationProductType, MedicationTreatment } from "../types";
 import { MedicationError } from "./medication-shared";
 
 const rxTermsLabel = (item: RxTermsOption) => item.name;
+const frequencyPresets = [
+  { label: "1 vez al día", firstTime: "08:00", interval: null },
+  { label: "Cada 8 horas", firstTime: "06:00", interval: 8 },
+  { label: "Cada 12 horas", firstTime: "08:00", interval: 12 },
+] as const;
 
 export function MedicationTreatmentForm({
   patientId,
@@ -40,11 +45,18 @@ export function MedicationTreatmentForm({
   const [selectedDrug, setSelectedDrug] = useState<RxTermsOption | null>(null);
   const [times, setTimes] = useState(treatment?.times ?? ["08:00"]);
   const [frequency, setFrequency] = useState(treatment?.intervalHours ? "interval" : treatment?.weekdayMask ? "weekly" : "daily");
+  const [intervalHours, setIntervalHours] = useState(String(treatment?.intervalHours ?? 8));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const operation = useRef<{ signature: string; id: string } | null>(null);
   const zone =
     Intl.DateTimeFormat().resolvedOptions().timeZone || "America/Bogota";
+
+  function applyFrequencyPreset(preset: typeof frequencyPresets[number]) {
+    setFrequency(preset.interval === null ? "daily" : "interval");
+    setTimes([preset.firstTime]);
+    if (preset.interval !== null) setIntervalHours(String(preset.interval));
+  }
 
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -267,6 +279,14 @@ export function MedicationTreatmentForm({
           />
         </Field>
       </FieldGroup>
+      <div className="flex flex-wrap gap-2" role="group" aria-label={t("Atajos de frecuencia")}>
+        {frequencyPresets.map(preset => (
+          <Button key={preset.label} type="button" variant="outline" size="sm" disabled={saving}
+            onClick={() => applyFrequencyPreset(preset)}>
+            {t(preset.label)}
+          </Button>
+        ))}
+      </div>
       <FieldGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field>
           <FieldLabel>{t("Frecuencia")}</FieldLabel>
@@ -286,7 +306,7 @@ export function MedicationTreatmentForm({
         {frequency === "interval" && <Field>
           <FieldLabel htmlFor="medication-interval">{t("Horas entre tomas")}</FieldLabel>
           <Input id="medication-interval" name="intervalHours" type="number" min={3} max={168}
-            defaultValue={treatment?.intervalHours ?? 8} required disabled={saving} />
+            value={intervalHours} onChange={event => setIntervalHours(event.target.value)} required disabled={saving} />
         </Field>}
       </FieldGroup>
       {frequency === "weekly" && (
