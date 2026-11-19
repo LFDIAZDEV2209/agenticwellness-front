@@ -12,7 +12,7 @@ import {
 import { ApiError } from "@/lib/api/http";
 import { useAuth } from "@/providers/auth-provider";
 import { useAppContext } from "@/providers/context-provider";
-import { fetchMedicationCapabilities } from "./services";
+import { fetchMedicationCapabilities, fetchMedicationVersion } from "./services";
 import type { MedicationCapability } from "./types";
 
 const unavailable: MedicationCapability = {
@@ -119,6 +119,7 @@ export function useMedicationCapabilities() {
 export function useMedicationResource<T>(
   load: (signal: AbortSignal) => Promise<T>,
   refreshKey = "",
+  keepDataOnRefresh = false,
 ) {
   const { canView, scopeKey } = useMedicationCapabilities();
   const [revision, setRevision] = useState(0);
@@ -148,16 +149,17 @@ export function useMedicationResource<T>(
   const current =
     canView &&
     result?.key === scopeKey &&
-    result.revision === revision &&
+    (keepDataOnRefresh || result.revision === revision) &&
     result.load === load &&
     result.refreshKey === refreshKey
       ? result
       : undefined;
+  const retry = useCallback(() => setRevision((value) => value + 1), []);
   return {
     data: current?.data,
     error: current?.error,
     loading: canView && !current,
-    retry: () => setRevision((value) => value + 1),
+    retry,
   };
 }
 
@@ -171,4 +173,39 @@ export function medicationErrorKey(error: unknown): string {
       return "Revisa los datos del tratamiento.";
   }
   return "No se pudo completar la operación. Inténtalo de nuevo.";
+}
+
+
+/** Compara una versión persistida sin volver a consultar datos clínicos en cada intervalo. */
+export function useMedicationLiveRefresh(patientId: string, retry: () => void, serverVersion?: string) {
+  const { canView, scopeKey } = useMedicationCapabilities();
+  useEffect(() => {
+    if (!patientId || !canView) return;
+    const controller = new AbortController();
+    let version = serverVersion;
+    let checking = false;
+    const check = async () => {
+      if (checking || document.visibilityState !== "visible") return;
+      checking = true;
+      try {
+        const next = await fetchMedicationVersion(patientId, controller.signal);
+        if (!controller.signal.aborted && next !== version) {
+          version = next;
+          retry();
+        }
+      } catch {
+        // El botón Actualizar sigue disponible si el servidor no ofrece versiones.
+      } finally {
+        checking = false;
+      }
+    };
+    const timer = window.setInterval(() => void check(), 4000);
+    const onVisible = () => void check();
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      controller.abort();
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [patientId, retry, canView, scopeKey, serverVersion]);
 }

@@ -7,8 +7,8 @@ import { randomUUID } from "node:crypto";
 const path = process.env.COP_MEDICATION_FIXTURE;
 assert.ok(path?.startsWith("/tmp/"), "A private QA fixture is required");
 const fixture = JSON.parse(readFileSync(path, "utf8"));
-assert.match(fixture.database, /^copp_review_medications_rxterms(_[a-z0-9_]+)?$/);
-assert.equal(fixture.gateway, "http://127.0.0.1:5160");
+assert.match(fixture.database, /^copp_review_medications_(rxterms|kan75)(_[a-z0-9_]+)?$/);
+assert.match(fixture.gateway, /^http:\/\/127\.0\.0\.1:\d+$/);
 const browser = await chromium.launch();
 try {
   const page = await browser.newPage({ locale: "es-CO", timezoneId: "America/Bogota" });
