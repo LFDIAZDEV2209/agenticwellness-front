@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableHeader,
@@ -33,10 +34,10 @@ const addDays = (date: string, amount: number) => {
   d.setUTCDate(d.getUTCDate() + amount);
   return d.toISOString().slice(0, 10);
 };
-function monday() {
-  const day = new Date().toLocaleDateString("en-CA", {
-    timeZone: "America/Bogota",
-  });
+const dateInZone = (value: Date, timeZone: string) =>
+  value.toLocaleDateString("en-CA", { timeZone });
+
+function monday(day: string) {
   const weekday = new Date(day + "T12:00:00Z").getUTCDay();
   return addDays(day, -((weekday + 6) % 7));
 }
@@ -48,6 +49,7 @@ export function MedicationTracking({
   const t = useT(),
     fmt = useMonitoringFormat();
   const pickerRef = useRef<HTMLDivElement>(null);
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "America/Bogota";
   function choosePatient() {
     const select = pickerRef.current?.querySelector("select");
     select?.focus();
@@ -58,20 +60,18 @@ export function MedicationTracking({
     }
   }
   const [patientId, setPatientId] = useState(initialPatientId ?? ""),
-    [from, setFrom] = useState(monday),
-    [selected, setSelected] = useState(() =>
-      new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota" }),
-    );
+    [from, setFrom] = useState(() => monday(dateInZone(new Date(), timeZone))),
+    [selected, setSelected] = useState(() => dateInZone(new Date(), timeZone));
   const load = useCallback(
     (signal: AbortSignal) =>
       patientId
-        ? fetchMedicationWeek(patientId, from, "America/Bogota", signal)
+        ? fetchMedicationWeek(patientId, from, timeZone, signal)
         : Promise.resolve(null),
-    [patientId, from],
+    [patientId, from, timeZone],
   );
   const loadSummary = useCallback(
-    (signal: AbortSignal) => patientId ? fetchMedicationAdherence(patientId, "America/Bogota", signal) : Promise.resolve(null),
-    [patientId],
+    (signal: AbortSignal) => patientId ? fetchMedicationAdherence(patientId, timeZone, signal) : Promise.resolve(null),
+    [patientId, timeZone],
   );
   const r = useMedicationResource(load, "", true);
   const summary = useMedicationResource(loadSummary, "", true);
@@ -149,12 +149,9 @@ export function MedicationTracking({
                     <Button
                       variant="outline"
                       onClick={() => {
-                        setFrom(monday());
-                        setSelected(
-                          new Date().toLocaleDateString("en-CA", {
-                            timeZone: "America/Bogota",
-                          }),
-                        );
+                        const today = dateInZone(new Date(), timeZone);
+                        setFrom(monday(today));
+                        setSelected(today);
                       }}
                     >
                       {t("Esta semana")}
@@ -190,12 +187,19 @@ export function MedicationTracking({
                     </strong>
                     {t("Tomas asignadas evaluadas")}
                   </span>
-                  {summary.data && (
-                    <span>
-                      <strong>{summary.data.last30Days.percent == null ? "—" : summary.data.last30Days.percent + "%"}</strong>
-                      <span>{t("Adherencia de 30 días")}</span>
-                    </span>
-                  )}
+                  <div role="group" aria-label={t("Adherencia de 30 días")} className="flex flex-wrap items-center gap-2">
+                    <span>{t("Adherencia de 30 días")}</span>
+                    {summary.loading ? (
+                      <Skeleton className="h-4 w-10" aria-label={t("Cargando")} />
+                    ) : summary.error ? (
+                      <>
+                        <span role="status">{t("No se pudo cargar el resumen.")}</span>
+                        <Button size="sm" variant="ghost" onClick={refreshSummary}>{t("Reintentar")}</Button>
+                      </>
+                    ) : (
+                      <strong>{summary.data?.last30Days.percent == null ? "—" : summary.data.last30Days.percent + "%"}</strong>
+                    )}
+                  </div>
                   <Link href={"/medications/" + patientId}>
                     {t("Ver paciente")}
                   </Link>
@@ -322,35 +326,43 @@ export function MedicationTracking({
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {detail.map((d) => (
-                      <TableRow key={d.dose.id}>
-                        <TableCell>{d.dose.name}</TableCell>
-                        <TableCell>
-                          {fmt.time(d.dose.scheduledAt, data.timeZone)}
-                        </TableCell>
-                        <TableCell>
-                          {d.dose.occurredAt
-                            ? fmt.time(d.dose.occurredAt, data.timeZone)
-                            : "—"}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline">
-                            {t(timingLabels[d.timing])}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          {d.delayMinutes === null
-                            ? "—"
-                            : d.delayMinutes + " min"}
-                        </TableCell>
-                        <TableCell>
-                          {d.dose.channel && d.dose.occurredAt ? t(medicationChannelLabels[d.dose.channel]) : "—"}
-                        </TableCell>
-                        <TableCell>
-                          {t(d.isRequired ? "Plan asignado" : "Adicional")}
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {detail.map((d) => {
+                      const recordedDate = d.dose.occurredAt
+                        ? dateInZone(new Date(d.dose.occurredAt), data.timeZone)
+                        : null;
+                      return (
+                        <TableRow key={d.dose.id}>
+                          <TableCell>{d.dose.name}</TableCell>
+                          <TableCell>
+                            {fmt.time(d.dose.scheduledAt, data.timeZone)}
+                          </TableCell>
+                          <TableCell>
+                            {d.dose.occurredAt ? (
+                              <time dateTime={d.dose.occurredAt}>
+                                {recordedDate && recordedDate !== d.localDate && <>{fmt.date(recordedDate)} · </>}
+                                {fmt.time(d.dose.occurredAt, data.timeZone)}
+                              </time>
+                            ) : "—"}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline">
+                              {t(timingLabels[d.timing])}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {d.delayMinutes === null
+                              ? "—"
+                              : d.delayMinutes + " min"}
+                          </TableCell>
+                          <TableCell>
+                            {d.dose.channel && d.dose.occurredAt ? t(medicationChannelLabels[d.dose.channel]) : "—"}
+                          </TableCell>
+                          <TableCell>
+                            {t(d.isRequired ? "Plan asignado" : "Adicional")}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
                 {!detail.length && (

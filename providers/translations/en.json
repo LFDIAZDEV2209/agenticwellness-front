@@ -6274,5 +6274,8 @@
   "Preferencias de recordatorio actualizadas": "Reminder preferences updated",
   "Vita · Chat": "Vita · Chat",
   "Vita · Voz": "Vita · Voice",
-  "Cada {hours} horas desde las {time}": "Every {hours} hours from {time}"
+  "Cada {hours} horas desde las {time}": "Every {hours} hours from {time}",
+  "1 vez al día": "Once daily",
+  "Atajos de frecuencia": "Frequency shortcuts",
+  "No se pudo cargar el resumen.": "Could not load the summary."
 }
