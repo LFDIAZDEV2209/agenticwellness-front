@@ -163,6 +163,8 @@ export const auditLabels: Record<string, string> = {
   read: "Consulta",
   export: "Exportación",
   treatment_created: "Tratamiento registrado",
+  treatment_edited: "Pauta actualizada",
+  reminder_preferences_changed: "Preferencias de recordatorio actualizadas",
   treatment_status_changed: "Estado del tratamiento",
   dose_recorded: "Toma registrada",
   dose_corrected: "Toma corregida",

@@ -18,8 +18,9 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { useT } from "@/providers/i18n-provider";
-import { fetchMedicationWeek } from "../services";
-import { useMedicationResource, medicationErrorKey } from "../hooks";
+import { medicationChannelLabels } from "../types";
+import { fetchMedicationAdherence, fetchMedicationWeek } from "../services";
+import { useMedicationResource, useMedicationLiveRefresh, medicationErrorKey } from "../hooks";
 import { MedicationTrackingEmpty } from "./medication-tracking-empty";
 import { timingLabels } from "../monitoring-types";
 import { MedicationError, MedicationLoading } from "./medication-shared";
@@ -68,7 +69,16 @@ export function MedicationTracking({
         : Promise.resolve(null),
     [patientId, from],
   );
-  const r = useMedicationResource(load);
+  const loadSummary = useCallback(
+    (signal: AbortSignal) => patientId ? fetchMedicationAdherence(patientId, "America/Bogota", signal) : Promise.resolve(null),
+    [patientId],
+  );
+  const r = useMedicationResource(load, "", true);
+  const summary = useMedicationResource(loadSummary, "", true);
+  const { retry: refreshWeek } = r;
+  const { retry: refreshSummary } = summary;
+  const refresh = useCallback(() => { refreshWeek(); refreshSummary(); }, [refreshWeek, refreshSummary]);
+  useMedicationLiveRefresh(patientId, refresh);
   const data = r.data;
   const rows = data
     ? Array.from(
@@ -161,7 +171,7 @@ export function MedicationTracking({
                       variant="ghost"
                       size="icon"
                       aria-label={t("Actualizar seguimiento")}
-                      onClick={r.retry}
+                      onClick={refresh}
                     >
                       <RefreshCw />
                     </Button>
@@ -180,6 +190,12 @@ export function MedicationTracking({
                     </strong>
                     {t("Tomas asignadas evaluadas")}
                   </span>
+                  {summary.data && (
+                    <span>
+                      <strong>{summary.data.last30Days.percent == null ? "—" : summary.data.last30Days.percent + "%"}</strong>
+                      <span>{t("Adherencia de 30 días")}</span>
+                    </span>
+                  )}
                   <Link href={"/medications/" + patientId}>
                     {t("Ver paciente")}
                   </Link>
@@ -298,6 +314,7 @@ export function MedicationTracking({
                         "Registrada",
                         "Estado",
                         "Diferencia",
+                        "Canal",
                         "Plan",
                       ].map((x) => (
                         <TableHead key={x}>{t(x)}</TableHead>
@@ -325,6 +342,9 @@ export function MedicationTracking({
                           {d.delayMinutes === null
                             ? "—"
                             : d.delayMinutes + " min"}
+                        </TableCell>
+                        <TableCell>
+                          {d.dose.channel && d.dose.occurredAt ? t(medicationChannelLabels[d.dose.channel]) : "—"}
                         </TableCell>
                         <TableCell>
                           {t(d.isRequired ? "Plan asignado" : "Adicional")}

@@ -16,9 +16,23 @@ export interface MedicationCapabilities {
   modules: { medications: MedicationCapability };
 }
 
+export interface MedicationReminderOverrides {
+  push?: boolean | null;
+  inApp?: boolean | null;
+  whatsApp?: boolean | null;
+  leadMinutes?: number | null;
+  followUpMinutes?: number | null;
+}
+
+export type MedicationChannel = "app" | "erp" | "whatsapp" | "vita_chat" | "vita_voice";
+export const medicationChannelLabels = {
+  app: "App", erp: "ERP", whatsapp: "WhatsApp", vita_chat: "Vita · Chat", vita_voice: "Vita · Voz",
+} as const;
+
 export interface MedicationTreatment {
   id: string;
   medicationId: string | null;
+  rxCui?: string;
   name: string;
   productType: MedicationProductType;
   status: MedicationStatus;
@@ -26,6 +40,7 @@ export interface MedicationTreatment {
   revision: number;
   createdAt: string;
   isRequired?: boolean;
+  prescriber?: string | null;
   dosage: number;
   unit: string;
   route: string;
@@ -34,6 +49,9 @@ export interface MedicationTreatment {
   timeZone: string;
   startDate: string;
   endDate: string | null;
+  weekdayMask?: number | null;
+  intervalHours?: number | null;
+  reminders?: MedicationReminderOverrides;
 }
 
 export interface MedicationDose {
@@ -46,6 +64,7 @@ export interface MedicationDose {
   timeZone: string;
   status: DoseStatus;
   occurredAt: string | null;
+  channel?: MedicationChannel | null;
   revision: number;
 }
 
@@ -54,10 +73,11 @@ export interface MedicationEvent {
   doseId: string;
   treatmentId: string;
   name: string;
-  status: "taken" | "omitted";
+  status: "taken" | "omitted" | "pending";
   occurredAt: string;
   recordedAt: string;
   reason: string | null;
+  channel?: MedicationChannel | null;
   origin: "patient_reported" | "staff_recorded";
 }
 
@@ -76,6 +96,7 @@ export interface MedicationAdherence {
 }
 
 export interface MedicationWorkspace {
+  version?: string;
   patient: { id: string; name: string; mrn: string };
   access: { enabled: boolean; revision: number };
   treatments: MedicationTreatment[];
@@ -118,6 +139,7 @@ export interface MedicationPatientPage {
 
 export interface CreateMedicationTreatment {
   clientRequestId: string;
+  rxCui?: string;
   medicationId: string | null;
   name: string;
   productType: MedicationProductType;
@@ -129,6 +151,9 @@ export interface CreateMedicationTreatment {
   timeZone: string;
   startDate: string;
   endDate: string | null;
+  weekdayMask?: number | null;
+  intervalHours?: number | null;
+  reminders?: MedicationReminderOverrides;
 }
 
 export interface CreateMedicationEvent {
@@ -138,4 +163,17 @@ export interface CreateMedicationEvent {
   occurredAt?: string;
   reason?: string | null;
   expectedRevision: number;
+}
+
+
+export type UpdateMedicationRegimen = Omit<CreateMedicationTreatment, "clientRequestId" | "medicationId" | "name" | "productType" | "rxCui"> & { expectedRevision: number };
+
+export interface MedicationAdherenceWindow {
+  due: number;
+  taken: number;
+  percent: number | null;
+}
+export interface MedicationAdherenceSummary {
+  last7Days: MedicationAdherenceWindow;
+  last30Days: MedicationAdherenceWindow;
 }

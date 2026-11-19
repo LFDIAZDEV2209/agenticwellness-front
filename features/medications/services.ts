@@ -4,6 +4,8 @@ import type {
   CreateMedicationEvent,
   CreateMedicationTreatment,
   MedicationCapabilities,
+  MedicationAdherenceSummary,
+  UpdateMedicationRegimen,
   MedicationDose,
   MedicationPatientPage,
   MedicationOverview,
@@ -71,6 +73,16 @@ export const createMedicationTreatment = (
     body: JSON.stringify(body),
   });
 
+export const fetchMedicationVersion = (patientId: string, signal?: AbortSignal) =>
+  request<string>(`${patientRoot(patientId)}/version`, { signal });
+
+export const fetchMedicationAdherence = (patientId: string, timeZone: string, signal?: AbortSignal) =>
+  request<MedicationAdherenceSummary>(`${patientRoot(patientId)}/adherence?${new URLSearchParams({ timeZone })}`, { signal });
+
+export const updateMedicationRegimen = (patientId: string, treatmentId: string, body: UpdateMedicationRegimen) =>
+  request<MedicationTreatment>(`${patientRoot(patientId)}/treatments/${encodeURIComponent(treatmentId)}`,
+    { method: "PUT", body: JSON.stringify(body) });
+
 export const recordMedicationEvent = (
   patientId: string,
   doseId: string,
@@ -86,11 +98,21 @@ export const setMedicationTreatmentStatus = (
   treatmentId: string,
   status: MedicationStatus,
   expectedRevision: number,
+  reason?: string,
 ) =>
   request<MedicationTreatment>(
     `${patientRoot(patientId)}/treatments/${encodeURIComponent(treatmentId)}/status`,
-    { method: "PUT", body: JSON.stringify({ status, expectedRevision }) },
+    { method: "PUT", body: JSON.stringify({ status, expectedRevision, reason }) },
   );
+
+export type RxTermsOption = { id: string; name: string };
+
+export function searchUsMedicationCatalog(search: string, signal: AbortSignal) {
+  return request<RxTermsOption[]>(
+    `/api/v1/medications/catalog/us?${new URLSearchParams({ search })}`,
+    { signal },
+  );
+}
 
 export const fetchMedicationWeek = (patientId:string, from:string, timeZone:string, signal?:AbortSignal) =>
   request<import('./monitoring-types').MedicationWeek>(`${patientRoot(patientId)}/tracking?${new URLSearchParams({from,timeZone})}`,{signal});

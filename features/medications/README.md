@@ -56,3 +56,15 @@ El indicador de acceso es una cifra simple, sin anillo que comprima el texto.
 `e2e/medications-monitoring-real.spec.ts` cubre el flujo con API/Auth/PostgreSQL
 reales. La bitácora registra consultas/operaciones desde esta entrega; los
 registros de escritura anteriores siguen en la auditoría general.
+
+### Catálogo de medicamentos de EE. UU.
+
+En **Nuevo tratamiento**, el buscador consulta RxTerms por marca, ingrediente o
+RxCUI y muestra la presentación completa. Seleccionar un resultado conserva su
+RxCUI en el tratamiento y pide registrar la cantidad por toma, unidad y vía.
+La entrada manual sigue disponible.
+
+This product uses publicly available data from the U.S. National Library of
+Medicine (NLM), National Institutes of Health, Department of Health and Human
+Services; NLM is not responsible for the product and does not endorse or
+recommend this or any other product.

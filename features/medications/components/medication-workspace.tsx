@@ -23,6 +23,7 @@ import {
 import { useBreadcrumbTitle } from "@/components/layout/breadcrumb-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { NativeSelect } from "@/components/ui/native-select";
 import { Textarea } from "@/components/ui/textarea";
@@ -31,7 +32,7 @@ import {MedicationInventory} from "./medication-inventory";
 import {MedicationEffects} from "./medication-effects";
 import {MedicationTracking} from "./medication-tracking";
 import {fetchMedicationExport} from "../services";
-import { isRequiredMedication } from "../types";
+import { isRequiredMedication, medicationChannelLabels } from "../types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useI18n, useT } from "@/providers/i18n-provider";
 import { ApiError } from "@/lib/api/http";
@@ -39,6 +40,7 @@ import {
   medicationErrorKey,
   useMedicationCapabilities,
   useMedicationResource,
+  useMedicationLiveRefresh,
 } from "../hooks";
 import {
   fetchMedicationWorkspace,
@@ -114,6 +116,9 @@ function MedicationWorkspaceContent({
   const [formOpen, setFormOpen] = useState(
     initialCreate && capability.canManage,
   );
+  const [editing, setEditing] = useState<MedicationTreatment | null>(null);
+  const [suspending, setSuspending] = useState<MedicationTreatment | null>(null);
+  const [suspensionReason, setSuspensionReason] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [writeError, setWriteError] = useState<string | null>(null);
@@ -132,8 +137,9 @@ function MedicationWorkspaceContent({
       fetchMedicationWorkspace(patientId, date, timeZone, signal),
     [patientId, date, timeZone],
   );
-  const resource = useMedicationResource(load);
+  const resource = useMedicationResource(load, "", true);
   const data = resource.data;
+  useMedicationLiveRefresh(patientId, resource.retry, data?.version);
   useBreadcrumbTitle(data?.patient.name ?? null);
   const formatTime = (value: string, zone = timeZone) =>
     new Intl.DateTimeFormat(lang === "en" ? "en-US" : "es-CO", {
@@ -168,7 +174,7 @@ function MedicationWorkspaceContent({
     action: () => Promise<unknown>,
     success: string,
   ) {
-    if (busy) return;
+    if (busy) return false;
     setBusy(key);
     setMessage(null);
     setWriteError(null);
@@ -176,12 +182,14 @@ function MedicationWorkspaceContent({
       await action();
       setMessage(t(success));
       resource.retry();
+      return true;
     } catch (error) {
       setWriteError(t(medicationErrorKey(error)));
       if (error instanceof ApiError && error.status === 403) {
         capability.retry();
         resource.retry();
       }
+      return false;
     } finally {
       setBusy(null);
     }
@@ -220,6 +228,7 @@ function MedicationWorkspaceContent({
   function changeStatus(
     treatment: MedicationTreatment,
     status: MedicationStatus,
+    reason?: string,
   ) {
     return mutate(
       treatment.id,
@@ -229,6 +238,7 @@ function MedicationWorkspaceContent({
           treatment.id,
           status,
           treatment.revision,
+          reason,
         ),
       "Tratamiento actualizado",
     );
@@ -310,6 +320,7 @@ function MedicationWorkspaceContent({
               {capability.canManage && (
                 <Button
                   onClick={() => {
+                    setEditing(null);
                     setFormOpen(true);
                     setWriteError(null);
                     setMessage(null);
@@ -364,18 +375,46 @@ function MedicationWorkspaceContent({
           {writeError && (
             <MedicationError message={writeError} retry={resource.retry} />
           )}
-          {formOpen && capability.canManage && (
+          {(formOpen || editing) && capability.canManage && (
             <MedicationTreatmentForm
+              key={editing?.id ?? "new"}
               patientId={patientId}
+              treatment={editing ?? undefined}
               onSaved={() => {
                 setFormOpen(false);
-                setMessage(t("Tratamiento registrado"));
+                setEditing(null);
+                setMessage(t(editing ? "Tratamiento actualizado" : "Tratamiento registrado"));
                 setTab("treatments");
                 resource.retry();
               }}
-              onCancel={() => setFormOpen(false)}
+              onCancel={() => {
+                setFormOpen(false);
+                setEditing(null);
+              }}
             />
           )}
+          <Dialog open={Boolean(suspending)} onOpenChange={(open) => { if (!open) setSuspending(null); }}>
+            <DialogContent size="sm">
+              <DialogTitle>{t("Suspender tratamiento")}</DialogTitle>
+              <DialogDescription>{suspending?.name}</DialogDescription>
+              <form onSubmit={(event) => {
+                event.preventDefault();
+                if (!suspending || !suspensionReason.trim()) return;
+                void changeStatus(suspending, "paused", suspensionReason.trim());
+                setSuspending(null);
+              }}>
+                <label className="grid gap-2">
+                  {t("Motivo de suspensión")}
+                  <Textarea required maxLength={500} value={suspensionReason}
+                    onChange={(event) => setSuspensionReason(event.target.value)} />
+                </label>
+                <DialogFooter className="mt-4">
+                  <Button type="button" variant="outline" onClick={() => setSuspending(null)}>{t("Cancelar")}</Button>
+                  <Button type="submit" disabled={!suspensionReason.trim()}>{t("Confirmar suspensión")}</Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
           <Tabs
             value={tab}
             onValueChange={(value) => setTab(String(value))}
@@ -528,7 +567,11 @@ function MedicationWorkspaceContent({
                       <div className="medication-treatment-details">
                         <span>
                           <Clock3 aria-hidden />
-                          {treatment.times.join(" · ")}
+                          {treatment.intervalHours
+                            ? t("Cada {hours} horas desde las {time}", { hours: String(treatment.intervalHours), time: treatment.times[0] })
+                            : treatment.times.join(" · ")}
+                          {treatment.weekdayMask != null ? " · " + ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
+                            .filter((_, index) => Boolean(treatment.weekdayMask! & (1 << index))).map(day => t(day)).join(", ") : ""}
                         </span>
                         <span>
                           {t(
@@ -547,6 +590,7 @@ function MedicationWorkspaceContent({
                                 ? "Registro anterior"
                                 : "Registrado por personal",
                           )}
+                          {treatment.prescriber ? ` · ${treatment.prescriber}` : ""}
                         </span>
                       </div>
                       {treatment.instructions && (
@@ -557,18 +601,29 @@ function MedicationWorkspaceContent({
                       {capability.canManage &&
                         treatment.status !== "completed" && (
                           <div className="medication-treatment-actions">
+                            {treatment.origin === "staff_recorded" && (
+                              <Button size="sm" variant="outline" disabled={busy !== null} onClick={() => {
+                                setFormOpen(false);
+                                setEditing(treatment);
+                                window.requestAnimationFrame(() =>
+                                  document.getElementById("medication-form-title")?.scrollIntoView({ block: "nearest" }));
+                              }}>
+                                <PencilLine data-icon="inline-start" aria-hidden />
+                                {t("Editar dosis y horarios")}
+                              </Button>
+                            )}
                             <Button
                               size="sm"
                               variant="outline"
                               disabled={busy !== null}
-                              onClick={() =>
-                                void changeStatus(
-                                  treatment,
-                                  treatment.status === "active"
-                                    ? "paused"
-                                    : "active",
-                                )
-                              }
+                              onClick={() => {
+                                if (treatment.status === "active") {
+                                  setSuspensionReason("");
+                                  setSuspending(treatment);
+                                } else {
+                                  void changeStatus(treatment, "active");
+                                }
+                              }}
                             >
                               {treatment.status === "active" ? (
                                 <Pause data-icon="inline-start" aria-hidden />
@@ -624,7 +679,7 @@ function MedicationWorkspaceContent({
                         </h3>
                         <p>
                           {t(
-                            event.origin === "patient_reported"
+                            event.channel ? medicationChannelLabels[event.channel] : event.origin === "patient_reported"
                               ? "Registrado por paciente"
                               : "Registrado por personal",
                           )}
@@ -636,7 +691,9 @@ function MedicationWorkspaceContent({
                         )}
                       </div>
                       <div className="medication-event-meta">
-                        <MedicationStatusBadge status={event.status} />
+                        {event.status === "pending"
+                          ? <Badge variant="outline">{t("Toma deshecha")}</Badge>
+                          : <MedicationStatusBadge status={event.status} />}
                         <time dateTime={event.occurredAt}>
                           {formatDate(event.occurredAt)}
                         </time>
@@ -666,7 +723,7 @@ function MedicationDoseCorrection({
     dose: MedicationDose,
     status: "taken" | "omitted",
     reason: string,
-  ) => Promise<void>;
+  ) => Promise<boolean>;
 }) {
   const t = useT();
   const [open, setOpen] = useState(false);
@@ -680,7 +737,11 @@ function MedicationDoseCorrection({
         size="sm"
         variant="ghost"
         disabled={busy}
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setStatus(dose.status === "taken" ? "taken" : "omitted");
+          setReason("");
+          setOpen(true);
+        }}
       >
         <PencilLine data-icon="inline-start" aria-hidden />
         {t("Corregir registro")}
@@ -690,10 +751,10 @@ function MedicationDoseCorrection({
     <form
       className="medication-dose-correction"
       aria-label={t("Corregir registro")}
-      onSubmit={(event) => {
+      onSubmit={async (event) => {
         event.preventDefault();
-        if (status !== dose.status && reason.trim().length >= 3)
-          void onSave(dose, status, reason.trim());
+        if (status !== dose.status && reason.trim().length >= 3 && await onSave(dose, status, reason.trim()))
+          setOpen(false);
       }}
     >
       <label>
