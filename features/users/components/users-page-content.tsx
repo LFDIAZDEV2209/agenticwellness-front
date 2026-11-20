@@ -28,6 +28,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useAuth } from "@/providers/auth-provider";
 import type { Permission } from "@/features/permissions/types";
 import type { Role } from "@/features/roles/types";
@@ -38,9 +39,11 @@ import {
   fetchRoles,
   fetchUserRoles,
   fetchUserStats,
+  getAccountType,
+  getFullName,
   updateUser,
 } from "../services/users-service";
-import type { User, UserStats } from "../types";
+import type { User, UserStats, UsersFilters } from "../types";
 import type { DataView } from "@/components/feedback/view-toggle";
 import {
   Pagination,
@@ -55,6 +58,7 @@ import { UsersTable } from "./users-table";
 import { UsersCards } from "./users-cards";
 import { BulkRolesProvider, UsersBulkBar } from "./users-bulk-bar";
 import { UserPermissionsDialog } from "./user-permissions-dialog";
+import { AccountTypeTabs, accountSegments } from "./account-type-tabs";
 import { useT } from "@/providers/i18n-provider";
 
 /**
@@ -91,7 +95,8 @@ export function UsersPageContent() {
   } = useUsers();
 
   const [view, setView] = useState<DataView>("table");
-  const [stats, setStats] = useState<UserStats | null>(null);
+  const [stats, setStats] = useState<{ segment: UsersFilters["accountType"]; data: UserStats } | null>(null);
+  const [statsRevision, setStatsRevision] = useState(0);
   const [catalog, setCatalog] = useState<{
     roles: Role[];
     permissions: Permission[];
@@ -120,33 +125,38 @@ export function UsersPageContent() {
     };
   }, []);
 
-  const loadStats = useCallback(async () => {
-    try {
-      setStats(await fetchUserStats());
-    } catch {
-      // Los stats son informativos: sin ellos la lista sigue funcionando.
-    }
-  }, []);
+  const refreshStats = () => setStatsRevision((revision) => revision + 1);
+  const segment = filters.accountType;
+  const segmentStats = stats?.segment === segment ? stats.data : null;
+  const canBulkAssignRoles = canAssignRoles && segment !== "patient" &&
+    !result?.data.some((user) => selectedIds.has(user.id) && getAccountType(user) === "patient");
 
-  // Sincroniza stats con el total de resultados (setState en callback, no
-  // síncrono en el cuerpo del effect).
   useEffect(() => {
-    let cancelled = false;
-    fetchUserStats()
-      .then((s) => {
-        if (!cancelled) setStats(s);
+    const controller = new AbortController();
+    fetchUserStats(segment, controller.signal)
+      .then((data) => {
+        if (!controller.signal.aborted) setStats({ segment, data });
       })
       .catch(() => {
         // Sin stats la lista sigue funcionando.
       });
-    return () => {
-      cancelled = true;
-    };
-  }, [result?.total]);
+    return () => controller.abort();
+  }, [segment, statsRevision]);
 
   const roleNames = (catalog?.roles ?? []).map((role) => role.name);
 
   const dismissNotice = useCallback(() => setNotice(null), []);
+
+  const changeSegment = (value: unknown) => {
+    const next = accountSegments.find((item) => item === value);
+    if (!next || next === segment) return;
+    setPermissionsUser(undefined);
+    setFilters({ accountType: next, search: "", role: "all" });
+  };
+
+  const openPermissions = (user: User) => {
+    if (getAccountType(user) === "erp") setPermissionsUser(user);
+  };
 
   // --- Acciones individuales ---
 
@@ -174,7 +184,7 @@ export function UsersPageContent() {
             ),
       });
       await refetch();
-      void loadStats();
+      refreshStats();
     } catch (err) {
       setNotice({
         tone: "error",
@@ -192,7 +202,7 @@ export function UsersPageContent() {
       setDeleting(undefined);
       clearSelection();
       await refetch();
-      void loadStats();
+      refreshStats();
     } catch (err) {
       setNotice({
         tone: "error",
@@ -229,7 +239,7 @@ export function UsersPageContent() {
     }
     clearSelection();
     await refetch();
-    void loadStats();
+    refreshStats();
     setBulkBusy(false);
     const parts: string[] = [
       `${done} ${done === 1 ? t("usuario actualizado") : t("usuarios actualizados")}`,
@@ -243,6 +253,7 @@ export function UsersPageContent() {
   };
 
   const bulkAssignRole = async (roleId: string) => {
+    if (!canBulkAssignRoles || !selectedIds.size) return;
     setBulkBusy(true);
     setNotice(null);
     let done = 0;
@@ -268,6 +279,7 @@ export function UsersPageContent() {
     }
     clearSelection();
     await refetch();
+    refreshStats();
     setBulkBusy(false);
     setNotice({
       tone: failed > 0 ? "error" : "info",
@@ -298,7 +310,7 @@ export function UsersPageContent() {
     }
     clearSelection();
     await refetch();
-    void loadStats();
+    refreshStats();
     setBulkBusy(false);
     const parts: string[] = [
       `${done} ${done === 1 ? t("usuario eliminado") : t("usuarios eliminados")}`,
@@ -311,7 +323,7 @@ export function UsersPageContent() {
 
   return (
     <BulkRolesProvider roles={catalog?.roles ?? []}>
-      <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
+      <Tabs value={segment} onValueChange={changeSegment} className="min-w-0 gap-5 p-4 sm:p-6">
         <PageHeader
           title={t("Usuarios")}
           description={t(
@@ -368,161 +380,165 @@ export function UsersPageContent() {
           </div>
         )}
 
-        <UsersStats stats={stats} filters={filters} onStatFilter={setFilters} />
+        <AccountTypeTabs stats={stats?.data ?? null} />
+        <TabsContent key={segment} value={segment} className="flex min-w-0 flex-col gap-5" tabIndex={0}>
+          <UsersStats stats={segmentStats} filters={filters} onStatFilter={setFilters} />
 
-        <UsersToolbar
-          filters={filters}
-          roles={roleNames}
-          view={view}
-          onViewChange={setView}
-          onFilterChange={setFilters}
-        />
-
-        {loading ? (
-          <UsersTableSkeleton />
-        ) : error ? (
-          <UsersErrorState message={error} onRetry={retry} />
-        ) : result && result.data.length > 0 ? (
-          <div className="overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-xs">
-            <SectionHeader
-              title={`${result.total} ${result.total === 1 ? t("usuario") : t("usuarios")} ${result.total === 1 ? t("encontrado") : t("encontrados")}`}
-              description={t("Administra los usuarios de la plataforma")}
-              icon={UsersIcon}
-              variant="primary"
-              actions={
-                selectedIds.size > 0 ? (
-                  <button
-                    type="button"
-                    onClick={clearSelection}
-                    className="rounded-md px-2 py-1 text-[11px] font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white"
-                  >
-                    {t("Limpiar selección")}
-                  </button>
-                ) : undefined
-              }
-            />
-            {view === "table" ? (
-              <UsersTable
-                users={result.data}
-                selectedIds={selectedIds}
-                sort={sort}
-                onSortChange={setSort}
-                onToggleSelect={toggleSelect}
-                onToggleSelectAll={toggleSelectAll}
-                onView={(user) => router.push(`/users/${user.id}`)}
-                onEdit={(user) => router.push(`/users/${user.id}/editar`)}
-                onToggleActive={(user) => void toggleActive(user)}
-                onDelete={setDeleting}
-                onPermissions={setPermissionsUser}
-              />
-            ) : (
-              <UsersCards
-                users={result.data}
-                selectedIds={selectedIds}
-                onToggleSelect={toggleSelect}
-                onView={(user) => router.push(`/users/${user.id}`)}
-                onEdit={(user) => router.push(`/users/${user.id}/editar`)}
-                onToggleActive={(user) => void toggleActive(user)}
-                onDelete={setDeleting}
-                onPermissions={setPermissionsUser}
-              />
-            )}
-          </div>
-        ) : (
-          <EmptyState
-            hasUsers={(stats?.total ?? 0) > 0}
-            hasFilters={
-              Boolean(filters.search) ||
-              filters.status !== "all" ||
-              filters.role !== "all" ||
-              filters.createdWithin !== "all"
-            }
-            onCreate={() => router.push("/people/new?mode=user")}
-            onClearFilters={() =>
-              setFilters({
-                search: "",
-                status: "all",
-                role: "all",
-                createdWithin: "all",
-              })
-            }
-            canCreate={canCreate}
+          <UsersToolbar
+            filters={filters}
+            roles={roleNames}
+            view={view}
+            onViewChange={setView}
+            onFilterChange={setFilters}
           />
-        )}
 
-        {result && result.totalPages > 1 && (
-          <div className="flex flex-col items-center justify-between gap-3 text-xs text-muted-foreground sm:flex-row">
-            <span>
-              {t("Página {page} de {totalPages}", {
-                page: String(result.page),
-                totalPages: String(result.totalPages),
-              })}{" "}
-              · {result.total}{" "}
-              {result.total === 1 ? t("usuario") : t("usuarios")}
-            </span>
-            <div className="flex items-center gap-3">
-              <select
-                className="h-8 rounded-md border border-input bg-background px-2 text-xs outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                value={result.pageSize}
-                onChange={(event) => setPageSize(Number(event.target.value))}
-                aria-label={t("Usuarios por página")}
-              >
-                <option value={5}>{t("5 por página")}</option>
-                <option value={10}>{t("10 por página")}</option>
-                <option value={20}>{t("20 por página")}</option>
-              </select>
-              <Pagination className="w-auto justify-start">
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious
-                      text={t("Anterior")}
-                      aria-label={t("Página anterior")}
-                      aria-disabled={result.page === 1}
-                      className={
-                        result.page === 1
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setPage(result.page - 1);
-                      }}
-                    />
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationNext
-                      text={t("Siguiente")}
-                      aria-label={t("Página siguiente")}
-                      aria-disabled={result.page === result.totalPages}
-                      className={
-                        result.page === result.totalPages
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setPage(result.page + 1);
-                      }}
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
+          {loading ? (
+            <UsersTableSkeleton />
+          ) : error ? (
+            <UsersErrorState message={error} onRetry={retry} />
+          ) : result && result.data.length > 0 ? (
+            <div className="overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-xs">
+              <SectionHeader
+                title={`${result.total} ${result.total === 1 ? t("usuario") : t("usuarios")} ${result.total === 1 ? t("encontrado") : t("encontrados")}`}
+                description={t("Administra los usuarios de la plataforma")}
+                icon={UsersIcon}
+                variant="primary"
+                actions={
+                  selectedIds.size > 0 ? (
+                    <button
+                      type="button"
+                      onClick={clearSelection}
+                      className="rounded-md px-2 py-1 text-[11px] font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+                    >
+                      {t("Limpiar selección")}
+                    </button>
+                  ) : undefined
+                }
+              />
+              {view === "table" ? (
+                <UsersTable
+                  users={result.data}
+                  segment={segment}
+                  selectedIds={selectedIds}
+                  sort={sort}
+                  onSortChange={setSort}
+                  onToggleSelect={toggleSelect}
+                  onToggleSelectAll={toggleSelectAll}
+                  onView={(user) => router.push(`/users/${user.id}`)}
+                  onEdit={(user) => router.push(`/users/${user.id}/editar`)}
+                  onToggleActive={(user) => void toggleActive(user)}
+                  onDelete={setDeleting}
+                  onPermissions={openPermissions}
+                />
+              ) : (
+                <UsersCards
+                  users={result.data}
+                  selectedIds={selectedIds}
+                  onToggleSelect={toggleSelect}
+                  onView={(user) => router.push(`/users/${user.id}`)}
+                  onEdit={(user) => router.push(`/users/${user.id}/editar`)}
+                  onToggleActive={(user) => void toggleActive(user)}
+                  onDelete={setDeleting}
+                  onPermissions={openPermissions}
+                />
+              )}
             </div>
-          </div>
-        )}
+          ) : (
+            <EmptyState
+              segment={segment}
+              hasFilters={
+                Boolean(filters.search) ||
+                filters.status !== "all" ||
+                filters.role !== "all" ||
+                filters.createdWithin !== "all"
+              }
+              onCreate={() => router.push("/people/new?mode=user")}
+              onClearFilters={() =>
+                setFilters({
+                  search: "",
+                  status: "all",
+                  role: "all",
+                  createdWithin: "all",
+                })
+              }
+              canCreate={canCreate && segment !== "patient"}
+            />
+          )}
 
-        {/* Barra de acciones masivas */}
-        <UsersBulkBar
-          selectedCount={selectedIds.size}
-          busy={bulkBusy}
-          onClear={clearSelection}
-          onAssignRole={bulkAssignRole}
-          onSetActive={bulkSetActive}
-          onDelete={bulkDelete}
-          canAssignRoles={canAssignRoles}
-          canUpdate={canUpdate}
-          canDelete={canDelete}
-        />
+          {result && result.totalPages > 1 && (
+            <div className="flex flex-col items-center justify-between gap-3 text-xs text-muted-foreground sm:flex-row">
+              <span>
+                {t("Página {page} de {totalPages}", {
+                  page: String(result.page),
+                  totalPages: String(result.totalPages),
+                })}{" "}
+                · {result.total}{" "}
+                {result.total === 1 ? t("usuario") : t("usuarios")}
+              </span>
+              <div className="flex items-center gap-3">
+                <select
+                  className="h-8 rounded-md border border-input bg-background px-2 text-xs outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  value={result.pageSize}
+                  onChange={(event) => setPageSize(Number(event.target.value))}
+                  aria-label={t("Usuarios por página")}
+                >
+                  <option value={5}>{t("5 por página")}</option>
+                  <option value={10}>{t("10 por página")}</option>
+                  <option value={20}>{t("20 por página")}</option>
+                </select>
+                <Pagination className="w-auto justify-start">
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        text={t("Anterior")}
+                        aria-label={t("Página anterior")}
+                        aria-disabled={result.page === 1}
+                        className={
+                          result.page === 1
+                            ? "pointer-events-none opacity-50"
+                            : "cursor-pointer"
+                        }
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setPage(result.page - 1);
+                        }}
+                      />
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationNext
+                        text={t("Siguiente")}
+                        aria-label={t("Página siguiente")}
+                        aria-disabled={result.page === result.totalPages}
+                        className={
+                          result.page === result.totalPages
+                            ? "pointer-events-none opacity-50"
+                            : "cursor-pointer"
+                        }
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setPage(result.page + 1);
+                        }}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            </div>
+          )}
+
+          {/* Barra de acciones masivas */}
+          <UsersBulkBar
+            selectedCount={selectedIds.size}
+            busy={bulkBusy}
+            onClear={clearSelection}
+            onAssignRole={bulkAssignRole}
+            onSetActive={bulkSetActive}
+            onDelete={bulkDelete}
+            canAssignRoles={canBulkAssignRoles}
+            canUpdate={canUpdate}
+            canDelete={canDelete}
+          />
+        </TabsContent>
 
         {/* Confirmación de eliminación individual */}
         <AlertDialog
@@ -538,7 +554,7 @@ export function UsersPageContent() {
               <AlertDialogDescription>
                 {t("Se eliminará el usuario")}
                 {deleting
-                  ? ` "${deleting.firstName} ${deleting.lastName}"`
+                  ? ` "${getFullName(deleting) || t("Sin nombre")}"`
                   : ""}{" "}
                 {t(
                   "y todas sus asignaciones. El perfil del directorio y el historial clínico se conservan. Esta acción no se puede deshacer.",
@@ -569,10 +585,10 @@ export function UsersPageContent() {
         </AlertDialog>
 
         {/* Diálogo de permisos directos del usuario */}
-        {permissionsUser && (
+        {segment !== "patient" && permissionsUser && getAccountType(permissionsUser) === "erp" && (
           <UserPermissionsDialog
             userId={permissionsUser.id}
-            userName={`${permissionsUser.firstName} ${permissionsUser.lastName}`}
+            userName={getFullName(permissionsUser) || t("Sin nombre")}
             roles={permissionsUser.roles}
             open={Boolean(permissionsUser)}
             onOpenChange={(open) => {
@@ -580,7 +596,7 @@ export function UsersPageContent() {
             }}
           />
         )}
-      </div>
+      </Tabs>
     </BulkRolesProvider>
   );
 }
@@ -633,20 +649,20 @@ function UsersErrorState({
 }
 
 function EmptyState({
-  hasUsers,
+  segment,
   hasFilters,
   onCreate,
   onClearFilters,
   canCreate,
 }: {
-  hasUsers: boolean;
+  segment: UsersFilters["accountType"];
   hasFilters: boolean;
   onCreate: () => void;
   onClearFilters: () => void;
   canCreate: boolean;
 }) {
   const t = useT();
-  const isFilterIssue = hasUsers && hasFilters;
+  const isFilterIssue = hasFilters;
 
   return (
     <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-border bg-card py-16">
@@ -667,12 +683,14 @@ function EmptyState({
         <h3 className="text-sm font-semibold text-foreground">
           {isFilterIssue
             ? t("Sin resultados para estos filtros")
-            : t("Aún no hay usuarios")}
+            : segment === "patient"
+              ? t("Aún no hay cuentas de pacientes")
+              : segment === "erp" ? t("Aún no hay usuarios ERP") : t("Aún no hay usuarios")}
         </h3>
         <p className="mt-1 text-[13px] text-muted-foreground">
           {isFilterIssue
             ? t("Probá ajustar o limpiar los filtros de búsqueda.")
-            : t(
+            : segment === "patient" ? t("Aquí aparecerán las cuentas con acceso a la app móvil.") : t(
                 "Creá el primer usuario o importá una lista completa desde un archivo.",
               )}
         </p>

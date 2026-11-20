@@ -5,6 +5,7 @@ import {
   ArrowDown,
   ArrowUp,
   ArrowUpDown,
+  ArrowUpRight,
   CalendarDays,
   Clock,
   Eye,
@@ -35,10 +36,12 @@ import {
 import { useAuth } from "@/providers/auth-provider";
 import { cn } from "@/lib/utils";
 import { useT } from "@/providers/i18n-provider";
-import type { User, UserSort, UserSortField } from "../types";
-import { formatDate, getFullName } from "../services/users-service";
+import type { User, UserSort, UserSortField, UsersFilters } from "../types";
+import { formatDate, getAccountType, getFullName } from "../services/users-service";
 import { formatRelativeTime } from "../services/users-mock";
 import {
+  getDirectoryUserHref,
+  PatientDirectoryAccess,
   RoleChips,
   UserAvatar,
   UserIdentity,
@@ -47,6 +50,7 @@ import {
 
 interface UsersTableProps {
   users: User[];
+  segment: UsersFilters["accountType"];
   selectedIds: Set<string>;
   sort: UserSort;
   onSortChange: (sort: UserSort) => void;
@@ -119,6 +123,7 @@ function SortHeader({
 
 export function UsersTable({
   users,
+  segment,
   selectedIds,
   sort,
   onSortChange,
@@ -156,7 +161,7 @@ export function UsersTable({
               onSortChange={onSortChange}
             />
           </TableHead>
-          <TableHead className="w-[190px]">{t("Roles")}</TableHead>
+          <TableHead className="w-[190px]">{segment === "erp" ? t("Roles") : t("Acceso")}</TableHead>
           <TableHead className="w-[120px]">
             <SortHeader
               label={t("Estado")}
@@ -187,6 +192,8 @@ export function UsersTable({
       <TableBody>
         {users.map((user, index) => {
           const selected = selectedIds.has(user.id);
+          const isPatient = getAccountType(user) === "patient";
+          const name = getFullName(user) || t("Sin nombre");
           const lastAccess = user.lastAccessAt ? Date.parse(user.lastAccessAt) : null;
           return (
             <TableRow
@@ -200,13 +207,13 @@ export function UsersTable({
                   checked={selected}
                   onCheckedChange={() => onToggleSelect(user.id)}
                   aria-label={t("Seleccionar {name}", {
-                    name: getFullName(user),
+                    name,
                   })}
                 />
               </TableCell>
               <TableCell>
                 <Link
-                  href={`/users/${user.id}`}
+                  href={getDirectoryUserHref(user)}
                   className="flex items-center gap-3 rounded-lg p-1 -m-1 transition-colors hover:bg-muted/60"
                 >
                   <UserAvatar user={user} className="size-8" />
@@ -214,7 +221,7 @@ export function UsersTable({
                 </Link>
               </TableCell>
               <TableCell>
-                <RoleChips roles={user.roles} scopedRoles={user.scopedRoles} />
+                {isPatient ? <PatientDirectoryAccess user={user} /> : <RoleChips roles={user.roles} scopedRoles={user.scopedRoles} />}
               </TableCell>
               <TableCell>
                 <UserStatusBadge isActive={user.isActive} />
@@ -232,12 +239,12 @@ export function UsersTable({
                 </span>
               </TableCell>
               <TableCell>
-                {canUpdate || canDelete ? (
+                {isPatient || canUpdate || canDelete ? (
                   <DropdownMenu>
                     <DropdownMenuTrigger
                       className="flex size-8 items-center justify-center rounded-md transition-colors hover:bg-muted"
                       aria-label={t("Acciones de {name}", {
-                        name: getFullName(user),
+                        name,
                       })}
                     >
                       <MoreHorizontal className="size-4 text-muted-foreground" />
@@ -245,12 +252,18 @@ export function UsersTable({
                     <DropdownMenuContent align="end" className="w-48">
                       <DropdownMenuItem onClick={() => onView(user)}>
                         <Eye className="size-4" />
-                        {t("Ver usuario")}
+                        {isPatient ? t("Ver cuenta") : t("Ver usuario")}
                       </DropdownMenuItem>
+                      {isPatient && user.patient && (
+                        <DropdownMenuItem render={<Link href={getDirectoryUserHref(user)} />}>
+                          <ArrowUpRight className="size-4" />
+                          {t("Abrir ficha")}
+                        </DropdownMenuItem>
+                      )}
                       {canUpdate && (
                         <DropdownMenuItem onClick={() => onEdit(user)}>
                           <Pencil className="size-4" />
-                          {t("Editar")}
+                          {isPatient ? t("Editar cuenta") : t("Editar")}
                         </DropdownMenuItem>
                       )}
                       {canUpdate && (
@@ -271,11 +284,11 @@ export function UsersTable({
                               {t("Activar")}
                             </DropdownMenuItem>
                           )}
-                        <DropdownMenuItem onClick={() => onEdit(user)}>
+                        {!isPatient && <DropdownMenuItem onClick={() => onEdit(user)}>
                           <UserRoundCog className="size-4" />
                           {t("Gestionar roles")}
-                        </DropdownMenuItem>
-                        {canAssignPermissions && (
+                        </DropdownMenuItem>}
+                        {!isPatient && canAssignPermissions && (
                           <DropdownMenuItem onClick={() => onPermissions(user)}>
                             <ShieldCheck className="size-4" />
                             {t("Permisos")}

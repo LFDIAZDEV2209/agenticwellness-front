@@ -1,11 +1,13 @@
 "use client";
 
-import { CheckCircle2, ShieldAlert, ShieldCheck, XCircle } from "lucide-react";
+import Link from "next/link";
+import { ArrowUpRight, CheckCircle2, Info, ShieldAlert, ShieldCheck, Smartphone, XCircle } from "lucide-react";
 import { rainbowStyle } from "@/lib/ui/rainbow";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useT } from "@/providers/i18n-provider";
-import { getFullName, getInitials } from "../services/users-service";
+import { getAccountType, getFullName, getInitials } from "../services/users-service";
 import type { User, ScopedUserRole } from "../types";
 
 /**
@@ -25,7 +27,7 @@ export function UserAvatar({
   return (
     <Avatar className={cn("border-2 border-white shadow-sm", className)}>
       <AvatarFallback className="bg-gradient-to-br from-[var(--sidebar)] to-brand-teal text-[11px] font-bold text-white">
-        {getInitials(user as User)}
+        {getInitials(user)}
       </AvatarFallback>
     </Avatar>
   );
@@ -130,7 +132,72 @@ export function RoleChips({
   );
 }
 
-/** Nombre completo en una línea + email debajo (celda "Usuario" rica). */
+export function getDirectoryUserHref(user: User) {
+  return getAccountType(user) === "patient" && user.patient
+    ? `/patients/${user.patient.id}`
+    : `/users/${user.id}`;
+}
+
+export function AccountTypeBadge({ user }: { user: User }) {
+  const t = useT();
+  const isErp = getAccountType(user) === "erp";
+  return (
+    <span className="inline-flex shrink-0 items-center gap-1">
+      {isErp && (
+        <span className="rounded-full bg-brand-navy px-2 py-0.5 text-[11px] font-semibold text-white">
+          {t("ERP")}
+        </span>
+      )}
+      {(!isErp || user.applications?.includes("app")) && (
+        <span className="spectrum-tag rounded-full px-2 py-0.5 text-[11px] font-semibold" style={rainbowStyle("teal")}>
+          {t("App")}
+        </span>
+      )}
+    </span>
+  );
+}
+
+export function MobileAccessBadge() {
+  const t = useT();
+  return (
+    <span className="spectrum-tag inline-flex w-fit items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium" style={rainbowStyle("teal")}>
+      <Smartphone aria-hidden="true" className="size-3.5" />
+      {t("App móvil")}
+    </span>
+  );
+}
+
+export function PatientDirectoryAccess({ user }: { user: User }) {
+  const t = useT();
+  return (
+    <div className="flex flex-wrap items-center gap-1.5">
+      {user.patient?.documentNumber && <span className="text-xs tabular-nums">{t("ID {document}", { document: user.patient.documentNumber })}</span>}
+      <MobileAccessBadge />
+    </div>
+  );
+}
+
+export function PatientAccessNotice() {
+  const t = useT();
+  return (
+    <div className="flex items-start gap-2 rounded-lg bg-info-soft px-3 py-2.5 text-sm text-info-soft-foreground">
+      <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+      <p>{t("Esta cuenta solo accede a la app móvil. Los roles y permisos del ERP no se aplican.")}</p>
+    </div>
+  );
+}
+
+export function OpenPatientProfile({ patient }: { patient: NonNullable<User["patient"]> }) {
+  const t = useT();
+  return (
+    <Link href={`/patients/${patient.id}`} className={buttonVariants({ variant: "outline", className: "w-fit" })}>
+      {t("Abrir ficha del paciente")}
+      <ArrowUpRight data-icon="inline-end" aria-hidden="true" />
+    </Link>
+  );
+}
+
+/** Identidad y medio de contacto de la cuenta. */
 export function UserIdentity({
   user,
   emailClassName,
@@ -138,19 +205,26 @@ export function UserIdentity({
   user: User;
   emailClassName?: string;
 }) {
+  const t = useT();
   return (
     <div className="flex min-w-0 flex-col leading-tight">
-      <span className="truncate text-[13px] font-semibold text-foreground">
-        {getFullName(user)}
-      </span>
+      <div className="flex min-w-0 flex-wrap items-center gap-x-2">
+        <span className="truncate text-[13px] font-semibold text-foreground">
+          {getFullName(user) || t("Sin nombre")}
+        </span>
+        <AccountTypeBadge user={user} />
+      </div>
       <span
         className={cn(
           "truncate text-[11px] text-muted-foreground",
           emailClassName,
         )}
       >
-        {user.email}
+        {user.email || user.phoneNumber || t("Sin correo")}
       </span>
+      {!user.email && user.phoneNumber && (
+        <span className="text-[11px] text-muted-foreground">{t("Sin correo")}</span>
+      )}
     </div>
   );
 }

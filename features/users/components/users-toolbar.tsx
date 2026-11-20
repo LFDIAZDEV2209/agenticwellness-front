@@ -89,7 +89,7 @@ export function UsersToolbar({
         <div className="relative w-full min-w-[200px] sm:w-[280px]">
           <Search className="absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder={t("Buscar por nombre o email...")}
+            placeholder={t("Nombre, correo, teléfono o documento")}
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             className="h-9 bg-card pr-8 pl-9"
@@ -126,7 +126,7 @@ export function UsersToolbar({
           </SelectContent>
         </Select>
 
-        <Select
+        {filters.accountType !== "patient" && <Select
           value={filters.role}
           onValueChange={(value) =>
             onFilterChange({ role: value as UsersFilters["role"] })
@@ -156,7 +156,7 @@ export function UsersToolbar({
               </SelectItem>
             ))}
           </SelectContent>
-        </Select>
+        </Select>}
 
         <Select
           value={filters.createdWithin}
@@ -262,13 +262,13 @@ function buildActiveChips(
       onRemove: () => onFilterChange({ status: "all" }),
     });
   }
-  if (filters.role === "none") {
+  if (filters.accountType !== "patient" && filters.role === "none") {
     chips.push({
       key: "role",
       label: t("Sin roles asignados"),
       onRemove: () => onFilterChange({ role: "all" }),
     });
-  } else if (filters.role !== "all" && roles.includes(filters.role)) {
+  } else if (filters.accountType !== "patient" && filters.role !== "all" && roles.includes(filters.role)) {
     chips.push({
       key: "role",
       label: `${t("Rol")}: ${filters.role}`,

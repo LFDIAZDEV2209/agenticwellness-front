@@ -1,7 +1,7 @@
 "use client";
 
 import type { LucideIcon } from "lucide-react";
-import { ShieldAlert, UserCheck, UserPlus, UserX, Users } from "lucide-react";
+import { ClipboardCheck, ShieldAlert, UserCheck, UserPlus, UserX, Users } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { rainbowStyle, type RainbowTone } from "@/lib/ui/rainbow";
 import { cn } from "@/lib/utils";
@@ -32,18 +32,20 @@ interface StatDef {
  */
 export function UsersStats({ stats, filters, onStatFilter }: UsersStatsProps) {
   const t = useT();
+  const isPatient = filters.accountType === "patient";
   const tones: Record<string, RainbowTone> = {
     total: "sky",
     active: "green",
     inactive: "slate",
     withoutRoles: "amber",
+    linkedPatients: "teal",
     newThisWeek: "violet",
   };
 
   const defs: StatDef[] = [
     {
       key: "total",
-      label: "Total usuarios",
+      label: isPatient ? "Total pacientes" : filters.accountType === "all" ? "Total cuentas" : "Total usuarios",
       icon: Users,
       getValue: (s) => s.total,
       context: () => t("En la plataforma"),
@@ -85,12 +87,20 @@ export function UsersStats({ stats, filters, onStatFilter }: UsersStatsProps) {
         createdWithin: filters.createdWithin,
       },
     },
-    {
+    isPatient ? {
+      key: "linkedPatients",
+      label: "Con ficha",
+      icon: ClipboardCheck,
+      getValue: (s) => s.linkedPatients,
+      context: () => "",
+      isActive: () => false,
+      filter: {},
+    } : {
       key: "withoutRoles",
       label: "Sin roles",
       icon: ShieldAlert,
       getValue: (s) => s.withoutRoles,
-      context: () => t("Sin acceso asignado"),
+      context: () => t("Sin roles asignados"),
       isActive: (f) => f.role === "none",
       filter: {
         role: "none",
@@ -118,15 +128,19 @@ export function UsersStats({ stats, filters, onStatFilter }: UsersStatsProps) {
       {defs.map((def) => {
         const value = stats ? def.getValue(stats) : null;
         const active = def.isActive(filters);
+        const Stat = def.key === "linkedPatients" ? "div" : "button";
+        const context = stats ? def.context(stats) : "";
         return (
-          <button
+          <Stat
             key={def.key}
             data-slot="stat-card"
             style={rainbowStyle(tones[def.key])}
-            type="button"
-            disabled={!stats}
-            onClick={() => onStatFilter(def.filter)}
-            aria-pressed={active}
+            {...(Stat === "button" ? {
+              type: "button",
+              disabled: !stats,
+              onClick: () => onStatFilter(def.filter),
+              "aria-pressed": active,
+            } : {})}
             className={cn(
               "spectrum-card group relative flex min-h-[92px] min-w-0 items-center gap-3 rounded-2xl border bg-primary-soft/25 p-3.5 text-left transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:pointer-events-none",
               active
@@ -152,11 +166,9 @@ export function UsersStats({ stats, filters, onStatFilter }: UsersStatsProps) {
               ) : (
                 <Skeleton className="h-5 w-10" />
               )}
-              <span className="text-[11px] leading-3.5 text-muted-foreground">
-                {stats ? def.context(stats) : "—"}
-              </span>
+              {context && <span className="text-[11px] leading-3.5 text-muted-foreground">{context}</span>}
             </span>
-          </button>
+          </Stat>
         );
       })}
     </div>

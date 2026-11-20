@@ -77,7 +77,7 @@ export function UsersBulkBar({
   if (selectedCount === 0) return null;
 
   const handleRoleConfirm = async () => {
-    if (!roleId) return;
+    if (!canAssignRoles || !roleId) return;
     setRoleSaving(true);
     try {
       await onAssignRole(roleId);
@@ -200,7 +200,7 @@ export function UsersBulkBar({
 
       {/* Asignar rol masivo */}
       <Dialog
-        open={pending === "role"}
+        open={canAssignRoles && pending === "role"}
         onOpenChange={(open) => !open && setPending(null)}
       >
         <DialogContent className="max-w-md">

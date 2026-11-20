@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import {
+  ArrowUpRight,
   CalendarDays,
   Clock,
   Eye,
@@ -24,9 +25,9 @@ import { useAuth } from "@/providers/auth-provider";
 import { cn } from "@/lib/utils";
 import { useT } from "@/providers/i18n-provider";
 import type { User } from "../types";
-import { formatDate } from "../services/users-service";
+import { formatDate, getAccountType, getFullName } from "../services/users-service";
 import { formatRelativeTime } from "../services/users-mock";
-import { RoleChips, UserAvatar, UserStatusBadge } from "./user-visuals";
+import { getDirectoryUserHref, PatientDirectoryAccess, RoleChips, UserAvatar, UserIdentity, UserStatusBadge } from "./user-visuals";
 
 interface UsersCardsProps {
   users: User[];
@@ -65,6 +66,8 @@ export function UsersCards({
     <div className="stagger-children grid grid-cols-1 gap-3 p-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
       {users.map((user) => {
         const selected = selectedIds.has(user.id);
+        const isPatient = getAccountType(user) === "patient";
+        const name = getFullName(user) || t("Sin nombre");
         return (
           <article
             key={user.id}
@@ -81,11 +84,11 @@ export function UsersCards({
               <Checkbox
                 checked={selected}
                 onCheckedChange={() => onToggleSelect(user.id)}
-                aria-label={t("Seleccionar {name}", { name: user.firstName })}
+                aria-label={t("Seleccionar {name}", { name })}
                 className="mt-1.5"
               />
               <Link
-                href={`/users/${user.id}`}
+                href={getDirectoryUserHref(user)}
                 className="group/id flex min-w-0 flex-1 items-center gap-3 rounded-lg text-left transition-colors hover:bg-muted/50"
               >
                 <span className="relative shrink-0">
@@ -106,21 +109,14 @@ export function UsersCards({
                     aria-hidden
                   />
                 </span>
-                <span className="flex min-w-0 flex-col leading-tight">
-                  <span className="truncate text-[13.5px] font-bold text-foreground transition-colors group-hover/id:text-primary">
-                    {user.firstName} {user.lastName}
-                  </span>
-                  <span className="truncate text-[11.5px] text-muted-foreground">
-                    {user.email}
-                  </span>
-                </span>
+                <UserIdentity user={user} />
               </Link>
-              {(canUpdate || canDelete) && (
+              {(isPatient || canUpdate || canDelete) && (
                 <DropdownMenu>
                   <DropdownMenuTrigger
                     className="flex size-7 items-center justify-center rounded-md opacity-60 transition-all hover:bg-muted hover:opacity-100 group-hover:opacity-100"
                     aria-label={t("Acciones de {name}", {
-                      name: user.firstName,
+                      name,
                     })}
                   >
                     <MoreHorizontal className="size-4 text-muted-foreground" />
@@ -128,12 +124,18 @@ export function UsersCards({
                   <DropdownMenuContent align="end" className="w-44">
                     <DropdownMenuItem onClick={() => onView(user)}>
                       <Eye className="size-4" />
-                      {t("Ver usuario")}
+                      {isPatient ? t("Ver cuenta") : t("Ver usuario")}
                     </DropdownMenuItem>
+                    {isPatient && user.patient && (
+                      <DropdownMenuItem render={<Link href={getDirectoryUserHref(user)} />}>
+                        <ArrowUpRight className="size-4" />
+                        {t("Abrir ficha")}
+                      </DropdownMenuItem>
+                    )}
                     {canUpdate && (
                       <DropdownMenuItem onClick={() => onEdit(user)}>
                         <Pencil className="size-4" />
-                        {t("Editar")}
+                        {isPatient ? t("Editar cuenta") : t("Editar")}
                       </DropdownMenuItem>
                     )}
                     {canUpdate && (
@@ -154,7 +156,7 @@ export function UsersCards({
                             {t("Activar")}
                           </DropdownMenuItem>
                         )}
-                        {canAssignPermissions && (
+                        {!isPatient && canAssignPermissions && (
                           <DropdownMenuItem
                             onClick={() => onPermissions(user)}
                           >
@@ -182,7 +184,7 @@ export function UsersCards({
             </div>
 
             {/* Roles */}
-            <RoleChips roles={user.roles} scopedRoles={user.scopedRoles} max={3} />
+            {isPatient ? <PatientDirectoryAccess user={user} /> : <RoleChips roles={user.roles} scopedRoles={user.scopedRoles} max={3} />}
 
             {/* Meta: estado + fechas */}
             <div className="grid grid-cols-2 gap-x-3 gap-y-2 rounded-xl bg-muted/40 p-2.5">

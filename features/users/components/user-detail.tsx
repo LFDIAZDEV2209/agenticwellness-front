@@ -13,6 +13,7 @@ import {
   LoaderCircle,
   Mail,
   Pencil,
+  Phone,
   RefreshCw,
   Search,
   ShieldCheck,
@@ -54,10 +55,12 @@ import {
   fetchUserPermissionSummary,
   fetchUserRoles,
   formatDate,
+  getAccountType,
+  getFullName,
   updateUser,
 } from "../services/users-service";
 import { formatRelativeTime } from "../services/users-mock";
-import { RoleChips, UserAvatar, UserStatusBadge } from "./user-visuals";
+import { MobileAccessBadge, OpenPatientProfile, PatientAccessNotice, RoleChips, UserAvatar, UserStatusBadge } from "./user-visuals";
 
 interface UserDetailProps {
   userId: string;
@@ -90,13 +93,7 @@ export function UserDetail({ userId }: UserDetailProps) {
   const [busy, setBusy] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
-  const [notice, setNotice] = useState<string | null>(
-    searchParams.get("updated") === "assignments"
-      ? t(
-          "El usuario deberá volver a iniciar sesión para que los cambios de permisos apliquen.",
-        )
-      : null,
-  );
+  const [notice, setNotice] = useState<string | null>();
   const [permissionQuery, setPermissionQuery] = useState("");
 
   const load = useCallback(async () => {
@@ -105,6 +102,12 @@ export function UserDetail({ userId }: UserDetailProps) {
     setNotFound(false);
     try {
       const loadedUser = await fetchUser(userId);
+      if (getAccountType(loadedUser) === "patient") {
+        setUser(loadedUser);
+        setRoles([]);
+        setSummary(null);
+        return;
+      }
       const loadedRoles = await fetchUserRoles(userId);
       // Los roles scoped (clínica/organización) también aportan permisos
       // heredados: resolvemos sus Role del catálogo para sumarlos al resumen.
@@ -277,14 +280,19 @@ export function UserDetail({ userId }: UserDetailProps) {
 
   if (!user) return null;
 
+  const isPatient = getAccountType(user) === "patient";
+  const name = getFullName(user) || t("Sin nombre");
+  const visibleNotice = notice === undefined && !isPatient && searchParams.get("updated") === "assignments"
+    ? t("El usuario deberá volver a iniciar sesión para que los cambios de permisos apliquen.")
+    : notice;
   const inheritedCount = summary?.inherited.length ?? 0;
   const directCount = summary?.direct.length ?? 0;
 
   return (
     <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
       <PageHeader
-        title={t("Detalle de usuario")}
-        description={t("Identidad, roles y mapa de permisos del usuario.")}
+        title={isPatient ? t("Detalle de cuenta") : t("Detalle de usuario")}
+        description={isPatient ? t("Identidad y acceso de la cuenta.") : t("Identidad, roles y mapa de permisos del usuario.")}
         icon={UserRound}
         actions={
           <Button
@@ -298,13 +306,13 @@ export function UserDetail({ userId }: UserDetailProps) {
         }
       />
 
-      {notice && (
+      {visibleNotice && (
         <div
           className="animate-slide-down flex items-start gap-2 rounded-xl border border-info-soft bg-info-soft px-4 py-3 text-sm text-info-soft-foreground"
           role="status"
         >
           <Info className="mt-0.5 size-4 shrink-0" />
-          <span className="flex-1">{notice}</span>
+          <span className="flex-1">{visibleNotice}</span>
           <button
             type="button"
             onClick={() => setNotice(null)}
@@ -322,20 +330,21 @@ export function UserDetail({ userId }: UserDetailProps) {
           <div className="flex min-w-0 flex-1 flex-col gap-1.5">
             <div className="flex flex-wrap items-center gap-2.5">
               <h2 className="text-lg font-bold tracking-tight text-foreground">
-                {user.firstName} {user.lastName}
+                {name}
               </h2>
+              {isPatient && <span className="rounded-full bg-info-soft px-2.5 py-1 text-xs font-semibold text-info-soft-foreground">{t("Paciente · App móvil")}</span>}
               <UserStatusBadge isActive={user.isActive} />
             </div>
             <p className="flex items-center gap-1.5 text-[12.5px] text-muted-foreground">
-              <Mail className="size-3.5 shrink-0" />
-              {user.email}
+              {user.email || !user.phoneNumber ? <Mail className="size-3.5 shrink-0" /> : <Phone className="size-3.5 shrink-0" />}
+              {user.email || user.phoneNumber || t("Sin correo")}
             </p>
-            <RoleChips
+            {!isPatient && <RoleChips
               roles={user.roles}
               scopedRoles={user.scopedRoles}
               max={4}
               className="mt-0.5"
-            />
+            />}
           </div>
           <div className="flex flex-wrap items-center gap-2">
             {canUpdate && (
@@ -345,7 +354,7 @@ export function UserDetail({ userId }: UserDetailProps) {
                 onClick={() => router.push(`/users/${user.id}/editar`)}
               >
                 <Pencil data-icon="inline-start" />
-                {t("Editar")}
+                {isPatient ? t("Editar cuenta") : t("Editar")}
               </Button>
             )}
             {canUpdate && (
@@ -382,11 +391,11 @@ export function UserDetail({ userId }: UserDetailProps) {
         </div>
       </section>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className={cn("grid gap-4", !isPatient && "lg:grid-cols-2")}>
         {/* Información general */}
         <section className="flex flex-col overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-xs">
           <SectionHeader
-            title={t("Información general")}
+            title={isPatient ? t("Identidad y acceso") : t("Información general")}
             icon={UserRound}
             variant="primary"
           />
@@ -394,17 +403,17 @@ export function UserDetail({ userId }: UserDetailProps) {
             <dl className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
               <InfoItem
                 label={t("Nombre")}
-                value={user.firstName}
+                value={user.firstName || t("Sin nombre")}
                 icon={UserIcon}
               />
               <InfoItem
                 label={t("Apellido")}
-                value={user.lastName}
+                value={user.lastName || t("No disponible")}
                 icon={IdCard}
               />
               <InfoItem
                 label={t("Email")}
-                value={user.email}
+                value={user.email || t("Sin correo")}
                 mono
                 icon={Mail}
               />
@@ -418,17 +427,29 @@ export function UserDetail({ userId }: UserDetailProps) {
                 value={formatDate(user.createdAt)}
                 icon={CalendarDays}
               />
-              <InfoItem
+              {isPatient ? (
+                <>
+                  <InfoItem label={t("Teléfono")} value={user.phoneNumber || t("Sin teléfono")} icon={Phone} />
+                  <InfoItem label={t("Documento")} value={user.patient?.documentNumber || t("No disponible")} icon={IdCard} mono />
+                  <InfoItem label={t("Estado del paciente")} value={user.patient?.status ? t(user.patient.status) : t("No disponible")} />
+                </>
+              ) : <InfoItem
                 label={t("Último acceso")}
                 value={user.lastAccessAt ? formatRelativeTime(Date.parse(user.lastAccessAt)) : t("No disponible")}
                 icon={Clock}
                 hint={t("Último acceso registrado")}
-              />
+              />}
             </dl>
+            {isPatient && (
+              <div className="flex flex-col items-start gap-3 border-t border-border pt-3">
+                <MobileAccessBadge />
+                {user.patient ? <OpenPatientProfile patient={user.patient} /> : <p className="text-sm text-muted-foreground">{t("Sin ficha vinculada")}</p>}
+              </div>
+            )}
           </div>
         </section>
 
-        {/* Roles */}
+        {isPatient ? <PatientAccessNotice /> : (
         <section className="flex flex-col overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-xs">
           <SectionHeader
             title={t("Roles asignados")}
@@ -492,11 +513,11 @@ export function UserDetail({ userId }: UserDetailProps) {
               </>
             )}
           </div>
-        </section>
+        </section>)}
       </div>
 
       {/* Permisos con origen — la banda queda a sangre: es el borde superior de la tarjeta */}
-      <section className="flex flex-col overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-xs">
+      {!isPatient && <section className="flex flex-col overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-xs">
         <SectionHeader
           title={t("Permisos efectivos")}
           icon={KeyRound}
@@ -596,7 +617,7 @@ export function UserDetail({ userId }: UserDetailProps) {
             </div>
           )}
         </div>
-      </section>
+      </section>}
 
       {/* Confirmación de eliminación */}
       <AlertDialog open={showDelete} onOpenChange={setShowDelete}>
@@ -609,7 +630,7 @@ export function UserDetail({ userId }: UserDetailProps) {
             <AlertDialogDescription>
               {t("Se eliminará")}{" "}
               <strong>
-                {user.firstName} {user.lastName}
+                {name}
               </strong>{" "}
               {t(
                 "y todas sus asignaciones. El perfil del directorio y el historial clínico se conservan. Esta acción no se puede deshacer.",
