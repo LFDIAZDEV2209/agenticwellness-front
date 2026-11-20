@@ -6071,6 +6071,7 @@
   "Tratamientos": "Treatments",
   "Actualizar seguimiento": "Refresh follow-up",
   "Tomas del día": "Daily doses",
+  "Pospuesta hasta las {time}": "Snoozed until {time}",
   "Día de seguimiento": "Follow-up date",
   "Registrar toma": "Record dose",
   "Omitir": "Skip",

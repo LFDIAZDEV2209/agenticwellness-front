@@ -64,6 +64,7 @@ export interface MedicationDose {
   timeZone: string;
   status: DoseStatus;
   occurredAt: string | null;
+  snoozedUntil?: string | null;
   channel?: MedicationChannel | null;
   revision: number;
 }
