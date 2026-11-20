@@ -1,13 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowUpRight, CheckCircle2, Info, Phone, ShieldAlert, ShieldCheck, Smartphone, XCircle } from "lucide-react";
+import {
+  ArrowUpRight,
+  CheckCircle2,
+  Info,
+  Phone,
+  ShieldAlert,
+  ShieldCheck,
+  Smartphone,
+  XCircle,
+} from "lucide-react";
 import { rainbowStyle } from "@/lib/ui/rainbow";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useT } from "@/providers/i18n-provider";
-import { getAccountType, getFullName, getInitials } from "../services/users-service";
+import {
+  getAccountType,
+  getFullName,
+  getInitials,
+} from "../services/users-service";
 import type { User, ScopedUserRole } from "../types";
 
 /**
@@ -133,19 +146,29 @@ export function RoleChips({
 }
 
 /** Segmento del directorio ↔ valor legible en `?cuentas=`. */
-export const segmentQueryValues = { erp: "erp", patient: "pacientes", all: "todas" } as const;
+export const segmentQueryValues = {
+  erp: "erp",
+  patient: "pacientes",
+  all: "todas",
+} as const;
 
 export type DirectorySegment = keyof typeof segmentQueryValues;
 
 /** Traduce `?cuentas=` a segmento; valores desconocidos → null. */
-export function parseSegmentQuery(value: string | null): DirectorySegment | null {
-  const entry = Object.entries(segmentQueryValues).find(([, query]) => query === value);
+export function parseSegmentQuery(
+  value: string | null,
+): DirectorySegment | null {
+  const entry = Object.entries(segmentQueryValues).find(
+    ([, query]) => query === value,
+  );
   return entry ? (entry[0] as DirectorySegment) : null;
 }
 
 /** Enlace de vuelta al directorio conservando el segmento (ERP es el default). */
 export function usersListHref(segment: DirectorySegment) {
-  return segment === "erp" ? "/users" : `/users?cuentas=${segmentQueryValues[segment]}`;
+  return segment === "erp"
+    ? "/users"
+    : `/users?cuentas=${segmentQueryValues[segment]}`;
 }
 
 export function getDirectoryUserHref(user: User) {
@@ -161,7 +184,8 @@ export function getDirectoryUserHref(user: User) {
 export function AccountTypeBadge({ user }: { user: User }) {
   const t = useT();
   const isErp = getAccountType(user) === "erp";
-  const chip = "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10.5px] leading-4 font-semibold";
+  const chip =
+    "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10.5px] leading-4 font-semibold";
   return (
     <span className="inline-flex shrink-0 items-center gap-1">
       {isErp && (
@@ -183,7 +207,10 @@ export function AccountTypeBadge({ user }: { user: User }) {
 export function MobileAccessBadge() {
   const t = useT();
   return (
-    <span className="spectrum-tag inline-flex w-fit items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium" style={rainbowStyle("teal")}>
+    <span
+      className="spectrum-tag inline-flex w-fit items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium"
+      style={rainbowStyle("teal")}
+    >
       <Smartphone aria-hidden="true" className="size-3.5" />
       {t("App móvil")}
     </span>
@@ -201,7 +228,9 @@ export function PatientDirectoryAccess({ user }: { user: User }) {
           {t("ID {document}", { document: user.patient.documentNumber })}
         </span>
       ) : (
-        <span className="text-[11px] text-muted-foreground">{t("Sin ficha")}</span>
+        <span className="text-[11px] text-muted-foreground">
+          {user.patient ? t("Sin documento") : t("Sin ficha")}
+        </span>
       )}
     </div>
   );
@@ -211,17 +240,33 @@ export function PatientDirectoryAccess({ user }: { user: User }) {
 export function PatientAccessNotice({ className }: { className?: string }) {
   const t = useT();
   return (
-    <div className={cn("flex items-start gap-2 rounded-xl border border-info-soft bg-info-soft px-3.5 py-3 text-sm text-info-soft-foreground", className)}>
+    <div
+      className={cn(
+        "flex items-start gap-2 rounded-xl border border-info-soft bg-info-soft px-3.5 py-3 text-sm text-info-soft-foreground",
+        className,
+      )}
+    >
       <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-      <p>{t("Esta cuenta solo accede a la app móvil. Los roles y permisos del ERP no se aplican.")}</p>
+      <p>
+        {t(
+          "Esta cuenta solo accede a la app móvil. Los roles y permisos del ERP no se aplican.",
+        )}
+      </p>
     </div>
   );
 }
 
-export function OpenPatientProfile({ patient }: { patient: NonNullable<User["patient"]> }) {
+export function OpenPatientProfile({
+  patient,
+}: {
+  patient: NonNullable<User["patient"]>;
+}) {
   const t = useT();
   return (
-    <Link href={`/patients/${patient.id}`} className={buttonVariants({ variant: "outline", className: "w-fit" })}>
+    <Link
+      href={`/patients/${patient.id}`}
+      className={buttonVariants({ variant: "outline", className: "w-fit" })}
+    >
       {t("Abrir ficha del paciente")}
       <ArrowUpRight data-icon="inline-end" aria-hidden="true" />
     </Link>
