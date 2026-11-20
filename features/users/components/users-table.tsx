@@ -161,7 +161,7 @@ export function UsersTable({
               onSortChange={onSortChange}
             />
           </TableHead>
-          <TableHead className="w-[190px]">{segment === "erp" ? t("Roles") : t("Acceso")}</TableHead>
+          <TableHead className={segment === "erp" ? "w-[200px]" : "w-[220px]"}>{segment === "erp" ? t("Roles") : t("Acceso")}</TableHead>
           <TableHead className="w-[120px]">
             <SortHeader
               label={t("Estado")}
@@ -199,7 +199,7 @@ export function UsersTable({
             <TableRow
               key={user.id}
               data-selected={selected}
-              className="h-12 animate-slide-up data-[selected=true]:bg-primary/[0.04]"
+              className="h-14 animate-slide-up motion-reduce:animate-none data-[selected=true]:bg-primary/[0.04]"
               style={{ animationDelay: `${Math.min(index * 30, 300)}ms` }}
             >
               <TableCell>
@@ -216,7 +216,7 @@ export function UsersTable({
                   href={getDirectoryUserHref(user)}
                   className="flex items-center gap-3 rounded-lg p-1 -m-1 transition-colors hover:bg-muted/60"
                 >
-                  <UserAvatar user={user} className="size-8" />
+                  <UserAvatar user={user} className={cn("size-8", isPatient && "ring-2 ring-brand-teal/60")} />
                   <UserIdentity user={user} />
                 </Link>
               </TableCell>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowUpRight, CheckCircle2, Info, ShieldAlert, ShieldCheck, Smartphone, XCircle } from "lucide-react";
+import { ArrowUpRight, CheckCircle2, Info, Phone, ShieldAlert, ShieldCheck, Smartphone, XCircle } from "lucide-react";
 import { rainbowStyle } from "@/lib/ui/rainbow";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { buttonVariants } from "@/components/ui/button";
@@ -132,24 +132,47 @@ export function RoleChips({
   );
 }
 
+/** Segmento del directorio ↔ valor legible en `?cuentas=`. */
+export const segmentQueryValues = { erp: "erp", patient: "pacientes", all: "todas" } as const;
+
+export type DirectorySegment = keyof typeof segmentQueryValues;
+
+/** Traduce `?cuentas=` a segmento; valores desconocidos → null. */
+export function parseSegmentQuery(value: string | null): DirectorySegment | null {
+  const entry = Object.entries(segmentQueryValues).find(([, query]) => query === value);
+  return entry ? (entry[0] as DirectorySegment) : null;
+}
+
+/** Enlace de vuelta al directorio conservando el segmento (ERP es el default). */
+export function usersListHref(segment: DirectorySegment) {
+  return segment === "erp" ? "/users" : `/users?cuentas=${segmentQueryValues[segment]}`;
+}
+
 export function getDirectoryUserHref(user: User) {
   return getAccountType(user) === "patient" && user.patient
     ? `/patients/${user.patient.id}`
     : `/users/${user.id}`;
 }
 
+/**
+ * Badge del tipo de cuenta: `ERP` (navy) y/o `App` (teal). Siempre icono +
+ * texto para no depender solo del color.
+ */
 export function AccountTypeBadge({ user }: { user: User }) {
   const t = useT();
   const isErp = getAccountType(user) === "erp";
+  const chip = "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10.5px] leading-4 font-semibold";
   return (
     <span className="inline-flex shrink-0 items-center gap-1">
       {isErp && (
-        <span className="rounded-full bg-brand-navy px-2 py-0.5 text-[11px] font-semibold text-white">
+        <span className={cn(chip, "bg-brand-navy text-white")}>
+          <ShieldCheck aria-hidden="true" className="size-3" />
           {t("ERP")}
         </span>
       )}
       {(!isErp || user.applications?.includes("app")) && (
-        <span className="spectrum-tag rounded-full px-2 py-0.5 text-[11px] font-semibold" style={rainbowStyle("teal")}>
+        <span className={cn(chip, "spectrum-tag")} style={rainbowStyle("teal")}>
+          <Smartphone aria-hidden="true" className="size-3" />
           {t("App")}
         </span>
       )}
@@ -167,20 +190,28 @@ export function MobileAccessBadge() {
   );
 }
 
+/** Columna «Acceso» de un paciente: canal (app móvil) + documento en mono. */
 export function PatientDirectoryAccess({ user }: { user: User }) {
   const t = useT();
   return (
     <div className="flex flex-wrap items-center gap-1.5">
-      {user.patient?.documentNumber && <span className="text-xs tabular-nums">{t("ID {document}", { document: user.patient.documentNumber })}</span>}
       <MobileAccessBadge />
+      {user.patient?.documentNumber ? (
+        <span className="font-mono text-[11px] text-foreground tabular-nums">
+          {t("ID {document}", { document: user.patient.documentNumber })}
+        </span>
+      ) : (
+        <span className="text-[11px] text-muted-foreground">{t("Sin ficha")}</span>
+      )}
     </div>
   );
 }
 
-export function PatientAccessNotice() {
+/** Aviso informativo: la cuenta no participa del RBAC del ERP. */
+export function PatientAccessNotice({ className }: { className?: string }) {
   const t = useT();
   return (
-    <div className="flex items-start gap-2 rounded-lg bg-info-soft px-3 py-2.5 text-sm text-info-soft-foreground">
+    <div className={cn("flex items-start gap-2 rounded-xl border border-info-soft bg-info-soft px-3.5 py-3 text-sm text-info-soft-foreground", className)}>
       <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
       <p>{t("Esta cuenta solo accede a la app móvil. Los roles y permisos del ERP no se aplican.")}</p>
     </div>
@@ -197,7 +228,11 @@ export function OpenPatientProfile({ patient }: { patient: NonNullable<User["pat
   );
 }
 
-/** Identidad y medio de contacto de la cuenta. */
+/**
+ * Identidad de la cuenta: nombre + badge de tipo y UNA sola línea de
+ * contacto (correo → teléfono → «Sin correo»). Nunca se apilan teléfono y
+ * «Sin correo» a la vez.
+ */
 export function UserIdentity({
   user,
   emailClassName,
@@ -206,9 +241,10 @@ export function UserIdentity({
   emailClassName?: string;
 }) {
   const t = useT();
+  const contact = user.email || user.phoneNumber;
   return (
-    <div className="flex min-w-0 flex-col leading-tight">
-      <div className="flex min-w-0 flex-wrap items-center gap-x-2">
+    <div className="flex min-w-0 flex-col gap-0.5 leading-tight">
+      <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
         <span className="truncate text-[13px] font-semibold text-foreground">
           {getFullName(user) || t("Sin nombre")}
         </span>
@@ -216,15 +252,16 @@ export function UserIdentity({
       </div>
       <span
         className={cn(
-          "truncate text-[11px] text-muted-foreground",
+          "flex min-w-0 items-center gap-1 text-[11px]",
+          contact ? "text-muted-foreground" : "text-muted-foreground/80 italic",
           emailClassName,
         )}
       >
-        {user.email || user.phoneNumber || t("Sin correo")}
+        {!user.email && user.phoneNumber && (
+          <Phone aria-label={t("Teléfono")} className="size-3 shrink-0" />
+        )}
+        <span className="truncate">{contact || t("Sin correo")}</span>
       </span>
-      {!user.email && user.phoneNumber && (
-        <span className="text-[11px] text-muted-foreground">{t("Sin correo")}</span>
-      )}
     </div>
   );
 }

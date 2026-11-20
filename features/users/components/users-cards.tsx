@@ -63,7 +63,7 @@ export function UsersCards({
   const t = useT();
 
   return (
-    <div className="stagger-children grid grid-cols-1 gap-3 p-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+    <div className="stagger-children grid grid-cols-1 gap-3 p-3 motion-reduce:[&>*]:animate-none sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
       {users.map((user) => {
         const selected = selectedIds.has(user.id);
         const isPatient = getAccountType(user) === "patient";
@@ -73,7 +73,7 @@ export function UsersCards({
             key={user.id}
             data-selected={selected}
             className={cn(
-              "group relative flex flex-col gap-3 rounded-2xl border bg-card p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-brand-navy/10",
+              "group relative flex min-w-0 flex-col gap-3 rounded-2xl border bg-card p-4 transition-all duration-200 motion-safe:hover:-translate-y-0.5 hover:shadow-lg hover:shadow-brand-navy/10",
               selected
                 ? "border-primary ring-2 ring-primary/25"
                 : "border-border/70 hover:border-primary/40",
@@ -114,7 +114,7 @@ export function UsersCards({
               {(isPatient || canUpdate || canDelete) && (
                 <DropdownMenu>
                   <DropdownMenuTrigger
-                    className="flex size-7 items-center justify-center rounded-md opacity-60 transition-all hover:bg-muted hover:opacity-100 group-hover:opacity-100"
+                    className="-m-1 flex size-10 shrink-0 items-center justify-center rounded-md transition-all hover:bg-muted sm:m-0 sm:size-7 sm:opacity-60 sm:hover:opacity-100 sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
                     aria-label={t("Acciones de {name}", {
                       name,
                     })}

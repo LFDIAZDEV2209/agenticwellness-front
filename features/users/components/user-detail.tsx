@@ -14,6 +14,7 @@ import {
   Mail,
   Pencil,
   Phone,
+  Smartphone,
   RefreshCw,
   Search,
   ShieldCheck,
@@ -43,6 +44,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useAuth } from "@/providers/auth-provider";
 import { cn } from "@/lib/utils";
+import { rainbowStyle } from "@/lib/ui/rainbow";
 import { useT } from "@/providers/i18n-provider";
 import { groupPermissionsByModule } from "@/features/permissions/types";
 import type { Permission } from "@/features/permissions/types";
@@ -60,7 +62,8 @@ import {
   updateUser,
 } from "../services/users-service";
 import { formatRelativeTime } from "../services/users-mock";
-import { MobileAccessBadge, OpenPatientProfile, PatientAccessNotice, RoleChips, UserAvatar, UserStatusBadge } from "./user-visuals";
+import { useBreadcrumbTitle } from "@/components/layout/breadcrumb-provider";
+import { OpenPatientProfile, PatientAccessNotice, RoleChips, UserAvatar, UserStatusBadge, usersListHref } from "./user-visuals";
 
 interface UserDetailProps {
   userId: string;
@@ -95,6 +98,10 @@ export function UserDetail({ userId }: UserDetailProps) {
   const [showDelete, setShowDelete] = useState(false);
   const [notice, setNotice] = useState<string | null>();
   const [permissionQuery, setPermissionQuery] = useState("");
+  const patientAccount = user ? getAccountType(user) === "patient" : false;
+  // Vuelta al directorio en el segmento correcto y breadcrumb «cuenta» para pacientes.
+  const listHref = usersListHref(patientAccount ? "patient" : "erp");
+  useBreadcrumbTitle(patientAccount ? t("Detalle de cuenta") : null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -190,7 +197,7 @@ export function UserDetail({ userId }: UserDetailProps) {
     setDeleting(true);
     try {
       await deleteUser(user.id);
-      router.push("/users");
+      router.push(listHref);
     } catch (err) {
       setNotice(
         err instanceof Error ? err.message : t("Error al eliminar el usuario."),
@@ -268,7 +275,7 @@ export function UserDetail({ userId }: UserDetailProps) {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => router.push("/users")}
+            onClick={() => router.push(listHref)}
           >
             <ArrowLeft data-icon="inline-start" />
             {t("Volver a usuarios")}
@@ -298,7 +305,7 @@ export function UserDetail({ userId }: UserDetailProps) {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => router.push("/users")}
+            onClick={() => router.push(listHref)}
           >
             <ArrowLeft data-icon="inline-start" />
             {t("Volver")}
@@ -326,17 +333,25 @@ export function UserDetail({ userId }: UserDetailProps) {
       {/* Header del usuario — hero con el gradiente de marca */}
       <section className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 sm:flex-row sm:items-center">
         <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center">
-          <UserAvatar user={user} className="size-14" />
+          <UserAvatar user={user} className={cn("size-14", isPatient && "ring-2 ring-brand-teal/60")} />
           <div className="flex min-w-0 flex-1 flex-col gap-1.5">
             <div className="flex flex-wrap items-center gap-2.5">
               <h2 className="text-lg font-bold tracking-tight text-foreground">
                 {name}
               </h2>
-              {isPatient && <span className="rounded-full bg-info-soft px-2.5 py-1 text-xs font-semibold text-info-soft-foreground">{t("Paciente · App móvil")}</span>}
+              {isPatient && (
+                <span
+                  className="spectrum-tag inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11.5px] leading-4 font-semibold"
+                  style={rainbowStyle("teal")}
+                >
+                  <Smartphone aria-hidden="true" className="size-3.5" />
+                  {t("Paciente · App móvil")}
+                </span>
+              )}
               <UserStatusBadge isActive={user.isActive} />
             </div>
             <p className="flex items-center gap-1.5 text-[12.5px] text-muted-foreground">
-              {user.email || !user.phoneNumber ? <Mail className="size-3.5 shrink-0" /> : <Phone className="size-3.5 shrink-0" />}
+              {user.email || !user.phoneNumber ? <Mail aria-hidden="true" className="size-3.5 shrink-0" /> : <Phone aria-hidden="true" className="size-3.5 shrink-0" />}
               {user.email || user.phoneNumber || t("Sin correo")}
             </p>
             {!isPatient && <RoleChips
@@ -391,7 +406,7 @@ export function UserDetail({ userId }: UserDetailProps) {
         </div>
       </section>
 
-      <div className={cn("grid gap-4", !isPatient && "lg:grid-cols-2")}>
+      <div className={cn("grid gap-4", isPatient ? "lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]" : "lg:grid-cols-2")}>
         {/* Información general */}
         <section className="flex flex-col overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-xs">
           <SectionHeader
@@ -414,7 +429,7 @@ export function UserDetail({ userId }: UserDetailProps) {
               <InfoItem
                 label={t("Email")}
                 value={user.email || t("Sin correo")}
-                mono
+                mono={Boolean(user.email)}
                 icon={Mail}
               />
               <InfoItem
@@ -442,14 +457,17 @@ export function UserDetail({ userId }: UserDetailProps) {
             </dl>
             {isPatient && (
               <div className="flex flex-col items-start gap-3 border-t border-border pt-3">
-                <MobileAccessBadge />
-                {user.patient ? <OpenPatientProfile patient={user.patient} /> : <p className="text-sm text-muted-foreground">{t("Sin ficha vinculada")}</p>}
+                {user.patient ? (
+                  <OpenPatientProfile patient={user.patient} />
+                ) : (
+                  <p className="text-sm text-muted-foreground">{t("Sin ficha vinculada")}</p>
+                )}
               </div>
             )}
           </div>
         </section>
 
-        {isPatient ? <PatientAccessNotice /> : (
+        {isPatient ? <PatientAccessNotice className="self-start" /> : (
         <section className="flex flex-col overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-xs">
           <SectionHeader
             title={t("Roles asignados")}
@@ -626,15 +644,17 @@ export function UserDetail({ userId }: UserDetailProps) {
             <AlertDialogMedia className="bg-destructive-soft text-destructive">
               <Trash2 />
             </AlertDialogMedia>
-            <AlertDialogTitle>{t("¿Eliminar usuario?")}</AlertDialogTitle>
+            <AlertDialogTitle>{isPatient ? t("¿Eliminar cuenta?") : t("¿Eliminar usuario?")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("Se eliminará")}{" "}
+              {isPatient ? t("Se eliminará la cuenta de") : t("Se eliminará")}{" "}
               <strong>
                 {name}
               </strong>{" "}
-              {t(
-                "y todas sus asignaciones. El perfil del directorio y el historial clínico se conservan. Esta acción no se puede deshacer.",
-              )}
+              {isPatient
+                ? t("y su acceso a la app móvil. La ficha del paciente y su historial clínico se conservan. Esta acción no se puede deshacer.")
+                : t(
+                    "y todas sus asignaciones. El perfil del directorio y el historial clínico se conservan. Esta acción no se puede deshacer.",
+                  )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

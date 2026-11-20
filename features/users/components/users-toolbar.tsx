@@ -86,20 +86,24 @@ export function UsersToolbar({
   return (
     <div className="flex flex-col gap-2.5">
       <div className="flex flex-wrap items-center gap-2">
-        <div className="relative w-full min-w-[200px] sm:w-[280px]">
+        <div className="relative w-full min-w-[200px] sm:w-[320px]">
           <Search className="absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder={t("Nombre, correo, teléfono o documento")}
+            placeholder={
+              filters.accountType === "erp"
+                ? t("Buscar por nombre o correo")
+                : t("Nombre, correo, teléfono o ID")
+            }
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
-            className="h-9 bg-card pr-8 pl-9"
+            className="h-11 bg-card pr-9 pl-9 sm:h-9"
             aria-label={t("Buscar usuarios")}
           />
           {searchValue && (
             <button
               type="button"
               onClick={() => setSearchValue("")}
-              className="absolute top-1/2 right-2 -translate-y-1/2 rounded-sm text-muted-foreground transition-colors hover:text-foreground"
+              className="absolute top-1/2 right-1 flex size-8 -translate-y-1/2 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:text-foreground"
               aria-label={t("Limpiar búsqueda")}
             >
               <X className="size-3.5" />
@@ -113,7 +117,7 @@ export function UsersToolbar({
             onFilterChange({ status: value as UsersFilters["status"] })
           }
         >
-          <SelectTrigger className="h-9 w-[170px] bg-card">
+          <SelectTrigger className="h-11 w-[calc(50%-0.25rem)] bg-card sm:h-9 sm:w-[200px]">
             <UserRound className="mr-2 size-3.5 text-muted-foreground" />
             <SelectValue>
               {t(statusLabels[filters.status] ?? "Estado")}
@@ -132,7 +136,7 @@ export function UsersToolbar({
             onFilterChange({ role: value as UsersFilters["role"] })
           }
         >
-          <SelectTrigger className="h-9 w-[190px] bg-card">
+          <SelectTrigger className="h-11 w-[calc(50%-0.25rem)] bg-card sm:h-9 sm:w-[190px]">
             <UsersRound className="mr-2 size-3.5 text-muted-foreground" />
             <SelectValue>
               {filters.role === "all"
@@ -166,7 +170,7 @@ export function UsersToolbar({
             })
           }
         >
-          <SelectTrigger className="h-9 w-[180px] bg-card">
+          <SelectTrigger className="h-11 w-[calc(50%-0.25rem)] bg-card sm:h-9 sm:w-[180px]">
             <CalendarDays className="mr-2 size-3.5 text-muted-foreground" />
             <SelectValue>
               {t(createdLabels[filters.createdWithin] ?? "Fecha de creación")}
