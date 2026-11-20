@@ -32,6 +32,7 @@ test("delivery at the local time, inbox navigation, snooze and cancellation", as
   const names = { main: `Aviso QA ${suffix}`, paused: `Pausada QA ${suffix}`, edited: `Editada QA ${suffix}`, taken: `Confirmada QA ${suffix}` };
   const create = async (name: string, minutes: number) => {
     await staff.getByRole("button", { name: "Nuevo tratamiento", exact: true }).click();
+    await staff.getByRole("button", { name: "Entrada manual", exact: true }).click();
     await staff.getByLabel("Nombre del producto", { exact: true }).fill(name);
     await staff.getByLabel("Horario 1", { exact: true }).fill(localTime(minutes));
     await staff.getByRole("button", { name: "Guardar tratamiento", exact: true }).click();

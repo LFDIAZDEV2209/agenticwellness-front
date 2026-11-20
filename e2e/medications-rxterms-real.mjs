@@ -20,9 +20,8 @@ try {
   await page.goto("http://127.0.0.1:3160/medications/" + fixture.patientId);
   await page.getByRole("button", { name: "Nuevo tratamiento", exact: true }).click();
   const picker = page.getByRole("combobox", { name: "Buscar en catálogo de EE. UU.", exact: true });
-  await expect(picker).toBeVisible();
-  await picker.click();
-  const search = page.getByPlaceholder("Marca, ingrediente o RxCUI");
+  await expect(picker).toBeFocused();
+  const search = picker;
   await search.fill("no-such-drug-" + randomUUID());
   await expect(page.getByText("Sin coincidencias en RxTerms.", { exact: true })).toBeVisible();
   await search.fill("atorvastatin 20");
@@ -59,6 +58,7 @@ try {
   await expect(page.locator(".medication-treatment-row").filter({ hasText: name }).first()).toBeVisible();
   await page.getByRole("button", { name: "Nuevo tratamiento", exact: true }).click();
   const manualName = "Producto manual QA " + randomUUID().slice(0, 8);
+  await page.getByRole("button", { name: "Entrada manual", exact: true }).click();
   await page.getByLabel("Nombre del producto", { exact: true }).fill(manualName);
   const manual = await save();
   assert.equal(manual.rxCui ?? null, null);

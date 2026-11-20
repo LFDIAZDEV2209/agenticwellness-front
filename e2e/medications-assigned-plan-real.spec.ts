@@ -56,6 +56,7 @@ test('ERP asigna → paciente registra otro → no sustituye plan → toma asign
     await erpLogin(staff);
     await staff.goto(erp+'/medications/'+f.patientId);
     await staff.getByRole('button',{name:'Nuevo tratamiento',exact:true}).click();
+    await staff.getByRole("button", { name: "Entrada manual", exact: true }).click();
     await staff.getByLabel('Nombre del producto',{exact:true}).fill(name);
     await staff.getByLabel('Horario 1',{exact:true}).fill('00:01');
     await staff.getByRole('button',{name:'Guardar tratamiento',exact:true}).click();

@@ -33,6 +33,7 @@ test("ERP edits a prescription, the open app records and corrects it, and ERP up
     await patientMedicationLink.click();
     await staff.getByRole("button", { name: "Nuevo tratamiento", exact: true }).click();
     const name = "Plan QA " + randomUUID().slice(0, 8);
+    await staff.getByRole("button", { name: "Entrada manual", exact: true }).click();
     await staff.getByLabel("Nombre del producto", { exact: true }).fill(name);
     await staff.getByLabel("Horario 1", { exact: true }).fill("00:01");
     await staff.getByRole("button", { name: "Guardar tratamiento", exact: true }).click();
@@ -143,6 +144,7 @@ test("an interval prescription supports durable snoozes and opted-in WhatsApp re
     await staff.goto(erp + "/medications/" + fixture.patientId);
     await staff.getByRole("button", { name: "Nuevo tratamiento", exact: true }).click();
     const name = "Intervalo QA " + randomUUID().slice(0, 8);
+    await staff.getByRole("button", { name: "Entrada manual", exact: true }).click();
     await staff.getByLabel("Nombre del producto", { exact: true }).fill(name);
     await staff.getByLabel("Frecuencia", { exact: true }).selectOption("interval");
     await staff.getByLabel("Horas entre tomas").fill("5");
@@ -184,6 +186,7 @@ test("an interval prescription supports durable snoozes and opted-in WhatsApp re
 
     const skippedName = "Omisión WhatsApp QA " + randomUUID().slice(0, 8);
     await staff.getByRole("button", { name: "Nuevo tratamiento", exact: true }).click();
+    await staff.getByRole("button", { name: "Entrada manual", exact: true }).click();
     await staff.getByLabel("Nombre del producto", { exact: true }).fill(skippedName);
     await staff.getByLabel("Horario 1", { exact: true }).fill(scheduled);
     await staff.getByRole("button", { name: "Guardar tratamiento", exact: true }).click();
