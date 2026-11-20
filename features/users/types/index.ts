@@ -9,9 +9,17 @@
  * determinista (users-mock.ts) aislado de la lógica de producción.
  */
 
+export type UserAccountType = "erp" | "patient";
+
+export interface UserPatientLink {
+  id: string;
+  documentNumber: string | null;
+  status: string | null;
+}
+
 export interface User {
   id: string;
-  email: string;
+  email: string | null;
   firstName: string;
   lastName: string;
   isActive: boolean;
@@ -21,6 +29,10 @@ export interface User {
   roles: string[];
   /** Roles con scope (clínica/organización). */
   scopedRoles?: ScopedUserRole[] | null;
+  applications?: string[];
+  phoneNumber?: string | null;
+  patient?: UserPatientLink | null;
+  accountType?: UserAccountType;
 }
 
 /** Rol asignado a un usuario dentro de un scope (clínica/organización). */
@@ -61,6 +73,7 @@ export interface UserSort {
 }
 
 export interface UsersFilters {
+  accountType: UserAccountType | "all";
   search: string;
   status: "active" | "inactive" | "all";
   /** "all" | "none" (sin roles) | nombre de rol */
@@ -88,6 +101,10 @@ export interface UserStats {
   inactive: number;
   withoutRoles: number;
   newThisWeek: number;
+  linkedPatients: number;
+  erpTotal: number;
+  patientTotal: number;
+  allTotal: number;
 }
 
 /**

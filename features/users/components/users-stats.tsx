@@ -1,7 +1,7 @@
 "use client";
 
 import type { LucideIcon } from "lucide-react";
-import { ShieldAlert, UserCheck, UserPlus, UserX, Users } from "lucide-react";
+import { ClipboardCheck, ShieldAlert, UserCheck, UserPlus, UserX, Users } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { rainbowStyle, type RainbowTone } from "@/lib/ui/rainbow";
 import { cn } from "@/lib/utils";
@@ -32,21 +32,28 @@ interface StatDef {
  */
 export function UsersStats({ stats, filters, onStatFilter }: UsersStatsProps) {
   const t = useT();
+  const isPatient = filters.accountType === "patient";
   const tones: Record<string, RainbowTone> = {
     total: "sky",
     active: "green",
     inactive: "slate",
     withoutRoles: "amber",
+    linkedPatients: "teal",
     newThisWeek: "violet",
   };
 
   const defs: StatDef[] = [
     {
       key: "total",
-      label: "Total usuarios",
+      label: isPatient ? "Total pacientes" : filters.accountType === "all" ? "Total cuentas" : "Total usuarios",
       icon: Users,
       getValue: (s) => s.total,
-      context: () => t("En la plataforma"),
+      context: () =>
+        isPatient
+          ? t("Con acceso a la app")
+          : filters.accountType === "all"
+            ? t("Personal y pacientes")
+            : t("Con acceso al ERP"),
       isActive: () =>
         filters.status === "all" &&
         filters.role === "all" &&
@@ -85,12 +92,25 @@ export function UsersStats({ stats, filters, onStatFilter }: UsersStatsProps) {
         createdWithin: filters.createdWithin,
       },
     },
-    {
+    isPatient ? {
+      key: "linkedPatients",
+      label: "Con ficha",
+      icon: ClipboardCheck,
+      getValue: (s) => s.linkedPatients,
+      context: (s) =>
+        s.total > 0
+          ? t("{percent}% vinculadas", {
+              percent: String(Math.round((s.linkedPatients / s.total) * 100)),
+            })
+          : "—",
+      isActive: () => false,
+      filter: {},
+    } : {
       key: "withoutRoles",
       label: "Sin roles",
       icon: ShieldAlert,
       getValue: (s) => s.withoutRoles,
-      context: () => t("Sin acceso asignado"),
+      context: () => t("Sin roles asignados"),
       isActive: (f) => f.role === "none",
       filter: {
         role: "none",
@@ -114,21 +134,25 @@ export function UsersStats({ stats, filters, onStatFilter }: UsersStatsProps) {
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-3 @min-[420px]/workspace:grid-cols-2 @min-[700px]/workspace:grid-cols-3 @min-[1100px]/workspace:grid-cols-5">
+    <div className="grid grid-cols-2 gap-2.5 sm:gap-3 @min-[700px]/workspace:grid-cols-3 @min-[1100px]/workspace:grid-cols-5">
       {defs.map((def) => {
         const value = stats ? def.getValue(stats) : null;
         const active = def.isActive(filters);
+        const Stat = def.key === "linkedPatients" ? "div" : "button";
+        const context = stats ? def.context(stats) : "";
         return (
-          <button
+          <Stat
             key={def.key}
             data-slot="stat-card"
             style={rainbowStyle(tones[def.key])}
-            type="button"
-            disabled={!stats}
-            onClick={() => onStatFilter(def.filter)}
-            aria-pressed={active}
+            {...(Stat === "button" ? {
+              type: "button",
+              disabled: !stats,
+              onClick: () => onStatFilter(def.filter),
+              "aria-pressed": active,
+            } : {})}
             className={cn(
-              "spectrum-card group relative flex min-h-[92px] min-w-0 items-center gap-3 rounded-2xl border bg-primary-soft/25 p-3.5 text-left transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:pointer-events-none",
+              "spectrum-card group relative flex min-h-[76px] min-w-0 items-center gap-2.5 rounded-2xl border bg-primary-soft/25 p-3 text-left last:odd:col-span-2 sm:min-h-[92px] sm:gap-3 sm:p-3.5 @min-[700px]/workspace:last:odd:col-span-1 transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:pointer-events-none",
               active
                 ? "border-primary ring-1 ring-primary/30"
                 : "border-brand-blue-soft/40 hover:border-brand-blue-soft",
@@ -136,7 +160,7 @@ export function UsersStats({ stats, filters, onStatFilter }: UsersStatsProps) {
           >
             <span
               className={cn(
-                "spectrum-icon flex size-9 shrink-0 items-center justify-center rounded-full text-white",
+                "spectrum-icon flex size-8 shrink-0 sm:size-9 items-center justify-center rounded-full text-white",
               )}
             >
               <def.icon aria-hidden="true" className="size-4" />
@@ -146,17 +170,19 @@ export function UsersStats({ stats, filters, onStatFilter }: UsersStatsProps) {
                 {t(def.label)}
               </span>
               {stats ? (
-                <span className="text-2xl leading-7 font-bold tabular-nums text-primary-soft-foreground">
+                <span className="text-xl leading-7 font-bold sm:text-2xl tabular-nums text-primary-soft-foreground">
                   {value}
                 </span>
               ) : (
                 <Skeleton className="h-5 w-10" />
               )}
-              <span className="text-[11px] leading-3.5 text-muted-foreground">
-                {stats ? def.context(stats) : "—"}
-              </span>
+              {stats ? (
+                context && <span className="truncate text-[11px] leading-3.5 text-muted-foreground">{context}</span>
+              ) : (
+                <Skeleton className="h-3 w-16" />
+              )}
             </span>
-          </button>
+          </Stat>
         );
       })}
     </div>

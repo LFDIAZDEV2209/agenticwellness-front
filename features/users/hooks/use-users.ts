@@ -27,11 +27,12 @@ export function useUsers(
   initialPageSize = 10,
 ): UseUsersReturn {
   const [result, setResult] = useState<PaginatedResult<User> | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPageState] = useState(initialPage);
   const [pageSize, setPageSizeState] = useState(initialPageSize);
   const [filters, setFiltersState] = useState<UsersFilters>({
+    accountType: "erp",
     search: "",
     status: "all",
     role: "all",
@@ -91,6 +92,10 @@ export function useUsers(
   }, [page, pageSize, filters, sort, reloadKey]);
 
   const setFilters = useCallback((partial: Partial<UsersFilters>) => {
+    if (partial.accountType) {
+      setResult(null);
+      setLoading(true);
+    }
     setFiltersState((prev) => ({ ...prev, ...partial }));
     setPageState(1);
     setSelectedIds(new Set());

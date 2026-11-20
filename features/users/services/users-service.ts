@@ -14,6 +14,7 @@ import type {
   PaginatedResult,
   PermissionWithOrigin,
   User,
+  UserAccountType,
   UserCreateInput,
   UserSort,
   UserStats,
@@ -67,22 +68,31 @@ export async function fetchUsers(
   };
 }
 
-/** Búsqueda (nombre, apellido, email) + filtros de estado/rol/fecha/sin roles. */
+export function getAccountType(user: User): UserAccountType {
+  return user.accountType ?? "erp";
+}
+
+/** Búsqueda por identidad y contacto, con filtros del directorio. */
 export function filterUsers(users: User[], filters: UsersFilters): User[] {
   const query = filters.search.trim().toLowerCase();
   const withinMs = CREATED_WITHIN_MS[filters.createdWithin];
   const now = Date.now();
 
   return users.filter((user) => {
+    const accountType = getAccountType(user);
+    if (filters.accountType !== "all" && accountType !== filters.accountType) return false;
     if (query) {
-      const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
-      const email = user.email.toLowerCase();
-      if (!fullName.includes(query) && !email.includes(query)) return false;
+      const name = getFullName(user).toLowerCase();
+      const email = (user.email ?? "").toLowerCase();
+      const phone = (user.phoneNumber ?? "").toLowerCase();
+      const document = (user.patient?.documentNumber ?? "").toLowerCase();
+      if (![name, email, phone, document].some((value) => value.includes(query))) return false;
     }
     if (filters.status !== "all") {
       const active = filters.status === "active";
       if (user.isActive !== active) return false;
     }
+    if (filters.role !== "all" && accountType === "patient") return false;
     if (filters.role === "none") {
       // "Sin roles" solo cuando no hay roles globales NI scoped.
       const hasScoped = (user.scopedRoles?.length ?? 0) > 0;
@@ -107,12 +117,8 @@ export function sortUsers(users: User[], sort: UserSort): User[] {
     NonNullable<UserSort["field"]>,
     (a: User, b: User) => number
   > = {
-    name: (a, b) =>
-      `${a.firstName} ${a.lastName}`.localeCompare(
-        `${b.firstName} ${b.lastName}`,
-        "es",
-      ),
-    email: (a, b) => a.email.localeCompare(b.email, "es"),
+    name: (a, b) => getFullName(a).localeCompare(getFullName(b), "es"),
+    email: (a, b) => (a.email ?? "").localeCompare(b.email ?? "", "es"),
     status: (a, b) => Number(b.isActive) - Number(a.isActive),
     createdAt: (a, b) =>
       new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
@@ -140,26 +146,38 @@ export async function fetchUser(id: string): Promise<User> {
  * Estadísticas del módulo calculadas sobre la lista completa (misma fuente
  * que la tabla): total, activos, inactivos, sin roles y creados en 7 días.
  */
-export async function fetchUserStats(): Promise<UserStats> {
-  const users = await apiFetch<User[]>(PATH);
+export async function fetchUserStats(
+  accountType: UsersFilters["accountType"] = "erp",
+  signal?: AbortSignal,
+): Promise<UserStats> {
+  const users = await apiFetch<User[]>(PATH, { signal });
+  const erpTotal = users.filter((user) => getAccountType(user) === "erp").length;
+  const segment = accountType === "all" ? users : users.filter((user) => getAccountType(user) === accountType);
   const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
   let active = 0;
   let withoutRoles = 0;
   let newThisWeek = 0;
+  let linkedPatients = 0;
 
-  for (const user of users) {
+  for (const user of segment) {
     if (user.isActive) active++;
-    if (user.roles.length === 0 && (user.scopedRoles?.length ?? 0) === 0)
+    const isErp = getAccountType(user) === "erp";
+    if (isErp && user.roles.length === 0 && (user.scopedRoles?.length ?? 0) === 0)
       withoutRoles++;
+    if (!isErp && user.patient) linkedPatients++;
     if (new Date(user.createdAt).getTime() >= weekAgo) newThisWeek++;
   }
 
   return {
-    total: users.length,
+    total: segment.length,
     active,
-    inactive: users.length - active,
+    inactive: segment.length - active,
     withoutRoles,
     newThisWeek,
+    linkedPatients,
+    erpTotal,
+    patientTotal: users.length - erpTotal,
+    allTotal: users.length,
   };
 }
 
@@ -327,12 +345,12 @@ export async function fetchUserRoles(userId: string): Promise<Role[]> {
 // --- Helpers de presentación ---
 
 export function getFullName(user: User): string {
-  return `${user.firstName} ${user.lastName}`.trim();
+  return `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim();
 }
 
-export function getInitials(user: User): string {
+export function getInitials(user: Pick<User, "firstName" | "lastName">): string {
   return (
-    `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase() ||
+    `${user.firstName?.match(/\p{L}/u)?.[0] ?? ""}${user.lastName?.match(/\p{L}/u)?.[0] ?? ""}`.toUpperCase() ||
     "US"
   );
 }

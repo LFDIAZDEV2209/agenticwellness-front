@@ -58,12 +58,14 @@ import {
   fetchUser,
   fetchUserPermissions,
   fetchUserRoles,
+  getAccountType,
   linkUserAccount,
   updateUser,
   type UserEmailAvailability,
 } from "../services/users-service";
 import { generatePassword } from "../services/users-mock";
 import { PermissionSelector } from "./permission-selector";
+import { PatientAccountEditor } from "./patient-account-editor";
 import { RoleCreateDialog } from "@/features/roles/components/role-create-dialog";
 import { StepNav } from "@/features/professionals/components/wizard/step-nav";
 import { USER_STEPS } from "@/features/professionals/components/wizard/wizard-state";
@@ -138,6 +140,7 @@ export function UserWizard({ mode, userId, embedded, onBackToSelector }: UserWiz
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [retryKey, setRetryKey] = useState(0);
+  const [patientAccount, setPatientAccount] = useState<User | null>(null);
 
   const [form, setForm] = useState({
     email: "",
@@ -207,29 +210,27 @@ export function UserWizard({ mode, userId, embedded, onBackToSelector }: UserWiz
     setLoading(true);
     setLoadError(null);
     try {
-      const requests: Promise<unknown>[] = [fetchRoles(), fetchPermissions()];
-      if (isEdit && userId) {
-        requests.push(
-          fetchUser(userId),
-          fetchUserRoles(userId),
-          fetchUserPermissions(userId),
-        );
+      const user = isEdit && userId ? await fetchUser(userId) : null;
+      if (user && getAccountType(user) === "patient") {
+        setPatientAccount(user);
+        return;
       }
-      const [roleList, permissionList, ...rest] = await Promise.all(requests);
-      setRoles(roleList as Role[]);
-      setPermissions(permissionList as Permission[]);
+      setPatientAccount(null);
+      const [roleList, permissionList, userRoles, userPermissions] = await Promise.all([
+        fetchRoles(),
+        fetchPermissions(),
+        user ? fetchUserRoles(user.id) : [],
+        user ? fetchUserPermissions(user.id) : [],
+      ]);
+      setRoles(roleList);
+      setPermissions(permissionList);
 
-      if (isEdit && userId) {
-        const [user, userRoles, userPermissions] = rest as [
-          User,
-          Role[],
-          Permission[],
-        ];
+      if (user) {
         setForm({
-          email: user.email,
+          email: user.email ?? "",
           password: "",
-          firstName: user.firstName,
-          lastName: user.lastName,
+          firstName: user.firstName ?? "",
+          lastName: user.lastName ?? "",
           isActive: user.isActive,
           autoPassword: false,
           showPassword: false,
@@ -371,6 +372,7 @@ export function UserWizard({ mode, userId, embedded, onBackToSelector }: UserWiz
       lastName: form.lastName,
       isEditing: isEdit,
     });
+    if (isEdit) errors.email = "";
     if (linkMode) {
       // Vincular no crea credenciales ni identidad: solo importa el correo.
       errors.password = "";
@@ -521,6 +523,10 @@ export function UserWizard({ mode, userId, embedded, onBackToSelector }: UserWiz
 
   const passwordRules = validatePassword(form.password);
 
+  if (isEdit && !loading && !loadError && patientAccount && patientAccount.id === userId) {
+    return <PatientAccountEditor key={patientAccount.id} user={patientAccount} />;
+  }
+
   // --- Pantalla de éxito (solo creación) ---
   if (createdUser) {
     return (
@@ -585,7 +591,9 @@ export function UserWizard({ mode, userId, embedded, onBackToSelector }: UserWiz
       )}
 
       {/* Stepper: caja propia separada de la tarjeta del paso (mismo patrón que people-wizard) */}
-      <StepNav steps={USER_STEPS} currentIndex={step} icons={USER_STEP_ICONS} />
+      {(!isEdit || (!loading && !loadError)) && (
+        <StepNav steps={USER_STEPS} currentIndex={step} icons={USER_STEP_ICONS} />
+      )}
 
       {loading ? (
         <div className={cn("flex flex-col gap-4 p-6", !embedded && "rounded-2xl border border-border bg-card")}>
@@ -685,7 +693,7 @@ export function UserWizard({ mode, userId, embedded, onBackToSelector }: UserWiz
                     )}
                     <Field
                       label={t("Email")}
-                      required
+                      required={!isEdit}
                       error={touched.has("email") ? fieldErrors.email : ""}
                       hint={
                         isEdit
@@ -698,7 +706,7 @@ export function UserWizard({ mode, userId, embedded, onBackToSelector }: UserWiz
                         value={form.email}
                         onChange={(e) => update("email", e.target.value)}
                         onBlur={handleBlur("email")}
-                        placeholder={t("ej. usuario@coppaddresd.com")}
+                        placeholder={isEdit ? t("Sin correo") : t("ej. usuario@coppaddresd.com")}
                         disabled={saving || isEdit}
                         aria-invalid={Boolean(fieldErrors.email)}
                         autoComplete="off"
