@@ -490,7 +490,14 @@ function MedicationWorkspaceContent({
                           {dose.dosage} {dose.unit} · {t(data.treatments.some(treatment => treatment.id === dose.treatmentId && isRequiredMedication(treatment)) ? "Plan asignado" : "Adicional")}
                         </p>
                       </div>
-                      <MedicationStatusBadge status={dose.status} />
+                      {dose.status === "pending" && dose.snoozedUntil && Date.parse(dose.snoozedUntil) > now ? (
+                        <Badge variant="outline" tone="amber">
+                          <Clock3 aria-hidden />
+                          {t("Pospuesta hasta las {time}", { time: formatTime(dose.snoozedUntil, dose.timeZone) })}
+                        </Badge>
+                      ) : (
+                        <MedicationStatusBadge status={dose.status} />
+                      )}
                       {capability.canManage && dose.status === "pending" && (
                         <div className="medication-dose-actions">
                           <Button

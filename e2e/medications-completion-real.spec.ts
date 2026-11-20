@@ -152,8 +152,14 @@ test("an interval prescription supports durable snoozes and opted-in WhatsApp re
     await expect(doses).toHaveCount(remainingDoses);
     const initial = doses.filter({ has: patient.getByText(scheduled, { exact: true }) });
     await expect(initial).toHaveCount(1);
+    await staff.getByRole("tab", { name: "Hoy", exact: true }).click();
+    const staffDoses = staff.locator(".medication-dose-row").filter({ hasText: name });
+    await expect(staffDoses).toHaveCount(remainingDoses);
+    const staffSnooze = staffDoses.getByText(/^Pospuesta hasta las /);
+    await expect(staffSnooze).toHaveCount(0);
     await initial.getByRole("button", { name: "Posponer 15 min", exact: true }).click();
     await expect(initial.getByText("Recordatorio pospuesto", { exact: true })).toBeVisible();
+    await expect(staffSnooze).toBeVisible({ timeout: 15_000 });
     await patient.getByRole("button", { name: "Actualizar medicamentos" }).click();
     await expect(initial.getByText("Recordatorio pospuesto", { exact: true })).toBeVisible();
     expect((await sweep("app")).some(delivery => delivery.dose.name === name)).toBe(false);
@@ -170,6 +176,7 @@ test("an interval prescription supports durable snoozes and opted-in WhatsApp re
       expect(await reply.json()).toEqual({ applied: true });
     }
     await expect(initial.getByText("Tomado", { exact: true })).toBeVisible();
+    await expect(staffSnooze).toHaveCount(0, { timeout: 15_000 });
     await staff.getByRole("tab", { name: "Historial", exact: true }).click();
     const event = staff.locator(".medication-event-row").filter({ hasText: name });
     await expect(event).toHaveCount(1);
