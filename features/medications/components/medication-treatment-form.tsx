@@ -7,10 +7,13 @@ import {
   Check,
   ChevronDown,
   Clock3,
+  FileText,
   Pill,
   Plus,
   Save,
+  Tag,
   X,
+  type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +29,7 @@ import { Input } from "@/components/ui/input";
 import { NativeSelect } from "@/components/ui/native-select";
 import { Textarea } from "@/components/ui/textarea";
 import { ApiError } from "@/lib/api/http";
+import { rainbowStyle } from "@/lib/ui/rainbow";
 import { useT } from "@/providers/i18n-provider";
 import { CatalogCombobox } from "@/features/patients/components/catalog-combobox";
 import { medicationErrorKey, useMedicationCapabilities } from "../hooks";
@@ -44,6 +48,23 @@ const frequencyPresets = [
   { label: "Cada 8 horas", firstTime: "06:00", interval: 8 },
   { label: "Cada 12 horas", firstTime: "08:00", interval: 12 },
 ] as const;
+
+function TreatmentSectionHeading({
+  id,
+  icon: Icon,
+  title,
+}: {
+  id: string;
+  icon: LucideIcon;
+  title: string;
+}) {
+  return (
+    <h3 id={id} className="medication-form-section-heading">
+      <span className="medication-form-section-icon spectrum-icon"><Icon aria-hidden /></span>
+      {title}
+    </h3>
+  );
+}
 
 export function MedicationTreatmentForm({
   patientId,
@@ -167,8 +188,8 @@ export function MedicationTreatmentForm({
             }
           }}
         >
-          <header className="medication-form-heading">
-            <span className="medication-form-mark"><Pill aria-hidden /></span>
+          <header className="medication-form-heading" style={rainbowStyle("sky")}>
+            <span className="medication-form-mark spectrum-icon"><Pill aria-hidden /></span>
             <div>
               <DialogTitle id="medication-form-title">
                 {t(treatment ? "Editar dosis y horarios" : "Nuevo tratamiento")}
@@ -183,6 +204,7 @@ export function MedicationTreatmentForm({
                   size="icon"
                   variant="ghost"
                   aria-label={t("Cerrar formulario")}
+                  className="medication-form-close"
                   disabled={saving}
                 />
               }
@@ -194,101 +216,104 @@ export function MedicationTreatmentForm({
           <DialogBody className="medication-form-body">
             {error && <MedicationError message={error} />}
             {!treatment && (
-              <div className="medication-form-product">
-                <Field>
-                  <div className="medication-form-product-heading">
-                    {selectedDrug ? (
-                      <FieldTitle>{t("Medicamento")}</FieldTitle>
-                    ) : (
-                      <FieldLabel htmlFor={usesCatalog ? "medication-catalog-search" : "medication-name"}>
-                        {t(usesCatalog ? "Buscar en catálogo de EE. UU." : "Nombre del producto")}
-                      </FieldLabel>
-                    )}
-                    {productType === "medication" && (
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="ghost"
-                        className="h-auto min-h-7 px-1 py-0.5 text-primary hover:text-primary"
-                        onClick={() => {
-                          setSelectedDrug(null);
-                          setManualEntry(!manualEntry);
-                          setError(null);
-                        }}
-                        disabled={saving}
-                      >
-                        {t(usesCatalog ? "Entrada manual" : "Usar catálogo")}
-                      </Button>
-                    )}
-                  </div>
-                  {usesCatalog ? (
-                    selectedDrug ? (
-                      <div className="medication-form-selection">
-                        <Check aria-hidden className="size-4 shrink-0 text-primary" />
-                        <span>{selectedDrug.name}</span>
+              <section className="medication-form-section" style={rainbowStyle("teal")} aria-labelledby="medication-product-heading">
+                <TreatmentSectionHeading id="medication-product-heading" icon={Tag} title={t("Producto")} />
+                <div className="medication-form-product">
+                  <Field>
+                    <div className="medication-form-product-heading">
+                      {selectedDrug ? (
+                        <FieldTitle>{t("Medicamento")}</FieldTitle>
+                      ) : (
+                        <FieldLabel htmlFor={usesCatalog ? "medication-catalog-search" : "medication-name"}>
+                          {t(usesCatalog ? "Buscar en catálogo de EE. UU." : "Nombre del producto")}
+                        </FieldLabel>
+                      )}
+                      {productType === "medication" && (
                         <Button
                           type="button"
                           size="sm"
                           variant="ghost"
-                          onClick={() => setSelectedDrug(null)}
+                          className="medication-form-mode"
+                          onClick={() => {
+                            setSelectedDrug(null);
+                            setManualEntry(!manualEntry);
+                            setError(null);
+                          }}
                           disabled={saving}
                         >
-                          {t("Cambiar")}
+                          {t(usesCatalog ? "Entrada manual" : "Usar catálogo")}
                         </Button>
-                      </div>
+                      )}
+                    </div>
+                    {usesCatalog ? (
+                      selectedDrug ? (
+                        <div className="medication-form-selection">
+                          <Check aria-hidden className="size-5 shrink-0" />
+                          <span>{selectedDrug.name}</span>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => setSelectedDrug(null)}
+                            disabled={saving}
+                          >
+                            {t("Cambiar")}
+                          </Button>
+                        </div>
+                      ) : (
+                        <CatalogCombobox
+                          value={selectedDrug}
+                          onSelect={setSelectedDrug}
+                          fetchItems={searchUsMedicationCatalog}
+                          getLabel={rxTermsLabel}
+                          placeholder={t("Buscar en catálogo de EE. UU.")}
+                          searchInput={{ id: "medication-catalog-search", autoFocus: true }}
+                          searchPlaceholder={t("Marca, ingrediente o RxCUI")}
+                          emptyText={t("Sin coincidencias en RxTerms.")}
+                          wrapOptions
+                          minChars={3}
+                          disabled={saving}
+                        />
+                      )
                     ) : (
-                      <CatalogCombobox
-                        value={selectedDrug}
-                        onSelect={setSelectedDrug}
-                        fetchItems={searchUsMedicationCatalog}
-                        getLabel={rxTermsLabel}
-                        placeholder={t("Buscar en catálogo de EE. UU.")}
-                        searchInput={{ id: "medication-catalog-search", autoFocus: true }}
-                        searchPlaceholder={t("Marca, ingrediente o RxCUI")}
-                        emptyText={t("Sin coincidencias en RxTerms.")}
-                        wrapOptions
-                        minChars={3}
+                      <Input
+                        id="medication-name"
+                        name="name"
+                        maxLength={200}
+                        required
+                        autoFocus={productType === "medication"}
                         disabled={saving}
                       />
-                    )
-                  ) : (
-                    <Input
-                      id="medication-name"
-                      name="name"
-                      maxLength={200}
-                      required
-                      autoFocus={productType === "medication"}
+                    )}
+                  </Field>
+                  <Field>
+                    <FieldTitle className="min-h-7 items-center">{t("Tipo de producto")}</FieldTitle>
+                    <NativeSelect
+                      ariaLabel={t("Tipo de producto")}
+                      value={productType}
                       disabled={saving}
+                      onChange={(value) => {
+                        setProductType(value as MedicationProductType);
+                        setSelectedDrug(null);
+                        setManualEntry(false);
+                      }}
+                      options={[
+                        { value: "medication", label: t("Medicamento") },
+                        { value: "vitamin", label: t("Vitamina") },
+                        { value: "supplement", label: t("Suplemento") },
+                      ]}
                     />
-                  )}
-                </Field>
-                <Field>
-                  <FieldTitle className="min-h-7 items-center">{t("Tipo de producto")}</FieldTitle>
-                  <NativeSelect
-                    ariaLabel={t("Tipo de producto")}
-                    value={productType}
-                    disabled={saving}
-                    onChange={(value) => {
-                      setProductType(value as MedicationProductType);
-                      setSelectedDrug(null);
-                      setManualEntry(false);
-                    }}
-                    options={[
-                      { value: "medication", label: t("Medicamento") },
-                      { value: "vitamin", label: t("Vitamina") },
-                      { value: "supplement", label: t("Suplemento") },
-                    ]}
-                  />
-                  <span className="medication-form-product-context">
-                    {t(productType === "supplement" ? "Nutracéutico adicional" : "Plan obligatorio")}
-                  </span>
-                </Field>
-              </div>
+                    <span className="medication-form-product-context spectrum-tag">
+                      {t(productType === "supplement" ? "Nutracéutico adicional" : "Plan obligatorio")}
+                    </span>
+                  </Field>
+                </div>
+              </section>
             )}
 
             <div className="medication-form-columns">
-              <section className="medication-form-section">
-                <h3><Pill aria-hidden />{t("Dosis")}</h3>
+              <section className="medication-form-section" style={rainbowStyle("violet")} aria-labelledby="medication-dose-heading">
+                <TreatmentSectionHeading id="medication-dose-heading" icon={Pill} title={t("Dosis")} />
                 <FieldGroup className="grid grid-cols-2 gap-3">
                   <Field>
                     <FieldLabel htmlFor="medication-quantity">{t("Cantidad por toma")}</FieldLabel>
@@ -331,23 +356,11 @@ export function MedicationTreatmentForm({
                       disabled={saving}
                     />
                   </Field>
-                  <Field className="col-span-2">
-                    <FieldLabel htmlFor="medication-instructions">{t("Indicaciones")}</FieldLabel>
-                    <Textarea
-                      id="medication-instructions"
-                      name="instructions"
-                      defaultValue={treatment?.instructions ?? ""}
-                      maxLength={2000}
-                      rows={2}
-                      className="min-h-14"
-                      disabled={saving}
-                    />
-                  </Field>
                 </FieldGroup>
               </section>
 
-              <section className="medication-form-section">
-                <h3><Clock3 aria-hidden />{t("Horarios")}</h3>
+              <section className="medication-form-section" style={rainbowStyle("amber")} aria-labelledby="medication-times-heading">
+                <TreatmentSectionHeading id="medication-times-heading" icon={Clock3} title={t("Horarios")} />
                 <FieldGroup className="grid grid-cols-2 gap-3">
                   <Field className={frequency === "interval" ? "" : "col-span-2"}>
                     <FieldTitle>{t("Frecuencia")}</FieldTitle>
@@ -466,50 +479,64 @@ export function MedicationTreatmentForm({
               </section>
             </div>
 
-            <section className="medication-form-section">
-              <h3><CalendarDays aria-hidden />{t("Vigencia")}</h3>
-              <FieldGroup className="grid gap-3 sm:grid-cols-3">
-                <Field>
-                  <FieldLabel htmlFor="medication-start">{t("Fecha de inicio")}</FieldLabel>
-                  <Input
-                    id="medication-start"
-                    name="startDate"
-                    type="date"
-                    defaultValue={treatment?.startDate ?? new Date().toLocaleDateString("en-CA")}
-                    required
-                    disabled={saving}
-                  />
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="medication-end">{t("Fecha de fin (opcional)")}</FieldLabel>
-                  <Input
-                    id="medication-end"
-                    name="endDate"
-                    type="date"
-                    defaultValue={treatment?.endDate ?? ""}
-                    disabled={saving}
-                  />
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="medication-zone">{t("Zona horaria")}</FieldLabel>
-                  <Input
-                    id="medication-zone"
-                    name="timeZone"
-                    defaultValue={treatment?.timeZone ?? zone}
-                    required
-                    disabled={saving}
-                  />
-                </Field>
-              </FieldGroup>
-            </section>
+            <div className="medication-form-columns medication-form-details">
+              <section className="medication-form-section" style={rainbowStyle("sky")} aria-labelledby="medication-dates-heading">
+                <TreatmentSectionHeading id="medication-dates-heading" icon={CalendarDays} title={t("Vigencia")} />
+                <FieldGroup className="medication-form-dates grid gap-4">
+                  <Field>
+                    <FieldLabel htmlFor="medication-start">{t("Fecha de inicio")}</FieldLabel>
+                    <Input
+                      id="medication-start"
+                      name="startDate"
+                      type="date"
+                      defaultValue={treatment?.startDate ?? new Date().toLocaleDateString("en-CA")}
+                      required
+                      disabled={saving}
+                    />
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor="medication-end">{t("Fecha de fin (opcional)")}</FieldLabel>
+                    <Input
+                      id="medication-end"
+                      name="endDate"
+                      type="date"
+                      defaultValue={treatment?.endDate ?? ""}
+                      disabled={saving}
+                    />
+                  </Field>
+                  <Field className="medication-form-zone">
+                    <FieldLabel htmlFor="medication-zone">{t("Zona horaria")}</FieldLabel>
+                    <Input
+                      id="medication-zone"
+                      name="timeZone"
+                      defaultValue={treatment?.timeZone ?? zone}
+                      required
+                      disabled={saving}
+                    />
+                  </Field>
+                </FieldGroup>
+              </section>
+              <section className="medication-form-section medication-form-notes" style={rainbowStyle("pink")} aria-labelledby="medication-instructions-heading">
+                <TreatmentSectionHeading id="medication-instructions-heading" icon={FileText} title={t("Indicaciones")} />
+                <Textarea
+                  id="medication-instructions"
+                  name="instructions"
+                  aria-labelledby="medication-instructions-heading"
+                  defaultValue={treatment?.instructions ?? ""}
+                  maxLength={2000}
+                  rows={3}
+                  disabled={saving}
+                />
+              </section>
+            </div>
 
-            <details className="medication-form-reminders">
-              <summary>
-                <Bell aria-hidden />
+            <details className="medication-form-reminders" style={rainbowStyle("green")}>
+              <summary className="medication-form-section-heading">
+                <span className="medication-form-section-icon spectrum-icon"><Bell aria-hidden /></span>
                 {t("Recordatorios de medicación")}
-                <ChevronDown aria-hidden />
+                <ChevronDown className="medication-form-disclosure" aria-hidden />
               </summary>
-              <FieldGroup className="grid gap-3 px-3 pb-3 sm:grid-cols-2">
+              <FieldGroup className="medication-form-reminder-fields grid gap-4 sm:grid-cols-2">
                 {([
                   ["push", "Notificaciones push"],
                   ["inApp", "Avisos en la app"],
@@ -558,7 +585,7 @@ export function MedicationTreatmentForm({
             </details>
           </DialogBody>
 
-          <footer className="medication-form-actions">
+          <footer className="medication-form-actions" style={rainbowStyle("sky")}>
             <Button type="button" variant="outline" onClick={onCancel} disabled={saving}>
               {t("Cancelar")}
             </Button>

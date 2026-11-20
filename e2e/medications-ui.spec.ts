@@ -317,6 +317,7 @@ test("nuevo tratamiento abre en el catálogo y guarda el producto seleccionado c
   await form.getByLabel("Cantidad por toma").fill("1");
   await form.getByLabel("Unidad", { exact: true }).fill("cápsula");
   await form.getByLabel("Vía", { exact: true }).fill("oral");
+  await form.getByRole("textbox", { name: "Indicaciones", exact: true }).fill("Indicaciones de prueba");
   await submit.click();
   await expect(page.getByRole("status").filter({ hasText: "Tratamiento registrado" })).toBeVisible();
   expect(queries).toEqual(["amox"]);
@@ -326,6 +327,7 @@ test("nuevo tratamiento abre en el catálogo y guarda el producto seleccionado c
     dosage: 1,
     unit: "cápsula",
     route: "oral",
+    instructions: "Indicaciones de prueba",
   });
 });
 
@@ -354,8 +356,17 @@ test("ofrece entrada manual cuando falla el catálogo y conserva el formulario e
   await expect(search).toBeFocused();
   await form.getByRole("button", { name: "Entrada manual" }).click();
   await name.fill("Medicamento local QA");
-  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
-  await page.screenshot({ path: info.outputPath("new-treatment-manual-mobile-dark.png") });
+  for (const width of [320, 390]) {
+    await page.setViewportSize({ width, height: 844 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+    const formBody = form.locator('[data-slot="dialog-body"]');
+    expect(await formBody.evaluate((element) => element.scrollWidth - element.clientWidth)).toBeLessThanOrEqual(1);
+    const label = await form.getByText("Tipo de producto", { exact: true }).boundingBox();
+    const control = await form.getByRole("combobox", { name: "Tipo de producto" }).boundingBox();
+    expect(control!.y - label!.y - label!.height).toBeGreaterThanOrEqual(10);
+    await expect(form.getByRole("button", { name: "Guardar tratamiento" })).toBeInViewport();
+  }
+  await page.screenshot({ path: info.outputPath("new-treatment-manual-mobile-dark.png"), animations: "disabled" });
   await form.getByRole("button", { name: "Guardar tratamiento" }).click();
   await expect(page.getByRole("status").filter({ hasText: "Tratamiento registrado" })).toBeVisible();
   const body = writes.find(({ path }) => path.endsWith("/treatments"))?.body;
