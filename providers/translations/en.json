@@ -6043,6 +6043,8 @@
   "No se pudo completar la operación. Inténtalo de nuevo.": "The operation could not be completed. Try again.",
   "Finalizado": "Completed",
   "Tomado": "Taken",
+  "Plan obligatorio": "Required plan",
+  "Escribe el nombre del producto.": "Enter the product name.",
   "Nuevo tratamiento": "New treatment",
   "Registra las indicaciones de la receta existente.": "Record the directions from the existing prescription.",
   "Nombre del producto": "Product name",
@@ -6251,6 +6253,8 @@
 
   "Buscar en catálogo de EE. UU.": "Search U.S. drug catalog",
   "Marca, ingrediente o RxCUI": "Brand, ingredient, or RxCUI",
+  "Entrada manual": "Manual entry",
+  "Usar catálogo": "Use catalog",
   "Escribir nombre manualmente": "Enter name manually",
   "Sin coincidencias en RxTerms.": "No RxTerms matches.",
   "Anticipación (minutos)": "Remind before (minutes)",

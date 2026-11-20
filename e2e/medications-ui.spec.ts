@@ -266,11 +266,11 @@ test("directorio y ficha conectados; habilitación y alta de tratamiento", async
     .getByRole("button", { name: "Nuevo tratamiento", exact: true })
     .click();
   await page
-    .getByLabel("Nombre del producto", { exact: true })
-    .fill("Suplemento registrado");
-  await page
     .getByLabel("Tipo de producto", { exact: true })
     .selectOption("supplement");
+  await page
+    .getByLabel("Nombre del producto", { exact: true })
+    .fill("Suplemento registrado");
   await page.getByLabel("Cantidad por toma", { exact: true }).fill("2");
   await page.getByLabel("Unidad", { exact: true }).fill("cápsula");
   await page.getByLabel("Horario 1", { exact: true }).fill("08:30");
@@ -289,6 +289,78 @@ test("directorio y ficha conectados; habilitación y alta de tratamiento", async
         w.path.endsWith("/treatments") && w.body.productType === "supplement",
     ),
   ).toBe(true);
+});
+
+test("nuevo tratamiento abre en el catálogo y guarda el producto seleccionado con teclado", async ({ page }, info) => {
+  const { writes } = await mockMedications(page);
+  const queries: string[] = [];
+  const item = { id: "308136", name: "Amoxicillin 500 MG Oral Capsule" };
+  await page.route("**/api/v1/medications/catalog/us?*", async (route) => {
+    queries.push(new URL(route.request().url()).searchParams.get("search") ?? "");
+    await route.fulfill({ json: [item] });
+  });
+  await page.goto(`/medications/${patientId}`);
+  await page.getByRole("button", { name: "Nuevo tratamiento", exact: true }).click();
+  const form = page.getByRole("form", { name: "Nuevo tratamiento" });
+  const search = form.getByRole("combobox", { name: "Buscar en catálogo de EE. UU." });
+  const submit = form.getByRole("button", { name: "Guardar tratamiento" });
+  await expect(search).toBeFocused();
+  await expect(form.getByLabel("Nombre del producto", { exact: true })).toHaveCount(0);
+  await expect(submit).toBeDisabled();
+  await search.fill("amox");
+  await expect(page.getByRole("option", { name: item.name })).toBeVisible();
+  await page.screenshot({ path: info.outputPath("new-treatment-catalog-light.png") });
+  await search.press("ArrowDown");
+  await search.press("Enter");
+  await expect(form.getByText(item.name, { exact: true })).toBeVisible();
+  await expect(form.getByLabel("Cantidad por toma")).toHaveValue("");
+  await form.getByLabel("Cantidad por toma").fill("1");
+  await form.getByLabel("Unidad", { exact: true }).fill("cápsula");
+  await form.getByLabel("Vía", { exact: true }).fill("oral");
+  await submit.click();
+  await expect(page.getByRole("status").filter({ hasText: "Tratamiento registrado" })).toBeVisible();
+  expect(queries).toEqual(["amox"]);
+  expect(writes.find(({ path }) => path.endsWith("/treatments"))?.body).toMatchObject({
+    rxCui: item.id,
+    name: item.name,
+    dosage: 1,
+    unit: "cápsula",
+    route: "oral",
+  });
+});
+
+test("ofrece entrada manual cuando falla el catálogo y conserva el formulario en móvil", async ({ page }, info) => {
+  const { writes } = await mockMedications(page);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.route("**/api/v1/medications/catalog/us?*", async (route) => {
+    const query = new URL(route.request().url()).searchParams.get("search");
+    if (query === "local") await route.fulfill({ status: 503, json: {} });
+    else await route.fulfill({ json: [] });
+  });
+  await page.goto(`/medications/${patientId}`);
+  await page.evaluate(() => document.documentElement.classList.add("dark"));
+  await page.getByRole("button", { name: "Nuevo tratamiento", exact: true }).click();
+  const form = page.getByRole("form", { name: "Nuevo tratamiento" });
+  const search = form.getByRole("combobox", { name: "Buscar en catálogo de EE. UU." });
+  await search.fill("sin resultados");
+  await expect(page.getByText("Sin coincidencias en RxTerms.")).toBeVisible();
+  await search.fill("local");
+  await expect(page.getByText("No se pudo buscar. Reintenta.")).toBeVisible();
+  await form.getByRole("button", { name: "Entrada manual" }).click();
+  const name = form.getByLabel("Nombre del producto", { exact: true });
+  await expect(name).toBeFocused();
+  await expect(search).toHaveCount(0);
+  await form.getByRole("button", { name: "Usar catálogo" }).click();
+  await expect(search).toBeFocused();
+  await form.getByRole("button", { name: "Entrada manual" }).click();
+  await name.fill("Medicamento local QA");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+  await page.screenshot({ path: info.outputPath("new-treatment-manual-mobile-dark.png") });
+  await form.getByRole("button", { name: "Guardar tratamiento" }).click();
+  await expect(page.getByRole("status").filter({ hasText: "Tratamiento registrado" })).toBeVisible();
+  const body = writes.find(({ path }) => path.endsWith("/treatments"))?.body;
+  expect(body).toMatchObject({ name: "Medicamento local QA", productType: "medication" });
+  expect(body).not.toHaveProperty("rxCui");
 });
 
 test("registra una toma y conserva la misma operación al reintentar", async ({
@@ -421,9 +493,8 @@ test("un permiso de gestión retirado cierra el formulario tras el rechazo", asy
   await page
     .getByRole("button", { name: "Nuevo tratamiento", exact: true })
     .click();
-  await page
-    .getByLabel("Nombre del producto", { exact: true })
-    .fill("Tratamiento rechazado");
+  await page.getByRole("button", { name: "Entrada manual", exact: true }).click();
+  await page.getByLabel("Nombre del producto", { exact: true }).fill("Tratamiento rechazado");
   await page
     .getByRole("button", { name: "Guardar tratamiento", exact: true })
     .click();
@@ -502,8 +573,8 @@ test("inicio renovado muestra resumen, actividad y atajos que abren el historial
     .click();
   await page.getByRole("link", { name: /Alejandra Nombre Largo/ }).click();
   await expect(
-    page.getByLabel("Nombre del producto", { exact: true }),
-  ).toBeVisible();
+    page.getByRole("combobox", { name: "Buscar en catálogo de EE. UU.", exact: true }),
+  ).toBeFocused();
 });
 
 test("inicio sin registros no inventa actividad y conserva el diseño en oscuro y móvil", async ({
@@ -552,6 +623,7 @@ test("los atajos de frecuencia completan un horario editable y guardan el interv
   await form.getByRole("button", { name: "Cada 12 horas", exact: true }).click();
   await expect(form.getByLabel("Horas entre tomas")).toHaveValue("12");
   await firstTime.fill("09:00");
+  await form.getByRole("button", { name: "Entrada manual", exact: true }).click();
   await form.getByLabel("Nombre del producto", { exact: true }).fill("QA pauta de intervalo");
   await form.getByRole("button", { name: "Guardar tratamiento", exact: true }).click();
   await expect(page.getByRole("heading", { name: "QA pauta de intervalo" })).toBeVisible();

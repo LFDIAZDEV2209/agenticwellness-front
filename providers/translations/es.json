@@ -6043,6 +6043,8 @@
   "No se pudo completar la operación. Inténtalo de nuevo.": "No se pudo completar la operación. Inténtalo de nuevo.",
   "Finalizado": "Finalizado",
   "Tomado": "Tomado",
+  "Plan obligatorio": "Plan obligatorio",
+  "Escribe el nombre del producto.": "Escribe el nombre del producto.",
   "Nuevo tratamiento": "Nuevo tratamiento",
   "Registra las indicaciones de la receta existente.": "Registra las indicaciones de la receta existente.",
   "Nombre del producto": "Nombre del producto",
@@ -6251,6 +6253,8 @@
 
   "Buscar en catálogo de EE. UU.": "Buscar en catálogo de EE. UU.",
   "Marca, ingrediente o RxCUI": "Marca, ingrediente o RxCUI",
+  "Entrada manual": "Entrada manual",
+  "Usar catálogo": "Usar catálogo",
   "Escribir nombre manualmente": "Escribir nombre manualmente",
   "Sin coincidencias en RxTerms.": "Sin coincidencias en RxTerms.",
   "Anticipación (minutos)": "Anticipación (minutos)",

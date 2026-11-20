@@ -379,6 +379,7 @@ function MedicationWorkspaceContent({
             <MedicationTreatmentForm
               key={editing?.id ?? "new"}
               patientId={patientId}
+              patientName={data.patient.name}
               treatment={editing ?? undefined}
               onSaved={() => {
                 setFormOpen(false);
