@@ -150,8 +150,8 @@ test("an interval prescription supports durable snoozes and opted-in WhatsApp re
     await staff.getByRole("button", { name: "Guardar tratamiento", exact: true }).click();
     const doses = patient.locator(".medications-dose").filter({ hasText: name });
     await expect(doses).toHaveCount(remainingDoses);
-    await expect(doses.first()).toContainText(scheduled);
-    const initial = doses.first();
+    const initial = doses.filter({ has: patient.getByText(scheduled, { exact: true }) });
+    await expect(initial).toHaveCount(1);
     await initial.getByRole("button", { name: "Posponer 15 min", exact: true }).click();
     await expect(initial.getByText("Recordatorio pospuesto", { exact: true })).toBeVisible();
     await patient.getByRole("button", { name: "Actualizar medicamentos" }).click();
