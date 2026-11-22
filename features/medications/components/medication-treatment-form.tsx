@@ -43,6 +43,8 @@ import type { MedicationProductType, MedicationTreatment } from "../types";
 import { MedicationError } from "./medication-shared";
 
 const rxTermsLabel = (item: RxTermsOption) => item.name;
+const minDosage = 0.001;
+const maxDosage = 1_000_000;
 const frequencyPresets = [
   { label: "1 vez al día", firstTime: "08:00", interval: null },
   { label: "Cada 8 horas", firstTime: "06:00", interval: 8 },
@@ -85,6 +87,7 @@ export function MedicationTreatmentForm({
     useState<MedicationProductType>(treatment?.productType ?? "medication");
   const [manualEntry, setManualEntry] = useState(false);
   const [selectedDrug, setSelectedDrug] = useState<RxTermsOption | null>(null);
+  const [doseEdits, setDoseEdits] = useState<{ dosage?: string; unit?: string; route?: string }>({});
   const [times, setTimes] = useState(treatment?.times ?? ["08:00"]);
   const [frequency, setFrequency] = useState(treatment?.intervalHours ? "interval" : treatment?.weekdayMask ? "weekly" : "daily");
   const [intervalHours, setIntervalHours] = useState(String(treatment?.intervalHours ?? 8));
@@ -95,6 +98,28 @@ export function MedicationTreatmentForm({
     Intl.DateTimeFormat().resolvedOptions().timeZone || "America/Bogota";
 
   const usesCatalog = !treatment && productType === "medication" && !manualEntry;
+  const catalogUnit = selectedDrug?.doseUnit?.trim() ?? "";
+  const unit = doseEdits.unit ?? treatment?.unit ?? (usesCatalog ? catalogUnit : "tableta");
+  const route = doseEdits.route ?? treatment?.route ?? (usesCatalog ? selectedDrug?.route?.trim() ?? "" : "oral");
+  const catalogDosage = selectedDrug?.dosage;
+  // La cantidad publicada solo aplica a la unidad que la acompaña.
+  const matchesCatalogUnit = catalogUnit !== "" && unit.trim().toLowerCase() === catalogUnit.toLowerCase();
+  const suggestedDosage =
+    matchesCatalogUnit && typeof catalogDosage === "number"
+    && catalogDosage >= minDosage && catalogDosage <= maxDosage
+      ? catalogDosage
+      : "";
+  const dosage = doseEdits.dosage ?? treatment?.dosage ?? (usesCatalog ? suggestedDosage : "1");
+  const nameLowerCase = selectedDrug?.name.toLowerCase() ?? "";
+  const catalogDetails = [selectedDrug?.strength, selectedDrug?.doseForm]
+    .map((detail) => detail?.trim())
+    .filter((detail) => detail && !nameLowerCase.includes(detail.toLowerCase()))
+    .join(" · ");
+
+  function clearProductSelection() {
+    setSelectedDrug(null);
+    setDoseEdits({});
+  }
 
   function applyFrequencyPreset(preset: typeof frequencyPresets[number]) {
     setFrequency(preset.interval === null ? "daily" : "interval");
@@ -235,7 +260,7 @@ export function MedicationTreatmentForm({
                           variant="ghost"
                           className="medication-form-mode"
                           onClick={() => {
-                            setSelectedDrug(null);
+                            clearProductSelection();
                             setManualEntry(!manualEntry);
                             setError(null);
                           }}
@@ -249,12 +274,15 @@ export function MedicationTreatmentForm({
                       selectedDrug ? (
                         <div className="medication-form-selection">
                           <Check aria-hidden className="size-5 shrink-0" />
-                          <span>{selectedDrug.name}</span>
+                          <span>
+                            {selectedDrug.name}
+                            {catalogDetails && <small className="block font-normal">{catalogDetails}</small>}
+                          </span>
                           <Button
                             type="button"
                             size="sm"
                             variant="ghost"
-                            onClick={() => setSelectedDrug(null)}
+                            onClick={clearProductSelection}
                             disabled={saving}
                           >
                             {t("Cambiar")}
@@ -294,7 +322,7 @@ export function MedicationTreatmentForm({
                       disabled={saving}
                       onChange={(value) => {
                         setProductType(value as MedicationProductType);
-                        setSelectedDrug(null);
+                        clearProductSelection();
                         setManualEntry(false);
                       }}
                       options={[
@@ -323,10 +351,11 @@ export function MedicationTreatmentForm({
                       name="dosage"
                       type="number"
                       inputMode="decimal"
-                      min="0.001"
-                      max="1000000"
+                      min={minDosage}
+                      max={maxDosage}
                       step="any"
-                      defaultValue={treatment?.dosage ?? (usesCatalog ? "" : "1")}
+                      value={dosage}
+                      onChange={(event) => setDoseEdits((edits) => ({ ...edits, dosage: event.target.value }))}
                       required
                       autoFocus={selectedDrug !== null}
                       disabled={saving}
@@ -335,11 +364,11 @@ export function MedicationTreatmentForm({
                   <Field>
                     <FieldLabel htmlFor="medication-unit">{t("Unidad")}</FieldLabel>
                     <Input
-                      key={selectedDrug?.id ?? (usesCatalog ? "catalog" : productType)}
                       id="medication-unit"
                       name="unit"
                       maxLength={40}
-                      defaultValue={treatment?.unit ?? (usesCatalog ? "" : "tableta")}
+                      value={unit}
+                      onChange={(event) => setDoseEdits((edits) => ({ ...edits, unit: event.target.value }))}
                       required
                       disabled={saving}
                     />
@@ -347,11 +376,11 @@ export function MedicationTreatmentForm({
                   <Field className="col-span-2">
                     <FieldLabel htmlFor="medication-route">{t("Vía")}</FieldLabel>
                     <Input
-                      key={selectedDrug?.id ?? (usesCatalog ? "catalog" : productType)}
                       id="medication-route"
                       name="route"
                       maxLength={80}
-                      defaultValue={treatment?.route ?? (usesCatalog ? "" : "oral")}
+                      value={route}
+                      onChange={(event) => setDoseEdits((edits) => ({ ...edits, route: event.target.value }))}
                       required={selectedDrug !== null}
                       disabled={saving}
                     />

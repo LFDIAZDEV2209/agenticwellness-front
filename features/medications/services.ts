@@ -105,7 +105,15 @@ export const setMedicationTreatmentStatus = (
     { method: "PUT", body: JSON.stringify({ status, expectedRevision, reason }) },
   );
 
-export type RxTermsOption = { id: string; name: string };
+export type RxTermsOption = {
+  id: string;
+  name: string;
+  strength?: string | null;
+  doseForm?: string | null;
+  route?: string | null;
+  doseUnit?: string | null;
+  dosage?: number | null;
+};
 
 export function searchUsMedicationCatalog(search: string, signal: AbortSignal) {
   return request<RxTermsOption[]>(
