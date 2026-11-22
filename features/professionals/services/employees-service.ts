@@ -314,6 +314,9 @@ export interface AccountEmailMatch {
   exists: boolean;
   isActive: boolean;
   hasPassword: boolean;
+  userId?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
 }
 
 /** Contexto del correo en el alta: perfiles y cuenta que ya lo usan. */
@@ -321,6 +324,7 @@ export interface EmailAvailabilityResult {
   available: boolean;
   employee: EmployeeEmailMatch | null;
   patient: PatientEmailMatch | null;
+  patientEmailExists?: boolean;
   account: AccountEmailMatch | null;
 }
 
@@ -333,10 +337,12 @@ export interface EmailAvailabilityResult {
 export async function checkEmployeeEmailAvailability(
   email: string,
   organizationId: string,
+  signal?: AbortSignal,
 ): Promise<EmailAvailabilityResult> {
   const query = new URLSearchParams({ email, organizationId });
   return apiFetch<EmailAvailabilityResult>(
     `${env.apiUrl}/api/v1/professionals/email-availability?${query.toString()}`,
+    { signal },
   );
 }
 

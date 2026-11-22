@@ -16,7 +16,6 @@ import {
   LoaderCircle,
   Lock,
   Mail,
-  MailPlus,
   RefreshCw,
   ShieldCheck,
   ShieldPlus,
@@ -25,6 +24,7 @@ import {
   Wand2,
   type LucideIcon,
 } from "lucide-react";
+import { IdentityConflictNotice } from "@/components/feedback/identity-conflict-notice";
 import { PageHeader } from "@/components/layout/page-header";
 import { SectionHeader } from "@/components/layout/section-header";
 import { ProfessionalAvatar } from "@/features/professionals/components/professional-visuals";
@@ -693,51 +693,33 @@ export function UserWizard({ mode, userId, embedded, onBackToSelector }: UserWiz
                     )}
                     <Field
                       label={t("Email")}
+                      htmlFor="platform-account-email"
                       required={!isEdit}
                       error={touched.has("email") ? fieldErrors.email : ""}
                       hint={
                         isEdit
                           ? t("El email no se puede cambiar.")
-                          : t("El usuario usará este correo para iniciar sesión.")
+                          : linkContext ? undefined : t("El usuario usará este correo para iniciar sesión.")
                       }
                     >
                       <Input
+                        id="platform-account-email"
                         type="email"
                         value={form.email}
                         onChange={(e) => update("email", e.target.value)}
                         onBlur={handleBlur("email")}
                         placeholder={isEdit ? t("Sin correo") : t("ej. usuario@coppaddresd.com")}
                         disabled={saving || isEdit}
-                        aria-invalid={Boolean(fieldErrors.email)}
+                        aria-invalid={Boolean(fieldErrors.email) || Boolean(linkContext && !linkContext.isActive)}
+                        aria-describedby={linkContext ? "platform-account-email-match" : undefined}
                         autoComplete="off"
                       />
+                      {linkContext && <IdentityConflictNotice
+                        id="platform-account-email-match"
+                        owner={linkContext}
+                        href={linkContext.userId && hasPermission("Users.View") ? `/users/${linkContext.userId}` : undefined}
+                      />}
                     </Field>
-
-                    {linkContext && (
-                      <div className="rounded-xl border border-border/70 bg-muted/40 p-3.5 sm:col-span-2">
-                        <div className="flex items-start gap-2.5">
-                          {linkContext.isActive ? (
-                            <MailPlus className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-                          ) : (
-                            <Info className="mt-0.5 size-4 shrink-0 text-destructive" />
-                          )}
-                          <p className="text-[12.5px] leading-snug text-muted-foreground">
-                            {linkContext.isActive
-                              ? t(
-                                  "Este correo ya tiene una cuenta ({name}). Los roles y permisos seleccionados se sumarán sin quitar los existentes; las credenciales no cambian.",
-                                  {
-                                    name:
-                                      `${linkContext.firstName ?? ""} ${linkContext.lastName ?? ""}`.trim() ||
-                                      form.email.trim(),
-                                  },
-                                )
-                              : t(
-                                  "La cuenta está inactiva. Reactívala en Usuarios antes de vincularla.",
-                                )}
-                          </p>
-                        </div>
-                      </div>
-                    )}
 
                     {isEdit ? (
                       <div className="flex items-center justify-between rounded-lg border border-border p-3">
@@ -1108,12 +1090,14 @@ function Notice({ icon: Icon, text }: { icon: LucideIcon; text: string }) {
 
 function Field({
   label,
+  htmlFor,
   required,
   error,
   hint,
   children,
 }: {
   label: string;
+  htmlFor?: string;
   required?: boolean;
   error?: string;
   hint?: string;
@@ -1121,7 +1105,7 @@ function Field({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <Label>
+      <Label htmlFor={htmlFor}>
         {label}
         {required && (
           <span className="ml-1 text-destructive" aria-hidden="true">

@@ -6355,5 +6355,7 @@
   "{count} paciente encontrado": "{count} patient found",
   "{count} pacientes encontrados": "{count} patients found",
   "{count} cuenta encontrada": "{count} account found",
-  "{count} cuentas encontradas": "{count} accounts found"
+  "{count} cuentas encontradas": "{count} accounts found",
+  "En uso por": "In use by",
+  "Ya está en uso.": "Already in use."
 }

@@ -25,11 +25,8 @@ import {
   fetchOrganizationTree,
   createProfessional,
   checkEmployeeEmailAvailability,
-  deleteEmployee,
-  inviteEmployee,
   type OrganizationTree,
   type EmailAvailabilityResult,
-  type EmployeeEmailMatch,
 } from "@/features/professionals/services/employees-service";
 import { updateSchedules } from "@/features/professionals/services/schedules-service";
 import {
@@ -104,7 +101,7 @@ export function PeopleWizard({
 }: PeopleWizardProps) {
   const t = useT();
   const router = useRouter();
-  const { hasPermission } = useAuth();
+  const { user, hasPermission } = useAuth();
 
   const parsedMode = parseMode(initialMode);
   const parsedContext = parseContext(initialContext);
@@ -135,11 +132,9 @@ export function PeopleWizard({
   // vigencia se deriva comparándolo con el correo actual (evita setState
   // síncrono en el efecto cuando el campo está incompleto).
   const [emailCheck, setEmailCheck] = useState<{
-    email: string;
+    key: string;
     result: EmailAvailabilityResult;
   } | null>(null);
-  const [emailActionBusy, setEmailActionBusy] = useState(false);
-  const [notice, setNotice] = useState<string | null>(null);
   const [created, setCreated] = useState<{
     id: string;
     invitationLink: string | null;
@@ -158,102 +153,35 @@ export function PeopleWizard({
     countries: false,
   });
 
-  // Preflight del correo del personal: mientras se escribe se consulta si ya
-  // existe en la organización para avisar en el propio campo (la autoridad
-  // final sigue siendo el POST → 409).
-  useEffect(() => {
-    const isStaff = form.mode === "professional" || form.mode === "employee";
-    const email = form.email.trim().toLowerCase();
-    const organizationId = form.organizationId;
-    if (!isStaff || !organizationId || !/\S+@\S+\.\S+/.test(email)) {
-      return;
-    }
+  const staffEmail = form.email.trim().toLowerCase();
+  const organizationId = form.organizationId;
+  const staffEmailKey = JSON.stringify([user?.id, form.mode, organizationId, staffEmail]);
+  const checkStaffEmail = Boolean(
+    user?.id && (form.mode === "professional" || form.mode === "employee")
+      && organizationId && /^\S+@\S+\.\S+$/.test(staffEmail),
+  );
 
-    let cancelled = false;
-    const timer = setTimeout(() => {
-      checkEmployeeEmailAvailability(email, organizationId)
+  useEffect(() => {
+    if (!checkStaffEmail) return;
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => {
+      void checkEmployeeEmailAvailability(staffEmail, organizationId, controller.signal)
         .then((result) => {
-          if (!cancelled) setEmailCheck({ email, result });
+          if (!controller.signal.aborted) setEmailCheck({ key: staffEmailKey, result });
         })
         .catch(() => {
-          if (!cancelled) {
-            setEmailCheck({
-              email,
-              result: {
-                available: true,
-                employee: null,
-                patient: null,
-                account: null,
-              },
-            });
-          }
+          // El servidor valida el correo nuevamente al crear el perfil.
         });
     }, 450);
-
     return () => {
-      cancelled = true;
-      clearTimeout(timer);
+      window.clearTimeout(timer);
+      controller.abort();
     };
-  }, [form.mode, form.email, form.organizationId]);
+  }, [checkStaffEmail, organizationId, staffEmail, staffEmailKey]);
 
-  // Contexto vigente del preflight: solo si el correo consultado coincide con
-  // el valor actual del campo (evita mostrar datos de un correo viejo).
-  const emailContext =
-    emailCheck && emailCheck.email === form.email.trim().toLowerCase()
-      ? emailCheck.result
-      : null;
-  const emailEmployee: EmployeeEmailMatch | null =
-    emailContext?.employee ?? null;
-
-  /** Invita al perfil existente en vez de crear uno nuevo (el backend une
-   *  sus roles y permisos por alcance — union pura). */
-  const inviteExistingProfile = async () => {
-    if (!emailEmployee) return;
-    setEmailActionBusy(true);
-    setNotice(null);
-    setError(null);
-    try {
-      const result = await inviteEmployee(emailEmployee.id);
-      setCreated({
-        id: result.employeeId,
-        invitationLink: result.invitationLink,
-        email: form.email.trim(),
-        mode: form.mode as Mode,
-        accountLinked: false,
-      });
-    } catch (err) {
-      setError(
-        err instanceof ApiError
-          ? err.message
-          : t("No se pudo enviar la invitación."),
-      );
-    } finally {
-      setEmailActionBusy(false);
-    }
-  };
-
-  /** Elimina el perfil existente para liberar el correo (soft-delete). */
-  const deleteExistingProfile = async () => {
-    if (!emailEmployee) return;
-    setEmailActionBusy(true);
-    setNotice(null);
-    setError(null);
-    try {
-      await deleteEmployee(emailEmployee.id);
-      setEmailCheck(null);
-      setNotice(
-        t("Perfil eliminado. El correo quedó libre para una nueva alta."),
-      );
-    } catch (err) {
-      setError(
-        err instanceof ApiError
-          ? err.message
-          : t("No se pudo eliminar el perfil."),
-      );
-    } finally {
-      setEmailActionBusy(false);
-    }
-  };
+  const emailContext = checkStaffEmail && emailCheck?.key === staffEmailKey
+    ? emailCheck.result
+    : null;
 
   // Cargar catálogos de forma condicional según el modo SELECCIONADO (no al montar).
   // Cuando form.mode=null (selector de modo), NO se hace fetch — el selector
@@ -276,9 +204,9 @@ export function PeopleWizard({
 
         // Organizaciones (necesario para patient, employee, professional)
         if (!loadedRef.current.organizations) {
-          loadedRef.current.organizations = true;
           const entry = sessionCache.organizations;
           if (entry && Date.now() < entry.expiry) {
+            loadedRef.current.organizations = true;
             setOrganizations(entry.data);
             const autoOrg =
               entry.data.find((o) => o.clinics.length > 0) ??
@@ -291,6 +219,7 @@ export function PeopleWizard({
             tasks.push(
               fetchOrganizationTree().then((orgs) => {
                 if (cancelled) return;
+                loadedRef.current.organizations = true;
                 setOrganizations(orgs);
                 sessionCache.organizations = {
                   data: orgs,
@@ -308,10 +237,10 @@ export function PeopleWizard({
 
         // Países (selector de código telefónico en todos los modos)
         if (!loadedRef.current.countries) {
-          loadedRef.current.countries = true;
           tasks.push(
             fetchCountries().then((cs) => {
               if (cancelled) return;
+              loadedRef.current.countries = true;
               setCountries(cs);
             }),
           );
@@ -319,14 +248,15 @@ export function PeopleWizard({
 
         // Tipos profesionales (solo modo professional)
         if (mode === "professional" && !loadedRef.current.professionalTypes) {
-          loadedRef.current.professionalTypes = true;
           const entry = sessionCache.professionalTypes;
           if (entry && Date.now() < entry.expiry) {
+            loadedRef.current.professionalTypes = true;
             setTypes(entry.data);
           } else {
             tasks.push(
               fetchProfessionalTypes().then((ts) => {
                 if (cancelled) return;
+                loadedRef.current.professionalTypes = true;
                 setTypes(ts);
                 sessionCache.professionalTypes = {
                   data: ts,
@@ -339,14 +269,15 @@ export function PeopleWizard({
 
         // Especialidades (solo modo professional)
         if (mode === "professional" && !loadedRef.current.specialties) {
-          loadedRef.current.specialties = true;
           const entry = sessionCache.specialties;
           if (entry && Date.now() < entry.expiry) {
+            loadedRef.current.specialties = true;
             setSpecialties(entry.data);
           } else {
             tasks.push(
               fetchSpecialties().then((ss) => {
                 if (cancelled) return;
+                loadedRef.current.specialties = true;
                 setSpecialties(ss);
                 sessionCache.specialties = {
                   data: ss,
@@ -362,14 +293,15 @@ export function PeopleWizard({
           (mode === "professional" || mode === "employee") &&
           !loadedRef.current.roles
         ) {
-          loadedRef.current.roles = true;
           const entry = sessionCache.roles;
           if (entry && Date.now() < entry.expiry) {
+            loadedRef.current.roles = true;
             setRoles(entry.data);
           } else {
             tasks.push(
               fetchRoles().then((rs) => {
                 if (cancelled) return;
+                loadedRef.current.roles = true;
                 setRoles(rs);
                 sessionCache.roles = {
                   data: rs,
@@ -778,11 +710,6 @@ export function PeopleWizard({
               {error}
             </div>
           )}
-          {notice && (
-            <div className="border-b border-border bg-success-soft px-5 py-2.5 text-[13px] text-success-soft-foreground">
-              {notice}
-            </div>
-          )}
 
           {/* Paso -1: selector de modo */}
           {step === -1 && (
@@ -818,9 +745,6 @@ export function PeopleWizard({
                 onBack={availableModes.length > 1 ? backToSelector : undefined}
                 countries={countries}
                 emailContext={emailContext}
-                emailActionBusy={emailActionBusy}
-                onInviteExisting={inviteExistingProfile}
-                onDeleteExisting={deleteExistingProfile}
               />
             )}
 

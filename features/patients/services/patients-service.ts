@@ -19,6 +19,29 @@ import type {
 
 const PATH = `${env.apiUrl}/api/v1/patients`;
 
+export type PatientIdentityField = "email" | "documentNumber";
+
+export interface PatientIdentityOwner {
+  kind: "patient" | "user";
+  id: string;
+  firstName: string | null;
+  lastName: string | null;
+}
+
+export interface PatientIdentityAvailability {
+  exists: boolean;
+  owner: PatientIdentityOwner | null;
+}
+
+export function checkPatientIdentityAvailability(
+  field: PatientIdentityField,
+  value: string,
+  signal: AbortSignal,
+): Promise<PatientIdentityAvailability> {
+  const params = new URLSearchParams({ [field]: value });
+  return apiFetch<PatientIdentityAvailability>(`${PATH}/identity-availability?${params}`, { signal });
+}
+
 /**
  * Agregados del dashboard general (demografía, crecimiento, top de
  * profesionales y geografía). `stateCode` acota demografía/crecimiento/top;
