@@ -9,30 +9,19 @@
 "use client";
 
 import { useT } from "@/providers/i18n-provider";
-import { useCallback, useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useCallback, useId, useState, useMemo } from "react";
 import {
   ArrowLeft,
   ArrowRight,
-  Eye,
-  MailPlus,
   Siren,
-  Trash2,
   UserRound,
 } from "lucide-react";
 import { SectionHeader } from "@/components/layout/section-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { IdentityConflictNotice } from "@/components/feedback/identity-conflict-notice";
+import { useAuth } from "@/providers/auth-provider";
+import { patientIdentityHref, usePatientIdentityAvailability } from "@/features/patients/hooks/use-patient-identity-availability";
 import {
   Select,
   SelectContent,
@@ -40,10 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  ProfessionalAvatar,
-  statusLabel,
-} from "../../professional-visuals";
+import { ProfessionalAvatar } from "../../professional-visuals";
 import { Field } from "../shared";
 import type { StepProps } from "../wizard-state";
 import type { CountryOption } from "@/features/patients/types";
@@ -54,10 +40,6 @@ interface IdentityStepProps extends Omit<StepProps, "onBack"> {
   countries?: CountryOption[];
   /** Contexto del preflight del correo: perfiles y cuenta que ya lo usan. */
   emailContext?: EmailAvailabilityResult | null;
-  /** Acción en curso sobre el perfil existente (invitar/eliminar). */
-  emailActionBusy?: boolean;
-  onInviteExisting?: () => void;
-  onDeleteExisting?: () => void;
 }
 
 export function IdentityStep({
@@ -67,18 +49,36 @@ export function IdentityStep({
   onBack,
   countries = [],
   emailContext = null,
-  emailActionBusy = false,
-  onInviteExisting,
-  onDeleteExisting,
 }: IdentityStepProps) {
   const t = useT();
-  const router = useRouter();
+  const { hasPermission } = useAuth();
+  const formId = useId();
+  const emailId = `${formId}-email`;
+  const documentId = `${formId}-document`;
   const isPatient = form.mode === "patient";
-  const emailEmployee = emailContext?.employee ?? null;
-  const emailTaken = emailEmployee != null;
-  const emailPatient = emailContext?.patient ?? null;
-  const emailAccount = emailContext?.account ?? null;
-  const [confirmDelete, setConfirmDelete] = useState(false);
+  const { emailMatch, documentMatch } = usePatientIdentityAvailability(form.email, form.documentNumber, isPatient);
+  const employee = emailContext?.employee;
+  const patient = emailContext?.patient;
+  const account = emailContext?.account;
+  const emailTaken = !isPatient && emailContext?.available === false;
+  const emailInUse = isPatient ? Boolean(emailMatch)
+    : emailTaken || Boolean(employee || patient || account?.exists || emailContext?.patientEmailExists);
+
+  let emailOwner: { firstName?: string | null; lastName?: string | null } | null | undefined;
+  let emailHref: string | undefined;
+  if (isPatient) {
+    emailOwner = emailMatch?.owner;
+    emailHref = patientIdentityHref(emailMatch?.owner);
+  } else if (employee && hasPermission("Employees.View")) {
+    emailOwner = employee;
+    emailHref = `/employees/${employee.id}`;
+  } else if (account?.userId && hasPermission("Users.View")) {
+    emailOwner = account;
+    emailHref = `/users/${account.userId}`;
+  } else if (patient && (hasPermission("Patients.View") || hasPermission("Patients.ViewOwn"))) {
+    emailOwner = patient;
+    emailHref = `/patients/${patient.id}`;
+  }
 
   // Catálogo deduplicado por código telefónico (varios países comparten el
   // +1). El trigger muestra solo el prefijo; el nombre completo aparece en
@@ -120,11 +120,6 @@ export function IdentityStep({
         errors.email = t("El correo es obligatorio.");
       else if (!/\S+@\S+\.\S+/.test(form.email))
         errors.email = t("Ingresa un correo válido (ej. nombre@clinica.com).");
-      else if (emailTaken)
-        errors.email = t(
-          "Ya existe un empleado con el correo '{email}' en esta organización.",
-          { email: form.email.trim() },
-        );
     }
     if (isPatient) {
       // El backend exige documento, fecha de nacimiento, género y teléfono.
@@ -165,7 +160,6 @@ export function IdentityStep({
     form.emergencyContactPhone,
     form.emergencyContactEmail,
     isPatient,
-    emailTaken,
     t,
   ]);
 
@@ -187,7 +181,7 @@ export function IdentityStep({
     form.lastName.trim() !== "" &&
     (isPatient || (/\S+@\S+\.\S+/.test(form.email) && !emailTaken)) &&
     (!isPatient ||
-      (form.documentNumber.trim() !== "" &&
+      (!documentMatch && form.documentNumber.trim() !== "" &&
         form.birthDate !== "" &&
         form.gender.trim() !== "" &&
         form.phone.trim() !== "")) &&
@@ -251,149 +245,26 @@ export function IdentityStep({
               />
             </Field>
 
-            {/* Email: obligatorio para profesional/empleado, opcional para paciente */}
             <Field
               label={t("Correo electrónico")}
+              htmlFor={emailId}
               required={!isPatient}
-              error={
-                // Con la tarjeta de perfil existente el aviso rojo sería
-                // redundante: la tarjeta explica y ofrece las acciones.
-                emailEmployee ? "" : touched.has("email") || emailTaken ? fieldErrors.email : ""
-              }
-              hint={
-                !isPatient
-                  ? t("El profesional usará este correo para acceder al ERP.")
-                  : undefined
-              }
+              error={touched.has("email") ? fieldErrors.email : ""}
+              hint={!isPatient && !emailInUse ? t("El profesional usará este correo para acceder al ERP.") : undefined}
             >
               <Input
+                id={emailId}
                 type="email"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 onBlur={handleBlur("email")}
                 placeholder={t("ej. usuario@coppaddresd.com")}
-                disabled={false}
-                aria-invalid={Boolean(fieldErrors.email)}
+                aria-invalid={Boolean(fieldErrors.email) || emailTaken}
+                aria-describedby={emailInUse ? `${emailId}-match` : undefined}
                 autoComplete="off"
               />
+              {emailInUse && <IdentityConflictNotice id={`${emailId}-match`} owner={emailOwner} href={emailHref} />}
             </Field>
-
-            {/* Tarjeta de perfil existente: invitar el perfil o liberar el
-                correo eliminándolo. La creación nueva queda bloqueada. */}
-            {!isPatient && emailEmployee && (
-              <>
-                <div className="rounded-xl border border-border/70 bg-muted/40 p-3.5 sm:col-span-2">
-                  <div className="flex items-start gap-2.5">
-                    <UserRound className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-                    <div className="flex min-w-0 flex-col gap-1.5">
-                      <p className="text-[13px] font-medium text-foreground">
-                        {t(
-                          "Existe un perfil de {name} ({status}) en esta organización.",
-                          {
-                            name: `${emailEmployee.firstName} ${emailEmployee.lastName}`.trim(),
-                            status: t(statusLabel(emailEmployee.status)),
-                          },
-                        )}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {emailEmployee.hasAccount
-                          ? t(
-                              "Este perfil ya tiene una cuenta vinculada. Si necesitas reutilizar este correo, elimina el perfil.",
-                            )
-                          : t(
-                              "Puedes invitar al perfil existente (se sumarán sus roles) o eliminarlo para liberar el correo.",
-                            )}
-                      </p>
-                      <div className="flex flex-wrap gap-2 pt-0.5">
-                        {!emailEmployee.hasAccount && onInviteExisting && (
-                          <Button
-                            type="button"
-                            size="sm"
-                            onClick={onInviteExisting}
-                            disabled={emailActionBusy}
-                          >
-                            <MailPlus data-icon="inline-start" />
-                            {t("Invitar perfil existente")}
-                          </Button>
-                        )}
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="outline"
-                          onClick={() =>
-                            router.push(`/employees/${emailEmployee.id}`)
-                          }
-                        >
-                          <Eye data-icon="inline-start" />
-                          {t("Ver perfil")}
-                        </Button>
-                        {onDeleteExisting && (
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="outline"
-                            className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                            onClick={() => setConfirmDelete(true)}
-                            disabled={emailActionBusy}
-                          >
-                            <Trash2 data-icon="inline-start" />
-                            {t("Eliminar perfil")}
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <AlertDialog
-                  open={confirmDelete}
-                  onOpenChange={setConfirmDelete}
-                >
-                  <AlertDialogContent className="sm:max-w-md!">
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>
-                        {t("¿Eliminar el perfil de {name}?", {
-                          name: `${emailEmployee.firstName} ${emailEmployee.lastName}`.trim(),
-                        })}
-                      </AlertDialogTitle>
-                      <AlertDialogDescription>
-                        {t(
-                          "El perfil se ocultará del directorio y su correo quedará libre. La cuenta de acceso y el historial clínico se conservan.",
-                        )}
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>{t("Cancelar")}</AlertDialogCancel>
-                      <AlertDialogAction
-                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                        onClick={() => {
-                          setConfirmDelete(false);
-                          onDeleteExisting?.();
-                        }}
-                      >
-                        {t("Eliminar")}
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </>
-            )}
-
-            {/* Nota de coexistencia: el correo ya vive en un paciente o en una
-                cuenta; el nuevo perfil se vincula y los roles se suman. */}
-            {!isPatient &&
-              !emailEmployee &&
-              (emailPatient || emailAccount?.exists) && (
-                <p className="rounded-xl border border-border/70 bg-muted/40 p-3 text-xs text-muted-foreground sm:col-span-2">
-                  {emailPatient
-                    ? t(
-                        "Este correo ya pertenece a un paciente. Se creará el perfil y se vinculará la misma cuenta; sus roles se suman sin quitar los existentes.",
-                      )
-                    : t(
-                        "Este correo ya tiene una cuenta. Se vinculará al nuevo perfil y sus roles se suman sin quitar los existentes.",
-                      )}
-                </p>
-              )}
 
             <Field
               label={isPatient ? t("Teléfono") : t("Teléfono (opcional)")}
@@ -441,6 +312,7 @@ export function IdentityStep({
               <>
                 <Field
                   label={t("Número de documento")}
+                  htmlFor={documentId}
                   required
                   error={
                     touched.has("documentNumber")
@@ -449,6 +321,7 @@ export function IdentityStep({
                   }
                 >
                   <Input
+                    id={documentId}
                     value={form.documentNumber}
                     onChange={(e) =>
                       setForm({
@@ -460,8 +333,14 @@ export function IdentityStep({
                     placeholder={t("1234567890")}
                     disabled={false}
                     autoComplete="off"
-                    aria-invalid={Boolean(fieldErrors.documentNumber)}
+                    aria-invalid={Boolean(fieldErrors.documentNumber) || Boolean(documentMatch)}
+                    aria-describedby={documentMatch ? `${documentId}-match` : undefined}
                   />
+                  {documentMatch && <IdentityConflictNotice
+                    id={`${documentId}-match`}
+                    owner={documentMatch.owner}
+                    href={patientIdentityHref(documentMatch.owner)}
+                  />}
                 </Field>
                 <Field
                   label={t("Fecha de nacimiento")}

@@ -13,12 +13,14 @@ import { Label } from "@/components/ui/label";
 /** Campo de formulario con label, indicador requerido, error y hint. */
 export function Field({
   label,
+  htmlFor,
   required,
   error,
   hint,
   children,
 }: {
   label: string;
+  htmlFor?: string;
   required?: boolean;
   error?: string;
   hint?: string;
@@ -26,7 +28,7 @@ export function Field({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <Label>
+      <Label htmlFor={htmlFor}>
         {label}
         {required && (
           <span className="ml-1 text-destructive" aria-hidden="true">
