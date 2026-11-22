@@ -6357,5 +6357,18 @@
   "{count} cuenta encontrada": "{count} cuenta encontrada",
   "{count} cuentas encontradas": "{count} cuentas encontradas",
   "En uso por": "En uso por",
-  "Ya está en uso.": "Ya está en uso."
+  "Ya está en uso.": "Ya está en uso.",
+  "Simulación": "Simulación",
+  "Cerrar cámara": "Cerrar cámara",
+  "Ver cámara": "Ver cámara",
+  "Imagen de la cámara": "Imagen de la cámara",
+  "El acceso a esta cámara ya no está disponible.": "El acceso a esta cámara ya no está disponible.",
+  "No pudimos conectar con la cámara.": "No pudimos conectar con la cámara.",
+  "Conectando con la cámara…": "Conectando con la cámara…",
+  "Cámaras compartidas": "Cámaras compartidas",
+  "Actualizar cámaras": "Actualizar cámaras",
+  "Cámaras": "Cámaras",
+  "Acceso concedido por el paciente a los administradores del ERP.": "Acceso concedido por el paciente a los administradores del ERP.",
+  "No pudimos cargar las cámaras de este paciente.": "No pudimos cargar las cámaras de este paciente.",
+  "Este paciente no ha compartido cámaras.": "Este paciente no ha compartido cámaras."
 }

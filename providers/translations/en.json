@@ -6357,5 +6357,18 @@
   "{count} cuenta encontrada": "{count} account found",
   "{count} cuentas encontradas": "{count} accounts found",
   "En uso por": "In use by",
-  "Ya está en uso.": "Already in use."
+  "Ya está en uso.": "Already in use.",
+  "Simulación": "Simulation",
+  "Cerrar cámara": "Close camera",
+  "Ver cámara": "View camera",
+  "Imagen de la cámara": "Camera image",
+  "El acceso a esta cámara ya no está disponible.": "Access to this camera is no longer available.",
+  "No pudimos conectar con la cámara.": "We couldn't connect to the camera.",
+  "Conectando con la cámara…": "Connecting to the camera…",
+  "Cámaras compartidas": "Shared cameras",
+  "Actualizar cámaras": "Refresh cameras",
+  "Cámaras": "Cameras",
+  "Acceso concedido por el paciente a los administradores del ERP.": "The patient granted access to ERP administrators.",
+  "No pudimos cargar las cámaras de este paciente.": "We couldn't load this patient's cameras.",
+  "Este paciente no ha compartido cámaras.": "This patient hasn't shared any cameras."
 }

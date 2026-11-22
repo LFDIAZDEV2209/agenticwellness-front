@@ -49,6 +49,9 @@ import { PatientProfessionalsSection } from "./patient-professionals-section";
 import { ClinicalMeasurementsSection } from "./clinical-measurements-section";
 import type { EmergencyContact, Patient } from "../types";
 import { MedicationPatientLink } from "@/features/medications/components/medication-shared";
+import { useAuth } from "@/providers/auth-provider";
+import { useAppContext } from "@/providers/context-provider";
+import { PatientFamilyCameras } from "./patient-family-cameras";
 
 /** Estilos de la caja de icono por tono semántico (colores representativos). */
 const TONES = {
@@ -63,6 +66,9 @@ type Tone = keyof typeof TONES;
 
 export function PatientDetailPage({ id }: { id: string }) {
   const t = useT();
+  const { hasRole, user } = useAuth();
+  const { can, activeClinicId } = useAppContext();
+  const canViewCameras = hasRole("Admin") && can("Patients.View");
   const router = useRouter();
   const [patient, setPatient] = useState<Patient | null>(null);
   const [loading, setLoading] = useState(true);
@@ -134,6 +140,7 @@ export function PatientDetailPage({ id }: { id: string }) {
     { key: "general", label: t("General") },
     { key: "clinico", label: t("Clínico") },
     { key: "controles", label: t("Controles") },
+    ...(canViewCameras ? [{ key: "cameras", label: t("Cámaras") }] : []),
   ];
 
   // Fallback por si sessionStorage conserva una pestaña de una versión previa.
@@ -461,6 +468,9 @@ export function PatientDetailPage({ id }: { id: string }) {
 
       {/* Controles: vista de progreso de controles del programa (UC-004). */}
       {safeTab === "controles" && <ProgramControlesTab patientId={patient.id} />}
+      {safeTab === "cameras" && canViewCameras && (
+        <PatientFamilyCameras key={JSON.stringify([patient.id, user?.id, activeClinicId])} patientId={patient.id} />
+      )}
     </div>
   );
 }
