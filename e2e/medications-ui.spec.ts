@@ -291,10 +291,17 @@ test("directorio y ficha conectados; habilitación y alta de tratamiento", async
   ).toBe(true);
 });
 
-test("nuevo tratamiento abre en el catálogo y guarda el producto seleccionado con teclado", async ({ page }, info) => {
+test("nuevo tratamiento autocompleta la unidad y la vía del medicamento seleccionado con teclado", async ({ page }, info) => {
   const { writes } = await mockMedications(page);
   const queries: string[] = [];
-  const item = { id: "308136", name: "Amoxicillin 500 MG Oral Capsule" };
+  const item = {
+    id: "308136",
+    name: "Amoxicillin 500 MG Oral Capsule",
+    strength: "500 MG",
+    doseForm: "Oral Capsule",
+    route: "Oral",
+    doseUnit: "capsule",
+  };
   await page.route("**/api/v1/medications/catalog/us?*", async (route) => {
     queries.push(new URL(route.request().url()).searchParams.get("search") ?? "");
     await route.fulfill({ json: [item] });
@@ -313,10 +320,14 @@ test("nuevo tratamiento abre en el catálogo y guarda el producto seleccionado c
   await search.press("ArrowDown");
   await search.press("Enter");
   await expect(form.getByText(item.name, { exact: true })).toBeVisible();
-  await expect(form.getByLabel("Cantidad por toma")).toHaveValue("");
-  await form.getByLabel("Cantidad por toma").fill("1");
-  await form.getByLabel("Unidad", { exact: true }).fill("cápsula");
-  await form.getByLabel("Vía", { exact: true }).fill("oral");
+  const quantity = form.getByLabel("Cantidad por toma");
+  const unit = form.getByLabel("Unidad", { exact: true });
+  const administrationRoute = form.getByLabel("Vía", { exact: true });
+  await expect(quantity).toHaveValue("");
+  await expect(unit).toHaveValue(item.doseUnit);
+  await expect(administrationRoute).toHaveValue(item.route);
+  await quantity.fill("1");
+  await unit.fill("cápsula");
   await form.getByRole("textbox", { name: "Indicaciones", exact: true }).fill("Indicaciones de prueba");
   await submit.click();
   await expect(page.getByRole("status").filter({ hasText: "Tratamiento registrado" })).toBeVisible();
@@ -326,9 +337,63 @@ test("nuevo tratamiento abre en el catálogo y guarda el producto seleccionado c
     name: item.name,
     dosage: 1,
     unit: "cápsula",
-    route: "oral",
+    route: item.route,
     instructions: "Indicaciones de prueba",
   });
+});
+
+test("al cambiar de producto, usa la cantidad explícita sin copiar datos de otro medicamento", async ({ page }) => {
+  await mockMedications(page);
+  const detailed = {
+    id: "12345",
+    name: "Medicamento de prueba con cantidad publicada",
+    dosage: 0.5,
+    strength: "100 mg/mL",
+    doseForm: "Oral Solution",
+    doseUnit: "mL",
+    route: "Oral",
+  };
+  const basic = { id: "23456", name: "Medicamento de prueba sin detalles" };
+  await page.route("**/api/v1/medications/catalog/us?*", async (route) => {
+    const query = new URL(route.request().url()).searchParams.get("search");
+    await route.fulfill({ json: [query === "detalle" ? detailed : basic] });
+  });
+  await page.goto(`/medications/${patientId}`);
+  await page.getByRole("button", { name: "Nuevo tratamiento", exact: true }).click();
+  const form = page.getByRole("form", { name: "Nuevo tratamiento" });
+  const search = form.getByRole("combobox", { name: "Buscar en catálogo de EE. UU." });
+  const quantity = form.getByLabel("Cantidad por toma");
+  const unit = form.getByLabel("Unidad", { exact: true });
+  const administrationRoute = form.getByLabel("Vía", { exact: true });
+
+  await search.fill("detalle");
+  await page.getByRole("option", { name: detailed.name }).click();
+  await expect(form.getByText("100 mg/mL · Oral Solution", { exact: true })).toBeVisible();
+  await expect(quantity).toHaveValue("0.5");
+  await expect(unit).toHaveValue(detailed.doseUnit);
+  await expect(administrationRoute).toHaveValue(detailed.route);
+  await unit.fill("cucharadita");
+  await expect(quantity).toHaveValue("");
+  await unit.fill("mL");
+  await expect(quantity).toHaveValue("0.5");
+  await quantity.fill("0.75");
+  await expect(quantity).toHaveValue("0.75");
+
+  await form.getByRole("button", { name: "Cambiar" }).click();
+  await search.fill("básico");
+  await page.getByRole("option", { name: basic.name }).click();
+  await expect(quantity).toHaveValue("");
+  await expect(unit).toHaveValue("");
+  await expect(administrationRoute).toHaveValue("");
+  await expect(form.getByText(detailed.strength, { exact: false })).toHaveCount(0);
+
+  await form.getByRole("button", { name: "Cambiar" }).click();
+  await quantity.fill("1.25");
+  await administrationRoute.fill("Vía indicada");
+  await search.fill("detalle");
+  await page.getByRole("option", { name: detailed.name }).click();
+  await expect(quantity).toHaveValue("1.25");
+  await expect(administrationRoute).toHaveValue("Vía indicada");
 });
 
 test("ofrece entrada manual cuando falla el catálogo y conserva el formulario en móvil", async ({ page }, info) => {
