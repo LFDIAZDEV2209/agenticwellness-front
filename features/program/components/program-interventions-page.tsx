@@ -130,7 +130,7 @@ export function ProgramInterventionsPage() {
     <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
       <PageHeader
         title="Cola de intervenciones"
-        description="Gestiona las intervenciones abiertas de los pacientes"
+        description={t("Gestiona las intervenciones abiertas de las personas")}
         icon={Activity}
       />
 
@@ -182,7 +182,7 @@ export function ProgramInterventionsPage() {
                   <TableHead className="whitespace-nowrap">Tipo</TableHead>
                   <TableHead className="min-w-[220px]">Título</TableHead>
                   <TableHead>Severidad</TableHead>
-                  <TableHead>{t("Paciente")}</TableHead>
+                  <TableHead>{t("Persona")}</TableHead>
                   <TableHead>Estado</TableHead>
                   <TableHead className="hidden lg:table-cell whitespace-nowrap">Recomendada</TableHead>
                   <TableHead className="hidden lg:table-cell whitespace-nowrap">Completada</TableHead>

@@ -108,7 +108,7 @@ export function ExerciseMediaPicker({ value, exerciseName, disabled, onChange, o
     <div className="flex items-start justify-between gap-3">
       <div className="flex flex-col gap-1">
         <h3 className="text-sm font-medium">{t("Demostración del ejercicio")}</h3>
-        <p className="text-xs text-muted-foreground">{t("Adjunta una imagen o un vídeo real para guiar al paciente.")}</p>
+        <p className="text-xs text-muted-foreground">{t("Adjunta una imagen o un vídeo real para guiar a la persona.")}</p>
       </div>
       <ImageIcon className="size-5 shrink-0 text-primary" aria-hidden />
     </div>

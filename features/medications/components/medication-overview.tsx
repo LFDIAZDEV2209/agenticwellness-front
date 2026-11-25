@@ -59,13 +59,13 @@ export function MedicationOverviewPanel({
   );
   const metrics = [
     {
-      label: "Pacientes",
+      label: "Personas",
       value: data.totalPatients,
       icon: UsersRound,
       tone: "blue",
     },
     {
-      label: "Tratamientos activos",
+      label: "Planes de medicación activos",
       value: data.activeTreatments,
       icon: Pill,
       tone: "teal",
@@ -85,7 +85,7 @@ export function MedicationOverviewPanel({
   ];
   const actions = [
     {
-      label: "Pacientes",
+      label: "Personas",
       subtitle: "Tu directorio de seguimiento",
       icon: UsersRound,
       tone: "blue",
@@ -108,8 +108,8 @@ export function MedicationOverviewPanel({
     ...(canManage
       ? [
           {
-            label: "Registrar tratamiento",
-            subtitle: "Añadir a un paciente",
+            label: "Registrar plan de medicación",
+            subtitle: "Añadir a una persona",
             icon: Plus,
             tone: "amber",
             intent: "create" as const,
@@ -289,14 +289,14 @@ export function MedicationOverviewPanel({
           </h2>
           <div className="medication-access-stat" aria-label={t("Acceso en la app")}>
             <strong>{new Intl.NumberFormat(locale).format(data.enabledPatients)}</strong>
-            <div><span>{t("Pacientes con acceso")}</span><small>{t("de {total} pacientes", { total: new Intl.NumberFormat(locale).format(data.totalPatients) })}</small></div>
+            <div><span>{t("Personas con acceso")}</span><small>{t("de {total} personas", { total: new Intl.NumberFormat(locale).format(data.totalPatients) })}</small></div>
           </div>
           <Button
             variant="outline"
             className="medication-home-access-button"
             onClick={() => onOpen("access")}
           >
-            {t(canManageAccess ? "Gestionar accesos" : "Ver pacientes")}
+            {t(canManageAccess ? "Gestionar accesos" : "Ver personas")}
             <ArrowRight aria-hidden />
           </Button>
         </section>
@@ -311,7 +311,7 @@ export function MedicationOverviewPanel({
             <span className="medication-home-eyebrow">
               {t("Directorio clínico")}
             </span>
-            <h2 id="medication-preview-title">{t("Pacientes")}</h2>
+            <h2 id="medication-preview-title">{t("Personas")}</h2>
           </div>
           <Button variant="ghost" size="sm" onClick={() => onOpen("patients")}>
             {t("Ver todos")}
@@ -346,7 +346,7 @@ export function MedicationOverviewPanel({
           </div>
         ) : (
           <p className="medication-home-empty-patients">
-            {t("Sin pacientes en este ámbito")}
+            {t("Sin personas en este ámbito")}
           </p>
         )}
       </section>

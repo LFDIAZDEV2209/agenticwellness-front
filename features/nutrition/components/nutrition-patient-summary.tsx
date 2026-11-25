@@ -28,7 +28,7 @@ export function NutritionPatientSummary(props: Props) {
   ) {
     return (
       <p className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">
-        {t("No tienes permiso para consultar la nutrición de este paciente.")}
+        {t("No tienes permiso para consultar la nutrición de esta persona.")}
       </p>
     );
   }
@@ -117,7 +117,7 @@ function SummaryCard({ patientId, cycle }: Props) {
         </>
       ) : (
         <p className="text-sm text-muted-foreground">
-          {t("Este paciente no tiene un plan nutricional publicado vigente.")}
+          {t("Esta persona no tiene un plan nutricional publicado vigente.")}
         </p>
       )}
       <Link

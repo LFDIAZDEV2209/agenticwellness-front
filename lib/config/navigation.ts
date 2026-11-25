@@ -176,14 +176,14 @@ export const navModules: NavModule[] = [
         permission: "Professionals.View",
       },
       {
-        label: "Pacientes",
+        label: "Personas",
         href: "/patients",
         icon: UserRound,
         color: "#0E7490",
         permission: ["Patients.View", "Patients.ViewOwn"],
       },
       {
-        label: "Recetario",
+        label: "Indicaciones de medicación",
         href: "/patients/prescriptions",
         icon: ClipboardPenLine,
         color: "#F59E0B",
@@ -267,7 +267,7 @@ export const navModules: NavModule[] = [
         color: "#123B63",
       },
       {
-        label: "Pacientes",
+        label: "Personas",
         href: "/health-tests/pacientes",
         icon: UserRound,
         color: "#2563EB",
@@ -598,7 +598,7 @@ export const navModules: NavModule[] = [
         permission: "Community.Profiles",
       },
       {
-        label: "Por diagnóstico",
+        label: "Por evaluación",
         href: "/community/diagnostics",
         icon: Sparkles,
         hidden: true,
@@ -671,7 +671,7 @@ export function getBreadcrumbSegments(
 
   if (pathname.startsWith("/medications/")) {
     segments.push({ label: "Control de medicamentos", href: "/medications" });
-    segments.push({ label: "Ficha del paciente" });
+    segments.push({ label: "Ficha de la persona" });
     return segments;
   }
 

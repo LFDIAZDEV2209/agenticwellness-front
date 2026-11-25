@@ -84,7 +84,7 @@ test("2.18 · descanso depende del interruptor, restablecer y permutar son parci
   } else {
     await expect(rest).toBeDisabled();
     await expect(panel).toContainText(
-      "Disponible cuando la app de los pacientes lo soporte.",
+      "Disponible cuando la app de las personas lo soporte.",
     );
   }
   await panel

@@ -193,7 +193,7 @@ export function PatientSummaryView({
     return (
       <div className="flex flex-col items-center gap-3 rounded-2xl border border-destructive/20 bg-destructive-soft/40 py-14 text-center">
         <p className="text-sm font-semibold text-destructive">
-          {t("No pudimos cargar el dashboard de pacientes")}
+          {t("No pudimos cargar el panel de personas")}
         </p>
         <p className="max-w-sm text-xs text-muted-foreground">{error}</p>
         <Button variant="outline" size="sm" onClick={onRetry}>
@@ -271,7 +271,7 @@ export function PatientSummaryView({
         <div className="hidden shrink-0 items-center gap-2 sm:flex">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-soft px-3 py-1 text-xs font-semibold text-primary-soft-foreground">
             <Users aria-hidden className="size-3.5" />
-            {kpis.total} {t("pacientes")}
+            {kpis.total} {t("personas")}
           </span>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-3 py-1 text-xs font-semibold text-success-soft-foreground">
             <HeartHandshake aria-hidden className="size-3.5" />
@@ -283,7 +283,7 @@ export function PatientSummaryView({
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          label={t("Total de pacientes")}
+          label={t("Total de personas")}
           value={String(kpis.total)}
           icon={Users}
           filled
@@ -414,7 +414,7 @@ export function PatientSummaryView({
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
         <section className="flex flex-col overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-xs">
           <SectionHeader
-            title={t("Crecimiento de pacientes")}
+            title={t("Crecimiento del número de personas")}
             description={`${t("Nuevos registros por mes")} · ${growthTotal} ${t("en el período")}`}
             icon={Activity}
             variant="primary"
@@ -525,7 +525,7 @@ export function PatientSummaryView({
                       <Tooltip
                         formatter={(value) => [
                           String(value),
-                          t("Pacientes nuevos"),
+                          t("Personas nuevas"),
                         ]}
                         contentStyle={{
                           borderRadius: 12,
@@ -569,7 +569,7 @@ export function PatientSummaryView({
                       <Tooltip
                         formatter={(value) => [
                           String(value),
-                          t("Pacientes nuevos"),
+                          t("Personas nuevas"),
                         ]}
                         contentStyle={{
                           borderRadius: 12,
@@ -623,11 +623,11 @@ export function PatientSummaryView({
 
         <PatientDistributionChart
           accent="amber"
-          title={t("Diagnósticos principales")}
+          title={t("Resultados principales")}
           icon={HeartPulse}
           items={diagnosisItems}
           colors={DIAGNOSIS_COLORS}
-          emptyLabel={t("Sin diagnósticos registrados.")}
+          emptyLabel={t("Sin resultados registrados.")}
         />
 
         <PatientDistributionChart
@@ -642,7 +642,7 @@ export function PatientSummaryView({
         {professionalItems.length > 0 && (
           <PatientDistributionChart
             accent="green"
-            title={t("Profesionales con más pacientes")}
+            title={t("Profesionales con más personas")}
             description={t("Asignaciones activas")}
             icon={Award}
             items={professionalItems}
@@ -663,7 +663,7 @@ export function PatientSummaryView({
               {data.emergencyContactPct.toFixed(1)}%
             </span>
             <p className="text-center text-sm text-muted-foreground">
-              {t("pacientes con contacto de emergencia registrado")}
+              {t("personas con contacto de emergencia registrado")}
             </p>
             <div className="h-2.5 w-full max-w-xs overflow-hidden rounded-full bg-muted">
               <div

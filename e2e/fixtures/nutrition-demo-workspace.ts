@@ -40,7 +40,7 @@ function createPatient(index: number, scope: NutritionScope): NutritionPatientDe
         { code: "demo-critical-2", severity: "critical" as const, message: "Alerta crítica demo: confirmar las restricciones alimentarias registradas." },
       ] : []),
       { code: "demo-warning", severity: "warning", message: "Advertencia demo: revisar la distribución de nutrientes del menú." },
-      { code: "demo-info", severity: "informational", message: "Datos sintéticos: estos valores no son una recomendación clínica." },
+      { code: "demo-info", severity: "informational", message: "Datos sintéticos de demostración. Consulta a tu equipo de salud para recibir orientación personal." },
       { code: "demo-technical", severity: "technical", message: "El catálogo demo contiene 8 alimentos; falta conectar el catálogo oficial." },
     ],
     createdBy: scope.userId, approvedBy: summary.plan.state === "aprobado" ? "demo-reviewer" : null,

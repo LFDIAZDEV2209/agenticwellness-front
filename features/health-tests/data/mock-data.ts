@@ -281,7 +281,7 @@ export const TESTS: HealthTest[] = [
         severity: "media",
         message: "Nivel de movimiento limitado en la evaluación funcional.",
         recommendedAction:
-          "Valorar con fisioterapia y prescribir rutina progresiva.",
+          "Revisar el movimiento con un profesional de la salud y preparar una rutina progresiva.",
       },
     ],
   },
@@ -318,7 +318,7 @@ export const TESTS: HealthTest[] = [
         operator: "lte",
         threshold: 39,
         severity: "media",
-        message: "Calidad del sueño deficiente reportada por el paciente.",
+        message: "Calidad del sueño deficiente reportada por la persona.",
         recommendedAction: "Intervención de higiene del sueño y seguimiento.",
       },
       {
@@ -1733,7 +1733,7 @@ export const ALERTS: HealthAlert[] = [
     severity: "media",
     status: "en-revision",
     createdAt: date(9),
-    message: "Calidad del sueño deficiente reportada por el paciente.",
+    message: "Calidad del sueño deficiente reportada por la persona.",
     recommendedAction: "Intervención de higiene del sueño y seguimiento.",
   },
   {
@@ -1747,7 +1747,7 @@ export const ALERTS: HealthAlert[] = [
     severity: "media",
     status: "activa",
     createdAt: date(15),
-    message: "Calidad del sueño deficiente reportada por el paciente.",
+    message: "Calidad del sueño deficiente reportada por la persona.",
     recommendedAction: "Intervención de higiene del sueño y seguimiento.",
   },
   {
@@ -1761,7 +1761,7 @@ export const ALERTS: HealthAlert[] = [
     severity: "media",
     status: "atendida",
     createdAt: date(33),
-    message: "Calidad del sueño deficiente reportada por el paciente.",
+    message: "Calidad del sueño deficiente reportada por la persona.",
     recommendedAction: "Higiene del sueño aplicada.",
   },
   {
@@ -1777,7 +1777,7 @@ export const ALERTS: HealthAlert[] = [
     createdAt: date(25),
     message: "Nivel de movimiento limitado en la evaluación funcional.",
     recommendedAction:
-      "Valorar con fisioterapia y prescribir rutina progresiva.",
+      "Revisar el movimiento con un profesional de la salud y preparar una rutina progresiva.",
   },
   {
     id: "al19",
@@ -1792,7 +1792,7 @@ export const ALERTS: HealthAlert[] = [
     createdAt: date(12),
     message: "Nivel de movimiento limitado en la evaluación funcional.",
     recommendedAction:
-      "Valorar con fisioterapia y prescribir rutina progresiva.",
+      "Revisar el movimiento con un profesional de la salud y preparar una rutina progresiva.",
   },
 ];
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/providers/i18n-provider";
 import { useState } from "react";
 import { GitBranch, RefreshCw, MoreHorizontal } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
@@ -90,6 +91,7 @@ const STATUS_LABELS: Record<AdaptationStatus, string> = {
 };
 
 export function ProgramAdaptationsPage() {
+  const t = useT();
   const { hasPermission } = useAuth();
   const canAdapt = hasPermission("Program.Adapt");
 
@@ -197,7 +199,7 @@ export function ProgramAdaptationsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Paciente</TableHead>
+                  <TableHead>{t("Persona")}</TableHead>
                   <TableHead>Tipo</TableHead>
                   <TableHead>Estado</TableHead>
                   <TableHead className="hidden md:table-cell">Razón</TableHead>
@@ -239,7 +241,7 @@ export function ProgramAdaptationsPage() {
                         </div>
                       ) : (
                         <span className="text-xs text-muted-foreground" title={adaptation.enrollmentId}>
-                          Paciente — {adaptation.enrollmentId.slice(0, 8)}…
+                          {t("Persona — {id}…", { id: adaptation.enrollmentId.slice(0, 8) })}
                         </span>
                       )}
                     </TableCell>
@@ -474,6 +476,7 @@ function AdaptationsErrorState({
 }
 
 function AdaptationsEmptyState() {
+  const t = useT();
   return (
     <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed border-border py-16 text-center">
       <div className="flex size-12 items-center justify-center rounded-xl bg-muted">
@@ -484,8 +487,7 @@ function AdaptationsEmptyState() {
           No hay recomendaciones de adaptación
         </p>
         <p className="text-xs text-muted-foreground">
-          Las propuestas del motor de adaptación aparecerán aquí cuando se
-          detecten patrones en el programa del paciente.
+          {t("Las sugerencias de adaptación aparecerán aquí cuando se detecten patrones en el programa de la persona.")}
         </p>
       </div>
     </div>

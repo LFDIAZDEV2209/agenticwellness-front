@@ -347,7 +347,7 @@ test("el editor de paciente guarda identidad y estado sin asignaciones", async (
   const api = await mockAccounts(page);
   await page.goto(`/users/${patientId}/editar`);
   await expect(
-    page.getByRole("heading", { name: "Editar cuenta de paciente" }),
+    page.getByRole("heading", { name: "Editar cuenta de la persona" }),
   ).toBeVisible();
   await expect(page.getByText(/^(Roles|Permisos adicionales)$/)).toHaveCount(0);
   // El correo es dato de solo lectura (gestionado desde la app), no un input.
@@ -396,10 +396,10 @@ test("el detalle enlaza la ficha y omite los roles y permisos del ERP", async ({
     page.getByRole("heading", { name: "Detalle de cuenta" }),
   ).toBeVisible();
   await expect(
-    page.getByText("Paciente · App móvil", { exact: true }),
+    page.getByText("Persona · App móvil", { exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("link", { name: "Abrir ficha del paciente" }),
+    page.getByRole("link", { name: "Abrir ficha de la persona" }),
   ).toHaveAttribute("href", `/patients/${profileId}`);
   await expect(page.getByText("55551234", { exact: true })).toBeVisible();
   await expect(
@@ -418,7 +418,7 @@ test("el detalle enlaza la ficha y omite los roles y permisos del ERP", async ({
   await capture(page, "detalle-1440");
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(
-    page.getByRole("link", { name: "Abrir ficha del paciente" }),
+    page.getByRole("link", { name: "Abrir ficha de la persona" }),
   ).toBeVisible();
   expect(
     await page.evaluate(() => document.documentElement.scrollWidth),

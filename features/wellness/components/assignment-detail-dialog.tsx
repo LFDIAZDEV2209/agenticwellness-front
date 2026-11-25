@@ -151,7 +151,7 @@ function RoutineDetail({
   return (
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-2 gap-3">
-        <InfoItem label={t("Paciente")} value={assignment.patientName} />
+        <InfoItem label={t("Persona")} value={assignment.patientName} />
         <InfoItem
           label={t("Estado")}
           value={
@@ -307,7 +307,7 @@ function PlanDetail({
   return (
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-2 gap-3">
-        <InfoItem label={t("Paciente")} value={assignment.patientName} />
+        <InfoItem label={t("Persona")} value={assignment.patientName} />
         <InfoItem
           label={t("Estado")}
           value={

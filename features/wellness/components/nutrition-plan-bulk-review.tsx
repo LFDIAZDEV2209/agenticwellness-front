@@ -57,7 +57,7 @@ export function NutritionPlanBulkReview({ plans, onReview, onApproved }: {
             {selected.map(plan => <li key={plan.id}><strong>{plan.patientName ?? plan.name}</strong> · {t("Versión {revision}", { revision: String(plan.revision) })}</li>)}
           </ul>
           <label className="flex cursor-pointer items-start gap-2 text-sm"><Checkbox checked={acknowledged} onCheckedChange={value => setAcknowledged(value === true)} />
-            <span>{t("Confirmo que revisé individualmente las dietas, alergias, restricciones y baterías de todos los pacientes seleccionados.")}</span></label>
+            <span>{t("Confirmo que revisé individualmente las dietas, alergias, restricciones y baterías de todas las personas seleccionadas.")}</span></label>
           <Textarea aria-label={t("Notas de revisión")} placeholder={t("Notas de revisión (opcional)")} value={notes} onChange={e => setNotes(e.target.value)} maxLength={1000} />
           {error ? <p role="alert" className="text-sm text-destructive">{error}</p> : null}
           <div className="flex flex-wrap justify-end gap-2"><Button variant="outline" disabled={saving} onClick={() => setOpen(false)}>{t("Cancelar")}</Button>

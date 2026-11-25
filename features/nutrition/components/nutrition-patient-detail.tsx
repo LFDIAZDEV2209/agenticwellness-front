@@ -594,7 +594,7 @@ function PatientWorkspace({
                 <h3>{t("Sin plan nutricional")}</h3>
                 <p>
                   {t(
-                    "Revisa las lecturas y prepara la primera propuesta para este paciente.",
+                    "Revisa las lecturas y prepara la primera propuesta para esta persona.",
                   )}
                 </p>
                 {canManage && (
@@ -768,7 +768,7 @@ function PatientWorkspace({
             ) : (
               <section className="nutrition-section">
                 <SectionHeader
-                  title={t("Este paciente aún no tiene plan")}
+                  title={t("Esta persona aún no tiene plan")}
                   icon={BookOpen}
                   variant="tertiary"
                 />

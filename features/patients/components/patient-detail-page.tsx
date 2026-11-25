@@ -107,10 +107,10 @@ export function PatientDetailPage({ id }: { id: string }) {
     return (
       <div className="flex flex-col items-center gap-3 rounded-2xl border border-destructive/20 bg-destructive-soft/40 py-14 text-center">
         <p className="text-sm font-semibold text-destructive">
-          No pudimos cargar el paciente
+          {t("No pudimos cargar el perfil")}
         </p>
         <p className="max-w-sm text-xs text-muted-foreground">
-          {error ?? "El paciente no existe o fue eliminado."}
+          {error ?? t("La persona no existe o fue eliminada.")}
         </p>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={reload}>
@@ -150,7 +150,7 @@ export function PatientDetailPage({ id }: { id: string }) {
         variant="ghost"
         size="sm"
         onClick={() => router.push("/patients")}
-        aria-label={t("Volver al directorio de pacientes")}
+        aria-label={t("Volver al directorio de personas")}
         className="w-fit"
       >
         <ArrowLeft data-icon="inline-start" />
@@ -182,7 +182,7 @@ export function PatientDetailPage({ id }: { id: string }) {
       {/* Pestañas de navegación del detalle. */}
       <div
         role="tablist"
-        aria-label={t("Vistas del paciente")}
+        aria-label={t("Vistas de la persona")}
         className="inline-flex w-fit flex-wrap items-center gap-1.5 rounded-xl border border-border bg-card p-1.5 shadow-sm"
       >
         {tabs.map((tab) => {
@@ -514,11 +514,11 @@ function DiagnosesSection({ patient }: { patient: Patient }) {
   return (
     <section
       className="flex flex-col overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-xs"
-      aria-label={t("Diagnósticos")}
+      aria-label={t("Evaluaciones")}
     >
       <SectionHeader
-        title={t("Diagnósticos")}
-        description={`${patient.diagnoses.length} registrados`}
+        title={t("Evaluaciones")}
+        description={t("{count} evaluaciones registradas", { count: String(patient.diagnoses.length) })}
         icon={Stethoscope}
         variant="primary"
       />
@@ -552,7 +552,7 @@ function DiagnosesSection({ patient }: { patient: Patient }) {
         </ul>
       ) : (
         <p className="p-4 text-xs text-muted-foreground sm:p-5">
-          Sin diagnósticos registrados.
+          {t("Sin resultados registrados.")}
         </p>
       )}
     </section>
@@ -568,7 +568,9 @@ function MedicationsSection({ patient }: { patient: Patient }) {
     >
       <SectionHeader
         title={t("Medicamentos")}
-        description={`${patient.medications.length} prescritos`}
+        description={t(patient.medications.length === 1 ? "1 medicamento registrado" : "{count} medicamentos registrados", {
+          count: String(patient.medications.length),
+        })}
         icon={ClipboardPenLine}
         variant="primary"
       />

@@ -66,7 +66,7 @@ test("bandeja: filtros neutros, filas densas y selección visible", async ({
   await demo(page);
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/nutrition");
-  const list = page.getByRole("list", { name: "Planes de pacientes" });
+  const list = page.getByRole("list", { name: "Planes de las personas" });
   await expect(list.getByRole("listitem")).toHaveCount(10);
   await mkdir(captures, { recursive: true });
   await page.screenshot({

@@ -19,7 +19,7 @@ export function NutritionGenerateForm({ profile, busy, onGenerate }: { profile: 
   if (today.getMonth() < birth.getMonth() || today.getMonth() === birth.getMonth() && today.getDate() < birth.getDate()) age--;
   const valid = Number(weight) > 0 && Number(height) > 0 && Number.isFinite(age) && age >= 18 && age <= 120 && ["male", "female"].includes(sex);
   return <form className="nutrition-generate-form flex flex-col gap-5" onSubmit={(event) => { event.preventDefault(); if (valid && !busy) void onGenerate({ birthDate, manual: { peso: Number(weight), talla: Number(height), edad: age, sexo: sex === "female" ? "F" : "M" }, preserveConfirmedEdits: true }); }}>
-    <p className="text-sm text-muted-foreground">{t("Completa los datos del paciente.")}</p>
+    <p className="text-sm text-muted-foreground">{t("Completa los datos de la persona.")}</p>
     <fieldset disabled={busy} className="grid gap-4 sm:grid-cols-2"><legend className="sr-only">{t("Datos mínimos para generar la propuesta")}</legend>
       <div><label htmlFor="nutrition-weight" className="nutrition-label"><Weight className="size-4" aria-hidden="true" />{t("Peso (kg)")}</label><Input id="nutrition-weight" type="number" required min="1" max="500" step="0.1" value={weight} onChange={(event) => setWeight(event.target.value)} /></div>
       <div><label htmlFor="nutrition-height" className="nutrition-label"><Ruler className="size-4" aria-hidden="true" />{t("Talla (cm)")}</label><Input id="nutrition-height" type="number" required min="50" max="250" step="0.1" value={height} onChange={(event) => setHeight(event.target.value)} /></div>

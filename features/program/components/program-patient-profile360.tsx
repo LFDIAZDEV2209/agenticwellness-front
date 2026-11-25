@@ -163,7 +163,7 @@ export function ProgramPatientProfile360({
     return (
       <TabError
         message={t(
-          "Este paciente no está disponible o no tienes acceso a su perfil.",
+          "Esta persona no está disponible o no tienes acceso a su perfil.",
         )}
         onRetry={retry}
       />
@@ -182,7 +182,7 @@ export function ProgramPatientProfile360({
         className="inline-flex min-h-11 items-center gap-2 self-start rounded-lg px-2 text-sm font-medium focus-visible:outline-2 focus-visible:outline-ring"
       >
         <ArrowLeft aria-hidden className="size-4" />
-        {t("Pacientes")}
+        {t("Personas")}
       </Link>
       {/* Hero azul — reemplaza al PageHeader "Perfil 360" cuando se ve un paciente específico */}
       {loading ? (
@@ -218,10 +218,10 @@ export function ProgramPatientProfile360({
               size="icon-sm"
               onClick={onToggleSearch}
               aria-label={
-                isSearchOpen ? t("Ocultar buscador") : t("Buscar paciente")
+                isSearchOpen ? t("Ocultar buscador") : t("Buscar persona")
               }
               title={
-                isSearchOpen ? t("Ocultar buscador") : t("Buscar paciente")
+                isSearchOpen ? t("Ocultar buscador") : t("Buscar persona")
               }
             >
               {isSearchOpen ? (
@@ -375,7 +375,7 @@ function EnrollmentDetailTabWrapper({
         <p className="text-sm font-semibold">{t("Sin inscripción activa")}</p>
         <p className="max-w-sm text-xs text-muted-foreground">
           {t(
-            "Este paciente no tiene una inscripción activa al programa. Inscríbelo desde el módulo de pacientes para ver el contenido y historial.",
+            "Esta persona no tiene una inscripción activa al programa. Inscríbela desde el módulo de personas para ver el contenido y el historial.",
           )}
         </p>
       </div>

@@ -95,7 +95,7 @@ export const erpNavSections: ErpNavSection[] = [
         permission: "Community.Profiles",
       },
       {
-        label: "Por diagnóstico",
+        label: "Por evaluación",
         href: "/community/diagnostics",
         icon: Stethoscope,
         permission: "Community.Profiles",

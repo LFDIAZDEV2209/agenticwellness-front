@@ -79,7 +79,7 @@ export function EvaluationDetailPage({
         <ModuleEmptyState
           title={t("No encontramos esta evaluación")}
           description={t(
-            "La evaluación no existe o no pertenece a este paciente.",
+            "La evaluación no existe o no pertenece a esta persona.",
           )}
         />
       </div>
@@ -108,7 +108,7 @@ export function EvaluationDetailPage({
             className="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-3 py-1.5 text-[12px] font-semibold text-white transition-colors hover:bg-white/25"
           >
             <ArrowLeft data-icon="inline-start" className="size-3.5" />
-            {t("Volver al paciente")}
+            {t("Volver al perfil de la persona")}
           </Link>
         }
       />
@@ -538,7 +538,7 @@ function ResponsesSection({ detail }: { detail: EvaluationDetail }) {
     <section className="flex flex-col overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-sm">
       <SectionHeader
         title={t("Respuestas")}
-        description={t("Respuestas registradas por el paciente")}
+        description={t("Respuestas registradas por la persona")}
         icon={FileText}
         variant="primary"
       />

@@ -263,7 +263,7 @@ test("directorio y ficha conectados; habilitación y alta de tratamiento", async
     page.getByRole("button", { name: "Desactivar acceso", exact: true }),
   ).toBeVisible();
   await page
-    .getByRole("button", { name: "Nuevo tratamiento", exact: true })
+    .getByRole("button", { name: "Nuevo plan de medicación", exact: true })
     .click();
   await page
     .getByLabel("Tipo de producto", { exact: true })
@@ -275,10 +275,10 @@ test("directorio y ficha conectados; habilitación y alta de tratamiento", async
   await page.getByLabel("Unidad", { exact: true }).fill("cápsula");
   await page.getByLabel("Horario 1", { exact: true }).fill("08:30");
   await page
-    .getByRole("button", { name: "Guardar tratamiento", exact: true })
+    .getByRole("button", { name: "Guardar plan de medicación", exact: true })
     .click();
   await expect(
-    page.getByRole("status").filter({ hasText: "Tratamiento registrado" }),
+    page.getByRole("status").filter({ hasText: "Plan de medicación registrado" }),
   ).toBeVisible();
   expect(
     writes.some((w) => w.path.endsWith("/access") && w.body.enabled === true),
@@ -307,10 +307,10 @@ test("nuevo tratamiento autocompleta la unidad y la vía del medicamento selecci
     await route.fulfill({ json: [item] });
   });
   await page.goto(`/medications/${patientId}`);
-  await page.getByRole("button", { name: "Nuevo tratamiento", exact: true }).click();
-  const form = page.getByRole("form", { name: "Nuevo tratamiento" });
+  await page.getByRole("button", { name: "Nuevo plan de medicación", exact: true }).click();
+  const form = page.getByRole("form", { name: "Nuevo plan de medicación" });
   const search = form.getByRole("combobox", { name: "Buscar en catálogo de EE. UU." });
-  const submit = form.getByRole("button", { name: "Guardar tratamiento" });
+  const submit = form.getByRole("button", { name: "Guardar plan de medicación" });
   await expect(search).toBeFocused();
   await expect(form.getByLabel("Nombre del producto", { exact: true })).toHaveCount(0);
   await expect(submit).toBeDisabled();
@@ -330,7 +330,7 @@ test("nuevo tratamiento autocompleta la unidad y la vía del medicamento selecci
   await unit.fill("cápsula");
   await form.getByRole("textbox", { name: "Indicaciones", exact: true }).fill("Indicaciones de prueba");
   await submit.click();
-  await expect(page.getByRole("status").filter({ hasText: "Tratamiento registrado" })).toBeVisible();
+  await expect(page.getByRole("status").filter({ hasText: "Plan de medicación registrado" })).toBeVisible();
   expect(queries).toEqual(["amox"]);
   expect(writes.find(({ path }) => path.endsWith("/treatments"))?.body).toMatchObject({
     rxCui: item.id,
@@ -359,8 +359,8 @@ test("al cambiar de producto, usa la cantidad explícita sin copiar datos de otr
     await route.fulfill({ json: [query === "detalle" ? detailed : basic] });
   });
   await page.goto(`/medications/${patientId}`);
-  await page.getByRole("button", { name: "Nuevo tratamiento", exact: true }).click();
-  const form = page.getByRole("form", { name: "Nuevo tratamiento" });
+  await page.getByRole("button", { name: "Nuevo plan de medicación", exact: true }).click();
+  const form = page.getByRole("form", { name: "Nuevo plan de medicación" });
   const search = form.getByRole("combobox", { name: "Buscar en catálogo de EE. UU." });
   const quantity = form.getByLabel("Cantidad por toma");
   const unit = form.getByLabel("Unidad", { exact: true });
@@ -406,8 +406,8 @@ test("ofrece entrada manual cuando falla el catálogo y conserva el formulario e
   });
   await page.goto(`/medications/${patientId}`);
   await page.evaluate(() => document.documentElement.classList.add("dark"));
-  await page.getByRole("button", { name: "Nuevo tratamiento", exact: true }).click();
-  const form = page.getByRole("form", { name: "Nuevo tratamiento" });
+  await page.getByRole("button", { name: "Nuevo plan de medicación", exact: true }).click();
+  const form = page.getByRole("form", { name: "Nuevo plan de medicación" });
   const search = form.getByRole("combobox", { name: "Buscar en catálogo de EE. UU." });
   await search.fill("sin resultados");
   await expect(page.getByText("Sin coincidencias en RxTerms.")).toBeVisible();
@@ -429,11 +429,11 @@ test("ofrece entrada manual cuando falla el catálogo y conserva el formulario e
     const label = await form.getByText("Tipo de producto", { exact: true }).boundingBox();
     const control = await form.getByRole("combobox", { name: "Tipo de producto" }).boundingBox();
     expect(control!.y - label!.y - label!.height).toBeGreaterThanOrEqual(10);
-    await expect(form.getByRole("button", { name: "Guardar tratamiento" })).toBeInViewport();
+    await expect(form.getByRole("button", { name: "Guardar plan de medicación" })).toBeInViewport();
   }
   await page.screenshot({ path: info.outputPath("new-treatment-manual-mobile-dark.png"), animations: "disabled" });
-  await form.getByRole("button", { name: "Guardar tratamiento" }).click();
-  await expect(page.getByRole("status").filter({ hasText: "Tratamiento registrado" })).toBeVisible();
+  await form.getByRole("button", { name: "Guardar plan de medicación" }).click();
+  await expect(page.getByRole("status").filter({ hasText: "Plan de medicación registrado" })).toBeVisible();
   const body = writes.find(({ path }) => path.endsWith("/treatments"))?.body;
   expect(body).toMatchObject({ name: "Medicamento local QA", productType: "medication" });
   expect(body).not.toHaveProperty("rxCui");
@@ -477,7 +477,7 @@ test("solo lectura permite seguimiento sin acciones clínicas ni habilitación",
     }),
   ).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "Nuevo tratamiento", exact: true }),
+    page.getByRole("button", { name: "Nuevo plan de medicación", exact: true }),
   ).toHaveCount(0);
   await expect(
     page.getByRole("button", { name: "Activar acceso", exact: true }),
@@ -567,15 +567,15 @@ test("un permiso de gestión retirado cierra el formulario tras el rechazo", asy
   });
   await page.goto(`/medications/${patientId}`);
   await page
-    .getByRole("button", { name: "Nuevo tratamiento", exact: true })
+    .getByRole("button", { name: "Nuevo plan de medicación", exact: true })
     .click();
   await page.getByRole("button", { name: "Entrada manual", exact: true }).click();
   await page.getByLabel("Nombre del producto", { exact: true }).fill("Tratamiento rechazado");
   await page
-    .getByRole("button", { name: "Guardar tratamiento", exact: true })
+    .getByRole("button", { name: "Guardar plan de medicación", exact: true })
     .click();
   await expect(
-    page.getByRole("button", { name: "Nuevo tratamiento", exact: true }),
+    page.getByRole("button", { name: "Nuevo plan de medicación", exact: true }),
   ).toHaveCount(0);
   await expect(
     page.getByLabel("Nombre del producto", { exact: true }),
@@ -625,7 +625,7 @@ test("inicio renovado muestra resumen, actividad y atajos que abren el historial
   ).toBeVisible();
   await expect(
     page.getByRole("region", { name: "Resumen de medicamentos", exact: true }),
-  ).toContainText("Tratamientos activos");
+  ).toContainText("Planes de medicación activos");
   await page.emulateMedia({ reducedMotion: "reduce" });
   const accessCard = page.getByRole("region", { name: "El seguimiento también va con ellos.", exact: true });
   await expect(accessCard.locator("img")).toHaveCount(0);
@@ -645,7 +645,7 @@ test("inicio renovado muestra resumen, actividad y atajos que abren el historial
   ).toHaveAttribute("aria-selected", "true");
   await page.goto("/medications");
   await page
-    .getByRole("button", { name: "Registrar tratamiento", exact: true })
+    .getByRole("button", { name: "Registrar plan de medicación", exact: true })
     .click();
   await page.getByRole("link", { name: /Alejandra Nombre Largo/ }).click();
   await expect(
@@ -685,8 +685,8 @@ test("inicio sin registros no inventa actividad y conserva el diseño en oscuro 
 test("los atajos de frecuencia completan un horario editable y guardan el intervalo", async ({ page }) => {
   const { writes } = await mockMedications(page);
   await page.goto(`/medications/${patientId}`);
-  await page.getByRole("button", { name: "Nuevo tratamiento", exact: true }).click();
-  const form = page.getByRole("form", { name: "Nuevo tratamiento" });
+  await page.getByRole("button", { name: "Nuevo plan de medicación", exact: true }).click();
+  const form = page.getByRole("form", { name: "Nuevo plan de medicación" });
   const frequency = form.getByLabel("Frecuencia", { exact: true });
   const firstTime = form.getByLabel("Horario 1", { exact: true });
   await form.getByRole("button", { name: "Cada 8 horas", exact: true }).click({ timeout: 5000 });
@@ -701,7 +701,7 @@ test("los atajos de frecuencia completan un horario editable y guardan el interv
   await firstTime.fill("09:00");
   await form.getByRole("button", { name: "Entrada manual", exact: true }).click();
   await form.getByLabel("Nombre del producto", { exact: true }).fill("QA pauta de intervalo");
-  await form.getByRole("button", { name: "Guardar tratamiento", exact: true }).click();
+  await form.getByRole("button", { name: "Guardar plan de medicación", exact: true }).click();
   await expect(page.getByRole("heading", { name: "QA pauta de intervalo" })).toBeVisible();
   expect(writes.find(item => item.path.endsWith("/treatments"))?.body).toMatchObject({
     times: ["09:00"],

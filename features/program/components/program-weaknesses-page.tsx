@@ -153,7 +153,7 @@ export function ProgramWeaknessesPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Código</TableHead>
-                  <TableHead>{t("Paciente")}</TableHead>
+                  <TableHead>{t("Persona")}</TableHead>
                   <TableHead>Categoría</TableHead>
                   <TableHead>Severidad</TableHead>
                   <TableHead className="hidden md:table-cell">Título</TableHead>

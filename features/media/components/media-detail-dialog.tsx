@@ -144,7 +144,7 @@ export function MediaDetailContent({
             <TriangleAlert className="mt-0.5 size-4 shrink-0" />
             <p>
               {t(
-                "Este archivo es un marcador de demostración. Carga la grabación aprobada antes de publicarlo o asignarlo a pacientes.",
+                "Este archivo es un marcador de demostración. Carga la grabación aprobada antes de publicarlo o asignarlo a personas.",
               )}
             </p>
           </div>

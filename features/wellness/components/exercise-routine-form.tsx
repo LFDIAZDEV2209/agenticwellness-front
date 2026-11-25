@@ -293,7 +293,7 @@ export function ExerciseRoutineFormFields({
         </p>
         <p className="mt-1 text-sm text-muted-foreground">
           {t(
-            "Define la técnica, la intensidad y una demostración visual para que el paciente sepa cómo moverse.",
+            "Define la técnica, la intensidad y una demostración visual para que la persona sepa cómo moverse.",
           )}
         </p>
       </div>
@@ -860,10 +860,10 @@ export function ExerciseRoutineFormDialog({
               <UsersRound aria-hidden />
               <AlertDescription>
                 {loadingUsage ? <><span>{t("Consultando uso de la rutina…")}</span><Skeleton className="h-5 w-full" /></> : <>
-                  <p className="font-semibold text-foreground">{usageCount === null ? t("Uso no disponible") : usageCount === 1 ? t("Usada en 1 paciente con semanas activas") : t("Usada en {count} pacientes con semanas activas", { count: usageCount.toLocaleString(lang === "en" ? "en-US" : "es-CO") })}</p>
-                  <p>{usageCount === null ? t("El número de pacientes afectados no está disponible.") : t("El uso puede cambiar antes del guardado.")}</p>
+                  <p className="font-semibold text-foreground">{usageCount === null ? t("Uso no disponible") : usageCount === 1 ? t("Usada por 1 persona con semanas activas") : t("Usada en {count} personas con semanas activas", { count: usageCount.toLocaleString(lang === "en" ? "en-US" : "es-CO") })}</p>
+                  <p>{usageCount === null ? t("El número de personas afectadas no está disponible.") : t("El uso puede cambiar antes del guardado.")}</p>
                 </>}
-                <p>{t("El conteo incluye solo pacientes de tu alcance, no el total global.")}</p>
+                <p>{t("El conteo incluye solo a las personas de tu alcance.")}</p>
                 {!loadingUsage && usageCount === null && canViewUsage && <Button variant="outline" disabled={submitting || saving} onClick={() => setUsageAttempt(n => n + 1)}>{t("Reintentar")}</Button>}
               </AlertDescription>
             </Alert>

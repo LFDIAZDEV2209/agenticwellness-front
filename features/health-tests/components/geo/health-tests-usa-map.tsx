@@ -104,8 +104,8 @@ export function HealthTestsUsaMap({
   const patientsLabel = useCallback(
     (count: number) =>
       count === 1
-        ? t("{count} paciente", { count: String(count) })
-        : t("{count} pacientes", { count: String(count) }),
+        ? t("{count} persona", { count: String(count) })
+        : t("{count} personas", { count: String(count) }),
     [t],
   );
 

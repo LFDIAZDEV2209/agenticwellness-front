@@ -62,7 +62,7 @@ export function NutritionProgramCycles({ headers, selectedId, today, locked, onO
           </button></li>;
         })}
       </ol>
-      {!today && <p className="mt-2 text-xs text-muted-foreground">{t("Zona del paciente pendiente: hoy no se representa.")}</p>}
+      {!today && <p className="mt-2 text-xs text-muted-foreground">{t("Zona horaria de la persona sin confirmar: no se muestra el día actual.")}</p>}
       <div className="mt-5"><SectionHeader title={t("Plan por ciclo")} icon={Layers} variant="tertiary" /></div>
       <div className="nutrition-cycles-table-container">
         <table className="nutrition-cycles-table" role="table">

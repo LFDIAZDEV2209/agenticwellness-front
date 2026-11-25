@@ -97,7 +97,7 @@ export function ExerciseRoutineDetailDialog({
           </DialogTitle>
           <DialogDescription>
             {t(
-              "Revisa el movimiento, la técnica y la indicación antes de asignar.",
+              "Revisa el movimiento, la técnica y las instrucciones antes de asignar el ejercicio.",
             )}
           </DialogDescription>
         </DialogHeader>
@@ -246,7 +246,7 @@ export function ExerciseRoutineDetailDialog({
                     />
                     <div>
                       <h4 className="mb-3 font-semibold">
-                        {t("Indicación del ejercicio")}
+                        {t("Instrucciones del ejercicio")}
                       </h4>
                       <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                         {(
@@ -366,7 +366,7 @@ export function ExerciseRoutineDetailDialog({
           {routine && !waiting && onAssign && routine.status === "Active" && (
             <Button onClick={() => onAssign(routine)}>
               <CalendarPlus className="size-4" />
-              {t("Asignar a paciente")}
+              {t("Asignar a una persona")}
             </Button>
           )}
         </DialogFooter>
@@ -421,7 +421,7 @@ function ExercisePreview({ exercise }: { exercise: RoutineExercise }) {
     )
       return (
         <p className="rounded-xl bg-muted p-4 text-sm text-muted-foreground">
-          {t("Publica una imagen o un vídeo para que el paciente pueda verlo.")}
+          {t("Publica una imagen o un vídeo para que la persona pueda verlo.")}
         </p>
       );
     return (

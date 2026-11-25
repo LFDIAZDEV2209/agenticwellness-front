@@ -1,5 +1,6 @@
 "use client";
 
+import { catalogPresentation } from "@/features/professionals/catalog-presentation";
 import { useT } from "@/providers/i18n-provider";
 import {
   Building2,
@@ -141,7 +142,7 @@ export function DirectoryToolbar({
               .filter((s) => s.isActive)
               .map((specialty) => (
                 <SelectItem key={specialty.id} value={specialty.id}>
-                  {specialty.name}
+                  {catalogPresentation(specialty.name, t)}
                 </SelectItem>
               ))}
           </SelectContent>

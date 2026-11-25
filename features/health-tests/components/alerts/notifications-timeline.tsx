@@ -98,7 +98,7 @@ export function NotificationsTimeline({
       ) : items.length === 0 ? (
         <ModuleEmptyState
           title={t("Sin notificaciones")}
-          description={t("Aún no se han enviado notificaciones a pacientes.")}
+          description={t("Aún no se han enviado notificaciones a personas.")}
           className="m-5"
         />
       ) : (

@@ -64,7 +64,7 @@ test("individual review requires acknowledgement and publishes the reviewed revi
   await page.screenshot({ path: "/tmp/diomedes-nutrition-review-mobile.png", fullPage: true });
   await publish.click();
   await expect.poll(() => writes[0]?.body).toMatchObject({ plans: [{ id: planIds[0], revision: 3, notes: "Menú y merienda revisados" }] });
-  await expect(page.getByText("Plan aprobado. El paciente puede consultar su ciclo de 30 días.")).toBeVisible();
+  await expect(page.getByText("Plan aprobado. La persona puede consultar su ciclo de 30 días.")).toBeVisible();
 });
 
 test("bulk review preserves selected revisions and displays a conflict without claiming success", async ({ page }) => {

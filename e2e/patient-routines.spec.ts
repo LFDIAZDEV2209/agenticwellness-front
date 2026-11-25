@@ -31,7 +31,7 @@ test("2.21 · revisar/cancelar no escribe; confirmar una vez muestra resultado a
   await expect(page.getByRole("dialog")).toBeVisible();
   await expect(page.getByRole("dialog", { name: "Resultado de la asignación", exact: true })).toBeVisible();
   expect(qa.calls).toEqual([{ body: { patientIds: patientWorkspaceRows.slice(0, 2).map(p => p.patientId), routineId: routine221.id, semanaDesde: 2, semanaHasta: 12 }, status: 200 }]);
-  await expect(page.getByText("Los conteos de aplicados y semanas iniciadas pueden incluir al mismo paciente.")).toBeVisible();
+  await expect(page.getByText("Los conteos de aplicados y semanas iniciadas pueden incluir a la misma persona.")).toBeVisible();
   await expect(page.getByRole("dialog").getByText(patientWorkspaceRows[1].patientId, { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Listo", exact: true }).click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
@@ -79,7 +79,7 @@ test("2.21 · Director conserva pacientes entre páginas y muestra cero aplicaci
   }
   await page.getByRole("button", { name: "Asignar rutina", exact: true }).click();
   const dialog = page.getByRole("dialog");
-  await expect(dialog.getByText("La selección incluye pacientes de otras páginas o filtros.")).toBeVisible();
+  await expect(dialog.getByText("La selección incluye personas de otras páginas o filtros.")).toBeVisible();
   await dialog.getByRole("radio").first().check();
   await dialog.getByLabel("Desde la semana", { exact: true }).selectOption("1");
   await dialog.getByLabel("Hasta la semana", { exact: true }).selectOption("1");

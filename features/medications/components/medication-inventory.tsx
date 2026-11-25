@@ -65,13 +65,13 @@ export function MedicationInventory({ patientId }: { patientId?: string }) {
       <div className="medication-monitoring-toolbar">
         <h2>
           <Package aria-hidden />
-          {t(patientId ? "Inventario del paciente" : "Existencias")}
+          {t(patientId ? "Inventario de la persona" : "Existencias")}
         </h2>
         <div className="medication-inline-actions">
           {!patientId && (
             <Input
               aria-label={t("Buscar en inventario")}
-              placeholder={t("Paciente o medicamento")}
+              placeholder={t("Persona o medicamento")}
               value={query}
               onChange={(e) => {
                 setQuery(e.target.value);
@@ -110,11 +110,11 @@ export function MedicationInventory({ patientId }: { patientId?: string }) {
         />
       ) : (
         <>
-          <Table aria-label={t("Inventario de pacientes")}>
+          <Table aria-label={t("Inventario de personas")}>
             <TableHeader>
               <TableRow>
                 {[
-                  ...(!patientId ? ["Paciente"] : []),
+                  ...(!patientId ? ["Persona"] : []),
                   "Medicamento",
                   "Existencias",
                   "Días restantes",

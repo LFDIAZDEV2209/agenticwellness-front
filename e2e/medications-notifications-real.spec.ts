@@ -31,11 +31,11 @@ test("delivery at the local time, inbox navigation, snooze and cancellation", as
   const suffix = randomUUID().slice(0, 8);
   const names = { main: `Aviso QA ${suffix}`, paused: `Pausada QA ${suffix}`, edited: `Editada QA ${suffix}`, taken: `Confirmada QA ${suffix}` };
   const create = async (name: string, minutes: number) => {
-    await staff.getByRole("button", { name: "Nuevo tratamiento", exact: true }).click();
+    await staff.getByRole("button", { name: "Nuevo plan de medicación", exact: true }).click();
     await staff.getByRole("button", { name: "Entrada manual", exact: true }).click();
     await staff.getByLabel("Nombre del producto", { exact: true }).fill(name);
     await staff.getByLabel("Horario 1", { exact: true }).fill(localTime(minutes));
-    await staff.getByRole("button", { name: "Guardar tratamiento", exact: true }).click();
+    await staff.getByRole("button", { name: "Guardar plan de medicación", exact: true }).click();
     const row = staff.locator(".medication-treatment-row").filter({ hasText: name });
     await expect(row).toBeVisible();
     return row;

@@ -4,6 +4,7 @@ import { Users, TrendingUp, Activity, Target, ScrollText } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useT } from "@/providers/i18n-provider";
 import type { Club } from "../types";
+import { CLUB_DEMO_RULES } from "../mock/seeds";
 import { formatRelative } from "./clubs-helpers";
 
 export function ClubOverviewTab({ club }: { club: Club }) {
@@ -59,7 +60,7 @@ export function ClubOverviewTab({ club }: { club: Club }) {
               {club.rules.map((rule, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm">
                   <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
-                  {rule}
+                  {Object.values(CLUB_DEMO_RULES).includes(rule) ? t(rule) : rule}
                 </li>
               ))}
             </ul>

@@ -71,7 +71,7 @@ export function PatientClinicStep({
       <SectionHeader
         title={t("Clínica")}
         description={t(
-          "Selecciona la clínica donde será atendido el paciente. Puedes completar más detalles después.",
+          "Selecciona la clínica donde se atenderá a la persona. Puedes completar más detalles después.",
         )}
         icon={Building2}
         variant="primary"
@@ -80,7 +80,7 @@ export function PatientClinicStep({
         <p className="flex items-start gap-2 rounded-xl border border-border/60 bg-muted/40 px-4 py-3 text-[12.5px] text-muted-foreground">
           <Info className="mt-0.5 size-4 shrink-0 text-primary" />
           {t(
-            "Opcional: si no seleccionas una clínica, podrás asignarla después desde el perfil del paciente.",
+            "Opcional: si no seleccionas una clínica, podrás asignarla después desde el perfil de la persona.",
           )}
         </p>
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { catalogPresentation } from "@/features/professionals/catalog-presentation";
 import { useT } from "@/providers/i18n-provider";
 import { useCallback, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -288,7 +289,9 @@ export function CatalogManagement() {
                   {types.map((type) => (
                     <TableRow key={type.id}>
                       <TableCell>
-                        <span className="text-sm font-medium">{type.name}</span>
+                        <span className="text-sm font-medium">
+                          {catalogPresentation(type.name, t)}
+                        </span>
                       </TableCell>
                       <TableCell>
                         <code className="rounded bg-muted px-1.5 py-0.5 text-[11px]">
@@ -318,7 +321,9 @@ export function CatalogManagement() {
                           <Button
                             variant="ghost"
                             size="icon-sm"
-                            aria-label={`Editar ${type.name}`}
+                            aria-label={t("Editar {name}", {
+                                  name: catalogPresentation(type.name, t),
+                                })}
                             onClick={() => openEdit("type", type)}
                           >
                             <Pencil />
@@ -328,8 +333,12 @@ export function CatalogManagement() {
                             size="icon-sm"
                             aria-label={
                               type.isActive
-                                ? `Desactivar ${type.name}`
-                                : `Activar ${type.name}`
+                                ? t("Desactivar {name}", {
+                                  name: catalogPresentation(type.name, t),
+                                })
+                                : t("Activar {name}", {
+                                  name: catalogPresentation(type.name, t),
+                                })
                             }
                             disabled={togglingId === type.id}
                             onClick={() => toggleActive("type", type)}
@@ -382,12 +391,12 @@ export function CatalogManagement() {
                     <TableRow key={specialty.id}>
                       <TableCell>
                         <span className="text-sm font-medium">
-                          {specialty.name}
+                          {catalogPresentation(specialty.name, t)}
                         </span>
                       </TableCell>
                       <TableCell>
                         <span className="text-xs text-muted-foreground">
-                          {specialty.category}
+                          {catalogPresentation(specialty.category, t)}
                         </span>
                       </TableCell>
                       <TableCell>
@@ -415,7 +424,9 @@ export function CatalogManagement() {
                           <Button
                             variant="ghost"
                             size="icon-sm"
-                            aria-label={`Editar ${specialty.name}`}
+                            aria-label={t("Editar {name}", {
+                                  name: catalogPresentation(specialty.name, t),
+                                })}
                             onClick={() => openEdit("specialty", specialty)}
                           >
                             <Pencil />
@@ -425,8 +436,12 @@ export function CatalogManagement() {
                             size="icon-sm"
                             aria-label={
                               specialty.isActive
-                                ? `Desactivar ${specialty.name}`
-                                : `Activar ${specialty.name}`
+                                ? t("Desactivar {name}", {
+                                  name: catalogPresentation(specialty.name, t),
+                                })
+                                : t("Activar {name}", {
+                                  name: catalogPresentation(specialty.name, t),
+                                })
                             }
                             disabled={togglingId === specialty.id}
                             onClick={() => toggleActive("specialty", specialty)}
@@ -486,7 +501,7 @@ export function CatalogManagement() {
                   onChange={(e) =>
                     setForm({ ...form, category: e.target.value })
                   }
-                  placeholder={t("Ej. Terapia, Medicina, Nutrición")}
+                  placeholder={t("Ej. Nutrición, Actividad física, Bienestar")}
                 />
               </div>
             )}

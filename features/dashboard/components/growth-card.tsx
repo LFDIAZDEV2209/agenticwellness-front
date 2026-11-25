@@ -176,7 +176,7 @@ export function GrowthCard({ data, height = 160 }: GrowthCardProps) {
                 <button
                   type="button"
                   className="flex size-6 items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  aria-label={t("{month}: {count} pacientes nuevos", {
+                  aria-label={t("{month}: {count} personas nuevas", {
                     month: labels[index].full,
                     count: number.format(data[index].value),
                   })}
@@ -202,7 +202,7 @@ export function GrowthCard({ data, height = 160 }: GrowthCardProps) {
                 <ChartTooltip
                   visible={active === index}
                   title={labels[index].full}
-                  label={t("Pacientes nuevos")}
+                  label={t("Personas nuevas")}
                   value={number.format(data[index].value)}
                   align={
                     index === 0
@@ -247,7 +247,7 @@ export function GrowthCard({ data, height = 160 }: GrowthCardProps) {
           {t("Ver datos mensuales")}
         </summary>
         <table
-          aria-label={t("Pacientes nuevos por mes")}
+          aria-label={t("Personas nuevas por mes")}
           className="w-full text-left tabular-nums"
         >
           <thead className="text-muted-foreground">
@@ -256,7 +256,7 @@ export function GrowthCard({ data, height = 160 }: GrowthCardProps) {
                 {t("Mes")}
               </th>
               <th scope="col" className="px-2 py-2 text-right font-medium">
-                {t("Pacientes nuevos")}
+                {t("Personas nuevas")}
               </th>
             </tr>
           </thead>

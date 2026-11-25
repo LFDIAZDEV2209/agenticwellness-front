@@ -166,7 +166,7 @@ export function NotificationsPage() {
 
   function downloadCsv() {
     const header = [
-      t("Paciente"),
+      t("Persona"),
       t("Canal"),
       t("Destinatario"),
       t("Plantilla"),
@@ -211,7 +211,7 @@ export function NotificationsPage() {
             render={<Link href="/health-tests/alertas/notificar" />}
           >
             <Send className="size-3.5" />
-            {t("Notificar a pacientes")}
+            {t("Notificar a personas")}
           </Button>
           <Button
             variant="outline"
@@ -254,7 +254,7 @@ export function NotificationsPage() {
         <section className="order-2 flex flex-col overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card xl:order-1 xl:col-span-8 shadow-xs">
           <SectionHeader
             title={t("Registro de entregas")}
-            description={t("Filtra por canal, estado o paciente")}
+            description={t("Filtra por canal, estado o persona")}
             icon={BellRing}
             variant="primary"
           />
@@ -265,8 +265,8 @@ export function NotificationsPage() {
               <Input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder={t("Buscar paciente...")}
-                aria-label={t("Buscar por paciente")}
+                placeholder={t("Buscar persona...")}
+                aria-label={t("Buscar por persona")}
                 className="h-9 w-full pl-8"
               />
             </div>
@@ -355,7 +355,7 @@ export function NotificationsPage() {
                   ? t(
                       "Ninguna notificación coincide con los filtros aplicados.",
                     )
-                  : t("Aún no se han enviado notificaciones a pacientes.")
+                  : t("Aún no se han enviado notificaciones a personas.")
               }
               filtered={isFiltered}
               onClear={clearFilters}
@@ -367,7 +367,7 @@ export function NotificationsPage() {
                 <Table className="w-full">
                   <TableHeader className="[&_th]:text-foreground">
                     <TableRow>
-                      <TableHead>{t("Paciente")}</TableHead>
+                      <TableHead>{t("Persona")}</TableHead>
                       <TableHead>{t("Canal")}</TableHead>
                       <TableHead>{t("Destinatario")}</TableHead>
                       <TableHead>{t("Plantilla")}</TableHead>

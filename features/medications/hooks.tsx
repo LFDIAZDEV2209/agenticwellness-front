@@ -165,12 +165,12 @@ export function useMedicationResource<T>(
 
 export function medicationErrorKey(error: unknown): string {
   if (error instanceof ApiError) {
-    if (error.status === 403) return "No tienes acceso a este paciente.";
-    if (error.status === 404) return "El paciente no está disponible.";
+    if (error.status === 403) return "No tienes acceso a esta persona.";
+    if (error.status === 404) return "La persona no está disponible.";
     if (error.status === 409)
       return "El registro cambió. Actualiza e inténtalo de nuevo.";
     if (error.status === 400 || error.status === 422)
-      return "Revisa los datos del tratamiento.";
+      return "Revisa los datos del plan de medicación.";
   }
   return "No se pudo completar la operación. Inténtalo de nuevo.";
 }

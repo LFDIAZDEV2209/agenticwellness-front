@@ -42,8 +42,8 @@ export function NutritionPlanReview({ plan, onApproved }: { plan: NutritionPlan;
         <div>
           <h3 className="font-semibold">{t("Revisión nutricional")}</h3>
           <p className="text-sm text-muted-foreground">{plan.reviewStatus === "approved"
-            ? t("Plan aprobado. El paciente puede consultar su ciclo de 30 días.")
-            : t("El paciente solo verá este plan después de la aprobación nutricional.")}</p>
+            ? t("Plan aprobado. La persona puede consultar su ciclo de 30 días.")
+            : t("La persona solo verá este plan después de la aprobación nutricional.")}</p>
           <p className="mt-1 text-xs text-muted-foreground">{t("Versión {revision}", { revision: String(plan.revision ?? 1) })}</p>
         </div>
       </div>
@@ -53,7 +53,7 @@ export function NutritionPlanReview({ plan, onApproved }: { plan: NutritionPlan;
         <div className="space-y-3 border-t border-primary/15 pt-3">
           <label className="flex cursor-pointer items-start gap-2 text-sm">
             <Checkbox checked={acknowledged} onCheckedChange={checked => setAcknowledged(checked === true)} />
-            <span>{t("Revisé las comidas, alergias, restricciones y resultados del paciente. Apruebo este plan de 30 días.")}</span>
+            <span>{t("Revisé las comidas, alergias, restricciones y resultados de la persona. Apruebo este plan de 30 días.")}</span>
           </label>
           <Textarea aria-label={t("Notas de revisión")} placeholder={t("Notas de revisión (opcional)")} maxLength={1000} value={notes} onChange={e => setNotes(e.target.value)} />
           {error ? <p role="alert" className="text-sm text-destructive">{error}</p> : null}

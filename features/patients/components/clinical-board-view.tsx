@@ -362,7 +362,7 @@ export function ClinicalBoardView({
       setDeleteError(
         cause instanceof Error && cause.message
           ? cause.message
-          : t("No pudimos eliminar el paciente."),
+          : t("No pudimos eliminar la persona."),
       );
     } finally {
       setDeleteBusy(false);
@@ -438,7 +438,7 @@ export function ClinicalBoardView({
         className="flex min-w-0 flex-col overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-xs"
       >
         <SectionHeader
-          title={t("Estado clínico por paciente")}
+          title={t("Estado clínico por persona")}
           description={t("Directorio clínico · riesgo, alertas y seguimiento")}
           icon={ShieldAlert}
           variant="surface"
@@ -470,7 +470,7 @@ export function ClinicalBoardView({
               value={filters.search}
               onChange={(event) => setFilters({ search: event.target.value })}
               placeholder={t("Buscar por nombre, MRN o documento...")}
-              aria-label={t("Buscar pacientes")}
+              aria-label={t("Buscar personas")}
               className="pl-9"
             />
           </div>
@@ -555,7 +555,7 @@ export function ClinicalBoardView({
             <SelectTrigger
               size="comfortable"
               className="@min-[1100px]/clinical-board:col-span-2"
-              aria-label={t("Filtrar por estado del paciente")}
+              aria-label={t("Filtrar por estado de la persona")}
             >
               <SelectValue>
                 {filters.status === "all"
@@ -618,7 +618,7 @@ export function ClinicalBoardView({
           </div>
         ) : loading && !result ? (
           <div
-            aria-label={t("Cargando pacientes")}
+            aria-label={t("Cargando personas")}
             aria-busy="true"
             className="bg-card p-5"
           >
@@ -642,12 +642,12 @@ export function ClinicalBoardView({
             <p className="mt-4 text-base font-semibold text-foreground">
               {hasFilters
                 ? t("Sin resultados con los filtros")
-                : t("Sin pacientes en el alcance")}
+                : t("Sin personas en el alcance")}
             </p>
             <p className="mt-1 text-sm text-muted-foreground">
               {hasFilters
                 ? t("Prueba con otros términos o quita algún filtro.")
-                : t("No hay pacientes para mostrar todavía.")}
+                : t("Todavía no hay personas para mostrar.")}
             </p>
             {hasFilters ? (
               <Button variant="outline" className="mt-4" onClick={clearAll}>
@@ -663,7 +663,7 @@ export function ClinicalBoardView({
                 role="status"
                 className="text-sm font-medium text-muted-foreground"
               >
-                {result.total} {t("pacientes en seguimiento")}
+                {result.total} {t("personas en seguimiento")}
               </p>
               {loading && (
                 <span className="text-xs text-muted-foreground">
@@ -674,11 +674,11 @@ export function ClinicalBoardView({
             <Table
               density="comfortable"
               className="[&_td]:px-3 [&_td]:py-2.5"
-              aria-label={t("Estado clínico por paciente")}
+              aria-label={t("Estado clínico por persona")}
               containerProps={{
                 tabIndex: 0,
                 role: "region",
-                "aria-label": t("Tabla de pacientes"),
+                "aria-label": t("Tabla de personas"),
                 className:
                   "outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
               }}
@@ -689,7 +689,7 @@ export function ClinicalBoardView({
                     <TableHead className="w-12 px-2">
                       <label className="flex size-11 cursor-pointer items-center justify-center">
                         <Checkbox
-                          aria-label={t("Seleccionar pacientes de esta página")}
+                          aria-label={t("Seleccionar personas de esta página")}
                           checked={allPageSelected}
                           indeterminate={selectedOnPage > 0 && !allPageSelected}
                           disabled={
@@ -702,9 +702,9 @@ export function ClinicalBoardView({
                       </label>
                     </TableHead>
                   )}
-                  <TableHead>{t("Paciente")}</TableHead>
+                  <TableHead>{t("Persona")}</TableHead>
                   <TableHead className="hidden @min-[1300px]/clinical-board:table-cell">
-                    {t("Diagnóstico")}
+                    {t("Evaluación")}
                   </TableHead>
                   <TableHead className="hidden @min-[1300px]/clinical-board:table-cell">
                     {t("Ubicación")}
@@ -814,7 +814,7 @@ export function ClinicalBoardView({
                       >
                         {item.primaryDiagnosisDescription ??
                           item.primaryDiagnosisCode ??
-                          t("Sin diagnóstico")}
+                          t("Sin resultado")}
                       </span>
                     </TableCell>
                     <TableCell className="hidden @min-[1300px]/clinical-board:table-cell">
@@ -1038,15 +1038,14 @@ export function ClinicalBoardView({
       {canAssign && selected.size > 0 && (
         <div
           role="region"
-          aria-label={t("Acciones de pacientes seleccionados")}
+          aria-label={t("Acciones de personas seleccionadas")}
           className="sticky bottom-3 z-20 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-primary/20 bg-background p-4 shadow-lg"
         >
           <div className="min-w-0">
             <p role="status" className="font-semibold">
-              {t("{count} paciente{s} seleccionado{s}", {
-                count: String(selected.size),
-                s: selected.size === 1 ? "" : "s",
-              })}
+              {selected.size === 1
+                ? t("1 persona seleccionada")
+                : t("{count} personas seleccionadas", { count: String(selected.size) })}
             </p>
             <p className="text-xs text-muted-foreground">
               {t("{count} en esta página. Máximo {max} por asignación.", {
@@ -1106,7 +1105,7 @@ export function ClinicalBoardView({
             <Trash2 />
           </AlertDialogMedia>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t("¿Eliminar paciente?")}</AlertDialogTitle>
+            <AlertDialogTitle>{t("¿Eliminar a la persona?")}</AlertDialogTitle>
             <AlertDialogDescription>
               {t(
                 "Se eliminará el registro de {name}. Esta acción no se puede deshacer.",

@@ -86,14 +86,14 @@ const segmentCopy = {
     icon: ShieldCheck,
   },
   patient: {
-    description: "Cuentas de pacientes que usan la app móvil.",
-    one: "{count} paciente encontrado",
-    many: "{count} pacientes encontrados",
+    description: "Cuentas de personas que usan la app móvil.",
+    one: "{count} persona encontrada",
+    many: "{count} personas encontradas",
     icon: HeartPulse,
   },
   all: {
     description:
-      "Todas las cuentas de la plataforma, de personal y de pacientes.",
+      "Todas las cuentas de la plataforma, de personal y de personas.",
     one: "{count} cuenta encontrada",
     many: "{count} cuentas encontradas",
     icon: LayoutGrid,
@@ -259,10 +259,10 @@ export function UsersPageContent() {
         tone: "info",
         text: !user.isActive
           ? patientAccount
-            ? t("Cuenta activada. El paciente ya puede entrar a la app.")
+            ? t("Cuenta activada. La persona ya puede entrar a la app.")
             : t("Usuario activado. Ya puede iniciar sesión.")
           : patientAccount
-            ? t("Cuenta desactivada. El paciente no podrá entrar a la app.")
+            ? t("Cuenta desactivada. La persona no podrá entrar a la app.")
             : t(
                 "Usuario desactivado. No podrá iniciar sesión hasta reactivarlo.",
               ),
@@ -423,7 +423,7 @@ export function UsersPageContent() {
                 className={buttonVariants({ variant: "outline", size: "sm" })}
               >
                 <HeartPulse data-icon="inline-start" />
-                {t("Ir a Pacientes")}
+                {t("Ir a Personas")}
                 <ArrowUpRight data-icon="inline-end" aria-hidden="true" />
               </Link>
             ) : (
@@ -609,8 +609,8 @@ export function UsersPageContent() {
                 · {result.total}{" "}
                 {segment === "patient"
                   ? result.total === 1
-                    ? t("paciente")
-                    : t("pacientes")
+                    ? t("persona")
+                    : t("personas")
                   : segment === "all"
                     ? result.total === 1
                       ? t("cuenta")
@@ -708,7 +708,7 @@ export function UsersPageContent() {
                   : ""}{" "}
                 {deletingPatient
                   ? t(
-                      "y su acceso a la app móvil. La ficha del paciente y su historial clínico se conservan. Esta acción no se puede deshacer.",
+                      "y su acceso a la app móvil. La ficha de la persona y su historial de salud se conservan. Esta acción es irreversible.",
                     )
                   : t(
                       "y todas sus asignaciones. El perfil del directorio y el historial clínico se conservan. Esta acción no se puede deshacer.",
@@ -825,7 +825,7 @@ function EmptyState({
   const isFilterIssue = hasFilters;
   const segmentName = {
     erp: t("Usuarios ERP"),
-    patient: t("Pacientes"),
+    patient: t("Personas"),
     all: t("Todas las cuentas"),
   }[segment];
 
@@ -854,7 +854,7 @@ function EmptyState({
                 })
               : t("Sin resultados para estos filtros")
             : segment === "patient"
-              ? t("Aún no hay pacientes con cuenta")
+              ? t("Aún no hay personas con cuenta")
               : segment === "erp"
                 ? t("Aún no hay usuarios del ERP")
                 : t("No hay cuentas registradas")}
@@ -883,7 +883,7 @@ function EmptyState({
             href="/patients"
             className={buttonVariants({ variant: "outline", size: "sm" })}
           >
-            {t("Ir a Pacientes")}
+            {t("Ir a Personas")}
           </Link>
         ) : null}
         {canCreate && (

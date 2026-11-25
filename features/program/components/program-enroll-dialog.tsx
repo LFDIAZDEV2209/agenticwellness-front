@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/providers/i18n-provider";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -77,6 +78,7 @@ export function ProgramEnrollDialog({
   onOpenChange,
   onSubmit,
 }: ProgramEnrollDialogProps) {
+  const t = useT();
   // Patient picker state
   const [patientId, setPatientId] = useState<string | null>(null);
   const [patientLabel, setPatientLabel] = useState("");
@@ -194,10 +196,9 @@ export function ProgramEnrollDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-h-[90vh] max-w-lg">
         <DialogHeader>
-          <DialogTitle>Inscribir paciente</DialogTitle>
+          <DialogTitle>{t("Inscribir a una persona")}</DialogTitle>
           <DialogDescription>
-            Selecciona un paciente, una plantilla y la zona horaria para
-            inscribirlo en el programa.
+            {t("Selecciona una persona, una plantilla y la zona horaria para completar la inscripción.")}
           </DialogDescription>
         </DialogHeader>
 
@@ -205,7 +206,7 @@ export function ProgramEnrollDialog({
           <div className="flex flex-col gap-4 py-2">
             {/* Picker de paciente */}
             <div className="flex flex-col gap-1.5">
-              <Label>Paciente *</Label>
+              <Label>{t("Persona *")}</Label>
               {patientId && patientLabel ? (
                 <div className="flex h-9 items-center rounded-md border border-input bg-muted px-3 text-sm">
                   {patientLabel}
@@ -222,7 +223,7 @@ export function ProgramEnrollDialog({
                   <div className="relative">
                     <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
                     <Input
-                      placeholder="Buscar paciente por nombre o documento..."
+                      placeholder={t("Buscar persona por nombre o documento...")}
                       value={patientSearch}
                       onChange={(e) => {
                         setPatientSearch(e.target.value);
@@ -261,7 +262,7 @@ export function ProgramEnrollDialog({
                     !loadingPatients &&
                     patientResults.length === 0 && (
                       <p className="text-xs text-muted-foreground">
-                        No se encontraron pacientes.
+                        {t("No se encontraron personas.")}
                       </p>
                     )}
                 </>

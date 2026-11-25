@@ -86,7 +86,7 @@ try {
   await page.getByRole('textbox', { name: 'Notas de revisión', exact: true }).fill('Revisión individual E2E: merienda ajustada y menú revisado.');
   const single = page.waitForResponse(response => response.url().endsWith('/nutrition-plans/approve') && response.request().method() === 'POST');
   await publish.click();assert.equal((await single).status(), 200);
-  await expect(page.getByText('Plan aprobado. El paciente puede consultar su ciclo de 30 días.', { exact: true })).toBeVisible();
+  await expect(page.getByText("Plan aprobado. La persona puede consultar su ciclo de 30 días.", { exact: true })).toBeVisible();
   updated = await get(plans[0].id);assert.equal(updated.reviewStatus, 'approved');assert.equal(updated.approvedBy, fixtures.reviewer.userId);
   await page.screenshot({ path: path.join(output, 'erp-individual-success-real-db.png'), fullPage: true });
   report.steps.push('Individual approval completed with the real reviewer identity.');
