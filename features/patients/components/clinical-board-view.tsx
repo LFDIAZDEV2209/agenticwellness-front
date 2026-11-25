@@ -702,7 +702,7 @@ export function ClinicalBoardView({
                       </label>
                     </TableHead>
                   )}
-                  <TableHead>{t("Paciente")}</TableHead>
+                  <TableHead>{t("Persona")}</TableHead>
                   <TableHead className="hidden @min-[1300px]/clinical-board:table-cell">
                     {t("Diagnóstico")}
                   </TableHead>

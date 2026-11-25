@@ -241,7 +241,7 @@ export function NutritionPlansPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>{t("Nombre")}</TableHead>
-                  <TableHead className="hidden md:table-cell">{t("Paciente")}</TableHead>
+                  <TableHead className="hidden md:table-cell">{t("Persona")}</TableHead>
                   <TableHead className="hidden md:table-cell">{t("Tipo")}</TableHead>
                   <TableHead className="hidden md:table-cell">
                     {t("Duración")}

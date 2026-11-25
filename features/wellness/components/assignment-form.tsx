@@ -251,7 +251,7 @@ export function AssignmentFormFields({
       <div className="flex flex-col gap-4">
         {/* Picker de paciente */}
         <div className="flex flex-col gap-1.5">
-          <Label>{t("Paciente")} *</Label>
+          <Label>{t("Persona")} *</Label>
           {patientId && patientLabel ? (
             <div className="flex min-h-11 items-center gap-3 rounded-md border border-input bg-muted px-3 py-1 text-sm">
               {patientLabel}

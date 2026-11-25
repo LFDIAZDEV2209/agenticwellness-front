@@ -263,7 +263,7 @@ function PendingTable({
       <Table className="min-w-[980px]">
         <TableHeader>
           <TableRow>
-            <TableHead>{t("Paciente")}</TableHead>
+            <TableHead>{t("Persona")}</TableHead>
             <TableHead>{t("Tests pendientes")}</TableHead>
             <TableHead>{t("Días pendientes")}</TableHead>
             <TableHead>{t("Profesional")}</TableHead>

@@ -893,7 +893,7 @@ function StepCompose({
             <span className="text-xs font-semibold text-foreground">{t("Vista previa")}</span>
             <span className="truncate text-[11px] text-muted-foreground">
               {firstAlert
-                ? `${t("Ejemplo")}: ${firstAlertName ?? t("Paciente")}`
+                ? `${t("Ejemplo")}: ${firstAlertName ?? t("Persona")}`
                 : t("Sin persona de ejemplo")}
             </span>
           </div>
@@ -1036,7 +1036,7 @@ function StepReview({
               <table className="w-full text-left text-[12px]">
                 <thead className="bg-muted/40 text-[10.5px] uppercase tracking-wide text-muted-foreground">
                   <tr>
-                    <th className="px-3 py-2 font-semibold">{t("Paciente")}</th>
+                    <th className="px-3 py-2 font-semibold">{t("Persona")}</th>
                     <th className="px-2 py-2 font-semibold">{t("Canal")}</th>
                     <th className="px-2 py-2 font-semibold">{t("Estado")}</th>
                     <th className="px-2 py-2 font-semibold">{t("Detalle")}</th>
@@ -1112,7 +1112,7 @@ function StepReview({
                   <table className="w-full text-[12px]">
                     <thead className="bg-muted/40 text-[10.5px] uppercase tracking-wide text-muted-foreground">
                       <tr>
-                        <th className="px-3 py-2 text-left font-semibold">{t("Paciente")}</th>
+                        <th className="px-3 py-2 text-left font-semibold">{t("Persona")}</th>
                         <th className="px-3 py-2 text-left font-semibold">{t("Canal")}</th>
                         <th className="px-3 py-2 text-left font-semibold">{t("Detalle")}</th>
                       </tr>

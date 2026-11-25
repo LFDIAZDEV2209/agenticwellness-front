@@ -166,7 +166,7 @@ export function NotificationsPage() {
 
   function downloadCsv() {
     const header = [
-      t("Paciente"),
+      t("Persona"),
       t("Canal"),
       t("Destinatario"),
       t("Plantilla"),
@@ -367,7 +367,7 @@ export function NotificationsPage() {
                 <Table className="w-full">
                   <TableHeader className="[&_th]:text-foreground">
                     <TableRow>
-                      <TableHead>{t("Paciente")}</TableHead>
+                      <TableHead>{t("Persona")}</TableHead>
                       <TableHead>{t("Canal")}</TableHead>
                       <TableHead>{t("Destinatario")}</TableHead>
                       <TableHead>{t("Plantilla")}</TableHead>

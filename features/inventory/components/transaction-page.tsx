@@ -450,7 +450,7 @@ export function TransactionPage({ mode }: { mode: TransactionMode }) {
                   <TableHead className="hidden md:table-cell">
                     {isEntry ? t("Proveedor") : t("Responsable")}
                   </TableHead>
-                  {!isEntry && <TableHead>{t("Paciente")}</TableHead>}
+                  {!isEntry && <TableHead>{t("Persona")}</TableHead>}
                   <TableHead className="hidden lg:table-cell">{t("Productos")}</TableHead>
                 </TableRow>
               </TableHeader>

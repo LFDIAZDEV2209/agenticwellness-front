@@ -654,7 +654,7 @@ export function PeopleBulkImport({
                               {t("Empleado")}
                             </SelectItem>
                             <SelectItem value="paciente">
-                              {t("Paciente")}
+                              {t("Persona")}
                             </SelectItem>
                             <SelectItem value="usuario">
                               {t("Usuario")}

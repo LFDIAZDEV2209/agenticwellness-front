@@ -781,7 +781,7 @@ function MasterTable({
         <TableHeader>
           <TableRow>
             <SortableHead
-              label={t("Paciente")}
+              label={t("Persona")}
               sortKey="name"
               activeKey={sortKey}
               dir={sortDir}

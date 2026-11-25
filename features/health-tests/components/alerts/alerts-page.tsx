@@ -728,7 +728,7 @@ function AlertsTable({
                 className="size-4 rounded border-border"
               />
             </TableHead>
-            <TableHead>{t("Paciente")}</TableHead>
+            <TableHead>{t("Persona")}</TableHead>
             <TableHead className="whitespace-nowrap">
               {t("Resultado")}
             </TableHead>

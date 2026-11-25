@@ -218,7 +218,7 @@ function MedicationDirectoryContent({initialView}:{initialView:"overview"|"patie
               </div>
             </div>
             <div className="medication-directory-columns" aria-hidden>
-              <span>{t("Paciente")}</span>
+              <span>{t("Persona")}</span>
               <span>{t("Acceso en la app")}</span>
               <span>{t("Planes de medicación activos")}</span>
               <span />

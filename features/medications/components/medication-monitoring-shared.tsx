@@ -30,7 +30,7 @@ export function PatientPicker({
         onChange={(e) => setQuery(e.target.value)}
       />
       <NativeSelect
-        ariaLabel={t("Paciente")}
+        ariaLabel={t("Persona")}
         value={value}
         onChange={onChange}
         options={[

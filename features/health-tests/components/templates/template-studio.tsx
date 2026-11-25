@@ -828,7 +828,7 @@ export function TemplateStudio() {
                   <SelectItem value="sample">{t("Datos de ejemplo")}</SelectItem>
                   {sampleAlerts.map((alert) => (
                     <SelectItem key={alert.id} value={alert.id}>
-                      {patientNames[alert.patientId] ?? t("Paciente")} ·{" "}
+                      {patientNames[alert.patientId] ?? t("Persona")} ·{" "}
                       {alert.indicatorName}
                     </SelectItem>
                   ))}

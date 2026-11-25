@@ -500,7 +500,7 @@ function SosAlertCard({
         <div className="flex min-w-0 flex-1 flex-col gap-1.5">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-[13.5px] font-semibold text-foreground">
-              {alert.patientName ?? t("Paciente")}
+              {alert.patientName ?? t("Persona")}
             </span>
             <span
               className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10.5px] font-semibold"

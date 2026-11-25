@@ -210,7 +210,7 @@ export function NutritionQueue({
         </nav>
       )}
           <div className="nutrition-directory-columns" aria-hidden="true">
-            <span>{t("Paciente")}</span><span>{t("Plan nutricional")}</span><span>{t("Vigencia")}</span><span />
+            <span>{t("Persona")}</span><span>{t("Plan nutricional")}</span><span>{t("Vigencia")}</span><span />
           </div>
           <NutritionIntakePendingCount />
           <div className="nutrition-patient-list" aria-busy={loading}>

@@ -283,7 +283,7 @@ test("HTML completo: inventario APP → tomas/stock → semana ERP → efectos/a
       .getByRole("link", { name: "Seguimiento diario", exact: true })
       .click();
     await staff
-      .getByRole("combobox", { name: "Paciente", exact: true })
+      .getByRole("combobox", { name: "Persona", exact: true })
       .selectOption(f.patientId);
     await expect(
       staff.getByRole("table", { name: "Semana de medicamentos", exact: true }),

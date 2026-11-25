@@ -205,7 +205,7 @@ export function AssignmentsPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>{t("Tipo")}</TableHead>
-                  <TableHead>{t("Paciente")}</TableHead>
+                  <TableHead>{t("Persona")}</TableHead>
                   <TableHead className="hidden md:table-cell">{t("Nombre")}</TableHead>
                   <TableHead className="hidden md:table-cell">
                     {t("Frecuencia")}

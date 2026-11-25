@@ -3053,6 +3053,7 @@
   "P. diastólica": "Diastolic BP",
   "P. sistólica": "Systolic BP",
   "Paciente": "Patient",
+  "Persona": "Person",
   "Persona ({id})": "Person ({id})",
   "Paciente (opcional)": "Patient (optional)",
   "Paciente *": "Patient *",

@@ -182,7 +182,7 @@ export function ProgramInterventionsPage() {
                   <TableHead className="whitespace-nowrap">Tipo</TableHead>
                   <TableHead className="min-w-[220px]">Título</TableHead>
                   <TableHead>Severidad</TableHead>
-                  <TableHead>{t("Paciente")}</TableHead>
+                  <TableHead>{t("Persona")}</TableHead>
                   <TableHead>Estado</TableHead>
                   <TableHead className="hidden lg:table-cell whitespace-nowrap">Recomendada</TableHead>
                   <TableHead className="hidden lg:table-cell whitespace-nowrap">Completada</TableHead>
