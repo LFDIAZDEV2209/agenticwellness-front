@@ -486,7 +486,7 @@ export function CatalogManagement() {
                   onChange={(e) =>
                     setForm({ ...form, category: e.target.value })
                   }
-                  placeholder={t("Ej. Terapia, Medicina, Nutrición")}
+                  placeholder={t("Ej. Nutrición, Actividad física, Bienestar")}
                 />
               </div>
             )}

@@ -297,7 +297,7 @@ export function TransactionPage({ mode }: { mode: TransactionMode }) {
             <Input
               value={document}
               onChange={(event) => setDocument(event.target.value)}
-              placeholder={t("Factura, receta o remisión")}
+              placeholder={t("Factura, indicación de medicación o remisión")}
             />
           </Field>
         </div>

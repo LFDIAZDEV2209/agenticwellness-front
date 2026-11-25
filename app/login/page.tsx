@@ -431,7 +431,7 @@ export default function LoginPage() {
                   </h2>
                   <p className="mt-1 text-[12.5px] leading-relaxed text-white/75">
                     {t(
-                      "Administración clínica para el seguimiento integral de tus pacientes.",
+                      "Administra el programa y acompaña el progreso de las personas.",
                     )}
                   </p>
                 </div>

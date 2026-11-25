@@ -151,7 +151,7 @@ export function ExerciseRoutinesPage() {
     <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
       <PageHeader
         title={t("Rutinas de ejercicio")}
-        description={t("Gestiona las rutinas de ejercicio para tus pacientes")}
+        description={t("Gestiona las rutinas de ejercicio de las personas a tu cargo")}
         icon={Dumbbell}
         actions={
           can("Wellness.Manage") ? (
@@ -566,7 +566,7 @@ function RoutinesEmptyState({ onCreate }: { onCreate: () => void }) {
           {t("No hay rutinas de ejercicio")}
         </p>
         <p className="text-xs text-muted-foreground">
-          {t("Crea tu primera rutina para asignarla a tus pacientes.")}
+          {t("Crea tu primera rutina para asignarla a las personas a tu cargo.")}
         </p>
       </div>
       {can("Wellness.Manage") && (

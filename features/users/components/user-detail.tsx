@@ -651,7 +651,7 @@ export function UserDetail({ userId }: UserDetailProps) {
                 {name}
               </strong>{" "}
               {isPatient
-                ? t("y su acceso a la app móvil. La ficha del paciente y su historial clínico se conservan. Esta acción no se puede deshacer.")
+                ? t("y su acceso a la app móvil. La ficha de la persona y su historial de salud se conservan. Esta acción es irreversible.")
                 : t(
                     "y todas sus asignaciones. El perfil del directorio y el historial clínico se conservan. Esta acción no se puede deshacer.",
                   )}

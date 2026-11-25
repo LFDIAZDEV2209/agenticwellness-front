@@ -57,7 +57,7 @@ export function PrescriptionsPage() {
     try {
       setHistory(await fetchPrescriptions(patient.id));
     } catch {
-      setError(t("No pudimos cargar el historial de recetas."));
+      setError(t("No pudimos cargar el historial de indicaciones de medicación."));
     } finally {
       setLoadingHistory(false);
     }
@@ -102,7 +102,7 @@ export function PrescriptionsPage() {
       setInstructions("");
       setSuccess(true);
     } catch {
-      setError(t("No pudimos guardar la receta. Intenta de nuevo."));
+      setError(t("No pudimos guardar la indicación de medicación. Intenta de nuevo."));
     } finally {
       setSaving(false);
     }
@@ -111,8 +111,8 @@ export function PrescriptionsPage() {
   return (
     <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
       <PageHeader
-        title={t('Recetario')}
-        description={t('Crea y consulta recetas asociadas a tus pacientes')}
+        title={t("Indicaciones de medicación")}
+        description={t("Crea y consulta las indicaciones de medicación de las personas a tu cargo")}
         icon={ClipboardPenLine}
       />
       <div className="grid gap-5 xl:grid-cols-[280px_minmax(0,1fr)]">
@@ -120,7 +120,7 @@ export function PrescriptionsPage() {
           <div>
             <h2 className="text-base font-bold">{t("Selecciona una persona")}</h2>
             <p className="mt-1 text-xs text-muted-foreground">
-              {t('Consulta su historial o crea una nueva receta.')}
+              {t("Consulta su historial o crea una nueva indicación.")}
             </p>
           </div>
           <div className="relative">
@@ -130,7 +130,7 @@ export function PrescriptionsPage() {
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               placeholder={t("Buscar persona...")}
-              aria-label={t('Buscar paciente para receta')}
+              aria-label={t("Buscar persona para una indicación")}
             />
           </div>
           {loadingPatients ? (
@@ -194,7 +194,7 @@ export function PrescriptionsPage() {
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <p className="text-xs font-bold uppercase tracking-wider text-primary">
-                      {t('Nueva receta')}
+                      {t("Nueva indicación de medicación")}
                     </p>
                     <h2 className="mt-1 text-lg font-bold">
                       {t("Indicación")}
@@ -206,7 +206,7 @@ export function PrescriptionsPage() {
                   {success && (
                     <span className="flex items-center gap-1.5 rounded-full bg-success-soft px-3 py-1.5 text-xs font-semibold text-success-soft-foreground">
                       <CheckCircle2 className="size-3.5" />
-                      {t('Receta guardada')}
+                      {t("Indicación de medicación guardada")}
                     </span>
                   )}
                 </div>
@@ -277,7 +277,7 @@ export function PrescriptionsPage() {
                           data-icon="inline-start"
                         />
                       )}
-                      {saving ? t("Guardando...") : t("Guardar receta")}
+                      {saving ? t("Guardando...") : t("Guardar indicación de medicación")}
                     </Button>
                   </div>
                 </div>
@@ -429,9 +429,9 @@ function PrescriptionHistory({
   return (
     <section className="rounded-2xl border border-border bg-card p-5">
       <div className="mb-4">
-        <h2 className="text-base font-bold">{t('Historial de recetas')}</h2>
+        <h2 className="text-base font-bold">{t("Historial de indicaciones de medicación")}</h2>
         <p className="mt-1 text-xs text-muted-foreground">
-          {t('Recetas emitidas para el paciente seleccionado.')}
+          {t("Indicaciones de medicación emitidas para la persona seleccionada.")}
         </p>
       </div>
       {loading ? (
@@ -446,7 +446,7 @@ function PrescriptionHistory({
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <p className="text-sm font-semibold">
-                    {t('Receta del')} {prescription.issuedAt}
+                    {t("Indicación de medicación del")} {prescription.issuedAt}
                   </p>
                   <p className="text-xs text-muted-foreground">
                     {t('Emitida por')} {prescription.professional}
@@ -475,7 +475,7 @@ function PrescriptionHistory({
         <div className="flex flex-col items-center gap-2 rounded-xl border border-dashed border-border py-8 text-center">
           <ClipboardPenLine className="size-6 text-muted-foreground" />
           <p className="text-xs text-muted-foreground">
-            {t('Este paciente aún no tiene recetas registradas.')}
+            {t("Esta persona aún no tiene indicaciones de medicación registradas.")}
           </p>
         </div>
       )}
@@ -491,9 +491,9 @@ function EmptyPrescription() {
       </span>
       <h2 className="text-sm font-semibold">{t("Selecciona una persona")}</h2>
       <p className="max-w-xs text-xs text-muted-foreground">
-        {t('Elige un paciente de la lista para consultar su historial y crear una')}
+        {t("Elige a una persona de la lista para consultar su historial y crear una")}
         {" "}
-        {t('receta.')}
+        {t("indicación.")}
       </p>
     </div>
   );

@@ -568,7 +568,7 @@ export function PeopleWizard({
               "Crea credenciales de acceso con roles y permisos, sin perfil de empleado ni persona.",
             )
           : t(
-              "Registra los datos básicos del paciente. Podrás completar la información clínica después.",
+              "Registra los datos básicos de la persona. Podrás completar la información clínica después.",
             );
 
   const headerIcon = !mode

@@ -128,7 +128,7 @@ export function NutritionPlansPage() {
     <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
       <PageHeader
         title={t("Planes de alimentación")}
-        description={t("Gestiona los planes nutricionales para tus pacientes")}
+        description={t("Gestiona los planes nutricionales de las personas a tu cargo")}
         icon={Apple}
         actions={
           can("Wellness.Manage") ? (
@@ -521,7 +521,7 @@ function PlansEmptyState({ onCreate }: { onCreate: () => void }) {
       <div>
         <p className="text-sm font-semibold">{t("No hay planes de alimentación")}</p>
         <p className="text-xs text-muted-foreground">
-          {t("Crea tu primer plan nutricional para asignarlo a tus pacientes.")}
+          {t("Crea tu primer plan nutricional para asignarlo a las personas a tu cargo.")}
         </p>
       </div>
       {can("Wellness.Manage") && (

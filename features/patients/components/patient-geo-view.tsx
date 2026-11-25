@@ -256,7 +256,7 @@ export function PatientGeoView({
       >
         <SectionHeader
           title={t("Top estados")}
-          description={t("Por volumen de pacientes")}
+          description={t("Por número de personas registradas")}
           icon={MapPin}
           variant="primary"
           accent="teal"

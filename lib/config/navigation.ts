@@ -183,7 +183,7 @@ export const navModules: NavModule[] = [
         permission: ["Patients.View", "Patients.ViewOwn"],
       },
       {
-        label: "Recetario",
+        label: "Indicaciones de medicación",
         href: "/patients/prescriptions",
         icon: ClipboardPenLine,
         color: "#F59E0B",

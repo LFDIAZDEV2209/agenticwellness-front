@@ -708,7 +708,7 @@ export function UsersPageContent() {
                   : ""}{" "}
                 {deletingPatient
                   ? t(
-                      "y su acceso a la app móvil. La ficha del paciente y su historial clínico se conservan. Esta acción no se puede deshacer.",
+                      "y su acceso a la app móvil. La ficha de la persona y su historial de salud se conservan. Esta acción es irreversible.",
                     )
                   : t(
                       "y todas sus asignaciones. El perfil del directorio y el historial clínico se conservan. Esta acción no se puede deshacer.",

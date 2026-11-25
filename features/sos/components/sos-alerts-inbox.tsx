@@ -352,7 +352,7 @@ export function SosAlertsInbox() {
           <p className="max-w-sm text-[12.5px] text-muted-foreground">
             {hasFilters
               ? t("Prueba con otros filtros o limpia la búsqueda.")
-              : t("Las alertas de pánico de tus pacientes aparecerán aquí.")}
+              : t("Aquí aparecerán las alertas de pánico de las personas a tu cargo.")}
           </p>
           {hasFilters && (
             <Button

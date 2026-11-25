@@ -120,7 +120,7 @@ export function NutritionQueue({
     >
       <PageHeader
         title={t("Nutrición")}
-        description={t("Planes y seguimiento de tus pacientes.")}
+        description={t("Planes y seguimiento de las personas a tu cargo.")}
         icon={Stethoscope}
         className="nutrition-page-header"
         actions={

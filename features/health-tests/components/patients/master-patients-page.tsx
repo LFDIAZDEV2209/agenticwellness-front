@@ -1475,7 +1475,7 @@ function CategorySummaryCard({
       <SectionHeader
         title={t("Estado por categoría — personas filtradas")}
         description={t(
-          "Promedio de severidad (0–100) por dominio clínico · {count} pacientes en filtro",
+          "Promedio de severidad (0–100) por dominio clínico · {count} personas en el filtro",
           { count: String(count) },
         )}
         icon={Activity}

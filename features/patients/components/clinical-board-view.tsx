@@ -438,7 +438,7 @@ export function ClinicalBoardView({
         className="flex min-w-0 flex-col overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-xs"
       >
         <SectionHeader
-          title={t("Estado clínico por paciente")}
+          title={t("Estado clínico por persona")}
           description={t("Directorio clínico · riesgo, alertas y seguimiento")}
           icon={ShieldAlert}
           variant="surface"
@@ -674,7 +674,7 @@ export function ClinicalBoardView({
             <Table
               density="comfortable"
               className="[&_td]:px-3 [&_td]:py-2.5"
-              aria-label={t("Estado clínico por paciente")}
+              aria-label={t("Estado clínico por persona")}
               containerProps={{
                 tabIndex: 0,
                 role: "region",
