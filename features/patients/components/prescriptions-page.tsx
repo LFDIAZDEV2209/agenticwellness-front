@@ -197,10 +197,10 @@ export function PrescriptionsPage() {
                       {t('Nueva receta')}
                     </p>
                     <h2 className="mt-1 text-lg font-bold">
-                      {t('Prescripción médica')}
+                      {t("Indicación")}
                     </h2>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      {t('Agrega uno o más medicamentos al tratamiento.')}
+                      {t("Agrega uno o más medicamentos al plan de medicación.")}
                     </p>
                   </div>
                   {success && (

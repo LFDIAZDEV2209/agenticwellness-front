@@ -195,7 +195,7 @@ export function MedicationAuditLog() {
                             alerts: "Alertas",
                             alert: "Alerta",
                             dose: "Toma",
-                            treatment: "Tratamiento",
+                            treatment: "Plan de medicación",
                             access: "Acceso",
                           } as Record<string, string>
                         )[entry.resource] ?? entry.resource,

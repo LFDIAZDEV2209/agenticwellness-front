@@ -240,7 +240,7 @@ function MedicationWorkspaceContent({
           treatment.revision,
           reason,
         ),
-      "Tratamiento actualizado",
+      "Plan de medicación actualizado",
     );
   }
 
@@ -328,7 +328,7 @@ function MedicationWorkspaceContent({
                   disabled={busy !== null || formOpen}
                 >
                   <Plus data-icon="inline-start" aria-hidden />
-                  {t("Nuevo tratamiento")}
+                  {t("Nuevo plan de medicación")}
                 </Button>
               )}
             </div>
@@ -340,7 +340,7 @@ function MedicationWorkspaceContent({
             <span>
               <Pill aria-hidden />
               <strong>{data.summary.activeTreatments}</strong>
-              {t("Tratamientos activos")}
+              {t("Planes de medicación activos")}
             </span>
             <span>
               <CircleCheck aria-hidden />
@@ -384,7 +384,7 @@ function MedicationWorkspaceContent({
               onSaved={() => {
                 setFormOpen(false);
                 setEditing(null);
-                setMessage(t(editing ? "Tratamiento actualizado" : "Tratamiento registrado"));
+                setMessage(t(editing ? "Plan de medicación actualizado" : "Plan de medicación registrado"));
                 setTab("treatments");
                 resource.retry();
               }}
@@ -396,7 +396,7 @@ function MedicationWorkspaceContent({
           )}
           <Dialog open={Boolean(suspending)} onOpenChange={(open) => { if (!open) setSuspending(null); }}>
             <DialogContent size="sm">
-              <DialogTitle>{t("Suspender tratamiento")}</DialogTitle>
+              <DialogTitle>{t("Suspender plan de medicación")}</DialogTitle>
               <DialogDescription>{suspending?.name}</DialogDescription>
               <form onSubmit={(event) => {
                 event.preventDefault();
@@ -429,7 +429,7 @@ function MedicationWorkspaceContent({
                 </TabsTrigger>
                 <TabsTrigger value="treatments">
                   <Pill data-icon="inline-start" aria-hidden />
-                  {t("Tratamientos")}
+                  {t("Planes de medicación")}
                 </TabsTrigger>
                 <TabsTrigger value="tracking">{t("Semana y día")}</TabsTrigger>
                 <TabsTrigger value="inventory">{t("Inventario")}</TabsTrigger>
@@ -544,7 +544,7 @@ function MedicationWorkspaceContent({
             </TabsContent>
             <TabsContent value="treatments" className="medication-panel">
               <div className="medication-panel-toolbar">
-                <h2>{t("Tratamientos registrados")}</h2>
+                <h2>{t("Planes de medicación registrados")}</h2>
               </div>
               {data.treatments.length ? (
                 <div>

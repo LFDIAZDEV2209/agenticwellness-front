@@ -217,7 +217,7 @@ export function MedicationTreatmentForm({
             <span className="medication-form-mark spectrum-icon"><Pill aria-hidden /></span>
             <div>
               <DialogTitle id="medication-form-title">
-                {t(treatment ? "Editar dosis y horarios" : "Nuevo tratamiento")}
+                {t(treatment ? "Editar dosis y horarios" : "Nuevo plan de medicación")}
               </DialogTitle>
               <DialogDescription>
                 {treatment ? `${patientName} · ${treatment.name}` : patientName}
@@ -620,7 +620,7 @@ export function MedicationTreatmentForm({
             </Button>
             <Button type="submit" disabled={saving || (usesCatalog && !selectedDrug)}>
               <Save data-icon="inline-start" aria-hidden />
-              {t(saving ? "Guardando..." : treatment ? "Guardar cambios" : "Guardar tratamiento")}
+              {t(saving ? "Guardando..." : treatment ? "Guardar cambios" : "Guardar plan de medicación")}
             </Button>
           </footer>
         </form>

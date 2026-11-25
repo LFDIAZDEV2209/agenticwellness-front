@@ -65,7 +65,7 @@ export function MedicationOverviewPanel({
       tone: "blue",
     },
     {
-      label: "Tratamientos activos",
+      label: "Planes de medicación activos",
       value: data.activeTreatments,
       icon: Pill,
       tone: "teal",
@@ -108,7 +108,7 @@ export function MedicationOverviewPanel({
     ...(canManage
       ? [
           {
-            label: "Registrar tratamiento",
+            label: "Registrar plan de medicación",
             subtitle: "Añadir a un paciente",
             icon: Plus,
             tone: "amber",

@@ -197,19 +197,19 @@ export function PatientPodcastAssignmentDialog({
                 </p>
                 <dl className="flex flex-col divide-y divide-border">
                   <div className="flex items-start justify-between gap-4 py-3">
-                    <dt>{t("Personas con asignaciones aplicadas")}</dt>
+                    <dt>{t("Pacientes con asignaciones aplicadas")}</dt>
                     <dd className="text-xl font-semibold tabular-nums text-success">
                       {count(result.aplicadas)}
                     </dd>
                   </div>
                   <div className="flex items-start justify-between gap-4 py-3">
-                    <dt>{t("Personas con semanas iniciadas omitidas")}</dt>
+                    <dt>{t("Pacientes con semanas iniciadas omitidas")}</dt>
                     <dd className="text-xl font-semibold tabular-nums text-warning">
                       {count(result.omitidasSemanaIniciada)}
                     </dd>
                   </div>
                   <div className="flex items-start justify-between gap-4 py-3">
-                    <dt>{t("Personas omitidas por alcance")}</dt>
+                    <dt>{t("Pacientes omitidos por alcance")}</dt>
                     <dd className="text-xl font-semibold tabular-nums">
                       {count(result.omitidasSinAlcance.length)}
                     </dd>
@@ -222,7 +222,7 @@ export function PatientPodcastAssignmentDialog({
                 </p>
                 {result.omitidasSinAlcance.length > 0 && (
                   <section
-                    aria-label={t("Personas omitidas por alcance")}
+                    aria-label={t("Pacientes omitidos por alcance")}
                     className="flex flex-col gap-2 rounded-xl border border-border bg-muted/30 p-4"
                   >
                     <h3 className="flex items-center gap-2 font-semibold">
@@ -398,7 +398,7 @@ export function PatientPodcastAssignmentDialog({
                 </p>
                 <p className="text-sm text-muted-foreground">
                   {t(
-                    "Todas las personas de tu alcance deben tener un programa activo.",
+                    "Todos los pacientes de tu alcance deben tener un programa activo.",
                   )}
                 </p>
               </>

@@ -170,7 +170,7 @@ export function medicationErrorKey(error: unknown): string {
     if (error.status === 409)
       return "El registro cambió. Actualiza e inténtalo de nuevo.";
     if (error.status === 400 || error.status === 422)
-      return "Revisa los datos del tratamiento.";
+      return "Revisa los datos del plan de medicación.";
   }
   return "No se pudo completar la operación. Inténtalo de nuevo.";
 }
