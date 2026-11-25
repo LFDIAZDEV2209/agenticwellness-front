@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { useAppContext } from "@/providers/context-provider";
+import { catalogPresentation } from "@/features/professionals/catalog-presentation";
 import { useT } from "@/providers/i18n-provider";
 import { fetchMyProfile, updateMyProfile } from "@/lib/api/context-service";
 import {
@@ -213,10 +214,10 @@ export default function OnboardingPage() {
                   }`}
                 >
                   <span className="block text-[13px] font-semibold">
-                    {pt.name}
+                    {catalogPresentation(pt.name, t)}
                   </span>
                   <span className="mt-0.5 block text-[11.5px] text-muted-foreground line-clamp-1">
-                    {pt.description}
+                    {catalogPresentation(pt.description, t)}
                   </span>
                 </button>
               ))}
@@ -226,7 +227,7 @@ export default function OnboardingPage() {
               <div className="mt-6">
                 <h3 className="text-[13.5px] font-semibold">
                   {t("Especialidades válidas para {name}", {
-                    name: selectedType.name,
+                    name: catalogPresentation(selectedType.name, t),
                   })}
                 </h3>
                 <p className="mt-0.5 text-[12px] text-muted-foreground">
@@ -253,7 +254,7 @@ export default function OnboardingPage() {
                               }`}
                             >
                               {active && <BadgeCheck className="size-3.5" />}
-                              {s.name}
+                              {catalogPresentation(s.name, t)}
                             </button>
                           );
                         })}

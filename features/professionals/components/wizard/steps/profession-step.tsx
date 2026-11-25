@@ -6,6 +6,7 @@
 
 "use client";
 
+import { catalogPresentation } from "@/features/professionals/catalog-presentation";
 import { useT } from "@/providers/i18n-provider";
 import { useMemo } from "react";
 import {
@@ -143,10 +144,10 @@ export function ProfessionStep({
               </span>
               <span className="min-w-0">
                 <span className="block truncate text-[13px] font-semibold">
-                  {type.name}
+                  {catalogPresentation(type.name, t)}
                 </span>
                 <span className="mt-0.5 block truncate text-[11.5px] text-muted-foreground">
-                  {type.description}
+                  {catalogPresentation(type.description, t)}
                 </span>
               </span>
             </button>
@@ -157,7 +158,7 @@ export function ProfessionStep({
           <div>
             <h3 className="text-[13.5px] font-semibold">
               {t("Especialidades válidas para {name}", {
-                name: selectedType.name,
+                name: catalogPresentation(selectedType.name, t),
               })}
             </h3>
             <p className="mt-0.5 text-[12px] text-muted-foreground">
@@ -192,7 +193,7 @@ export function ProfessionStep({
                           {active && (
                             <BadgeCheck className="size-3.5" />
                           )}
-                          {s.name}
+                          {catalogPresentation(s.name, t)}
                         </button>
                       );
                     })}
