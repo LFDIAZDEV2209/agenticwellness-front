@@ -23,7 +23,7 @@ import { useT, useI18n } from "@/providers/i18n-provider";
 import { cn } from "@/lib/utils";
 import { ACCENT_COLORS } from "@/lib/config/accent-colors";
 import { useState } from "react";
-import { LegalDocumentsSection } from "./legal-documents-section";
+import { LegalSettingsSection } from "./legal-acceptances-section";
 
 interface SettingsNavItem {
   label: string;
@@ -106,7 +106,8 @@ export function SettingsPageContent() {
 
   // Secciones visibles según el contexto (global ∪ scoped de la clínica).
   const visibleSections = settingsNav.filter(
-    (item) => !item.permission || can(item.permission),
+    (item) => !item.permission || can(item.permission)
+      || (item.label === "Documentación" && (can("LegalAcceptances.View") || can("LegalAcceptances.Export"))),
   );
 
   // Sección efectiva: si la activa quedó fuera del alcance (cambio de
@@ -168,7 +169,7 @@ export function SettingsPageContent() {
           {/* key={effectiveSection}: re-mount animado en cada cambio de sección */}
           <div key={effectiveSection} className="animate-slide-up">
             {effectiveSection === "Documentación" ? (
-              <LegalDocumentsSection />
+              <LegalSettingsSection />
             ) : effectiveSection === "General" ? (
               <div className="flex flex-col gap-0 overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-xs">
                 <SectionHeader
