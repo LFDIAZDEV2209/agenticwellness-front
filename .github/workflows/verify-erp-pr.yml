@@ -1,0 +1,44 @@
+name: Validación ERP
+
+on:
+  pull_request:
+    branches: [dev]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: ERP · build e historial legal
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+
+      - name: Instalar dependencias
+        run: |
+          corepack enable
+          yarn install --immutable
+
+      - name: Revisar código y configuración
+        run: |
+          yarn lint
+          yarn i18n:check
+          yarn config:test
+
+      - name: Compilar ERP
+        run: yarn build
+
+      - name: Instalar Chromium para Playwright
+        run: yarn playwright install --with-deps chromium
+
+      - name: Probar historial legal y exportación CSV
+        run: yarn e2e e2e/legal-acceptances.spec.ts --project=chromium-desktop --reporter=line
