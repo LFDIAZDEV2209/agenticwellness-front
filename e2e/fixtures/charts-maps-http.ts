@@ -44,8 +44,11 @@ export const analytics = {
     { code: "TX", count: 2 },
   ],
 };
-export async function mockChartsMapsHttp(page: Page) {
-  const base = await mockPlatformStyleHttp(page);
+export async function mockChartsMapsHttp(
+  page: Page,
+  options: { english?: boolean } = {},
+) {
+  const base = await mockPlatformStyleHttp(page, options);
   await page.addInitScript(() =>
     localStorage.setItem("copp-accent", "#123B63"),
   );

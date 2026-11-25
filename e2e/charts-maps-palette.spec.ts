@@ -247,3 +247,28 @@ test("inventory movement bars and their legend use the same shared colours", asy
     await legend.first().evaluate((el) => getComputedStyle(el).backgroundColor),
   ).toBe(expected);
 });
+
+for (const [lang, copy] of [
+  ["es", { person: "Persona", count: "10 personas", empty: "No hay personas que coincidan con estos filtros." }],
+  ["en", { person: "Person", count: "10 people", empty: "No people match these filters." }],
+] as const) {
+  test(`biometría de Programa conserva etiquetas, conteos y descarga (${lang})`, async ({ page }) => {
+    await mockChartsMapsHttp(page, { english: lang === "en" });
+    await page.route("**/api/v1/program/erp/biometria/patients?*", (route) =>
+      route.fulfill({ json: { data: [], total: 0, page: 1, pageSize: 20, totalPages: 1 } }),
+    );
+    await page.route("**/api/v1/program/erp/biometria/export/csv?*", (route) =>
+      route.fulfill({ contentType: "text/csv", body: "id,imc\nqa-1,23\n" }),
+    );
+
+    await page.goto("/program/dashboard");
+    await expect(page.getByRole("columnheader", { name: copy.person, exact: true })).toBeVisible();
+    await expect(page.getByText(copy.empty, { exact: true })).toBeVisible();
+    await expect(page.locator("svg path > title").filter({ hasText: "California" })).toContainText(`(${copy.count})`);
+
+    const downloadPromise = page.waitForEvent("download");
+    await page.getByRole("button", { name: "CSV", exact: true }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toMatch(/^biometria-personas-\d{4}-\d{2}-\d{2}\.csv$/);
+  });
+}

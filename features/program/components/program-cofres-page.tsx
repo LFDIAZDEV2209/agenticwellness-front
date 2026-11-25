@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/providers/i18n-provider";
 import {
   Gift,
   Trophy,
@@ -60,6 +61,7 @@ const MILESTONE_KEYS = [7, 11, 22, 50] as const;
 // --- Componente principal ---
 
 export function ProgramCofresPage() {
+  const t = useT();
   const {
     data,
     loading,
@@ -91,7 +93,7 @@ export function ProgramCofresPage() {
     <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
       <PageHeader
         title="Cofres & XP"
-        description="Hitos de racha, distribución de XP y progreso de pacientes"
+        description={t("Hitos de racha, distribución de XP y progreso de las personas")}
         icon={Gift}
         actions={
           <Button
@@ -313,6 +315,7 @@ function CofresTablaPaginada({
   setPage: (p: number) => void;
   setPageSize: (s: number) => void;
 }) {
+  const t = useT();
   const sortIcon = (field: string) => {
     if (sortBy !== field) {
       return <ArrowUpDown className="size-3 text-muted-foreground/50" />;
@@ -328,7 +331,7 @@ function CofresTablaPaginada({
     <section className="flex flex-col gap-0 overflow-hidden rounded-2xl border border-border bg-card">
       <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between border-b border-border">
         <div>
-          <h2 className="text-sm font-semibold">{tabla.total} pacientes</h2>
+          <h2 className="text-sm font-semibold">{t(tabla.total === 1 ? "{count} persona" : "{count} personas", { count: String(tabla.total) })}</h2>
           <p className="text-xs text-muted-foreground">
             Progreso individual de cofres y XP · Página {tabla.page} de{" "}
             {tabla.totalPages}
@@ -360,7 +363,7 @@ function CofresTablaPaginada({
                   onClick={() => handleSort("patient_name")}
                   className="flex items-center gap-1 hover:text-foreground cursor-pointer"
                 >
-                  Paciente {sortIcon("patient_name")}
+                  {t("Persona")} {sortIcon("patient_name")}
                 </button>
               </TableHead>
               <TableHead className="text-right">
@@ -495,6 +498,7 @@ function CofresHitosCard({
   data: ProgramErpCofresDto;
   totalPatients: number;
 }) {
+  const t = useT();
   const [tab, setTab] = usePersistedTab("cofres-hitos", "tarjetas");
   const { milestones } = data;
 
@@ -507,7 +511,7 @@ function CofresHitosCard({
       value={tab}
       onChange={setTab}
       title="Hitos de racha"
-      description="Pacientes que alcanzaron cada ronda"
+      description={t("Personas que alcanzaron cada ronda")}
       icon={Star}
     >
       {tab === "tarjetas" && (
@@ -541,7 +545,10 @@ function CofresHitosCard({
                   {days}+ días
                 </span>
                 <span className="text-[11px] text-muted-foreground">
-                  {count} / {totalPatients} pacientes
+                  {t("{count} de {total} en el programa", {
+                    count: String(count),
+                    total: String(totalPatients),
+                  })}
                 </span>
               </div>
             );

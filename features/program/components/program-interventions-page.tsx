@@ -130,7 +130,7 @@ export function ProgramInterventionsPage() {
     <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
       <PageHeader
         title="Cola de intervenciones"
-        description="Gestiona las intervenciones abiertas de los pacientes"
+        description={t("Gestiona las intervenciones abiertas de las personas")}
         icon={Activity}
       />
 

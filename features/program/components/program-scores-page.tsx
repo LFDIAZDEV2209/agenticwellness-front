@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/providers/i18n-provider";
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Activity, Search, BarChart3, Info } from "lucide-react";
@@ -36,6 +37,7 @@ interface PickerItem {
 // --- Componente principal ---
 
 export function ProgramScoresPage() {
+  const t = useT();
   const { hasPermission } = useAuth();
   const canEdit = hasPermission("Program.Edit");
 
@@ -121,7 +123,7 @@ export function ProgramScoresPage() {
     <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
       <PageHeader
         title="Scores del programa"
-        description="Consulta el índice de salud y transformación de un paciente"
+        description={t("Consulta el índice de salud y transformación de una persona")}
         icon={BarChart3}
       />
 
@@ -129,28 +131,27 @@ export function ProgramScoresPage() {
       <div className="flex items-start gap-2.5 rounded-xl border border-info/35 bg-info-soft px-4 py-3 text-sm text-info-soft-foreground">
         <Info className="mt-0.5 size-4 shrink-0 text-blue-500" />
         <p>
-          Esta página se conserva por compatibilidad. Los scores clínicos ahora
-          se consultan desde{" "}
+          {t("Esta página se conserva por compatibilidad. Ahora puedes consultar las puntuaciones de cada persona desde")}{" "}
           <Link
             href="/program/gestion?view=perfil-360"
             className="font-semibold underline underline-offset-2 hover:text-blue-950"
           >
-            Perfil 360
+            {t("Perfil 360")}
           </Link>
-          , dentro de la pestaña Scores clínicos de cada paciente.
+          .
         </p>
       </div>
 
       {/* Selector de paciente + acción */}
       <section
         className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 sm:p-5"
-        aria-label="Selector de paciente"
+        aria-label={t("Selector de personas")}
       >
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h2 className="text-sm font-semibold">Paciente</h2>
+            <h2 className="text-sm font-semibold">{t("Persona")}</h2>
             <p className="text-xs text-muted-foreground">
-              Selecciona un paciente para calcular sus scores.
+              {t("Selecciona una persona para calcular sus puntuaciones.")}
             </p>
           </div>
           <Button
@@ -220,7 +221,7 @@ export function ProgramScoresPage() {
                 !loadingPatients &&
                 patientResults.length === 0 && (
                   <p className="text-xs text-muted-foreground">
-                    No se encontraron pacientes.
+                    {t("No se encontraron personas.")}
                   </p>
                 )}
             </>
@@ -245,16 +246,16 @@ export function ProgramScoresPage() {
 // --- Empty state (específico de la página con picker) ---
 
 function ScoresEmptyState() {
+  const t = useT();
   return (
     <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed border-border py-16 text-center">
       <div className="flex size-12 items-center justify-center rounded-xl bg-muted">
         <BarChart3 className="size-6 text-muted-foreground" />
       </div>
       <div>
-        <p className="text-sm font-semibold">Selecciona un paciente</p>
+        <p className="text-sm font-semibold">{t("Selecciona una persona")}</p>
         <p className="text-xs text-muted-foreground">
-          Busca y selecciona un paciente para ver sus scores de salud y
-          transformación.
+          {t("Busca y selecciona una persona para ver sus puntuaciones de salud y transformación.")}
         </p>
       </div>
     </div>

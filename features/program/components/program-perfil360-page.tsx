@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/providers/i18n-provider";
 import { useState, useEffect } from "react";
 import { Search, UserRound, ChevronLeft, ChevronRight } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
@@ -57,19 +58,20 @@ function PatientSearchBox({
   onSelectPatient,
   autoFocusInput = false,
 }: PatientSearchBoxProps) {
+  const t = useT();
   return (
     <section
       className="rounded-2xl border border-border bg-card p-4 sm:p-5"
-      aria-label="Buscador de paciente"
+      aria-label={t("Buscador de personas")}
     >
       <div className="relative">
         <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
         <Input
-          placeholder="Buscar persona por nombre..."
+          placeholder={t("Buscar persona por nombre...")}
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
           className="h-9 pl-8"
-          aria-label="Buscar persona"
+          aria-label={t("Buscar persona")}
           autoFocus={autoFocusInput}
         />
       </div>
@@ -77,7 +79,7 @@ function PatientSearchBox({
       <div className="mt-3 flex flex-col gap-2">
         {loading ? (
           <p className="py-4 text-center text-xs text-muted-foreground">
-            Cargando pacientes...
+            {t("Cargando personas")}
           </p>
         ) : error ? (
           <p className="py-2 text-xs text-destructive">{error}</p>
@@ -122,8 +124,10 @@ function PatientSearchBox({
             {/* Controles de paginación */}
             <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border bg-muted/40 px-3 py-2">
               <span className="text-xs text-muted-foreground">
-                Página {page} de {totalPages} ({totalCount}{" "}
-                {totalCount === 1 ? "paciente" : "pacientes"})
+                {t("Página {page} de {pages}", { page: String(page), pages: String(totalPages) })}
+                {" ("}
+                {t(totalCount === 1 ? "{count} persona" : "{count} personas", { count: String(totalCount) })}
+                {")"}
               </span>
               <div className="flex items-center gap-1.5">
                 <Button
@@ -151,7 +155,7 @@ function PatientSearchBox({
           </div>
         ) : (
           <p className="py-4 text-center text-xs text-muted-foreground">
-            No se encontraron pacientes.
+            {t("No se encontraron personas.")}
           </p>
         )}
       </div>
@@ -166,6 +170,7 @@ interface ProgramPerfil360PageProps {
 export function ProgramPerfil360Page({
   initialPatientId,
 }: ProgramPerfil360PageProps) {
+  const t = useT();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [results, setResults] = useState<PatientListItem[]>([]);
@@ -293,7 +298,7 @@ export function ProgramPerfil360Page({
     <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
       <PageHeader
         title="Perfil 360"
-        description="Busca un paciente para ver su vista integral"
+        description={t("Busca una persona para ver su perfil integral")}
         icon={UserRound}
       />
 

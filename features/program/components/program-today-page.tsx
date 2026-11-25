@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/providers/i18n-provider";
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -139,6 +140,7 @@ function TodayContent({
   onFeedFilterChange: (v: FeedFilterValue) => void;
   toast: (msg: string, type?: "success" | "info" | "error") => void;
 }) {
+  const t = useT();
   const router = useRouter();
   const { mission_kpis, feed, pendientes_criticos, heatmap_semana } = data;
 
@@ -201,7 +203,7 @@ function TodayContent({
         <div className="flex min-w-0 flex-col gap-0 overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card lg:col-span-2 shadow-xs">
           <SectionHeader
             title="Feed en vivo"
-            description="Últimas acciones de los pacientes"
+            description={t("Últimas acciones de las personas")}
             icon={Activity}
             variant="primary"
           />
@@ -395,7 +397,7 @@ function TodayContent({
         <section className="flex flex-col gap-0 overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-xs">
           <SectionHeader
             title="Pendientes críticos"
-          description="Pacientes con 0 misiones completadas hoy"
+          description={t("Personas que aún no completaron misiones hoy")}
           icon={AlertTriangle}
           variant="primary"
         />
@@ -403,7 +405,7 @@ function TodayContent({
           <div className="flex flex-col items-center justify-center gap-2 py-10">
             <AlertTriangle className="size-8 text-muted-foreground/40" />
             <p className="text-sm text-muted-foreground">
-              No hay pacientes pendientes hoy.
+              {t("No hay personas pendientes hoy.")}
             </p>
           </div>
         ) : (
@@ -411,7 +413,7 @@ function TodayContent({
             <Table className="table-fixed">
             <TableHeader>
               <TableRow>
-                <TableHead>Paciente</TableHead>
+                <TableHead>{t("Persona")}</TableHead>
                 <TableHead className="hidden text-right md:table-cell lg:hidden">
                   Semana
                 </TableHead>

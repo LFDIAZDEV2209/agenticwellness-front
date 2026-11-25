@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/providers/i18n-provider";
 import { chartGradient } from "@/lib/ui/rainbow";
 
 import { colorTint, RAINBOW_SERIES } from "@/lib/ui/rainbow";
@@ -124,7 +125,8 @@ export function PatientResumenHero({
   data: import("../types/erp").PatientOverviewDto;
   biometria?: BiometriaPatientDetail | null;
 }) {
-  const patientName = data.patient_name ?? biometria?.name ?? "Paciente";
+  const t = useT();
+  const patientName = data.patient_name ?? biometria?.name ?? t("Persona");
   const parts = patientName.split(" ");
   const initialsStr =
     parts.length >= 2
@@ -1504,15 +1506,16 @@ function PatientError({
 }
 
 function PatientNotFound() {
+  const t = useT();
   return (
     <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed border-border py-16 text-center">
       <div className="flex size-12 items-center justify-center rounded-xl bg-muted">
         <UserRound className="size-6 text-muted-foreground" />
       </div>
       <div>
-        <p className="text-sm font-semibold">Persona no encontrada</p>
+        <p className="text-sm font-semibold">{t("Persona no encontrada")}</p>
         <p className="text-xs text-muted-foreground">
-          El paciente no existe o no está dentro de tu alcance de datos.
+          {t("La persona no existe o no tienes acceso a su perfil.")}
         </p>
       </div>
       <Link href="/program/dashboard">
