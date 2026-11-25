@@ -45,7 +45,7 @@ test("3.16 · entrada desde ficha, resumen real y siguiente etapa sin IA ni escr
   await expect(summary(page)).toContainText("2 días con valor conocido");
   await expect(summary(page)).toContainText("30 días de interrupción");
   await expect(summary(page)).toContainText(
-    "Media conjunta de registros estimados por IA y confirmados por el paciente",
+    "Media conjunta de registros estimados por IA y confirmados por la persona",
   );
   await expect(
     summary(page).locator(".nutrition-review-origins"),

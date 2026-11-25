@@ -214,7 +214,7 @@ test("3.14 · 404 de alcance muestra aviso con reintento y oculta la tira", asyn
       name: "No pudimos cargar los registros de comidas",
       exact: true,
     }),
-  ).toContainText("El paciente no está disponible en tu alcance");
+  ).toContainText("La persona está fuera de tu alcance");
   await expect(strip(page)).toHaveCount(0);
   await expect(
     page.getByRole("img", {
