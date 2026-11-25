@@ -643,7 +643,7 @@ export function MasterPatientsPage() {
             description={
               isFiltered
                 ? t(
-                    "Ningún paciente coincide con los filtros de batería, test y riesgo aplicados.",
+                    "Ninguna persona coincide con los filtros de batería, test y riesgo aplicados.",
                   )
                 : t("Aún no hay personas con evaluación asignada.")
             }
@@ -1473,7 +1473,7 @@ function CategorySummaryCard({
   return (
     <div className="overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-xs">
       <SectionHeader
-        title={t("Estado por categoría — pacientes filtrados")}
+        title={t("Estado por categoría — personas filtradas")}
         description={t(
           "Promedio de severidad (0–100) por dominio clínico · {count} pacientes en filtro",
           { count: String(count) },

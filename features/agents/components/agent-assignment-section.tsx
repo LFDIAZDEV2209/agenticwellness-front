@@ -49,7 +49,7 @@ function AssignmentForm({ agent }: { agent: AgentType }) {
   return (
     <fieldset className="flex min-w-0 flex-col gap-3 rounded-2xl border border-border bg-card p-4" disabled={busy || agent.status !== "Activo"}>
       <legend className="px-2 text-sm font-semibold">{t("Asignar agente a un paciente")}</legend>
-      <p className="text-xs text-muted-foreground">{t("Selecciona un paciente y confirma la asignación a su cuenta vinculada. La disponibilidad en Vita requiere versión activa, sincronización y consentimiento.")}</p>
+      <p className="text-xs text-muted-foreground">{t("Selecciona una persona y confirma la asignación a su cuenta vinculada. La disponibilidad en Vita requiere versión activa, sincronización y consentimiento.")}</p>
       {agent.status !== "Activo" && <p role="status" className="text-sm text-muted-foreground">{t("Activa el tipo de agente antes de asignarlo.")}</p>}
       <CatalogSearchSelect search={search} placeholder={t("Buscar paciente para asignar")} onSelect={(item) => setPatient(item as PatientOption)} />
       {searchError && <p role="alert" className="text-sm text-destructive">{t("No se pudieron buscar personas. Reintenta la búsqueda.")}</p>}
@@ -108,7 +108,7 @@ function PatientAssignment({ agent, userId, onBusyChange }: { agent: AgentType; 
       try {
         setLookup({ status: "ready", instance: find(await fetchInstances(userId)) ?? created });
       } catch {
-        setMessage(t("La asignación se guardó, pero no se pudo actualizar su estado. Vuelve a seleccionar el paciente para consultarlo."));
+        setMessage(t("Guardamos la asignación. Vuelve a seleccionar a la persona para consultar el estado actualizado."));
       }
     } catch {
       setMessage(t("No se pudo asignar el agente. Revisa los permisos o si ya está asignado e inténtalo de nuevo."));

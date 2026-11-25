@@ -525,7 +525,7 @@ export function PatientSummaryView({
                       <Tooltip
                         formatter={(value) => [
                           String(value),
-                          t("Pacientes nuevos"),
+                          t("Personas nuevas"),
                         ]}
                         contentStyle={{
                           borderRadius: 12,
@@ -569,7 +569,7 @@ export function PatientSummaryView({
                       <Tooltip
                         formatter={(value) => [
                           String(value),
-                          t("Pacientes nuevos"),
+                          t("Personas nuevas"),
                         ]}
                         contentStyle={{
                           borderRadius: 12,
@@ -663,7 +663,7 @@ export function PatientSummaryView({
               {data.emergencyContactPct.toFixed(1)}%
             </span>
             <p className="text-center text-sm text-muted-foreground">
-              {t("pacientes con contacto de emergencia registrado")}
+              {t("personas con contacto de emergencia registrado")}
             </p>
             <div className="h-2.5 w-full max-w-xs overflow-hidden rounded-full bg-muted">
               <div

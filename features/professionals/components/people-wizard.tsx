@@ -565,7 +565,7 @@ export function PeopleWizard({
             )
         : mode === "user"
           ? t(
-              "Crea credenciales de acceso con roles y permisos, sin perfil de empleado ni paciente.",
+              "Crea credenciales de acceso con roles y permisos, sin perfil de empleado ni persona.",
             )
           : t(
               "Registra los datos básicos del paciente. Podrás completar la información clínica después.",

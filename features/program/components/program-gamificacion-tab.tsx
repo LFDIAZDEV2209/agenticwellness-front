@@ -445,7 +445,7 @@ export function ProgramGamificacionTab({
                   {t("Sin inscripción activa")}
                 </p>
                 <p className="max-w-sm text-xs text-muted-foreground">
-                  {t("Este paciente no tiene inscripción activa al programa.")}
+                  {t("Esta persona no tiene inscripción activa al programa.")}
                 </p>
               </div>
             ) : snapshotLoading ? (

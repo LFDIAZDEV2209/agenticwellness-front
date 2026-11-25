@@ -387,7 +387,7 @@ export function PeopleBulkImport({
       <PageHeader
         title={t("Importar personas")}
         description={t(
-          "Importá un archivo CSV con profesionales, empleados, pacientes y/o usuarios en un solo paso.",
+          "Importá un archivo CSV con profesionales, empleados, personas y/o usuarios en un solo paso.",
         )}
         icon={UsersIcon}
         actions={

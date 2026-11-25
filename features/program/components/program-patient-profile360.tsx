@@ -375,7 +375,7 @@ function EnrollmentDetailTabWrapper({
         <p className="text-sm font-semibold">{t("Sin inscripción activa")}</p>
         <p className="max-w-sm text-xs text-muted-foreground">
           {t(
-            "Este paciente no tiene una inscripción activa al programa. Inscríbelo desde el módulo de pacientes para ver el contenido y historial.",
+            "Esta persona no tiene una inscripción activa al programa. Inscríbela desde el módulo de personas para ver el contenido y el historial.",
           )}
         </p>
       </div>

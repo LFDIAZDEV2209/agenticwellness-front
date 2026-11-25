@@ -425,7 +425,7 @@ function PodcastBulkAssignDialog({
                   {frozenEstimate > 0 && !forceFrozen && (
                     <span className="text-warning-soft-foreground">
                       {t(
-                        "≈ {count} semanas congeladas (pasadas) se omitirán para preservar el historial del paciente.",
+                        "≈ {count} semanas congeladas (pasadas) se omitirán para preservar el historial de la persona.",
                         { count: String(frozenEstimate) },
                       )}
                     </span>

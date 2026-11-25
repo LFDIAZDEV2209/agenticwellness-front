@@ -495,7 +495,7 @@ export function NotifyPage() {
               </div>
 
               <span className="text-[11px] text-muted-foreground">
-                {t("Los pacientes sin el contacto elegido se omitirán y se reportarán.")}
+                {t("Las personas sin el contacto elegido se omitirán y se reportarán.")}
               </span>
             </div>
           </section>
@@ -931,7 +931,7 @@ function StepCompose({
 
           <p className="mt-auto text-[11px] text-muted-foreground">
             {t(
-              "Los datos se completan automáticamente con la información de cada paciente al enviar.",
+              "Los datos se completan automáticamente con la información de cada persona al enviar.",
             )}
           </p>
         </div>

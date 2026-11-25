@@ -106,7 +106,7 @@ export function NutritionCycleRecords({
     <>
       <p className="nutrition-review-help">
         {t(
-          "Ancla los registros que quieras comentar. Los ejemplos conservan su referencia aunque el paciente corrija la comida.",
+          "Ancla los registros que quieras comentar. Los ejemplos conservan su referencia aunque la persona corrija la comida.",
         )}
       </p>
       <div className="nutrition-review-gallery-tools">

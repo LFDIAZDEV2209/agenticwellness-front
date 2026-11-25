@@ -132,7 +132,7 @@ function MediaReferencesContent({ mediaId }: { mediaId: string }) {
         </p>
         <p className="max-w-xs text-xs text-muted-foreground">
           {t(
-            "Ninguna plantilla ni semana de paciente usa este medio: es seguro eliminarlo.",
+            "Este medio no se usa en ninguna plantilla ni semana del programa. Puedes eliminarlo.",
           )}
         </p>
       </div>
@@ -199,7 +199,7 @@ function MediaReferencesContent({ mediaId }: { mediaId: string }) {
         </p>
         {refs.enrollmentReferences.length === 0 ? (
           <p className="text-xs text-muted-foreground">
-            {t("Ninguna semana de paciente lo usa.")}
+            {t("Ninguna semana del programa usa este medio.")}
           </p>
         ) : (
           <ul className="flex max-h-56 flex-col gap-1.5 overflow-y-auto pr-1">

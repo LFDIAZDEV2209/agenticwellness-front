@@ -71,7 +71,7 @@ export function StorePage() {
     <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
       <PageHeader
         title={t('Tienda de bienestar')}
-        description={t('Administra los productos que se muestran en el marketplace del paciente')}
+        description={t("Administra los productos que se muestran en el marketplace de la persona")}
         icon={Store}
         actions={
           can("Store.Manage") ? (

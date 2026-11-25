@@ -34,7 +34,7 @@ export function PatientPicker({
         value={value}
         onChange={onChange}
         options={[
-          { value: "", label: t("Selecciona un paciente") },
+          { value: "", label: t("Selecciona una persona") },
           ...(resource.data?.items.map((p) => ({
             value: p.patientId,
             label: p.name,

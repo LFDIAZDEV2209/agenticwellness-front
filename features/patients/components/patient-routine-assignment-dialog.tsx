@@ -166,7 +166,7 @@ export function PatientRoutineAssignmentDialog({ patients, includesOtherPages, o
             <p>{t("Se sustituye el ejercicio y se retira el descanso en las semanas editables del rango. Podcasts y nutrición se conservan.")}</p>
             <p className="text-sm text-muted-foreground">{t("El resultado se calcula al confirmar. Las semanas iniciadas y el alcance se comprueban de nuevo en el servidor.")}</p>
           </section>}
-          <Alert><LockKeyhole aria-hidden /><AlertDescription>{t("Las semanas iniciadas se omiten y los pacientes fuera de tu alcance no se modifican.")}</AlertDescription></Alert>
+          <Alert><LockKeyhole aria-hidden /><AlertDescription>{t("Las semanas iniciadas se omiten y las personas fuera de tu alcance no se modifican.")}</AlertDescription></Alert>
           {failure && <Alert variant="destructive"><AlertDescription>{t(errors[failure])}</AlertDescription></Alert>}
         </>}
       </DialogBody>

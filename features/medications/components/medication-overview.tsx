@@ -346,7 +346,7 @@ export function MedicationOverviewPanel({
           </div>
         ) : (
           <p className="medication-home-empty-patients">
-            {t("Sin pacientes en este ámbito")}
+            {t("Sin personas en este ámbito")}
           </p>
         )}
       </section>

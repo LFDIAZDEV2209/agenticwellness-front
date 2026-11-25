@@ -103,7 +103,7 @@ export function FollowUpPage() {
     <PageHeader
       title={t("Personas pendientes")}
       description={t(
-        "Pacientes con tests por aplicar, recordatorios y prioridades de intervención",
+        "Personas con evaluaciones pendientes, recordatorios y prioridades de intervención",
       )}
       icon={Hourglass}
 
@@ -221,7 +221,7 @@ export function FollowUpPage() {
               isFiltered
                 ? t("Ninguna persona coincide con los filtros aplicados.")
                 : t(
-                    "Todos los pacientes han completado su batería de evaluación.",
+                    "Todas las personas han completado su batería de evaluación.",
                   )
             }
             filtered={isFiltered}

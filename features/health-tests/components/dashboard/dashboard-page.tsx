@@ -796,7 +796,7 @@ function HealthGeoMapRow({
                 {t("Sin alertas geográficas")}
               </p>
               <p className="text-xs text-muted-foreground">
-                {t("Todos los pacientes dentro de rango.")}
+                {t("Todas las personas dentro de rango.")}
               </p>
             </div>
           ) : (

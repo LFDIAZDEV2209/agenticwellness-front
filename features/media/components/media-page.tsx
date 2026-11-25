@@ -228,7 +228,7 @@ export function MediaPage() {
     setActionLoading(true);
     try {
       await publishMediaItem(target.id);
-      toast(t("Medio publicado: los pacientes ya pueden verlo."), "success");
+      toast(t("Medio publicado: las personas ya pueden verlo."), "success");
       retry();
     } catch (err) {
       toast(
@@ -498,12 +498,12 @@ export function MediaPage() {
             <AlertDialogDescription>
               {pendingAction?.action === "publish" &&
                 t(
-                  'Se validará el archivo en storage y "{title}" pasará a estado Publicado: los pacientes podrán verlo.',
+                  "Se validará el archivo en storage y «{title}» pasará a estado Publicado: las personas podrán verlo.",
                   { title: pendingAction?.item.title ?? "" },
                 )}
               {pendingAction?.action === "unpublish" &&
                 t(
-                  '"{title}" volverá a borrador y dejará de estar disponible para los pacientes.',
+                  "«{title}» volverá a borrador y dejará de estar disponible para las personas.",
                   { title: pendingAction?.item.title ?? "" },
                 )}
               {pendingAction?.action === "archive" &&

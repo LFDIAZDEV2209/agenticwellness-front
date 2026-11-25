@@ -482,7 +482,7 @@ const handleSelectPatient = (p: PickerItem) => {
   return (
     <div className="flex flex-col gap-5 px-6 py-5">
       {!isTemplate ? <p role="status" className="rounded-lg border border-primary/20 bg-primary/5 p-3 text-sm">
-        {t("Ciclo de 30 días. El menú se repite desde el primer día del ciclo. Guardar cambios requiere una nueva aprobación antes de mostrarlos al paciente.")}
+        {t("Ciclo de 30 días. El menú se repite desde el primer día del ciclo. Guardar cambios requiere una nueva aprobación antes de mostrarlos a la persona.")}
       </p> : null}
       <div className="flex flex-col gap-4">
         {/* Paciente (opcional) + generación con IA */}

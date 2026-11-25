@@ -136,7 +136,7 @@ export function ControlesMeasurementsCharts({
       >
         {chartData.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            {t("Sin mediciones registradas para este paciente.")}
+            {t("Sin mediciones registradas para esta persona.")}
           </p>
         ) : (
           <>

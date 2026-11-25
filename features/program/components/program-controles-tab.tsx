@@ -131,7 +131,7 @@ export function ProgramControlesTab({
             {t("Sin controles registrados.")}
           </p>
           <p className="max-w-sm text-xs text-muted-foreground">
-            {t("Este paciente no tiene controles de hitos generados todavía.")}
+            {t("Esta persona no tiene controles de hitos generados todavía.")}
           </p>
         </div>
       )}

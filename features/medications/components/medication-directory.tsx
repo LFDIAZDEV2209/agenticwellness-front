@@ -182,7 +182,7 @@ function MedicationDirectoryContent({initialView}:{initialView:"overview"|"patie
                           : "Seguimiento diario",
                   )}
                 </strong>
-                <p>{t("Selecciona un paciente")}</p>
+                <p>{t("Selecciona una persona")}</p>
               </div>
             </div>
           )}

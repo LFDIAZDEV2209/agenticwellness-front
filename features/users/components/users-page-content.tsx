@@ -259,10 +259,10 @@ export function UsersPageContent() {
         tone: "info",
         text: !user.isActive
           ? patientAccount
-            ? t("Cuenta activada. El paciente ya puede entrar a la app.")
+            ? t("Cuenta activada. La persona ya puede entrar a la app.")
             : t("Usuario activado. Ya puede iniciar sesión.")
           : patientAccount
-            ? t("Cuenta desactivada. El paciente no podrá entrar a la app.")
+            ? t("Cuenta desactivada. La persona no podrá entrar a la app.")
             : t(
                 "Usuario desactivado. No podrá iniciar sesión hasta reactivarlo.",
               ),

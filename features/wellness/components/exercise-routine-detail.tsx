@@ -421,7 +421,7 @@ function ExercisePreview({ exercise }: { exercise: RoutineExercise }) {
     )
       return (
         <p className="rounded-xl bg-muted p-4 text-sm text-muted-foreground">
-          {t("Publica una imagen o un vídeo para que el paciente pueda verlo.")}
+          {t("Publica una imagen o un vídeo para que la persona pueda verlo.")}
         </p>
       );
     return (

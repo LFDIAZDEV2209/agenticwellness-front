@@ -141,7 +141,7 @@ export function IntakePhoto({
           <DialogHeader>
             <DialogTitle>{t("Foto de la comida")}</DialogTitle>
             <DialogDescription>
-              {t("Enlace temporal autorizado para este paciente.")}
+              {t("Enlace temporal autorizado para esta persona.")}
             </DialogDescription>
           </DialogHeader>
           <Image
@@ -360,7 +360,7 @@ export function NutritionIntakeDay({
                 {current.patientCorrection && (
                   <p className="nutrition-intake-correction">
                     {t(
-                      "El registro final incluye la corrección del paciente; la estimación original se conserva aparte.",
+                      "El registro final incluye la corrección de la persona. La estimación original se conserva aparte.",
                     )}
                   </p>
                 )}

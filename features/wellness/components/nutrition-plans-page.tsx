@@ -585,7 +585,7 @@ function ClonePlanDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>{t("Clonar plan para una persona")}</AlertDialogTitle>
           <AlertDialogDescription>
-            {t('Se creará una copia del plan "{name}" asignada al paciente seleccionado. El plan original no se modifica.', { name: plan.name })}
+            {t("Se creará una copia del plan «{name}» asignada a la persona seleccionada. El plan original no se modifica.", { name: plan.name })}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="flex flex-col gap-3 py-2">

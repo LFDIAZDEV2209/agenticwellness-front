@@ -226,7 +226,7 @@ export function PatientAccountEditor({ user }: { user: User }) {
               >
                 {form.isActive
                   ? t("La persona puede entrar a la app móvil.")
-                  : t("El paciente no podrá entrar a la app móvil.")}
+                  : t("La persona no podrá entrar a la app móvil.")}
               </p>
             </div>
             <Switch

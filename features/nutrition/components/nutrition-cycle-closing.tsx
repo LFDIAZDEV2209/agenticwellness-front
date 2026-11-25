@@ -267,7 +267,7 @@ function ClosingForm({
     {
       ok:
         !!fields.patientMessage.es.trim() && !!fields.patientMessage.en.trim(),
-      label: "Mensaje al paciente completo en español e inglés",
+      label: "Mensaje a la persona completo en español e inglés",
     },
     { ok: !!next, label: "Plan siguiente preparado y enviado a aprobación" },
     {
@@ -827,7 +827,7 @@ function ClosingForm({
             </DialogTitle>
             <DialogDescription>
               {t(
-                "El paciente verá el mensaje final y las imágenes visibles. Las notas internas y la IA no se publican. El cierre será de solo lectura.",
+                "La persona verá el mensaje final y las imágenes visibles. Las notas internas y la IA no se publican. El cierre será de solo lectura.",
               )}
             </DialogDescription>
           </DialogHeader>

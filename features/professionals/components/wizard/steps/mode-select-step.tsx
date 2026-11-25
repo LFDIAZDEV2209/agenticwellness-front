@@ -65,7 +65,7 @@ const ALL_OPTIONS: ModeOption[] = [
     icon: KeyRound,
     title: "Usuario de plataforma",
     description:
-      "Crea credenciales de acceso con roles y permisos, sin perfil de empleado ni paciente.",
+      "Crea credenciales de acceso con roles y permisos, sin perfil de empleado ni persona.",
   },
 ];
 

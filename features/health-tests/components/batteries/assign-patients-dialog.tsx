@@ -160,7 +160,7 @@ export function AssignPatientsDialog({
             </p>
             <p className="max-w-sm text-[12px] text-muted-foreground">
               {t(
-                "Los pacientes verán los tests de la batería en su plan de evaluaciones.",
+                "Las personas verán las pruebas de la batería en su plan de evaluaciones.",
               )}
             </p>
             <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>

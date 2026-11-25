@@ -260,7 +260,7 @@ export function DashboardPage() {
         <DashboardPanel
           accent="teal"
           title={t("Crecimiento")}
-          description={t("Pacientes nuevos por mes")}
+          description={t("Personas nuevas por mes")}
           icon={Users}
         >
           <GrowthCard data={growthData} height={220} />

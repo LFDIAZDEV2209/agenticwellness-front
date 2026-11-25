@@ -79,7 +79,7 @@ export function EvaluationDetailPage({
         <ModuleEmptyState
           title={t("No encontramos esta evaluación")}
           description={t(
-            "La evaluación no existe o no pertenece a este paciente.",
+            "La evaluación no existe o no pertenece a esta persona.",
           )}
         />
       </div>

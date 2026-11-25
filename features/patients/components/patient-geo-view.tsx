@@ -87,7 +87,7 @@ export function PatientGeoView({
       <section className="patient-map-card flex flex-col overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-xs">
         <SectionHeader
           title={t("Distribución geográfica — EE. UU.")}
-          description={t("Pacientes por estado · total del alcance")}
+          description={t("Personas por estado · total del alcance")}
           icon={MapPin}
           variant="primary"
           accent="teal"
@@ -264,7 +264,7 @@ export function PatientGeoView({
         <div className="flex flex-col gap-1 p-4">
           {top.length === 0 ? (
             <p className="rounded-xl border border-dashed border-border px-4 py-8 text-center text-sm text-muted-foreground">
-              {t("Sin pacientes con estado registrado en el alcance.")}
+              {t("Sin personas con estado registrado en el alcance.")}
             </p>
           ) : (
             top.map((state) => (

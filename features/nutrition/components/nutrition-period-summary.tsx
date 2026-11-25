@@ -114,7 +114,7 @@ export function NutritionPeriodSummary({
       </h3>
       <p className="nutrition-review-help">
         {t(
-          "Media conjunta de registros estimados por IA y confirmados por el paciente. Se desglosan por origen más abajo.",
+          "Media conjunta de registros estimados por IA y confirmados por la persona. Se desglosan por origen más abajo.",
         )}
       </p>
       <dl className="nutrition-review-average-list">

@@ -233,7 +233,7 @@ function MediaDeleteBlockedContent({
       <p className="flex items-start gap-1.5 rounded-lg bg-muted/50 px-3 py-2 text-[11px] text-muted-foreground">
         <ShieldAlert className="mt-0.5 size-3.5 shrink-0" />
         {t(
-          "Archivar protege la integridad de las semanas en curso: el paciente sigue viendo su lección y el medio desaparece de las nuevas asignaciones.",
+          "Archivar protege la integridad de las semanas en curso: la persona sigue viendo su lección y el medio desaparece de las nuevas asignaciones.",
         )}
       </p>
     </div>

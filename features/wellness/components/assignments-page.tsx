@@ -400,7 +400,7 @@ function AssignmentsEmptyState({ onCreate }: { onCreate: () => void }) {
       <div>
         <p className="text-sm font-semibold">{t("No hay asignaciones")}</p>
         <p className="text-xs text-muted-foreground">
-          {t("Asigna una rutina de ejercicio o un plan de alimentación a un paciente.")}
+          {t("Asigna una rutina de ejercicio o un plan de alimentación a una persona.")}
         </p>
       </div>
       {can("Wellness.Manage") && (

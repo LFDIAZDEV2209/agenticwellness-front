@@ -83,7 +83,7 @@ export function PrescriptionsPage() {
       )
     ) {
       setError(
-        t("Selecciona un paciente y completa medicamento, dosis y frecuencia."),
+        t("Selecciona una persona y completa medicamento, dosis y frecuencia."),
       );
       return;
     }
@@ -118,7 +118,7 @@ export function PrescriptionsPage() {
       <div className="grid gap-5 xl:grid-cols-[280px_minmax(0,1fr)]">
         <section className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4">
           <div>
-            <h2 className="text-base font-bold">{t('Selecciona un paciente')}</h2>
+            <h2 className="text-base font-bold">{t("Selecciona una persona")}</h2>
             <p className="mt-1 text-xs text-muted-foreground">
               {t('Consulta su historial o crea una nueva receta.')}
             </p>
@@ -489,7 +489,7 @@ function EmptyPrescription() {
       <span className="flex size-12 items-center justify-center rounded-xl bg-primary-soft text-primary-soft-foreground">
         <UserRound className="size-6" />
       </span>
-      <h2 className="text-sm font-semibold">{t('Selecciona un paciente')}</h2>
+      <h2 className="text-sm font-semibold">{t("Selecciona una persona")}</h2>
       <p className="max-w-xs text-xs text-muted-foreground">
         {t('Elige un paciente de la lista para consultar su historial y crear una')}
         {" "}
