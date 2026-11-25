@@ -462,7 +462,7 @@ export const mockGroups: CommunityGroup[] = [
   },
   {
     id: "g-4",
-    name: "Chat Copp Adresd general",
+    name: "Chat Agentic Wellness IA general",
     members: 284,
     posts: 1840,
     type: "General",

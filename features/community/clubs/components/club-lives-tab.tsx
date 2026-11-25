@@ -121,7 +121,7 @@ export function ClubLivesTab({
                     >
                       {live.status === "PROGRAMADO"
                         ? t("Programado")
-                        : t("Live Copp Adresd")}
+                        : t("Live Agentic Wellness IA")}
                     </span>
                   </>
                 )}

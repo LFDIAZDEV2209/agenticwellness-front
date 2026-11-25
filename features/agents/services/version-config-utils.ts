@@ -16,7 +16,7 @@ export function parseRuntimeConfig(configJson: string): AgentRuntimeConfigForm {
       originalConfig: raw,
       systemPrompt:
         (raw.system_prompt as string) ??
-        "Eres un asistente de salud de CoppAddresd. Responde en español con claridad y empatía.",
+        "Eres un asistente de salud de Agentic Wellness IA. Responde en español con claridad y empatía.",
       extraPrompt: (raw.prompt as string | null) ?? null,
       provider: (raw.provider as string | null) ?? null,
       model: (raw.model as string | null) ?? null,
@@ -43,7 +43,7 @@ export function parseRuntimeConfig(configJson: string): AgentRuntimeConfigForm {
 export function emptyRuntimeConfig(): AgentRuntimeConfigForm {
   return {
     systemPrompt:
-      "Eres un asistente de salud de CoppAddresd. Responde en español con claridad y empatía.",
+      "Eres un asistente de salud de Agentic Wellness IA. Responde en español con claridad y empatía.",
     extraPrompt: null,
     provider: null,
     model: null,

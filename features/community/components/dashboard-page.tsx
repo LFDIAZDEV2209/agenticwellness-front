@@ -62,7 +62,7 @@ export function DashboardPage() {
       <PageHeader
         title={t("Panel de comunidad")}
         description={t(
-          "Visión general de la actividad de Copp Adresd Comunidad ADRED",
+          "Visión general de la actividad de Agentic Wellness IA Comunidad ADRED",
         )}
         icon={LayoutDashboard}
         actions={

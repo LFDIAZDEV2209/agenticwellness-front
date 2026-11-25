@@ -876,7 +876,7 @@ export function TemplateStudio() {
                       <BellRing className="size-3.5" />
                     </span>
                     <span className="text-xs font-medium text-foreground">
-                      {t("Equipo CoppAddresd")}
+                      {t("Equipo Agentic Wellness IA")}
                     </span>
                   </div>
                   <div className="mt-2 w-fit rounded-2xl rounded-tl-sm bg-muted px-3 py-2 text-[12.5px] text-foreground">

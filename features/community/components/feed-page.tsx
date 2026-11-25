@@ -71,7 +71,7 @@ export function FeedPage() {
     <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
       <PageHeader
         title={t("Feed en vivo")}
-        description={t("Actividad en tiempo real de Copp Adresd Comunidad ADRED")}
+        description={t("Actividad en tiempo real de Agentic Wellness IA Comunidad ADRED")}
         icon={Radio}
       />
 

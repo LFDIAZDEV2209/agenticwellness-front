@@ -127,7 +127,7 @@ export function Sidebar({ mobileOpen, onCloseMobile }: SidebarProps) {
             href="/dashboard"
             onClick={onCloseMobile}
             className="flex min-w-0 flex-1 items-center gap-2.5 rounded-lg focus-visible:outline-2 focus-visible:outline-ring"
-            aria-label="Copp Adresd"
+            aria-label={t("Agentic Wellness IA")}
           >
             <span className="sidebar-brand-mark flex size-12 shrink-0 items-center justify-center rounded-xl bg-white">
               <Image
@@ -145,7 +145,7 @@ export function Sidebar({ mobileOpen, onCloseMobile }: SidebarProps) {
                 !open && "sr-only",
               )}
             >
-              COPP ADRESD
+              {t("Agentic Wellness IA")}
             </span>
           </Link>
           {mobile && (

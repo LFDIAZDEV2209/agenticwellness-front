@@ -1276,7 +1276,7 @@ function ErpDataProvider({ children }: { children: ReactNode }) {
     async (memberId, message) => {
       const res = await sendDirectMessageMut({ profileId: memberId, body: message });
       const saved = !res.error && !!res.data?.sendDirectMessage;
-      toast(t(saved ? "Enviado como Equipo Copp Adresd" : "No pudimos enviar el mensaje. Intenta de nuevo."));
+      toast(t(saved ? "Enviado como Equipo Agentic Wellness IA" : "No pudimos enviar el mensaje. Intenta de nuevo."));
       return saved;
     }, [toast, t, sendDirectMessageMut],
   );

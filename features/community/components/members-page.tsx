@@ -82,7 +82,7 @@ export function MembersPage() {
     <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
       <PageHeader
         title={t("Miembros")}
-        description={`${table.total} ${t("miembros en Copp Adresd Comunidad ADRED")}`}
+        description={`${table.total} ${t("miembros en Agentic Wellness IA Comunidad ADRED")}`}
         icon={Users}
         actions={canManage ? <AwardDialog /> : undefined}
       />

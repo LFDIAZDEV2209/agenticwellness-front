@@ -81,7 +81,7 @@ export function ClubsPage() {
       <PageHeader
         title={t("Clubes")}
         description={t(
-          "Crea y gestiona clubes temáticos de la comunidad Copp Adresd",
+          "Crea y gestiona clubes temáticos de la comunidad Agentic Wellness IA",
         )}
         icon={Users}
         actions={

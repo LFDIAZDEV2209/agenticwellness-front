@@ -619,7 +619,7 @@ export const navModules: NavModule[] = [
         permission: "Community.View",
       },
       {
-        label: "Redes Copp Adresd",
+        label: "Redes Agentic Wellness IA",
         href: "/community/networks",
         icon: Sparkles,
         hidden: true,
@@ -660,7 +660,7 @@ export function getBreadcrumbSegments(
   pathname: string,
 ): { label: string; href?: string }[] {
   const segments: { label: string; href?: string }[] = [
-    { label: "Copp Adresd", href: "/dashboard" },
+    { label: "Agentic Wellness IA", href: "/dashboard" },
   ];
 
   if (pathname.startsWith("/nutrition/")) {

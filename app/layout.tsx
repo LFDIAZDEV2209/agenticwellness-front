@@ -57,10 +57,20 @@ const plexMono = localFont({
   style: "normal",
 });
 
-export const metadata: Metadata = {
-  title: "Copp Adresd — Admin",
-  description: "Panel de administración clínica Copp Adresd",
-};
+async function getRequestLanguage() {
+  const cookieStore = await cookies();
+  return cookieStore.get("copp_lang")?.value === "en" ? "en" : "es";
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const lang = await getRequestLanguage();
+  return {
+    title: "Agentic Wellness IA · Admin",
+    description: lang === "en"
+      ? "Agentic Wellness IA clinical administration panel"
+      : "Panel de administración clínica de Agentic Wellness IA",
+  };
+}
 
 export const viewport: Viewport = {
   colorScheme: "light dark",
@@ -71,9 +81,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = await cookies();
-  const langCookie = cookieStore.get("copp_lang");
-  const lang = langCookie?.value === "en" ? "en" : "es";
+  const lang = await getRequestLanguage();
 
   return (
     <html

@@ -720,7 +720,7 @@ function MessagePreview({
           <BellRing className="size-5" />
         </span>
         <span className="text-sm font-medium text-foreground">
-          {t("Equipo CoppAddresd")}
+          {t("Equipo Agentic Wellness IA")}
         </span>
       </div>
       <div className="mt-3 w-fit rounded-2xl rounded-tl-sm bg-muted px-4 py-3 text-[13.5px] text-foreground">

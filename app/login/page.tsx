@@ -95,21 +95,25 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="grid min-h-dvh w-full overflow-x-hidden lg:grid-cols-[minmax(0,520px)_1fr]">
+    <div className="grid min-h-dvh w-full grid-cols-1 overflow-x-hidden lg:grid-cols-[minmax(0,520px)_1fr]">
       {/* ─── Izquierda: formulario ─── */}
       <div className="relative flex flex-col bg-background px-6 py-7 sm:px-10 lg:px-14">
         {/* Idioma (esquina) */}
         <LanguageToggle className="absolute right-6 top-8 z-10 flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:right-10" />
 
-        {/* Marca centrada (línea splash Antares) */}
-        <Image
-          src="/LogoConLetras.png"
-          alt="COPP-ADRESD"
-          width={816}
-          height={519}
-          priority
-          className="mx-auto h-24 w-auto"
-        />
+        <div className="mx-auto flex h-24 flex-col items-center justify-center gap-1 text-center">
+          <Image
+            src="/LogoIndividual.png"
+            alt=""
+            width={197}
+            height={197}
+            priority
+            className="size-14 rounded-xl object-contain dark:bg-white"
+          />
+          <span className="font-heading text-base font-bold text-primary-soft-foreground">
+            {t("Agentic Wellness IA")}
+          </span>
+        </div>
 
         {/* Contenido centrado verticalmente */}
         <div className="flex flex-1 flex-col justify-center py-6">
@@ -230,7 +234,7 @@ export default function LoginPage() {
             {process.env.NODE_ENV === "development" && (
               <div className="mt-7 flex items-start gap-3 rounded-xl border border-border/70 bg-accent/40 p-4">
                 <HeartPulse className="mt-0.5 size-5 shrink-0 text-brand-teal" />
-                <div className="flex flex-col gap-2">
+                <div className="min-w-0 flex flex-col gap-2">
                   <span className="text-[12px] font-semibold text-foreground">
                     {t("Credenciales de demostración")}
                   </span>
@@ -239,7 +243,7 @@ export default function LoginPage() {
                       key={cred.email}
                       type="button"
                       onClick={() => fillDemo(cred.email, cred.password)}
-                      className="group flex items-center gap-2 text-left text-[11.5px] text-muted-foreground transition-colors hover:text-brand-navy cursor-pointer"
+                      className="group flex flex-wrap items-center gap-2 text-left text-[11.5px] text-muted-foreground transition-colors hover:text-brand-navy cursor-pointer"
                     >
                       <CheckCircle2 className="size-3 text-brand-teal group-hover:text-brand-navy" />
                       <span className="font-mono">{cred.email}</span>
@@ -384,20 +388,15 @@ export default function LoginPage() {
           <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-white shadow-lg shadow-black/10">
             <Image
               src="/LogoIndividual.png"
-              alt="COPP-ADRESD"
+              alt=""
               width={197}
               height={197}
               className="size-9 object-contain"
             />
           </div>
-          <div className="flex flex-col gap-0.5">
-            <span className="font-heading text-lg font-bold tracking-tight text-white">
-              COPP-ADRESD
-            </span>
-            <span className="text-[10px] font-semibold tracking-[0.14em] text-brand-blue-soft/90 uppercase">
-              {t("Comprehensive Obesity Prevention Program")}
-            </span>
-          </div>
+          <span className="font-heading text-lg font-bold tracking-tight text-white">
+            {t("Agentic Wellness IA")}
+          </span>
         </div>
 
         {/* Showcase: tarjeta fotográfica + métricas flotantes integradas */}
@@ -417,7 +416,7 @@ export default function LoginPage() {
             <div className="relative aspect-[16/11] overflow-hidden rounded-[28px] shadow-2xl shadow-black/45">
               <Image
                 src="https://images.unsplash.com/photo-1666214280557-f1b5022eb634?q=80&w=1400&auto=format&fit=crop"
-                alt={t("Equipo clínico de Copp Adresd")}
+                alt={t("Equipo clínico de Agentic Wellness IA")}
                 fill
                 sizes="(min-width: 1024px) 480px, 0px"
                 className="object-cover saturate-[0.88]"

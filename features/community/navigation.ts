@@ -124,7 +124,7 @@ export const erpNavSections: ErpNavSection[] = [
         permission: "Community.View",
       },
       {
-        label: "Redes Copp Adresd",
+        label: "Redes Agentic Wellness IA",
         href: "/community/networks",
         icon: Share2,
         permission: "Community.Manage",
@@ -133,4 +133,4 @@ export const erpNavSections: ErpNavSection[] = [
   },
 ];
 
-export const communityBrand = "Copp Adresd · ERP Comunidad";
+export const communityBrand = "Agentic Wellness IA · ERP Comunidad";
