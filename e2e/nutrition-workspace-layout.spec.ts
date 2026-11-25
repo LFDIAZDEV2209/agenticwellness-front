@@ -172,7 +172,7 @@ test("publicados primero funciona con el API antiguo, sin perder pacientes al pa
   }
   expect(identities).toHaveLength(store.size);
   expect(new Set(identities).size).toBe(store.size);
-  await page.getByRole("searchbox", { name: "Buscar paciente", exact: true }).fill("Samuel");
+  await page.getByRole("searchbox", { name: "Buscar persona", exact: true }).fill("Samuel");
   await expect(list.getByRole("listitem")).toHaveCount(1);
   await expect(list.getByRole("link", { name: "Samuel Demo", exact: true })).toBeVisible();
   expect(requests.some(path => path.includes("/nutrition/patients/"))).toBe(false);

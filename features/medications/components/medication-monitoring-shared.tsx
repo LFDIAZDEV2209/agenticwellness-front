@@ -24,8 +24,8 @@ export function PatientPicker({
   return (
     <div className="medication-patient-picker">
       <Input
-        aria-label={t("Buscar paciente")}
-        placeholder={t("Buscar paciente")}
+        aria-label={t("Buscar persona")}
+        placeholder={t("Buscar persona")}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />

@@ -155,7 +155,7 @@ export function NutritionQueue({
           <div className="nutrition-rail-tools">
             {!selection && <div className="nutrition-directory-heading"><Users aria-hidden="true" /><h2>{t("Personas")}</h2>{data && <span className="nutrition-measure">{format(data.total, 0)}</span>}</div>}
             <label htmlFor="nutrition-search" className="sr-only">
-              {t("Buscar paciente")}
+              {t("Buscar persona")}
             </label>
             <div className="relative">
               <Search
@@ -168,7 +168,7 @@ export function NutritionQueue({
                 maxLength={200}
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder={t("Buscar paciente")}
+                placeholder={t("Buscar persona")}
                 className="pl-9"
               />
             </div>

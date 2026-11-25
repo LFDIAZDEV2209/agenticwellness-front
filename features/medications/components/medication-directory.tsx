@@ -207,8 +207,8 @@ function MedicationDirectoryContent({initialView}:{initialView:"overview"|"patie
               <div className="medication-search">
                 <Search aria-hidden />
                 <Input
-                  aria-label={t("Buscar paciente")}
-                  placeholder={t("Buscar paciente")}
+                  aria-label={t("Buscar persona")}
+                  placeholder={t("Buscar persona")}
                   value={query}
                   onChange={(event) => {
                     setQuery(event.target.value);

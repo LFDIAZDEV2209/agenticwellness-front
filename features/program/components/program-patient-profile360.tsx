@@ -218,10 +218,10 @@ export function ProgramPatientProfile360({
               size="icon-sm"
               onClick={onToggleSearch}
               aria-label={
-                isSearchOpen ? t("Ocultar buscador") : t("Buscar paciente")
+                isSearchOpen ? t("Ocultar buscador") : t("Buscar persona")
               }
               title={
-                isSearchOpen ? t("Ocultar buscador") : t("Buscar paciente")
+                isSearchOpen ? t("Ocultar buscador") : t("Buscar persona")
               }
             >
               {isSearchOpen ? (

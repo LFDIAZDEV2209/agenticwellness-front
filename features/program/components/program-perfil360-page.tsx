@@ -69,7 +69,7 @@ function PatientSearchBox({
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
           className="h-9 pl-8"
-          aria-label="Buscar paciente"
+          aria-label="Buscar persona"
           autoFocus={autoFocusInput}
         />
       </div>

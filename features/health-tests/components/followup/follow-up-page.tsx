@@ -183,7 +183,7 @@ export function FollowUpPage() {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={t("Buscar persona...")}
-                  aria-label={t("Buscar paciente")}
+                  aria-label={t("Buscar persona")}
                 />
               </div>
               <Select

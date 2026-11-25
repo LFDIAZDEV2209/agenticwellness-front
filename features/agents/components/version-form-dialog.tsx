@@ -172,7 +172,7 @@ export function VersionFormFields({
                 className="min-h-28 w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-sm outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
                 value={form.systemPrompt}
                 onChange={(event) => update("systemPrompt", event.target.value)}
-                placeholder={t('Ej. Sos un asistente de citas médicas de CoppAddresd. Ayudás a agendar, reprogramar y recordar turnos con amabilidad.')}
+                placeholder={t("Ej. Eres un asistente de bienestar de CoppAddresd. Ayudas a las personas a organizar sus actividades y recordatorios.")}
                 disabled={saving || uploadingInstructions}
               />
             </Field>

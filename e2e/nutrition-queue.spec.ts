@@ -74,7 +74,7 @@ test("bandeja HTTP: filtros, búsqueda, paginación y ausencia de N+1", async ({
   await page.goto("/nutrition");
   const list = page.getByRole("list", { name: "Planes de pacientes" });
   await expect(list.getByRole("listitem")).toHaveCount(10);
-  await expect(page.getByRole("status")).toContainText("16 pacientes");
+  await expect(page.getByRole("status")).toContainText("16 personas");
   await expect(
     page.getByRole("link", {
       name: "Nutrición 3 planes por publicar",
@@ -119,10 +119,10 @@ test("bandeja HTTP: filtros, búsqueda, paginación y ausencia de N+1", async ({
   await filters.selectOption("en_aprobacion");
   await expect(list.getByRole("listitem")).toHaveCount(3);
   await expect(filters).toHaveValue("en_aprobacion");
-  await page.getByLabel("Buscar paciente", { exact: true }).fill("Maria");
+  await page.getByLabel("Buscar persona", { exact: true }).fill("Maria");
   await expect(list.getByRole("listitem")).toHaveCount(1);
   await expect(list).toContainText("María Demo");
-  await page.getByLabel("Buscar paciente", { exact: true }).fill("zzzz");
+  await page.getByLabel("Buscar persona", { exact: true }).fill("zzzz");
   await expect(
     page.getByText("No encontramos pacientes en esta vista"),
   ).toBeVisible();
@@ -298,7 +298,7 @@ test.describe("E1 sin plan provisional", () => {
         (await firstQueue).status(),
         "E1 requiere GET /api/v1/nutrition/inbox disponible en backend local",
       ).toBe(200);
-    await page.getByLabel("Buscar paciente", { exact: true }).fill(search);
+    await page.getByLabel("Buscar persona", { exact: true }).fill(search);
     await page
       .getByRole("combobox", { name: "Estado del plan", exact: true })
       .selectOption("sin_plan");

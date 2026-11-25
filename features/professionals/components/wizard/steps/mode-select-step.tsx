@@ -57,7 +57,7 @@ const ALL_OPTIONS: ModeOption[] = [
     permission: "Patients.Create",
     icon: Users,
     title: "Persona",
-    description: "Registra un nuevo paciente para seguimiento y citas.",
+    description: "Registra a una persona para hacer seguimiento y coordinar citas.",
   },
   {
     mode: "user",

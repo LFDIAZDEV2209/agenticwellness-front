@@ -97,7 +97,7 @@ export function ExerciseRoutineDetailDialog({
           </DialogTitle>
           <DialogDescription>
             {t(
-              "Revisa el movimiento, la técnica y la indicación antes de asignar.",
+              "Revisa el movimiento, la técnica y las instrucciones antes de asignar el ejercicio.",
             )}
           </DialogDescription>
         </DialogHeader>
@@ -246,7 +246,7 @@ export function ExerciseRoutineDetailDialog({
                     />
                     <div>
                       <h4 className="mb-3 font-semibold">
-                        {t("Indicación del ejercicio")}
+                        {t("Instrucciones del ejercicio")}
                       </h4>
                       <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                         {(
