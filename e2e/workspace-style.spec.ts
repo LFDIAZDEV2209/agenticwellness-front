@@ -107,7 +107,7 @@ test("filters, pagination and geographic context survive shell changes", async (
   await expect(page.locator("aside")).toHaveCSS("width", "80px");
   await expect(page.getByText("Página 2 de 2", { exact: true })).toBeVisible();
   const rail = page.locator("aside");
-  const brand = rail.getByRole("link", { name: "Copp Adresd", exact: true });
+  const brand = rail.getByRole("link", { name: "Agentic Wellness IA", exact: true });
   await expect
     .poll(
       async () => {
@@ -377,7 +377,7 @@ test("keyboard focus and the account menu keep automatic navigation open", async
   await expect(page.getByRole("table")).toBeVisible();
   await page.mouse.move(700, 200);
   const rail = page.locator("aside");
-  const brand = rail.getByRole("link", { name: "Copp Adresd", exact: true });
+  const brand = rail.getByRole("link", { name: "Agentic Wellness IA", exact: true });
   await page
     .getByRole("link", { name: "Ir al contenido", exact: true })
     .focus();

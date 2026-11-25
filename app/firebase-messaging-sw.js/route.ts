@@ -127,7 +127,7 @@ messaging.onBackgroundMessage((payload) => {
   // Con \`notification\` el SDK ya la mostró; volver a mostrarla duplicaría el aviso.
   if (payload && payload.notification) return;
   const data = (payload && payload.data) || {};
-  const title = data.title || "CoppAddresd";
+  const title = data.title || "Agentic Wellness IA";
   const body = data.body || data.message || "";
   return self.registration.showNotification(title, {
     body: body,

@@ -973,7 +973,7 @@ export function VirtualRoom() {
                   {t("Consulta virtual")}
                 </p>
                 <p className="truncate text-[13px] font-medium text-foreground">
-                  {t("Citas")} · CoppAddresd
+                  {t("Citas")} · {t("Agentic Wellness IA")}
                 </p>
               </div>
             </div>

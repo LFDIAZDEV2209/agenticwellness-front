@@ -69,7 +69,7 @@ export function NetworksPage() {
   return (
     <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
       <PageHeader
-        title={t("Redes Copp Adresd")}
+        title={t("Redes Agentic Wellness IA")}
         description={t("Canales externos sin integración de métricas verificada.")}
         icon={Share2}
       />
@@ -95,7 +95,7 @@ export function NetworksPage() {
               >
                 <span className="text-2xl">{CHANNEL_ICONS[ch.name] ?? "🌐"}</span>
                 <div className="flex flex-1 flex-col gap-0.5">
-                  <span className="text-[13px] font-bold">{ch.name} Copp Adresd</span>
+                  <span className="text-[13px] font-bold">{t("{canal} de Agentic Wellness IA", { canal: ch.name })}</span>
                   <span className="text-[10px]">{t("Datos no verificados")}</span>
                 </div>
                 <div className="text-right">

@@ -25,7 +25,7 @@ export function profileName(
   isSystem: boolean | undefined,
   t: (key: string) => string,
 ): string {
-  return isSystem ? t("Equipo Copp Adresd") : rawName;
+  return isSystem ? t("Equipo Agentic Wellness IA") : rawName;
 }
 
 export function MemberAvatar({

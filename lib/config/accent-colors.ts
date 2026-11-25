@@ -21,7 +21,7 @@ export interface AccentColorOption {
 export const ACCENT_COLORS: AccentColorOption[] = [
   {
     key: "navy",
-    name: "Navy COPP-ADRESD",
+    name: "Navy Agentic Wellness IA",
     hex: "#023467",
     foreground: "light",
   },

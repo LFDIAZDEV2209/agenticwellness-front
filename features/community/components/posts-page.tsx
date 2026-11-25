@@ -317,7 +317,7 @@ export function PostsPage() {
     <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
       <PageHeader
         title={t("Publicaciones")}
-        description={t("Gestión de publicaciones de Copp Adresd Comunidad ADRED")}
+        description={t("Gestión de publicaciones de Agentic Wellness IA Comunidad ADRED")}
         icon={Send}
         actions={<div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={refetchPosts} disabled={postsLoading}>

@@ -165,7 +165,7 @@ export function ClubNewPage() {
     <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
       <PageHeader
         title={t("Nuevo club")}
-        description={t("Crea un club temático para la comunidad Copp Adresd")}
+        description={t("Crea un club temático para la comunidad Agentic Wellness IA")}
         icon={Users}
       />
 
