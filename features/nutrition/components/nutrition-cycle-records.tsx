@@ -249,7 +249,7 @@ export function NutritionCycleRecords({
                       <p>{t("Fuera del plan · sin equivalente en el menú")}</p>
                     )}
                     {record.patientCorrection && (
-                      <p>{t("El paciente corrigió el análisis")}</p>
+                      <p>{t("La persona corrigió el análisis")}</p>
                     )}
                     <IntakeReviewStatus review={reviewFor(day)} />
                     {highlight && (

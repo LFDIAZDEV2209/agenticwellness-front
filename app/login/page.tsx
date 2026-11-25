@@ -125,7 +125,7 @@ export default function LoginPage() {
             </h1>
             <p className="mt-4 max-w-[40ch] text-[14.5px] leading-relaxed text-secondary-foreground">
               {t(
-                "Pacientes, programas y agentes de IA en una sola consola clínica.",
+                "Personas, programas y agentes de IA en una sola consola clínica.",
               )}
             </p>
 

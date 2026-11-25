@@ -488,10 +488,10 @@ function LinkToMaster() {
         </span>
         <span className="flex flex-col">
           <span className="text-[13px] font-semibold text-foreground">
-            {t("Explorar la tabla maestra de pacientes")}
+            {t("Explorar la tabla maestra de personas")}
           </span>
           <span className="text-[11.5px] text-muted-foreground">
-            {t("Progreso, riesgo y alertas de cada paciente en un solo lugar")}
+            {t("Progreso, riesgo y alertas de cada persona en un solo lugar")}
           </span>
         </span>
       </span>

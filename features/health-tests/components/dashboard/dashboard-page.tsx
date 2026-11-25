@@ -406,7 +406,7 @@ export function HealthTestsDashboard() {
                 <div className="mt-1 flex items-center justify-between border-t border-border pt-2.5 text-[12.5px]">
                   <span className="flex items-center gap-2 text-muted-foreground">
                     <TrendingUp className="size-3.5 text-success" />
-                    {t("Pacientes en la batería")}
+                    {t("Personas en la batería")}
                   </span>
                   <span className="font-semibold text-foreground">
                     {data.patients.length}
@@ -691,7 +691,7 @@ function HealthGeoMapRow({
         <SectionHeader
           title={t("Mapa de calor — Riesgo alto")}
           description={t(
-            "Distribución geográfica de pacientes con riesgo alto/crítico",
+            "Distribución geográfica de personas con riesgo alto/crítico",
           )}
           icon={MapPinned}
           variant="primary"
@@ -717,7 +717,7 @@ function HealthGeoMapRow({
         <div className="rounded-2xl border border-brand-blue-soft/40 bg-card p-5 shadow-xs">
           <SectionHeader
             title={t("Top ciudades")}
-            description={t("Por número de pacientes")}
+            description={t("Por número de personas")}
             icon={Users}
             variant="secondary"
           />
@@ -785,7 +785,7 @@ function HealthGeoMapRow({
                   </Badge>
                 </div>
                 <p className="truncate text-[11px] text-muted-foreground">
-                  {t("Pacientes con riesgo alto/crítico")}
+                  {t("Personas con riesgo alto/crítico")}
                 </p>
               </div>
             </div>

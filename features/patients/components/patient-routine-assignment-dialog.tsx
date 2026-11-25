@@ -114,8 +114,8 @@ export function PatientRoutineAssignmentDialog({ patients, includesOtherPages, o
         {!permitted ? <Alert variant="destructive"><AlertDescription>{t(errors.permission)}</AlertDescription></Alert> : result && step === "result" ? <>
           <p role="status" className="break-words font-semibold">{routine?.name} · {t("Semanas {from} a {to}", { from: String(from), to: String(to) })}</p>
           <dl className="flex flex-col gap-4">
-            <div className="flex items-start justify-between gap-4"><dt>{t("Pacientes con asignaciones aplicadas")}</dt><dd className="font-semibold tabular-nums">{count(result.aplicadas)}</dd></div>
-            <div className="flex items-start justify-between gap-4"><dt>{t("Pacientes con semanas iniciadas omitidas")}</dt><dd className="font-semibold tabular-nums">{count(result.omitidasSemanaIniciada)}</dd></div>
+            <div className="flex items-start justify-between gap-4"><dt>{t("Personas con asignaciones aplicadas")}</dt><dd className="font-semibold tabular-nums">{count(result.aplicadas)}</dd></div>
+            <div className="flex items-start justify-between gap-4"><dt>{t("Personas con semanas iniciadas omitidas")}</dt><dd className="font-semibold tabular-nums">{count(result.omitidasSemanaIniciada)}</dd></div>
             <div className="flex items-start justify-between gap-4"><dt>{t("Personas omitidas por alcance")}</dt><dd className="font-semibold tabular-nums">{count(result.omitidasSinAlcance.length)}</dd></div>
           </dl>
           <p className="text-sm text-muted-foreground">{t("Los conteos de aplicados y semanas iniciadas pueden incluir al mismo paciente.")}</p>

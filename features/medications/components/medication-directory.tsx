@@ -188,7 +188,7 @@ function MedicationDirectoryContent({initialView}:{initialView:"overview"|"patie
           )}
           <section
             className="medication-directory"
-            aria-label={t("Pacientes en control de medicamentos")}
+            aria-label={t("Personas en control de medicamentos")}
           >
             <div className="medication-directory-toolbar">
               <div className="medication-section-heading">
@@ -199,7 +199,7 @@ function MedicationDirectoryContent({initialView}:{initialView:"overview"|"patie
                   <h2>{t("Personas")}</h2>
                   {data && (
                     <p>
-                      {t("{count} pacientes", { count: String(data.total) })}
+                      {t("{count} personas", { count: String(data.total) })}
                     </p>
                   )}
                 </div>

@@ -225,7 +225,7 @@ export function BatteryDetailPage({ batteryId }: { batteryId: string }) {
               onClick={() => setAssignOpen(true)}
             >
               <Users data-icon="inline-start" />
-              {t("Asignar pacientes")}
+              {t("Asignar personas")}
             </Button>
           ) : undefined
         }
@@ -266,7 +266,7 @@ export function BatteryDetailPage({ batteryId }: { batteryId: string }) {
           context={`${requiredCount} ${t("obligatorios")} · ${optionalCount} ${t("opcionales")}`}
         />
         <StatCard
-          label={t("Pacientes con la batería")}
+          label={t("Personas con la batería")}
           value={master.data ? String(rowsWithBattery) : "—"}
           icon={Users}
           variant="info"

@@ -183,7 +183,7 @@ export function ProgramScoresPage() {
               <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
                 <Input
-                  placeholder="Buscar paciente por nombre..."
+                  placeholder="Buscar persona por nombre..."
                   value={patientSearch}
                   onChange={(e) => {
                     setPatientSearch(e.target.value);

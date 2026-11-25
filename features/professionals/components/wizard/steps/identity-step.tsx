@@ -193,7 +193,7 @@ export function IdentityStep({
         title={isPatient ? t("Identidad del paciente") : t("Datos básicos")}
         description={
           isPatient
-            ? t("Nombre, documento y contacto del paciente")
+            ? t("Nombre, documento y contacto de la persona")
             : t("Identidad y contacto del profesional")
         }
         icon={UserRound}

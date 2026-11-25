@@ -435,7 +435,7 @@ function BatteryCard({
             onClick={() => onAssign(battery)}
           >
             <Users data-icon="inline-start" />
-            {t("Asignar pacientes")}
+            {t("Asignar personas")}
           </Button>
         ) : null}
       </div>

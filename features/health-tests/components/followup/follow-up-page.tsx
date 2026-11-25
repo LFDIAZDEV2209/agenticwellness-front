@@ -101,7 +101,7 @@ export function FollowUpPage() {
 
   const header = (
     <PageHeader
-      title={t("Pacientes pendientes")}
+      title={t("Personas pendientes")}
       description={t(
         "Pacientes con tests por aplicar, recordatorios y prioridades de intervención",
       )}
@@ -182,7 +182,7 @@ export function FollowUpPage() {
                   className="h-8 w-44 border-white/25 bg-white/15 pl-3 text-white placeholder:text-white/60 [&::placeholder]:text-white/60"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder={t("Buscar paciente...")}
+                  placeholder={t("Buscar persona...")}
                   aria-label={t("Buscar paciente")}
                 />
               </div>
@@ -216,7 +216,7 @@ export function FollowUpPage() {
         />
         {filtered.length === 0 ? (
           <ModuleEmptyState
-            title={t("Sin pacientes pendientes")}
+            title={t("Sin personas pendientes")}
             description={
               isFiltered
                 ? t("Ninguna persona coincide con los filtros aplicados.")
@@ -392,7 +392,7 @@ function PendingTable({
         aria-live="polite"
       >
         <Users className="size-3.5" />
-        {t("{count} pacientes pendientes", { count: String(rows.length) })}
+        {t("{count} personas pendientes", { count: String(rows.length) })}
         <span aria-hidden>·</span>
         <History className="size-3.5" />
         {t("Recordatorios guardados en el centro de avisos de la app")}

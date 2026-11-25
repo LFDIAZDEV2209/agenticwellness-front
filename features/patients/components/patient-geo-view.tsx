@@ -151,7 +151,7 @@ export function PatientGeoView({
                   aria-label={
                     state
                       ? `${STATE_NAMES[abbr] ?? abbr}: ${state.count} ${t("pacientes")} (${state.percentage.toFixed(1)}%)`
-                      : `${STATE_NAMES[abbr] ?? abbr}: ${t("sin pacientes")}`
+                      : `${STATE_NAMES[abbr] ?? abbr}: ${t("sin personas")}`
                   }
                   className="cursor-pointer outline-none focus-visible:opacity-90"
                   onMouseEnter={(event) => {
@@ -196,7 +196,7 @@ export function PatientGeoView({
                   <title>
                     {state
                       ? `${STATE_NAMES[abbr] ?? abbr} — ${state.count} ${t("pacientes")} (${state.percentage.toFixed(1)}%)`
-                      : `${STATE_NAMES[abbr] ?? abbr} — ${t("sin pacientes")}`}
+                      : `${STATE_NAMES[abbr] ?? abbr} — ${t("sin personas")}`}
                   </title>
                 </g>
               );
@@ -222,7 +222,7 @@ export function PatientGeoView({
                   </p>
                 </>
               ) : (
-                <p className="text-muted-foreground">{t("Sin pacientes")}</p>
+                <p className="text-muted-foreground">{t("Sin personas")}</p>
               )}
             </div>
           )}
@@ -243,7 +243,7 @@ export function PatientGeoView({
                   />
                 ))}
               </span>
-              <span>{t("Más pacientes")}</span>
+              <span>{t("Más personas")}</span>
             </div>
             <span>{t("Haz clic en un estado para filtrar la vista")}</span>
           </div>

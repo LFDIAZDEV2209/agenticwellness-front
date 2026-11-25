@@ -151,10 +151,10 @@ export function NutritionNextCyclePlan({
         )}
       </p>
       {resource.loading ? (
-        <p role="status">{t("Cargando planes del paciente…")}</p>
+        <p role="status">{t("Cargando planes de la persona…")}</p>
       ) : resource.error ? (
         <div role="alert">
-          <p>{t("No pudimos cargar los planes del paciente.")}</p>
+          <p>{t("No pudimos cargar los planes de la persona.")}</p>
           <Button variant="outline" onClick={refresh}>
             {t("Reintentar planes")}
           </Button>

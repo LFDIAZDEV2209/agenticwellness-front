@@ -362,7 +362,7 @@ export function ClinicalBoardView({
       setDeleteError(
         cause instanceof Error && cause.message
           ? cause.message
-          : t("No pudimos eliminar el paciente."),
+          : t("No pudimos eliminar la persona."),
       );
     } finally {
       setDeleteBusy(false);
@@ -555,7 +555,7 @@ export function ClinicalBoardView({
             <SelectTrigger
               size="comfortable"
               className="@min-[1100px]/clinical-board:col-span-2"
-              aria-label={t("Filtrar por estado del paciente")}
+              aria-label={t("Filtrar por estado de la persona")}
             >
               <SelectValue>
                 {filters.status === "all"
@@ -642,7 +642,7 @@ export function ClinicalBoardView({
             <p className="mt-4 text-base font-semibold text-foreground">
               {hasFilters
                 ? t("Sin resultados con los filtros")
-                : t("Sin pacientes en el alcance")}
+                : t("Sin personas en el alcance")}
             </p>
             <p className="mt-1 text-sm text-muted-foreground">
               {hasFilters
@@ -663,7 +663,7 @@ export function ClinicalBoardView({
                 role="status"
                 className="text-sm font-medium text-muted-foreground"
               >
-                {result.total} {t("pacientes en seguimiento")}
+                {result.total} {t("personas en seguimiento")}
               </p>
               {loading && (
                 <span className="text-xs text-muted-foreground">
@@ -1106,7 +1106,7 @@ export function ClinicalBoardView({
             <Trash2 />
           </AlertDialogMedia>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t("¿Eliminar paciente?")}</AlertDialogTitle>
+            <AlertDialogTitle>{t("¿Eliminar a la persona?")}</AlertDialogTitle>
             <AlertDialogDescription>
               {t(
                 "Se eliminará el registro de {name}. Esta acción no se puede deshacer.",

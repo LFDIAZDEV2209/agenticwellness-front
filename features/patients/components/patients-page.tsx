@@ -107,7 +107,7 @@ export function PatientsPage() {
     return (
       <div className="p-6">
         <p className="rounded-xl bg-warning-soft px-4 py-3 text-sm text-warning-soft-foreground">
-          {t("No tienes permiso para ver el módulo de pacientes.")}
+          {t("No tienes permiso para ver el módulo de personas.")}
         </p>
       </div>
     );

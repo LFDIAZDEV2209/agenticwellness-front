@@ -326,7 +326,7 @@ export function NutritionPlansPage() {
                             variant="ghost"
                             size="icon"
                             className="size-8"
-                            title={t("Clonar a paciente")}
+                            title={t("Clonar para una persona")}
                             onClick={() => setCloning(plan)}
                           >
                             <Copy className="size-4" />
@@ -583,14 +583,14 @@ function ClonePlanDialog({
     >
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{t("Clonar plan a paciente")}</AlertDialogTitle>
+          <AlertDialogTitle>{t("Clonar plan para una persona")}</AlertDialogTitle>
           <AlertDialogDescription>
             {t('Se creará una copia del plan "{name}" asignada al paciente seleccionado. El plan original no se modifica.', { name: plan.name })}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="flex flex-col gap-3 py-2">
           <Input
-            placeholder={t("Buscar paciente por nombre...")}
+            placeholder={t("Buscar persona por nombre...")}
             value={patientSearch}
             onChange={(e) => {
               setPatientSearch(e.target.value);
@@ -626,7 +626,7 @@ function ClonePlanDialog({
             !loadingPatients &&
             patients.length === 0 && (
               <p className="text-xs text-muted-foreground">
-                {t("No se encontraron pacientes.")}
+                {t("No se encontraron personas.")}
               </p>
             )}
         </div>

@@ -193,7 +193,7 @@ export function PatientSummaryView({
     return (
       <div className="flex flex-col items-center gap-3 rounded-2xl border border-destructive/20 bg-destructive-soft/40 py-14 text-center">
         <p className="text-sm font-semibold text-destructive">
-          {t("No pudimos cargar el dashboard de pacientes")}
+          {t("No pudimos cargar el panel de personas")}
         </p>
         <p className="max-w-sm text-xs text-muted-foreground">{error}</p>
         <Button variant="outline" size="sm" onClick={onRetry}>
@@ -283,7 +283,7 @@ export function PatientSummaryView({
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          label={t("Total de pacientes")}
+          label={t("Total de personas")}
           value={String(kpis.total)}
           icon={Users}
           filled
@@ -414,7 +414,7 @@ export function PatientSummaryView({
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
         <section className="flex flex-col overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-xs">
           <SectionHeader
-            title={t("Crecimiento de pacientes")}
+            title={t("Crecimiento del número de personas")}
             description={`${t("Nuevos registros por mes")} · ${growthTotal} ${t("en el período")}`}
             icon={Activity}
             variant="primary"
@@ -642,7 +642,7 @@ export function PatientSummaryView({
         {professionalItems.length > 0 && (
           <PatientDistributionChart
             accent="green"
-            title={t("Profesionales con más pacientes")}
+            title={t("Profesionales con más personas")}
             description={t("Asignaciones activas")}
             icon={Award}
             items={professionalItems}

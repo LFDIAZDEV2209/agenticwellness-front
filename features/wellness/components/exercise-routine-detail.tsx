@@ -366,7 +366,7 @@ export function ExerciseRoutineDetailDialog({
           {routine && !waiting && onAssign && routine.status === "Active" && (
             <Button onClick={() => onAssign(routine)}>
               <CalendarPlus className="size-4" />
-              {t("Asignar a paciente")}
+              {t("Asignar a una persona")}
             </Button>
           )}
         </DialogFooter>

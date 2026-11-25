@@ -446,7 +446,7 @@ export function UserDetail({ userId }: UserDetailProps) {
                 <>
                   <InfoItem label={t("Teléfono")} value={user.phoneNumber || t("Sin teléfono")} icon={Phone} />
                   <InfoItem label={t("Documento")} value={user.patient?.documentNumber || t("No disponible")} icon={IdCard} mono />
-                  <InfoItem label={t("Estado del paciente")} value={user.patient?.status ? t(user.patient.status) : t("No disponible")} />
+                  <InfoItem label={t("Estado de la persona")} value={user.patient?.status ? t(user.patient.status) : t("No disponible")} />
                 </>
               ) : <InfoItem
                 label={t("Último acceso")}

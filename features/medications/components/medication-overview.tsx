@@ -289,7 +289,7 @@ export function MedicationOverviewPanel({
           </h2>
           <div className="medication-access-stat" aria-label={t("Acceso en la app")}>
             <strong>{new Intl.NumberFormat(locale).format(data.enabledPatients)}</strong>
-            <div><span>{t("Pacientes con acceso")}</span><small>{t("de {total} pacientes", { total: new Intl.NumberFormat(locale).format(data.totalPatients) })}</small></div>
+            <div><span>{t("Personas con acceso")}</span><small>{t("de {total} personas", { total: new Intl.NumberFormat(locale).format(data.totalPatients) })}</small></div>
           </div>
           <Button
             variant="outline"

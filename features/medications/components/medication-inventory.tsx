@@ -71,7 +71,7 @@ export function MedicationInventory({ patientId }: { patientId?: string }) {
           {!patientId && (
             <Input
               aria-label={t("Buscar en inventario")}
-              placeholder={t("Paciente o medicamento")}
+              placeholder={t("Persona o medicamento")}
               value={query}
               onChange={(e) => {
                 setQuery(e.target.value);

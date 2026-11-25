@@ -176,7 +176,7 @@ export function DashboardPage() {
         aria-label={t("Indicadores clave")}
       >
         <DashboardMetric
-          label={t("Total de pacientes")}
+          label={t("Total de personas")}
           value={kpis ? formatCount(kpis.totalPatients) : "—"}
           icon={Users}
           tone="blue"

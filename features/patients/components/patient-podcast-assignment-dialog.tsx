@@ -197,13 +197,13 @@ export function PatientPodcastAssignmentDialog({
                 </p>
                 <dl className="flex flex-col divide-y divide-border">
                   <div className="flex items-start justify-between gap-4 py-3">
-                    <dt>{t("Pacientes con asignaciones aplicadas")}</dt>
+                    <dt>{t("Personas con asignaciones aplicadas")}</dt>
                     <dd className="text-xl font-semibold tabular-nums text-success">
                       {count(result.aplicadas)}
                     </dd>
                   </div>
                   <div className="flex items-start justify-between gap-4 py-3">
-                    <dt>{t("Pacientes con semanas iniciadas omitidas")}</dt>
+                    <dt>{t("Personas con semanas iniciadas omitidas")}</dt>
                     <dd className="text-xl font-semibold tabular-nums text-warning">
                       {count(result.omitidasSemanaIniciada)}
                     </dd>
@@ -398,7 +398,7 @@ export function PatientPodcastAssignmentDialog({
                 </p>
                 <p className="text-sm text-muted-foreground">
                   {t(
-                    "Todos los pacientes de tu alcance deben tener un programa activo.",
+                    "Todas las personas de tu alcance deben tener un programa activo.",
                   )}
                 </p>
               </>

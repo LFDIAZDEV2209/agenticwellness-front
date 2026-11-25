@@ -289,7 +289,7 @@ export function MasterPatientsPage() {
     <PageHeader
       title={t("Bandeja de pacientes — Tests & Diagnóstico")}
       description={t(
-        "Todos los pacientes, su riesgo y sus alertas en un solo listado",
+        "Todas las personas, su riesgo y sus alertas en un solo listado",
       )}
       icon={Layers}
     />
@@ -322,7 +322,7 @@ export function MasterPatientsPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
-          label={t("Pacientes en la batería")}
+          label={t("Personas en la batería")}
           value={String(totals.total)}
           icon={Users}
           variant="primary"
@@ -369,7 +369,7 @@ export function MasterPatientsPage() {
 
       <section className="flex flex-col overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-xs">
         <SectionHeader
-          title={t("Listado de pacientes")}
+          title={t("Listado de personas")}
           description={t(
             "Filtra por batería, test o profesional para acotar los resultados.",
           )}
@@ -437,7 +437,7 @@ export function MasterPatientsPage() {
                   setPage(1);
                   setExpandedId(null);
                 }}
-                placeholder={t("Buscar paciente o documento...")}
+                placeholder={t("Buscar persona o documento...")}
                 aria-label={t("Buscar pacientes")}
               />
             </div>
@@ -585,7 +585,7 @@ export function MasterPatientsPage() {
 
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <span>
-                {t("{count} pacientes", { count: String(sorted.length) })}
+                {t("{count} personas", { count: String(sorted.length) })}
               </span>
               {batteryId !== "all" && (
                 <span className="hidden items-center gap-1 rounded-full bg-primary-soft px-2 py-1 text-[11px] font-semibold text-primary-soft-foreground sm:inline-flex">
@@ -639,13 +639,13 @@ export function MasterPatientsPage() {
 
         {pageRows.length === 0 ? (
           <ModuleEmptyState
-            title={t("Sin pacientes que mostrar")}
+            title={t("Sin personas que mostrar")}
             description={
               isFiltered
                 ? t(
                     "Ningún paciente coincide con los filtros de batería, test y riesgo aplicados.",
                   )
-                : t("Aún no hay pacientes con evaluación asignada.")
+                : t("Aún no hay personas con evaluación asignada.")
             }
             filtered={isFiltered}
             onClear={clearFilters}
@@ -1589,7 +1589,7 @@ function Pagination({
   return (
     <div className="flex items-center justify-between text-xs text-muted-foreground">
       <span>
-        {t("Mostrando {from}–{to} de {total} pacientes", {
+        {t("Mostrando {from}–{to} de {total} personas", {
           from: String(from),
           to: String(to),
           total: String(total),

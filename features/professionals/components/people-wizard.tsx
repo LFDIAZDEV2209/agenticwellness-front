@@ -681,7 +681,7 @@ export function PeopleWizard({
                 }
               >
                 {created.mode === "patient"
-                  ? t("Ver paciente")
+                  ? t("Ver a la persona")
                   : t("Ver perfil")}
               </Button>
               <Button

@@ -80,7 +80,7 @@ export function ProgramPatientOverviewPage({
   return (
     <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
       <PageHeader
-        title="Perfil 360 del paciente"
+        title="Perfil 360 de la persona"
         description="Vista integral de progreso, adherencia y salud"
         icon={UserRound}
         actions={

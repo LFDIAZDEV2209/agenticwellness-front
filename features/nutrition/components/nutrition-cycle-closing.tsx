@@ -282,7 +282,7 @@ function ClosingForm({
     },
     {
       ok: !!props.period.endDate && props.period.endDate < props.today,
-      label: "Ciclo terminado en la fecha local del paciente",
+      label: "Ciclo terminado en la fecha local de la persona",
     },
     { ok: !!review && !dirty, label: "Últimos cambios guardados" },
   ];
@@ -319,7 +319,7 @@ function ClosingForm({
               {t("Evaluación interna (obligatoria para publicar)")}
             </label>
             <p id={`${id}-notes-help`}>
-              {t("Estas notas no aparecen en la app del paciente.")}
+              {t("Estas notas no aparecen en la app de la persona.")}
             </p>
             <Textarea
               id={`${id}-notes`}
@@ -415,7 +415,7 @@ function ClosingForm({
         5,
         <div className="nutrition-closing-fields">
           <fieldset disabled={!editable} className="nutrition-closing-message">
-            <legend>{t("Recomendaciones que verá el paciente")}</legend>
+            <legend>{t("Recomendaciones que verá la persona")}</legend>
             <p>
               {t(
                 "Escribe la versión final en ambos idiomas. Las notas internas y el borrador de IA no se copian automáticamente.",
@@ -755,7 +755,7 @@ function ClosingForm({
                 : t("El profesional y la fecha se registran al publicar.")}
             </p>
             <p className="nutrition-closing-caption" lang={previewLang}>
-              {message || t("El mensaje al paciente aún está vacío.")}
+              {message || t("El mensaje a la persona aún está vacío.")}
             </p>
             {visibleImages.length ? (
               <div className="nutrition-closing-visible-images">
@@ -770,7 +770,7 @@ function ClosingForm({
                 ))}
               </div>
             ) : (
-              <p>{t("Sin imágenes visibles para el paciente.")}</p>
+              <p>{t("Sin imágenes visibles para la persona.")}</p>
             )}
           </div>
           {published ? (

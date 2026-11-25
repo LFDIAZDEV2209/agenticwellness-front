@@ -150,7 +150,7 @@ export function PatientDetailPage({ id }: { id: string }) {
         variant="ghost"
         size="sm"
         onClick={() => router.push("/patients")}
-        aria-label={t("Volver al directorio de pacientes")}
+        aria-label={t("Volver al directorio de personas")}
         className="w-fit"
       >
         <ArrowLeft data-icon="inline-start" />
@@ -182,7 +182,7 @@ export function PatientDetailPage({ id }: { id: string }) {
       {/* Pestañas de navegación del detalle. */}
       <div
         role="tablist"
-        aria-label={t("Vistas del paciente")}
+        aria-label={t("Vistas de la persona")}
         className="inline-flex w-fit flex-wrap items-center gap-1.5 rounded-xl border border-border bg-card p-1.5 shadow-sm"
       >
         {tabs.map((tab) => {

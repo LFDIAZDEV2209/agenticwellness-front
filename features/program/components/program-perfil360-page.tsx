@@ -65,7 +65,7 @@ function PatientSearchBox({
       <div className="relative">
         <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
         <Input
-          placeholder="Buscar paciente por nombre..."
+          placeholder="Buscar persona por nombre..."
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
           className="h-9 pl-8"

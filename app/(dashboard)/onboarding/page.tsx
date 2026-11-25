@@ -195,7 +195,7 @@ export default function OnboardingPage() {
               {t("¿Cuál es tu profesión?")}
             </h2>
             <p className="mt-0.5 text-[12.5px] text-muted-foreground">
-              {t("Selecciona el rol clínico con el que atenderás pacientes.")}
+              {t("Selecciona el rol clínico con el que atenderás personas.")}
             </p>
 
             <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">

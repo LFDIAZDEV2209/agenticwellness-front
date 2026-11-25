@@ -41,7 +41,7 @@ export function PrescriptionsPage() {
   useEffect(() => {
     void fetchPatients(1, 50, { search: "", status: "all", insurerId: "all" })
       .then((result) => setPatients(result.data))
-      .catch(() => setError(t("No pudimos cargar los pacientes.")))
+      .catch(() => setError(t("No pudimos cargar las personas.")))
       .finally(() => setLoadingPatients(false));
   }, [t]);
   const filtered = patients.filter((patient) =>
@@ -129,7 +129,7 @@ export function PrescriptionsPage() {
               className="pl-9"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder={t('Buscar paciente...')}
+              placeholder={t("Buscar persona...")}
               aria-label={t('Buscar paciente para receta')}
             />
           </div>

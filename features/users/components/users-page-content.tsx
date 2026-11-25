@@ -86,14 +86,14 @@ const segmentCopy = {
     icon: ShieldCheck,
   },
   patient: {
-    description: "Cuentas de pacientes que usan la app móvil.",
+    description: "Cuentas de personas que usan la app móvil.",
     one: "{count} persona encontrada",
     many: "{count} personas encontradas",
     icon: HeartPulse,
   },
   all: {
     description:
-      "Todas las cuentas de la plataforma, de personal y de pacientes.",
+      "Todas las cuentas de la plataforma, de personal y de personas.",
     one: "{count} cuenta encontrada",
     many: "{count} cuentas encontradas",
     icon: LayoutGrid,
@@ -423,7 +423,7 @@ export function UsersPageContent() {
                 className={buttonVariants({ variant: "outline", size: "sm" })}
               >
                 <HeartPulse data-icon="inline-start" />
-                {t("Ir a Pacientes")}
+                {t("Ir a Personas")}
                 <ArrowUpRight data-icon="inline-end" aria-hidden="true" />
               </Link>
             ) : (
@@ -854,7 +854,7 @@ function EmptyState({
                 })
               : t("Sin resultados para estos filtros")
             : segment === "patient"
-              ? t("Aún no hay pacientes con cuenta")
+              ? t("Aún no hay personas con cuenta")
               : segment === "erp"
                 ? t("Aún no hay usuarios del ERP")
                 : t("No hay cuentas registradas")}
@@ -883,7 +883,7 @@ function EmptyState({
             href="/patients"
             className={buttonVariants({ variant: "outline", size: "sm" })}
           >
-            {t("Ir a Pacientes")}
+            {t("Ir a Personas")}
           </Link>
         ) : null}
         {canCreate && (

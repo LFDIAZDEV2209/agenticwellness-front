@@ -103,7 +103,7 @@ export function IndicatorsPage() {
           context={t("Sobre los indicadores evaluados")}
         />
         <StatCard
-          label={t("Pacientes con riesgo alto/crítico")}
+          label={t("Personas con riesgo alto/crítico")}
           value={String(affected)}
           icon={HeartPulse}
           variant="destructive"
@@ -177,7 +177,7 @@ function IndicatorCard({ aggregate }: { aggregate: IndicatorAggregate }) {
       <div className="flex flex-col gap-4 px-4 pb-4">
         <ScoreBar
           value={average}
-          label={t("Pacientes con riesgo alto/crítico (%)")}
+          label={t("Personas con riesgo alto/crítico (%)")}
           color={scoreBarColor(average === 0 ? "bajo" : "alto")}
         />
 

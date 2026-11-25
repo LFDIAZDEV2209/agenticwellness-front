@@ -52,7 +52,7 @@ export function UsersStats({ stats, filters, onStatFilter }: UsersStatsProps) {
         isPatient
           ? t("Con acceso a la app")
           : filters.accountType === "all"
-            ? t("Personal y pacientes")
+            ? t("Personal y personas")
             : t("Con acceso al ERP"),
       isActive: () =>
         filters.status === "all" &&

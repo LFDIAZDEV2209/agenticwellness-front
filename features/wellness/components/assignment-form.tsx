@@ -274,7 +274,7 @@ export function AssignmentFormFields({
               <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
                 <Input
-                  placeholder={t("Buscar paciente por nombre...")}
+                  placeholder={t("Buscar persona por nombre...")}
                   value={patientSearch}
                   onChange={(e) => {
                     setPatientSearch(e.target.value);
@@ -320,7 +320,7 @@ export function AssignmentFormFields({
                 !loadingPatients &&
                 patientResults.length === 0 && (
                   <p className="text-xs text-muted-foreground">
-                    {t("No se encontraron pacientes.")}
+                    {t("No se encontraron personas.")}
                   </p>
                 )}
             </>

@@ -532,7 +532,7 @@ const handleSelectPatient = (p: PickerItem) => {
                   <div className="relative">
                     <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
                     <Input
-                      placeholder={t("Buscar paciente por nombre...")}
+                      placeholder={t("Buscar persona por nombre...")}
                       value={patientSearch}
                       onChange={(e) => {
                         setPatientSearch(e.target.value);
@@ -569,7 +569,7 @@ const handleSelectPatient = (p: PickerItem) => {
                     !loadingPatients &&
                     patientResults.length === 0 && (
                       <p className="text-xs text-muted-foreground">
-                        {t("No se encontraron pacientes.")}
+                        {t("No se encontraron personas.")}
                       </p>
                     )}
                 </>
@@ -731,7 +731,7 @@ const handleSelectPatient = (p: PickerItem) => {
                         {t("Template (biblioteca)")}
                       </SelectItem>
                       <SelectItem value="custom">
-                        {t("Personalizado (paciente)")}
+                        {t("Personalizado (persona)")}
                       </SelectItem>
                     </SelectContent>
                   </Select>

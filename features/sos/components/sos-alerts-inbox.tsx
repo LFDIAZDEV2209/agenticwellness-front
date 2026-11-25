@@ -238,7 +238,7 @@ export function SosAlertsInbox() {
           value={String(counts.Cancelada)}
           icon={X}
           variant="info"
-          context={t("cerradas por el paciente")}
+          context={t("cerradas por la persona")}
         />
         <StatCard
           label={t("En la vista")}
@@ -262,7 +262,7 @@ export function SosAlertsInbox() {
             <Input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder={t("Buscar alerta por paciente…")}
+              placeholder={t("Buscar alerta por persona…")}
               className="pl-9 pr-9"
               aria-label={t("Buscar alertas SOS")}
             />

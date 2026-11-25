@@ -267,7 +267,7 @@ function BiometriaMapRow({
         <div className="rounded-2xl border border-brand-blue-soft/40 bg-card p-5 shadow-xs">
           <SectionHeader
             title="Top ciudades"
-            description="Por número de pacientes"
+            description="Por número de personas"
             icon={Users}
             variant="secondary"
           />

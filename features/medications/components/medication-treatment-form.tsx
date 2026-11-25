@@ -580,7 +580,7 @@ export function MedicationTreatmentForm({
                       defaultValue={treatment?.reminders?.[field] == null ? "" : treatment.reminders[field] ? "yes" : "no"}
                       disabled={saving}
                     >
-                      <option value="">{t("Preferencia del paciente")}</option>
+                      <option value="">{t("Preferencia de la persona")}</option>
                       <option value="yes">{t("Activado")}</option>
                       <option value="no">{t("Desactivado")}</option>
                     </select>

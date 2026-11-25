@@ -45,8 +45,8 @@ export function StorePreviewPage() {
   return (
     <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
       <PageHeader
-        title={t('Previsualización del paciente')}
-        description={t('Así verán los productos los pacientes en la app móvil Copp Adresd')}
+        title={t("Previsualización de la persona")}
+        description={t("Así verán los productos las personas en la app móvil Copp Adresd")}
         icon={Eye}
         actions={
           <Button variant="outline" size="sm" onClick={() => setReload((v) => v + 1)} disabled={loading}>

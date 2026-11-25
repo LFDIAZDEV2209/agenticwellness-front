@@ -275,7 +275,7 @@ export function NutritionIntakeDay({
                     </span>}
                     {row.patientCorrection && (
                       <span className="nutrition-intake-correction">
-                        {t("El paciente corrigió el análisis")}
+                        {t("La persona corrigió el análisis")}
                       </span>
                     )}
                     {isOutsideIntakeMenu(day, row) && (

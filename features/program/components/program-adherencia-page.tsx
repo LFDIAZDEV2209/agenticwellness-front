@@ -457,7 +457,7 @@ function AdherenciaTablaSection({
             <Search className="pointer-events-none absolute left-3 top-2.5 size-4 text-muted-foreground" />
             <Input
               className="pl-9"
-              placeholder="Buscar paciente..."
+              placeholder="Buscar persona..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}

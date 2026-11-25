@@ -102,7 +102,7 @@ export function WeekAgendaCellPanel({
                 : task?.contentName || t("Sin contenido")}
             </p>
             <p className="mt-2 text-xs text-muted-foreground">
-              {t("Así lo ve el paciente")}
+              {t("Así lo ve la persona")}
             </p>
             <ul className="mt-2 space-y-1 text-sm">
               {data.days

@@ -141,7 +141,7 @@ export function ProgramGamificacionTab({
           {t("Sin datos de gamificación")}
         </p>
         <p className="max-w-sm text-xs text-muted-foreground">
-          {t("No se pudo cargar el perfil del paciente.")}
+          {t("No se pudo cargar el perfil de la persona.")}
         </p>
       </div>
     );

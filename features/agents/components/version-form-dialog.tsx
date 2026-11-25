@@ -392,11 +392,11 @@ export function VersionFormFields({
           <Section
             icon={BrainCircuit}
             title={t('Memoria del usuario')}
-            description={t('Recordá preferencias y datos del paciente entre conversaciones.')}
+            description={t("Recordá preferencias y datos de la persona entre conversaciones.")}
           >
             <div className="flex items-center justify-between rounded-xl border border-border p-3">
               <div className="flex flex-col gap-0.5">
-                <span className="text-sm font-medium">{t('Guardar memoria del paciente')}</span>
+                <span className="text-sm font-medium">{t("Guardar memoria de la persona")}</span>
                 <span className="text-xs text-muted-foreground">
                   {t('Extrae hechos de la conversación y los reutiliza después.')}
                 </span>
@@ -405,7 +405,7 @@ export function VersionFormFields({
                 checked={form.memoryEnabled}
                 onCheckedChange={(checked) => update("memoryEnabled", checked)}
                 disabled={saving || uploadingInstructions}
-                aria-label={t('Guardar memoria del paciente')}
+                aria-label={t("Guardar memoria de la persona")}
               />
             </div>
 

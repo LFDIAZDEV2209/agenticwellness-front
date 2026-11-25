@@ -137,7 +137,7 @@ export function PatientAccountEditor({ user }: { user: User }) {
               id="patient-account-title"
               className="text-sm font-semibold text-foreground"
             >
-              {t("Cuenta de paciente")}
+              {t("Cuenta de persona")}
             </h2>
             <MobileAccessBadge />
           </div>
@@ -212,7 +212,7 @@ export function PatientAccountEditor({ user }: { user: User }) {
             </dl>
             <p className="text-[12px] text-muted-foreground">
               {t(
-                "El correo y el teléfono los gestiona el paciente desde la app.",
+                "El correo y el teléfono los gestiona la persona desde la app.",
               )}
             </p>
           </section>
@@ -225,7 +225,7 @@ export function PatientAccountEditor({ user }: { user: User }) {
                 className="text-[12px] text-muted-foreground"
               >
                 {form.isActive
-                  ? t("El paciente puede entrar a la app móvil.")
+                  ? t("La persona puede entrar a la app móvil.")
                   : t("El paciente no podrá entrar a la app móvil.")}
               </p>
             </div>

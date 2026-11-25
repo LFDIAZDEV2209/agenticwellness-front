@@ -485,7 +485,7 @@ export function PatientProfilePage({ patientId }: { patientId: string }) {
               context={t("Guardados a medias")}
             />
             <StatCard
-              label={t("Alertas del paciente")}
+              label={t("Alertas de la persona")}
               value={String(patientAlerts.length)}
               icon={BellRing}
               variant={patientAlerts.length > 0 ? "destructive" : "primary"}
@@ -1031,7 +1031,7 @@ export function PatientProfilePage({ patientId }: { patientId: string }) {
         className="flex flex-col overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-sm scroll-mt-6"
       >
         <SectionHeader
-          title={t("Alertas del paciente")}
+          title={t("Alertas de la persona")}
           description={t("Resultados que requieren atención clínica")}
           icon={ShieldAlert}
           variant="primary"

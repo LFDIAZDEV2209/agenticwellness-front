@@ -180,7 +180,7 @@ function MediaDeleteBlockedContent({
                 <User className="size-3.5 shrink-0 text-muted-foreground" />
                 <span className="truncate font-medium text-foreground">
                   {ref.patientName ??
-                    t("Paciente ({id})", {
+                    t("Persona ({id})", {
                       id: ref.enrollmentId.substring(0, 8),
                     })}
                 </span>

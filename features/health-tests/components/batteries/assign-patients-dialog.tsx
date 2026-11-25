@@ -142,7 +142,7 @@ export function AssignPatientsDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="flex max-h-[92vh] flex-col overflow-hidden p-0 sm:max-w-xl">
         <DialogHeader className="shrink-0 border-b border-border bg-primary-soft px-6 py-5">
-          <DialogTitle>{t("Asignar pacientes")}</DialogTitle>
+          <DialogTitle>{t("Asignar personas")}</DialogTitle>
           <DialogDescription>
             {t("Asigna la batería {name} a las personas seleccionadas.", {
               name: batteryName,
@@ -175,8 +175,8 @@ export function AssignPatientsDialog({
                 <input
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
-                  placeholder={t("Buscar paciente…")}
-                  aria-label={t("Buscar paciente…")}
+                  placeholder={t("Buscar persona…")}
+                  aria-label={t("Buscar persona…")}
                   className="h-9 w-full bg-transparent text-[13px] outline-none placeholder:text-muted-foreground"
                 />
               </label>
@@ -290,8 +290,8 @@ export function AssignPatientsDialog({
               >
                 {saving && <LoaderCircle className="animate-spin" />}
                 {selected.size === 0
-                  ? t("Asignar pacientes")
-                  : t("Asignar {count} pacientes", {
+                  ? t("Asignar personas")
+                  : t("Asignar {count} personas", {
                       count: String(selected.size),
                     })}
               </Button>

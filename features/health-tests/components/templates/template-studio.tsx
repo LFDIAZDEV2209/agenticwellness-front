@@ -397,7 +397,7 @@ export function TemplateStudio() {
   const header = (
     <PageHeader
       title={t("Estudio de plantillas")}
-      description={t("Crea, versiona y prueba los mensajes que se envían a los pacientes")}
+      description={t("Crea, versiona y prueba los mensajes que se envían a las personas")}
       icon={Sparkles}
       actions={
         <Button onClick={newTemplate} size="sm">
@@ -812,7 +812,7 @@ export function TemplateStudio() {
           <div className="rounded-xl border border-border bg-muted/30 p-4">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
               <span className="text-[11px] font-semibold text-muted-foreground">
-                {t("Paciente de ejemplo")}
+                {t("Persona de ejemplo")}
               </span>
               <Select
                 value={sampleAlertId || "sample"}
@@ -820,7 +820,7 @@ export function TemplateStudio() {
               >
                 <SelectTrigger
                   className="h-8 w-56"
-                  aria-label={t("Paciente de ejemplo")}
+                  aria-label={t("Persona de ejemplo")}
                 >
                   <SelectValue />
                 </SelectTrigger>

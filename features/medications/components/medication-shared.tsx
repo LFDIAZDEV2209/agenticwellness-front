@@ -98,7 +98,7 @@ export function MedicationEmpty({
 }) {
   const t = useT();
   const details = {
-    patients: { icon: Pill, title: "No se encontraron pacientes" },
+    patients: { icon: Pill, title: "No se encontraron personas" },
     treatments: { icon: Pill, title: "Sin tratamientos registrados" },
     doses: { icon: Clock3, title: "No hay tomas para este día" },
     history: { icon: FileClock, title: "Aún no hay registros de tomas" },

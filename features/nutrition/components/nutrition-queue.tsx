@@ -148,7 +148,7 @@ export function NutritionQueue({
             variant="surface"
             description={
               data
-                ? t("{count} pacientes", { count: String(data.total) })
+                ? t("{count} personas", { count: String(data.total) })
                 : t("Bandeja de nutrición")
             }
           />}
@@ -285,7 +285,7 @@ export function NutritionQueue({
           >
             <p role="status">
               {data
-                ? t("Página {page} de {pages} · {total} pacientes", {
+                ? t("Página {page} de {pages} · {total} personas", {
                     page: String(data.page),
                     pages: String(Math.max(1, data.totalPages)),
                     total: String(data.total),

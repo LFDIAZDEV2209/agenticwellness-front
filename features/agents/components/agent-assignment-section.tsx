@@ -52,7 +52,7 @@ function AssignmentForm({ agent }: { agent: AgentType }) {
       <p className="text-xs text-muted-foreground">{t("Selecciona un paciente y confirma la asignación a su cuenta vinculada. La disponibilidad en Vita requiere versión activa, sincronización y consentimiento.")}</p>
       {agent.status !== "Activo" && <p role="status" className="text-sm text-muted-foreground">{t("Activa el tipo de agente antes de asignarlo.")}</p>}
       <CatalogSearchSelect search={search} placeholder={t("Buscar paciente para asignar")} onSelect={(item) => setPatient(item as PatientOption)} />
-      {searchError && <p role="alert" className="text-sm text-destructive">{t("No se pudieron buscar pacientes. Reintenta la búsqueda.")}</p>}
+      {searchError && <p role="alert" className="text-sm text-destructive">{t("No se pudieron buscar personas. Reintenta la búsqueda.")}</p>}
       {patient && (!userId ? (
         <>
           <p role="status" className="text-sm text-muted-foreground">{t("Este paciente no tiene una cuenta de usuario vinculada. Vincula su cuenta antes de asignar el agente.")}</p>
