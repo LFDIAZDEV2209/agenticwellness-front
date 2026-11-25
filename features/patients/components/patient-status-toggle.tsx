@@ -136,7 +136,7 @@ export function PatientStatusToggle({
       </div>
       <span id={descriptionId} className="sr-only">
         {t(
-          "Desactivar bloquea el acceso del paciente a la app; conserva su historial clínico.",
+          "Desactivar la cuenta bloquea el acceso de la persona a la app y conserva su historial de salud.",
         )}
       </span>
       {change?.message ? (
@@ -166,7 +166,7 @@ export function PatientStatusToggle({
             </AlertDialogTitle>
             <AlertDialogDescription>
               {t(
-                "El paciente quedará Inactivo en el directorio y no podrá acceder a la app. Su historial clínico y asignaciones se conservan; puedes reactivarlo cuando quieras.",
+                "La persona quedará con estado Inactivo en el directorio y no podrá acceder a la app. Su historial de salud y sus asignaciones se conservan. Puedes reactivar su cuenta cuando quieras.",
               )}
             </AlertDialogDescription>
           </AlertDialogHeader>

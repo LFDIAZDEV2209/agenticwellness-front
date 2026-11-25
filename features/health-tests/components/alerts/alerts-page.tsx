@@ -377,7 +377,7 @@ export function AlertsPage() {
           <section className="relative flex flex-1 flex-col overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-sm transition-shadow hover:shadow-md">
             <SectionHeader
               title={t("Gestión de alertas")}
-              description={t("Filtra por severidad, estado o paciente")}
+              description={t("Filtra por severidad, estado o persona")}
               icon={Filter}
               variant="primary"
             />
@@ -728,7 +728,7 @@ function AlertsTable({
                 className="size-4 rounded border-border"
               />
             </TableHead>
-            <TableHead>{t("Paciente")}</TableHead>
+            <TableHead>{t("Persona")}</TableHead>
             <TableHead className="whitespace-nowrap">
               {t("Resultado")}
             </TableHead>
@@ -808,7 +808,7 @@ function AlertsTable({
                       variant="outline"
                       size="icon-sm"
                       nativeButton={false}
-                      aria-label={t("Ver perfil del paciente")}
+                      aria-label={t("Ver perfil de la persona")}
                       title={t("Perfil")}
                       render={
                         <Link

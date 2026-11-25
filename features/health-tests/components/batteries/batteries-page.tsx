@@ -218,7 +218,7 @@ export function BatteriesPage() {
           context={t("En todas las baterías")}
         />
         <StatCard
-          label={t("Pacientes asignados")}
+          label={t("Personas asignadas")}
           value={master.data ? String(assigned) : "—"}
           icon={Users}
           variant="success"
@@ -414,7 +414,7 @@ function BatteryCard({
         </span>
         <span className="flex items-center gap-1.5 text-muted-foreground">
           <Users className="size-3.5 text-info" />
-          {assignedCount} {t("pacientes")}
+          {assignedCount} {t("personas")}
         </span>
       </div>
 
@@ -435,7 +435,7 @@ function BatteryCard({
             onClick={() => onAssign(battery)}
           >
             <Users data-icon="inline-start" />
-            {t("Asignar pacientes")}
+            {t("Asignar personas")}
           </Button>
         ) : null}
       </div>

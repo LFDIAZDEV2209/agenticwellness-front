@@ -45,7 +45,7 @@ test("3.16 · entrada desde ficha, resumen real y siguiente etapa sin IA ni escr
   await expect(summary(page)).toContainText("2 días con valor conocido");
   await expect(summary(page)).toContainText("30 días de interrupción");
   await expect(summary(page)).toContainText(
-    "Media conjunta de registros estimados por IA y confirmados por el paciente",
+    "Media conjunta de registros estimados por IA y confirmados por la persona",
   );
   await expect(
     summary(page).locator(".nutrition-review-origins"),
@@ -85,7 +85,7 @@ test("3.16 · comparación con fechas, cobertura, desglose y navegación accesib
     comparison(page).getByRole("heading", { level: 2 }),
   ).toBeFocused();
   const table = comparison(page).getByRole("table", {
-    name: "Comparación conjunta · IA y paciente",
+    name: "Comparación conjunta · IA y persona",
     exact: true,
   });
   await expect(table).toBeVisible();
@@ -137,7 +137,7 @@ test("3.16 · fallo del anterior conserva resumen actual y permite reintentar", 
     .click();
   await expect(
     comparison(page).getByRole("table", {
-      name: "Comparación conjunta · IA y paciente",
+      name: "Comparación conjunta · IA y persona",
       exact: true,
     }),
   ).toBeVisible();

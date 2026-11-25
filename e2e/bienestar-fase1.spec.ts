@@ -145,7 +145,7 @@ test("1.25 · asignar desde pacientes conserva la selección y muestra los tres 
   });
   await expect(result.locator("dd")).toHaveText(["2", "1", "1"]);
   await expect(result).toContainText(
-    "Los conteos de aplicados y semanas iniciadas pueden incluir al mismo paciente.",
+    "Los conteos de aplicados y semanas iniciadas pueden incluir a la misma persona.",
   );
   await expect(
     result.getByText(phase.rows[10].patientId, { exact: true }),
@@ -165,7 +165,7 @@ test("1.25 · asignar desde pacientes conserva la selección y muestra los tres 
   ]);
   await result.getByRole("button", { name: "Listo", exact: true }).click();
   await expect(
-    page.getByRole("region", { name: "Acciones de pacientes seleccionados" }),
+    page.getByRole("region", { name: "Acciones de personas seleccionadas" }),
   ).toHaveCount(0);
 });
 
@@ -193,7 +193,7 @@ test("1.25 · retirar un medio en uso exige sustituto y muestra el impacto confi
   await confirm.click();
   await expect(
     page.getByRole("dialog", { name: "Cambios guardados", exact: true }),
-  ).toContainText("Impacto confirmado: 23 pacientes y 2 plantillas.");
+  ).toContainText("Impacto confirmado: 23 personas y 2 plantillas.");
   expect(phase.state.retirements).toEqual([
     { id: phase.podcast.id, replacementMediaId: phase.replacement.id },
   ]);

@@ -238,8 +238,8 @@ test("3.20 · Foto IA corregida → ERP con alcance real → publicación conjun
     const messageEs = "QA 3.20: mantén el plan revisado y las porciones acordadas.";
     const messageEn = "QA 3.20: follow the reviewed plan and agreed portions.";
     await professional.page.getByRole("textbox", { name: "Evaluación interna (obligatoria para publicar)", exact: true }).fill(note);
-    await professional.page.getByRole("textbox", { name: "Mensaje al paciente · Español", exact: true }).fill(messageEs);
-    await professional.page.getByRole("textbox", { name: "Mensaje al paciente · English", exact: true }).fill(messageEn);
+    await professional.page.getByRole("textbox", { name: "Mensaje a la persona · Español", exact: true }).fill(messageEs);
+    await professional.page.getByRole("textbox", { name: "Mensaje a la persona · English", exact: true }).fill(messageEn);
     const save = professional.page.getByRole("button", { name: "Guardar y retomar luego", exact: true });
     await save.click();
     await expect(professional.page.getByText("Cierre guardado. Puedes retomarlo más tarde.", { exact: true })).toBeVisible();
@@ -259,7 +259,7 @@ test("3.20 · Foto IA corregida → ERP con alcance real → publicación conjun
     await expect(professional.page.locator(".nutrition-closing-preview img")).toHaveCount(0);
     await professional.page.getByLabel("Archivo · JPEG, PNG, WebP o PDF · máximo 10 MB", { exact: true }).setInputFiles(jpeg);
     await professional.page.getByLabel("Pie del adjunto (opcional)", { exact: true }).fill("QA 3.20: ejemplo visible revisado");
-    await professional.page.getByRole("checkbox", { name: "Mostrar esta imagen y su pie al paciente al publicar", exact: true }).check();
+    await professional.page.getByRole("checkbox", { name: "Mostrar esta imagen y su pie a la persona al publicar", exact: true }).check();
     await professional.page.getByRole("button", { name: "Guardar adjunto", exact: true }).click();
     await expect(professional.page.locator(".nutrition-closing-preview img")).toBeVisible();
     const publication = professional.page.waitForResponse(at(`/api/v1/nutrition/cycles/${fixture.cycleId}/publish`));

@@ -631,7 +631,7 @@ test("persistencia, reintentos, perfil build67, alcance y retirada de acceso", a
     ).toBeVisible();
     await expect(
       readerPage.getByRole("button", {
-        name: "Nuevo tratamiento",
+        name: "Nuevo plan de medicación",
         exact: true,
       }),
     ).toHaveCount(0);

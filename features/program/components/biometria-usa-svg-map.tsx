@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/providers/i18n-provider";
 import { chartGradient } from "@/lib/ui/rainbow";
 
 import { chartColor, MAP_NO_DATA } from "@/lib/ui/rainbow";
@@ -60,6 +61,7 @@ export function BiometriaUsaSvgMap({
   onCitySelect,
   onStateSelect,
 }: BiometriaUsaSvgMapProps) {
+  const t = useT();
   const [hovered, setHovered] = useState<string | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
   const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number }>({
@@ -69,6 +71,8 @@ export function BiometriaUsaSvgMap({
   const svgRef = useRef<SVGSVGElement>(null);
 
   const stateData = aggregateByState(cities);
+  const peopleCountLabel = (count: number) =>
+    t(count === 1 ? "{count} persona" : "{count} personas", { count: String(count) });
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     setTooltipPos({ x: e.clientX, y: e.clientY });
@@ -149,7 +153,7 @@ export function BiometriaUsaSvgMap({
               <title>
                 {STATE_NAMES[abbr] ?? abbr} — IMC{" "}
                 {agg?.avgImc?.toFixed(1) ?? "sin datos"}{" "}
-                {agg ? `(${agg.totalCount} pacientes)` : ""}
+                {agg ? `(${peopleCountLabel(agg.totalCount)})` : ""}
               </title>
             </path>
           );
@@ -177,8 +181,7 @@ export function BiometriaUsaSvgMap({
                 </span>
               </p>
               <p className="text-muted-foreground">
-                {hoveredData.totalCount} paciente
-                {hoveredData.totalCount !== 1 ? "s" : ""}
+                {peopleCountLabel(hoveredData.totalCount)}
               </p>
             </>
           ) : (
@@ -195,7 +198,7 @@ export function BiometriaUsaSvgMap({
           </p>
           <p className="mb-2 text-[11px] text-muted-foreground">
             IMC prom: {selectedData.avgImc?.toFixed(1) ?? "—"} ·{" "}
-            {selectedData.totalCount} pacientes
+            {peopleCountLabel(selectedData.totalCount)}
           </p>
           <div className="flex flex-col gap-1">
             {selectedData.cities

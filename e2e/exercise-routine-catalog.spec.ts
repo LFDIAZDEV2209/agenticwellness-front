@@ -114,7 +114,7 @@ test("2.20a · copia un ejercicio del catálogo y crea la rutina sin asignar pac
   const http = await fixture(page);
   await page.goto("/wellness/exercise-routines/new");
   await expect(
-    page.getByText("Paciente (opcional)", { exact: true }),
+    page.getByText("Persona (opcional)", { exact: true }),
   ).toHaveCount(0);
   await expect(
     page.getByRole("button", { name: "Generar rutina con IA", exact: true }),

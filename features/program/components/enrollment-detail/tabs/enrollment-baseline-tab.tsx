@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/providers/i18n-provider";
 import { useEffect, useState } from "react";
 import { Dna, Plus, RefreshCw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +29,7 @@ interface Props {
  * Program.Edit. La creación ocurre en `CreateBaselineDialog`.
  */
 export function EnrollmentBaselineTab({ enrollment }: Props) {
+  const t = useT();
   const { hasPermission } = useAuth();
   const canEdit = hasPermission("Program.Edit");
 
@@ -83,7 +85,7 @@ export function EnrollmentBaselineTab({ enrollment }: Props) {
         </div>
       ) : baselines.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-card/50 py-8 text-center">
-          <p className="text-sm text-muted-foreground">No hay líneas base registradas para este paciente.</p>
+          <p className="text-sm text-muted-foreground">{t("No hay líneas base registradas para esta persona.")}</p>
         </div>
       ) : (
         <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-xs">

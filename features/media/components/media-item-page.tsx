@@ -258,12 +258,12 @@ export function MediaItemPage({
             <AlertDialogDescription>
               {pending === "publish"
                 ? t(
-                    'Se validará el archivo en storage y "{title}" pasará a estado Publicado: los pacientes podrán verlo.',
+                    "Se validará el archivo en storage y «{title}» pasará a estado Publicado: las personas podrán verlo.",
                     { title: media?.title ?? "" },
                   )
                 : pending === "unpublish"
                   ? t(
-                      '"{title}" volverá a borrador y dejará de estar disponible para los pacientes.',
+                      "«{title}» volverá a borrador y dejará de estar disponible para las personas.",
                       { title: media?.title ?? "" },
                     )
                   : t(

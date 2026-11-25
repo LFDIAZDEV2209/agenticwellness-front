@@ -34,7 +34,7 @@ export function MedicationTrackingEmpty({
       <CardHeader className="medication-tracking-empty-copy">
         <span className="medication-tracking-empty-kicker">
           <UserRoundSearch aria-hidden />
-          {t("Seguimiento por paciente")}
+          {t("Seguimiento por persona")}
         </span>
         <CardTitle>
           <h2 id="tracking-empty-title">
@@ -78,7 +78,7 @@ export function MedicationTrackingEmpty({
       <CardFooter className="medication-tracking-empty-footer">
         <Button onClick={onChoose}>
           <UserRoundSearch data-icon="inline-start" />
-          {t("Elegir paciente")}
+          {t("Elegir persona")}
           <ArrowUpRight data-icon="inline-end" />
         </Button>
         <div className="medication-tracking-empty-features">

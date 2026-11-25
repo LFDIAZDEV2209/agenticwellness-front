@@ -29,7 +29,7 @@ test("evidencia sintética de estados y recuperación de carga", async ({ page }
   await page.unroute("**/api/**");
   await mockNutritionHttp(page);
   await page.getByRole("button", { name: "Reintentar", exact: true }).click();
-  await expect(page.getByRole("list", { name: "Planes de pacientes" })).toBeVisible();
+  await expect(page.getByRole("list", { name: "Planes de las personas" })).toBeVisible();
 });
 
 test("detalle nutricional, foco y contexto en cinco anchos sin escrituras de presentación", async ({ page }) => {

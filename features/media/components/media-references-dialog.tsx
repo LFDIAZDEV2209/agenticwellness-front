@@ -50,7 +50,7 @@ export function MediaReferencesDialog({
             {t("¿Dónde se usa?")}
           </DialogTitle>
           <DialogDescription>
-            {t("Plantillas y semanas de pacientes que dependen de este medio.")}
+            {t("Plantillas y semanas de personas que dependen de este medio.")}
             {media ? ` ${media.title}` : ""}
           </DialogDescription>
         </DialogHeader>
@@ -132,7 +132,7 @@ function MediaReferencesContent({ mediaId }: { mediaId: string }) {
         </p>
         <p className="max-w-xs text-xs text-muted-foreground">
           {t(
-            "Ninguna plantilla ni semana de paciente usa este medio: es seguro eliminarlo.",
+            "Este medio no se usa en ninguna plantilla ni semana del programa. Puedes eliminarlo.",
           )}
         </p>
       </div>
@@ -195,11 +195,11 @@ function MediaReferencesContent({ mediaId }: { mediaId: string }) {
       <div className="flex flex-col gap-2">
         <p className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
           <User className="size-3.5 text-primary" />
-          {t("Semanas de pacientes")}
+          {t("Semanas de personas")}
         </p>
         {refs.enrollmentReferences.length === 0 ? (
           <p className="text-xs text-muted-foreground">
-            {t("Ninguna semana de paciente lo usa.")}
+            {t("Ninguna semana del programa usa este medio.")}
           </p>
         ) : (
           <ul className="flex max-h-56 flex-col gap-1.5 overflow-y-auto pr-1">
@@ -212,7 +212,7 @@ function MediaReferencesContent({ mediaId }: { mediaId: string }) {
                   <User className="size-3.5 shrink-0 text-muted-foreground" />
                   <span className="truncate font-medium text-foreground">
                     {ref.patientName ??
-                      t("Paciente ({id})", {
+                      t("Persona ({id})", {
                         id: ref.enrollmentId.substring(0, 8),
                       })}
                   </span>

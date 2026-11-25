@@ -59,7 +59,7 @@ export function useBiometriaPatients(
       setError(
         err instanceof Error
           ? err.message
-          : "Error al cargar pacientes de biometría.",
+          : "No se pudo cargar la lista de personas de biometría.",
       );
       setData(null);
     } finally {

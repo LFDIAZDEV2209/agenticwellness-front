@@ -190,10 +190,10 @@ export function IdentityStep({
   return (
     <div className="animate-slide-up flex flex-col gap-0">
       <SectionHeader
-        title={isPatient ? t("Identidad del paciente") : t("Datos básicos")}
+        title={isPatient ? t("Identidad de la persona") : t("Datos básicos")}
         description={
           isPatient
-            ? t("Nombre, documento y contacto del paciente")
+            ? t("Nombre, documento y contacto de la persona")
             : t("Identidad y contacto del profesional")
         }
         icon={UserRound}

@@ -48,7 +48,7 @@ export function AssignmentNewPage({ routineId }: { routineId?: string }) {
 
       <PageHeader
         title={t("Nueva asignación")}
-        description={t("Asigna una rutina de ejercicio a un paciente.")}
+        description={t("Asigna una rutina de ejercicio a una persona.")}
         icon={CalendarCheck}
       />
 

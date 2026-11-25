@@ -334,7 +334,7 @@ export function PeopleBulkImport({
     if (empFailed || patFailed || usrFailed) {
       const failedGroups: string[] = [];
       if (empFailed) failedGroups.push(t("profesionales/empleados"));
-      if (patFailed) failedGroups.push(t("pacientes"));
+      if (patFailed) failedGroups.push(t("personas"));
       if (usrFailed) failedGroups.push(t("usuarios"));
       setBulkError(
         t(
@@ -387,7 +387,7 @@ export function PeopleBulkImport({
       <PageHeader
         title={t("Importar personas")}
         description={t(
-          "Importá un archivo CSV con profesionales, empleados, pacientes y/o usuarios en un solo paso.",
+          "Importá un archivo CSV con profesionales, empleados, personas y/o usuarios en un solo paso.",
         )}
         icon={UsersIcon}
         actions={
@@ -654,7 +654,7 @@ export function PeopleBulkImport({
                               {t("Empleado")}
                             </SelectItem>
                             <SelectItem value="paciente">
-                              {t("Paciente")}
+                              {t("Persona")}
                             </SelectItem>
                             <SelectItem value="usuario">
                               {t("Usuario")}
@@ -812,7 +812,9 @@ export function PeopleBulkImport({
                                 ) : (
                                   <AlertTriangle className="size-3" />
                                 )}
-                                {error}
+                                {error === "El paciente lleva un solo código de clínica y sin rol"
+                                  ? t(error)
+                                  : error}
                               </span>
                             ))}
                           </span>
@@ -1123,7 +1125,7 @@ export function PeopleBulkImport({
                 ? t("Ir a usuarios")
                 : backHref === "/employees"
                   ? t("Ir a profesionales")
-                  : t("Ir a pacientes")}
+                  : t("Ir a personas")}
             </Button>
             <Button variant="outline" onClick={reset}>
               <FileUp data-icon="inline-start" />

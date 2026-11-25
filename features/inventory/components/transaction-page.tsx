@@ -285,7 +285,7 @@ export function TransactionPage({ mode }: { mode: TransactionMode }) {
               />
             </Field>
           ) : (
-            <Field label={t("Paciente (opcional)")}>
+            <Field label={t("Persona (opcional)")}>
               <Input
                 value={patientName}
                 onChange={(event) => setPatientName(event.target.value)}
@@ -297,7 +297,7 @@ export function TransactionPage({ mode }: { mode: TransactionMode }) {
             <Input
               value={document}
               onChange={(event) => setDocument(event.target.value)}
-              placeholder={t("Factura, receta o remisión")}
+              placeholder={t("Factura, indicación de medicación o remisión")}
             />
           </Field>
         </div>
@@ -450,7 +450,7 @@ export function TransactionPage({ mode }: { mode: TransactionMode }) {
                   <TableHead className="hidden md:table-cell">
                     {isEntry ? t("Proveedor") : t("Responsable")}
                   </TableHead>
-                  {!isEntry && <TableHead>{t("Paciente")}</TableHead>}
+                  {!isEntry && <TableHead>{t("Persona")}</TableHead>}
                   <TableHead className="hidden lg:table-cell">{t("Productos")}</TableHead>
                 </TableRow>
               </TableHeader>

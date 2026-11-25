@@ -52,7 +52,7 @@ function DecisionForm({ decision, close, confirm }: { decision: Decision; close:
       if (!measuring && !String(data.get("reason") ?? "").trim()) { setError("Escribe el motivo de la decisión."); event.currentTarget.querySelector<HTMLTextAreaElement>('[name="reason"]')?.focus(); return; }
       confirm();
     }}>
-      <DialogHeader className="p-6"><DialogTitle>{t(decision)}</DialogTitle><DialogDescription>{t("Vista previa de diseño · C2 · Paciente sintético. Requiere integración backend.")}</DialogDescription></DialogHeader>
+      <DialogHeader className="p-6"><DialogTitle>{t(decision)}</DialogTitle><DialogDescription>{t("Vista previa de diseño · C2 · Persona sintética. Requiere integración backend.")}</DialogDescription></DialogHeader>
       <DialogBody className="space-y-4">
         {error && <p id="cycle-decision-error" role="alert" className="text-sm text-destructive">{t(error)}</p>}
         {!measuring && <p className="text-sm">{t("Ciclo fuente: C1 · versión 2. La publicación actual se conserva.")}</p>}

@@ -17,7 +17,7 @@ for (const { width, english } of [
       permissions: ["Patients.View", "Patients.Update", "Program.Edit", "Program.Profile360View"],
     });
     await page.goto("/patients?tab=estado-clinico");
-    const region = page.getByRole("region", { name: english ? "Patient table" : "Tabla de pacientes", exact: true });
+    const region = page.getByRole("region", { name: english ? "People table" : "Tabla de personas", exact: true });
     await expect(region).toBeVisible();
     await region.evaluate(el => { el.scrollIntoView({ block: "start", inline: "nearest" }); el.scrollLeft = 0; });
     const row = region.locator("tbody tr").first();
@@ -58,7 +58,7 @@ test("filas compactas con selección y nombres en una línea", async ({ page }) 
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.addInitScript(() => localStorage.setItem("copp-theme", "dark"));
   await page.goto("/patients?tab=estado-clinico");
-  const region = page.getByRole("region", { name: "Patient table", exact: true });
+  const region = page.getByRole("region", { name: "People table", exact: true });
   await expect(region.getByRole("checkbox").first()).toBeVisible();
   for (const width of [1880, 390, 320]) {
     await page.setViewportSize({ width, height: 900 });
@@ -84,7 +84,7 @@ test("filas compactas con selección y nombres en una línea", async ({ page }) 
 test("sin permiso mantiene ficha del paciente y oculta Perfil 360", async ({ page }) => {
   const http = await mockPatientsHttp(page, { permissions: ["Patients.View"] });
   await page.goto("/patients?tab=estado-clinico");
-  const region = page.getByRole("region", { name: "Tabla de pacientes", exact: true });
+  const region = page.getByRole("region", { name: "Tabla de personas", exact: true });
   await expect(region.locator("tbody tr").first()).toBeVisible();
   await expect(region.getByRole("link", { name: /^Perfil 360/ })).toHaveCount(0);
   await region.locator("tbody tr").first().getByRole("button", { name: new RegExp(`^${http.rows[0].firstName}`) }).click();

@@ -1,5 +1,6 @@
 "use client";
 
+import { catalogPresentation } from "@/features/professionals/catalog-presentation";
 import { useT } from "@/providers/i18n-provider";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -492,7 +493,7 @@ export function ProfessionalDetail({ id }: { id: string }) {
                 {employee.professionalTypeName && (
                   <span className="inline-flex items-center gap-1 rounded-full border border-border/70 bg-muted/50 px-2 py-0.5 text-[11px] font-medium text-foreground/80">
                     <Stethoscope className="size-3 text-primary" />
-                    {t(employee.professionalTypeName)}
+                    {catalogPresentation(employee.professionalTypeName, t, t)}
                   </span>
                 )}
               </div>
@@ -848,7 +849,7 @@ export function ProfessionalDetail({ id }: { id: string }) {
                 <>
                   <InfoItem
                     label={t("Tipo")}
-                    value={employee.professionalTypeName}
+                    value={catalogPresentation(employee.professionalTypeName, t)}
                     icon={Stethoscope}
                   />
                   {employee.professional && (
@@ -876,7 +877,7 @@ export function ProfessionalDetail({ id }: { id: string }) {
                               key={name}
                               className="inline-flex items-center rounded-full border border-border bg-muted/40 px-3 py-1.5 text-[12.5px] font-medium"
                             >
-                              {name}
+                              {catalogPresentation(name, t)}
                             </span>
                           ))}
                         </div>
@@ -952,7 +953,7 @@ export function ProfessionalDetail({ id }: { id: string }) {
                             }`}
                           >
                             {active && <BadgeCheck className="size-3.5" />}
-                            {specialty.name}
+                            {catalogPresentation(specialty.name, t)}
                           </button>
                         );
                       })}

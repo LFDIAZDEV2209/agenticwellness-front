@@ -24,17 +24,17 @@ export function PatientPicker({
   return (
     <div className="medication-patient-picker">
       <Input
-        aria-label={t("Buscar paciente")}
-        placeholder={t("Buscar paciente")}
+        aria-label={t("Buscar persona")}
+        placeholder={t("Buscar persona")}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
       <NativeSelect
-        ariaLabel={t("Paciente")}
+        ariaLabel={t("Persona")}
         value={value}
         onChange={onChange}
         options={[
-          { value: "", label: t("Selecciona un paciente") },
+          { value: "", label: t("Selecciona una persona") },
           ...(resource.data?.items.map((p) => ({
             value: p.patientId,
             label: p.name,

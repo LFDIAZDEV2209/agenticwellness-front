@@ -176,13 +176,13 @@ export function DashboardPage() {
         aria-label={t("Indicadores clave")}
       >
         <DashboardMetric
-          label={t("Total de pacientes")}
+          label={t("Total de personas")}
           value={kpis ? formatCount(kpis.totalPatients) : "—"}
           icon={Users}
           tone="blue"
         />
         <DashboardMetric
-          label={t("Pacientes nuevos (30 días)")}
+          label={t("Personas nuevas (30 días)")}
           value={kpis ? formatCount(kpis.newPatients30d) : "—"}
           icon={UserPlus}
           tone="teal"
@@ -260,7 +260,7 @@ export function DashboardPage() {
         <DashboardPanel
           accent="teal"
           title={t("Crecimiento")}
-          description={t("Pacientes nuevos por mes")}
+          description={t("Personas nuevas por mes")}
           icon={Users}
         >
           <GrowthCard data={growthData} height={220} />
@@ -268,7 +268,7 @@ export function DashboardPage() {
             <dl className="mt-3 grid grid-cols-1 gap-2 @min-[600px]/dashboard:grid-cols-3">
               {[
                 {
-                  label: t("Pacientes nuevos (6 meses)"),
+                  label: t("Personas nuevas (6 meses)"),
                   value: growthData.reduce(
                     (sum, point) => sum + point.value,
                     0,

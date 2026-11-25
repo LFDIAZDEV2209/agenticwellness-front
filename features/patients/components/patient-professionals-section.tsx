@@ -1,5 +1,6 @@
 "use client";
 
+import { catalogPresentation } from "@/features/professionals/catalog-presentation";
 import { useT } from "@/providers/i18n-provider";
 import { useEffect, useState } from "react";
 import {
@@ -112,6 +113,7 @@ export function PatientProfessionalsSection({
     if (!term) return true;
     return (
       professional.fullName.toLowerCase().includes(term) ||
+      catalogPresentation(professional.professionalTypeName, t).toLowerCase().includes(term) ||
       (professional.professionalTypeName ?? "").toLowerCase().includes(term)
     );
   });
@@ -164,7 +166,9 @@ export function PatientProfessionalsSection({
     >
       <SectionHeader
         title={t("Profesionales asignados")}
-        description={`${active.length} atienden a este paciente`}
+        description={t(active.length === 1 ? "1 profesional a cargo" : "{count} profesionales a cargo", {
+          count: String(active.length),
+        })}
         icon={Stethoscope}
         variant="primary"
       />
@@ -193,7 +197,7 @@ export function PatientProfessionalsSection({
                     </p>
                     {assignment.professionalTypeName && (
                       <p className="truncate text-xs text-muted-foreground">
-                        {assignment.professionalTypeName}
+                        {catalogPresentation(assignment.professionalTypeName, t)}
                       </p>
                     )}
                   </div>
@@ -291,7 +295,7 @@ export function PatientProfessionalsSection({
                                 {professional.fullName}
                                 {professional.professionalTypeName && (
                                   <span className="ml-1 text-xs text-muted-foreground">
-                                    · {professional.professionalTypeName}
+                                    · {catalogPresentation(professional.professionalTypeName, t)}
                                   </span>
                                 )}
                               </span>

@@ -224,7 +224,7 @@ export function ProfessionalSchedulesSection({
               </p>
               <p className="mt-1 max-w-xs text-xs text-muted-foreground">
                 {t(
-                  "Sin horarios el paciente no verá su disponibilidad para agendar citas",
+                  "Agrega horarios para que las personas puedan ver la disponibilidad y agendar citas.",
                 )}
               </p>
             </div>

@@ -98,7 +98,7 @@ export function AssignmentsPage() {
     <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
       <PageHeader
         title={t("Asignaciones")}
-        description={t("Rutinas de ejercicio y planes de alimentación asignados a pacientes")}
+        description={t("Rutinas de ejercicio y planes de alimentación asignados a personas")}
         icon={ClipboardList}
         actions={
           can("Wellness.Manage") ? (
@@ -156,7 +156,7 @@ export function AssignmentsPage() {
         </div>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <Input
-            placeholder={t("Buscar por paciente o nombre...")}
+            placeholder={t("Buscar por persona o nombre...")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="h-9 w-full sm:max-w-xs"
@@ -205,7 +205,7 @@ export function AssignmentsPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>{t("Tipo")}</TableHead>
-                  <TableHead>{t("Paciente")}</TableHead>
+                  <TableHead>{t("Persona")}</TableHead>
                   <TableHead className="hidden md:table-cell">{t("Nombre")}</TableHead>
                   <TableHead className="hidden md:table-cell">
                     {t("Frecuencia")}
@@ -400,7 +400,7 @@ function AssignmentsEmptyState({ onCreate }: { onCreate: () => void }) {
       <div>
         <p className="text-sm font-semibold">{t("No hay asignaciones")}</p>
         <p className="text-xs text-muted-foreground">
-          {t("Asigna una rutina de ejercicio o un plan de alimentación a un paciente.")}
+          {t("Asigna una rutina de ejercicio o un plan de alimentación a una persona.")}
         </p>
       </div>
       {can("Wellness.Manage") && (

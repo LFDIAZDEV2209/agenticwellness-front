@@ -135,7 +135,7 @@ export function AgentFormFields({
       <fieldset className="flex min-w-0 flex-col gap-3 rounded-2xl border border-border p-4" disabled={saving}>
         <legend className="px-2 text-sm font-semibold">{t('Selección del agente en Vita')}</legend>
         <p className="text-xs text-muted-foreground">
-          {t('Orienta la selección por tema y canal. Requiere agente y versión activos, sincronización y asignación autorizada al paciente; no concede permisos.')}
+          {t("Orienta la selección por tema y canal. Requiere agente y versión activos, sincronización y asignación autorizada a la persona. Los permisos se gestionan por separado.")}
         </p>
         <div className="flex items-center justify-between gap-3">
           <Label htmlFor={`${routingId}-enabled`}>{t('Personalizar selección en Vita')}</Label>

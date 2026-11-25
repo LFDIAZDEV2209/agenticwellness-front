@@ -150,7 +150,7 @@ function PendingCount() {
       </p>
       <span>
         {t(
-          "Solo pacientes de tu alcance. El contador no se limita a esta página.",
+          "Solo personas de tu alcance. El contador no se limita a esta página.",
         )}
       </span>
       {error && (

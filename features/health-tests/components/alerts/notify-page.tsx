@@ -217,7 +217,7 @@ export function NotifyPage() {
 
   function downloadCsv() {
     const rows: string[][] = [
-      ["Paciente", "Canal", "Idioma", "Estado", "Motivo", "Mensaje"],
+      ["Persona", "Canal", "Idioma", "Estado", "Motivo", "Mensaje"],
     ];
     for (const item of results ?? []) {
       rows.push([
@@ -270,7 +270,7 @@ export function NotifyPage() {
     return (
       <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
         <PageHeader
-          title={t("Notificar a pacientes")}
+          title={t("Notificar a personas")}
           description={t("Envía el resultado de las alertas seleccionadas por comunidad o SMS.")}
           icon={BellRing}
         />
@@ -287,7 +287,7 @@ export function NotifyPage() {
   return (
     <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
       <PageHeader
-        title={t("Notificar a pacientes")}
+        title={t("Notificar a personas")}
         description={t("Envía el resultado de las alertas seleccionadas por comunidad o SMS.")}
         icon={BellRing}
         actions={
@@ -347,7 +347,7 @@ export function NotifyPage() {
           <div className="sticky bottom-4 z-10 mt-auto flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-card px-4 py-3 shadow-sm">
             <div className="flex flex-wrap items-center gap-2 text-[11.5px] text-muted-foreground">
               <span className="font-semibold text-foreground">
-                {alertIds.length} {t("pacientes")}
+                {alertIds.length} {t("personas")}
               </span>
               <span aria-hidden>·</span>
               <span>
@@ -495,7 +495,7 @@ export function NotifyPage() {
               </div>
 
               <span className="text-[11px] text-muted-foreground">
-                {t("Los pacientes sin el contacto elegido se omitirán y se reportarán.")}
+                {t("Las personas sin el contacto elegido se omitirán y se reportarán.")}
               </span>
             </div>
           </section>
@@ -503,7 +503,7 @@ export function NotifyPage() {
           <section className="flex flex-col overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-sm">
             <SectionHeader
               title={t("Alertas incluidas")}
-              description={`${selectedAlerts.length} ${t("pacientes")}`}
+              description={`${selectedAlerts.length} ${t("personas")}`}
               icon={ShieldAlert}
               variant="primary"
             />
@@ -526,7 +526,7 @@ export function NotifyPage() {
                             <span className="truncate text-[12.5px] font-medium text-foreground">
                               {patient
                                 ? `${patient.firstName} ${patient.lastName}`.trim()
-                                : t("Paciente sin nombre")}
+                                : t("Persona sin nombre")}
                             </span>
                             <span className="truncate text-[11px] text-muted-foreground">
                               {alert.indicatorName} · {formatDate(alert.createdAt)}
@@ -582,7 +582,7 @@ export function NotifyPage() {
                 </ul>
               ) : (
                 <span className="text-[11.5px] text-muted-foreground">
-                  {t("Aún no se han enviado notificaciones a pacientes.")}
+                  {t("Aún no se han enviado notificaciones a personas.")}
                 </span>
               )}
               <Button
@@ -680,12 +680,12 @@ const CHANNEL_META: Record<
   community: {
     icon: MessageSquare,
     label: "Comunidad (app)",
-    description: "Mensaje directo en la app del paciente",
+    description: "Mensaje directo en la app de la persona",
   },
   sms: {
     icon: Smartphone,
     label: "SMS",
-    description: "Mensaje de texto al teléfono del paciente",
+    description: "Mensaje de texto al teléfono de la persona",
   },
 };
 
@@ -871,7 +871,7 @@ function StepCompose({
 
           <div className="flex flex-col gap-1.5">
             <span className="text-[11px] font-semibold text-muted-foreground">
-              {t("Insertar dato del paciente")}
+              {t("Insertar dato de la persona")}
             </span>
             <div className="flex flex-wrap gap-1.5">
               {NOTIFICATION_PLACEHOLDERS.map((placeholder) => (
@@ -893,8 +893,8 @@ function StepCompose({
             <span className="text-xs font-semibold text-foreground">{t("Vista previa")}</span>
             <span className="truncate text-[11px] text-muted-foreground">
               {firstAlert
-                ? `${t("Ejemplo")}: ${firstAlertName ?? t("Paciente")}`
-                : t("Sin paciente de ejemplo")}
+                ? `${t("Ejemplo")}: ${firstAlertName ?? t("Persona")}`
+                : t("Sin persona de ejemplo")}
             </span>
           </div>
 
@@ -911,7 +911,7 @@ function StepCompose({
           {realPreview && !realPreview.isReachable && (
             <p className="flex items-start gap-1.5 text-[11px] text-warning">
               <TriangleAlert className="mt-0.5 size-3.5 shrink-0" />
-              {realPreview.skipReason ?? t("El paciente no tiene el contacto de este canal.")}
+              {realPreview.skipReason ?? t("La persona no tiene un contacto registrado para este canal.")}
             </p>
           )}
 
@@ -931,7 +931,7 @@ function StepCompose({
 
           <p className="mt-auto text-[11px] text-muted-foreground">
             {t(
-              "Los datos se completan automáticamente con la información de cada paciente al enviar.",
+              "Los datos se completan automáticamente con la información de cada persona al enviar.",
             )}
           </p>
         </div>
@@ -988,7 +988,7 @@ function StepReview({
       />
       <div className="flex flex-col gap-4 p-4">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <SummaryTile label={t("Pacientes")} value={String(alerts.length)} />
+          <SummaryTile label={t("Personas")} value={String(alerts.length)} />
           <SummaryTile label={t("Canales")} value={String(channels.length)} />
           <SummaryTile label={t("Enviadas")} value={String(sent)} />
           <SummaryTile label={t("Omitidas")} value={String(skipped)} />
@@ -1025,7 +1025,7 @@ function StepReview({
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold text-foreground">
-                {t("Resultado por paciente")}
+                {t("Resultado por persona")}
               </span>
               <span className="text-[11px] text-muted-foreground">
                 {sent} {t("enviadas")} · {skipped} {t("omitidas")} · {failed}{" "}
@@ -1036,7 +1036,7 @@ function StepReview({
               <table className="w-full text-left text-[12px]">
                 <thead className="bg-muted/40 text-[10.5px] uppercase tracking-wide text-muted-foreground">
                   <tr>
-                    <th className="px-3 py-2 font-semibold">{t("Paciente")}</th>
+                    <th className="px-3 py-2 font-semibold">{t("Persona")}</th>
                     <th className="px-2 py-2 font-semibold">{t("Canal")}</th>
                     <th className="px-2 py-2 font-semibold">{t("Estado")}</th>
                     <th className="px-2 py-2 font-semibold">{t("Detalle")}</th>
@@ -1089,7 +1089,7 @@ function StepReview({
                 {t("Mensaje final")}
               </span>
               <span className="text-[11px] text-muted-foreground">
-                {t("Así lo recibirá el paciente")}
+                {t("Así lo recibirá la persona")}
               </span>
             </div>
             <MessagePreview channel={channels[0] ?? "community"} body={finalBody} />
@@ -1102,17 +1102,17 @@ function StepReview({
               <div className="flex flex-col gap-2">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                    {t("Vista previa por paciente")}
+                    {t("Vista previa por persona")}
                   </span>
                   <span className="text-[11.5px] text-muted-foreground">
-                    {previewItems.length} {t("pacientes")}
+                    {previewItems.length} {t("personas")}
                   </span>
                 </div>
                 <div className="overflow-x-auto rounded-xl border border-border">
                   <table className="w-full text-[12px]">
                     <thead className="bg-muted/40 text-[10.5px] uppercase tracking-wide text-muted-foreground">
                       <tr>
-                        <th className="px-3 py-2 text-left font-semibold">{t("Paciente")}</th>
+                        <th className="px-3 py-2 text-left font-semibold">{t("Persona")}</th>
                         <th className="px-3 py-2 text-left font-semibold">{t("Canal")}</th>
                         <th className="px-3 py-2 text-left font-semibold">{t("Detalle")}</th>
                       </tr>
@@ -1142,7 +1142,7 @@ function StepReview({
               </div>
             )}
             <p className="text-[11.5px] text-muted-foreground">
-              {t("Revisa el mensaje de cada paciente y confirma el envío.")}
+              {t("Revisa el mensaje de cada persona y confirma el envío.")}
             </p>
           </div>
         )}

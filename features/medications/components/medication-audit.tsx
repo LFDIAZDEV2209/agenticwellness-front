@@ -131,7 +131,7 @@ export function MedicationAuditLog() {
                 <TableRow>
                   {[
                     "Fecha",
-                    "Paciente",
+                    "Persona",
                     "Acción",
                     "Usuario",
                     "Recurso",
@@ -187,7 +187,7 @@ export function MedicationAuditLog() {
                         (
                           {
                             tracking: "Seguimiento diario",
-                            workspace: "Ficha del paciente",
+                            workspace: "Ficha de la persona",
                             inventory: "Inventario",
                             inventory_movements: "Movimientos",
                             effects: "Efectos reportados",
@@ -195,7 +195,7 @@ export function MedicationAuditLog() {
                             alerts: "Alertas",
                             alert: "Alerta",
                             dose: "Toma",
-                            treatment: "Tratamiento",
+                            treatment: "Plan de medicación",
                             access: "Acceso",
                           } as Record<string, string>
                         )[entry.resource] ?? entry.resource,

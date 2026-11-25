@@ -397,7 +397,7 @@ export function TemplateStudio() {
   const header = (
     <PageHeader
       title={t("Estudio de plantillas")}
-      description={t("Crea, versiona y prueba los mensajes que se envían a los pacientes")}
+      description={t("Crea, versiona y prueba los mensajes que se envían a las personas")}
       icon={Sparkles}
       actions={
         <Button onClick={newTemplate} size="sm">
@@ -812,7 +812,7 @@ export function TemplateStudio() {
           <div className="rounded-xl border border-border bg-muted/30 p-4">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
               <span className="text-[11px] font-semibold text-muted-foreground">
-                {t("Paciente de ejemplo")}
+                {t("Persona de ejemplo")}
               </span>
               <Select
                 value={sampleAlertId || "sample"}
@@ -820,7 +820,7 @@ export function TemplateStudio() {
               >
                 <SelectTrigger
                   className="h-8 w-56"
-                  aria-label={t("Paciente de ejemplo")}
+                  aria-label={t("Persona de ejemplo")}
                 >
                   <SelectValue />
                 </SelectTrigger>
@@ -828,7 +828,7 @@ export function TemplateStudio() {
                   <SelectItem value="sample">{t("Datos de ejemplo")}</SelectItem>
                   {sampleAlerts.map((alert) => (
                     <SelectItem key={alert.id} value={alert.id}>
-                      {patientNames[alert.patientId] ?? t("Paciente")} ·{" "}
+                      {patientNames[alert.patientId] ?? t("Persona")} ·{" "}
                       {alert.indicatorName}
                     </SelectItem>
                   ))}
@@ -840,7 +840,7 @@ export function TemplateStudio() {
               <p className="mb-2 flex items-start gap-1.5 text-[11px] text-warning">
                 <TriangleAlert className="mt-0.5 size-3.5 shrink-0" />
                 {activeRealPreview.skipReason ??
-                  t("El paciente no tiene el contacto de este canal.")}
+                  t("La persona no tiene un contacto registrado para este canal.")}
               </p>
             )}
 

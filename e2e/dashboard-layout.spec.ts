@@ -21,7 +21,7 @@ test("dashboard uses compact metrics and a chart-led hierarchy", async ({
   expect(usage.x).toBeGreaterThan(activity.x + activity.width);
   expect(growth.width).toBeGreaterThan(activity.width + 100);
   await expect(
-    page.getByText("Pacientes nuevos (6 meses)", { exact: true }),
+    page.getByText("Personas nuevas (6 meses)", { exact: true }),
   ).toBeVisible();
   if (process.env.DASHBOARD_DESIGN_CAPTURE_DIR) {
     for (const [name, width] of [

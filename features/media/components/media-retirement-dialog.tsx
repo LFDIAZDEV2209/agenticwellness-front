@@ -330,7 +330,7 @@ export function MediaRetirementDialog({
                 {completed.impact && (
                   <p>
                     {t(
-                      "Impacto confirmado: {patients} pacientes y {templates} plantillas.",
+                      "Impacto confirmado: {patients} personas y {templates} plantillas.",
                       {
                         patients: number(completed.impact.pacientes),
                         templates: number(completed.impact.plantillas),
@@ -404,7 +404,7 @@ export function MediaRetirementDialog({
                   <dl className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col">
                       <dt className="order-last text-sm text-muted-foreground">
-                        {t("Pacientes")}
+                        {t("Personas")}
                       </dt>
                       <dd className="text-2xl font-semibold tabular-nums">
                         {number(impact?.pacientes ?? 0)}

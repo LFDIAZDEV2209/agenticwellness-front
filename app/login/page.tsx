@@ -129,7 +129,7 @@ export default function LoginPage() {
             </h1>
             <p className="mt-4 max-w-[40ch] text-[14.5px] leading-relaxed text-secondary-foreground">
               {t(
-                "Pacientes, programas y agentes de IA en una sola consola clínica.",
+                "Personas, programas y agentes de IA en una sola consola clínica.",
               )}
             </p>
 
@@ -430,7 +430,7 @@ export default function LoginPage() {
                   </h2>
                   <p className="mt-1 text-[12.5px] leading-relaxed text-white/75">
                     {t(
-                      "Administración clínica para el seguimiento integral de tus pacientes.",
+                      "Administra el programa y acompaña el progreso de las personas.",
                     )}
                   </p>
                 </div>
@@ -447,7 +447,7 @@ export default function LoginPage() {
                   12.8K
                 </span>
                 <span className="text-[10.5px] text-white/70">
-                  {t("Pacientes")}
+                  {t("Personas")}
                 </span>
               </span>
             </div>
@@ -486,7 +486,7 @@ export default function LoginPage() {
         <div className="relative z-10 px-12 pb-9">
           <div className="mx-auto grid max-w-[480px] grid-cols-4 divide-x divide-white/8 rounded-2xl border border-white/10 bg-white/6 backdrop-blur-sm">
             {[
-              { icon: UsersRound, label: t("Pacientes") },
+              { icon: UsersRound, label: t("Personas") },
               { icon: CalendarDays, label: t("Agenda") },
               { icon: Bot, label: t("Agentes IA") },
               { icon: MessageCircle, label: t("Chat") },

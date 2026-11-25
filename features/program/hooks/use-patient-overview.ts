@@ -24,7 +24,7 @@ export function usePatientOverview(patientId: string) {
       setError(
         err instanceof Error
           ? err.message
-          : "Error al cargar el perfil del paciente.",
+          : "No se pudo cargar el perfil de la persona.",
       );
       setData(null);
     } finally {

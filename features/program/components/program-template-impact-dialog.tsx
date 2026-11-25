@@ -214,7 +214,7 @@ export function ProgramTemplateImpactDialog({
                   />
                   <span>
                     {t(
-                      "El impacto respeta tu alcance de pacientes. Los conteos pueden incluir a la misma persona.",
+                      "La acción respeta tu alcance. Los conteos pueden incluir a la misma persona.",
                     )}
                   </span>
                 </p>
