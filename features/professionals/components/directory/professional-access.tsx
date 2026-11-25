@@ -244,7 +244,7 @@ export function ProfessionalAccess({
             ? t("Tu acceso está protegido")
             : readOnly
               ? t("Sin permiso para cambiar el acceso")
-              : t("Solo afecta al ERP; conserva el acceso como paciente.")}
+              : t("Solo afecta al ERP; conserva el acceso como persona.")}
         </span>
       </div>
       {change?.message ? (

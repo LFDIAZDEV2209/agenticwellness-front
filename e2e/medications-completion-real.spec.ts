@@ -31,12 +31,12 @@ test("ERP edits a prescription, the open app records and corrects it, and ERP up
       .getByRole("link", { name: "Control de medicamentos", exact: true });
     await expect(patientMedicationLink).toHaveAttribute("href", "/medications/" + fixture.patientId);
     await patientMedicationLink.click();
-    await staff.getByRole("button", { name: "Nuevo tratamiento", exact: true }).click();
+    await staff.getByRole("button", { name: "Nuevo plan de medicación", exact: true }).click();
     const name = "Plan QA " + randomUUID().slice(0, 8);
     await staff.getByRole("button", { name: "Entrada manual", exact: true }).click();
     await staff.getByLabel("Nombre del producto", { exact: true }).fill(name);
     await staff.getByLabel("Horario 1", { exact: true }).fill("00:01");
-    await staff.getByRole("button", { name: "Guardar tratamiento", exact: true }).click();
+    await staff.getByRole("button", { name: "Guardar plan de medicación", exact: true }).click();
     const treatment = staff.locator(".medication-treatment-row").filter({ hasText: name });
     await expect(treatment).toBeVisible();
     await treatment.getByRole("button", { name: "Editar dosis y horarios", exact: true }).click({ timeout: 5_000 });
@@ -78,9 +78,9 @@ test("ERP edits a prescription, the open app records and corrects it, and ERP up
     await settings.getByRole("button", { name: "Guardar", exact: true }).click();
     expect((await saved).ok()).toBe(true);
 
-    await staff.getByRole("tab", { name: "Tratamientos", exact: true }).click();
+    await staff.getByRole("tab", { name: "Planes de medicación", exact: true }).click();
     await treatment.getByRole("button", { name: "Pausar", exact: true }).click();
-    const suspension = staff.getByRole("dialog", { name: "Suspender tratamiento" });
+    const suspension = staff.getByRole("dialog", { name: "Suspender plan de medicación" });
     await suspension.getByLabel("Motivo de suspensión").fill("QA: final de la prueba");
     await suspension.getByRole("button", { name: "Confirmar suspensión" }).click();
     await expect(treatment).toContainText("Pausado");
@@ -142,14 +142,14 @@ test("an interval prescription supports durable snoozes and opted-in WhatsApp re
     await setWhatsAppReminder(patient, false);
 
     await staff.goto(erp + "/medications/" + fixture.patientId);
-    await staff.getByRole("button", { name: "Nuevo tratamiento", exact: true }).click();
+    await staff.getByRole("button", { name: "Nuevo plan de medicación", exact: true }).click();
     const name = "Intervalo QA " + randomUUID().slice(0, 8);
     await staff.getByRole("button", { name: "Entrada manual", exact: true }).click();
     await staff.getByLabel("Nombre del producto", { exact: true }).fill(name);
     await staff.getByLabel("Frecuencia", { exact: true }).selectOption("interval");
     await staff.getByLabel("Horas entre tomas").fill("5");
     await staff.getByLabel("Horario 1", { exact: true }).fill(scheduled);
-    await staff.getByRole("button", { name: "Guardar tratamiento", exact: true }).click();
+    await staff.getByRole("button", { name: "Guardar plan de medicación", exact: true }).click();
     const doses = patient.locator(".medications-dose").filter({ hasText: name });
     await expect(doses).toHaveCount(remainingDoses);
     const initial = doses.filter({ has: patient.getByText(scheduled, { exact: true }) });
@@ -185,11 +185,11 @@ test("an interval prescription supports durable snoozes and opted-in WhatsApp re
     await expect(event.getByText("WhatsApp", { exact: true })).toBeVisible();
 
     const skippedName = "Omisión WhatsApp QA " + randomUUID().slice(0, 8);
-    await staff.getByRole("button", { name: "Nuevo tratamiento", exact: true }).click();
+    await staff.getByRole("button", { name: "Nuevo plan de medicación", exact: true }).click();
     await staff.getByRole("button", { name: "Entrada manual", exact: true }).click();
     await staff.getByLabel("Nombre del producto", { exact: true }).fill(skippedName);
     await staff.getByLabel("Horario 1", { exact: true }).fill(scheduled);
-    await staff.getByRole("button", { name: "Guardar tratamiento", exact: true }).click();
+    await staff.getByRole("button", { name: "Guardar plan de medicación", exact: true }).click();
     const skippedDose = patient.locator(".medications-dose").filter({ hasText: skippedName });
     await expect(skippedDose).toBeVisible();
     await staff.getByRole("tab", { name: "Historial", exact: true }).click();

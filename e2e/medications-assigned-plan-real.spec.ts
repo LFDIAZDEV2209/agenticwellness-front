@@ -55,11 +55,11 @@ test('ERP asigna → paciente registra otro → no sustituye plan → toma asign
     console.log('Step: ERP assignment');
     await erpLogin(staff);
     await staff.goto(erp+'/medications/'+f.patientId);
-    await staff.getByRole('button',{name:'Nuevo tratamiento',exact:true}).click();
+    await staff.getByRole('button',{name:"Nuevo plan de medicación",exact:true}).click();
     await staff.getByRole("button", { name: "Entrada manual", exact: true }).click();
     await staff.getByLabel('Nombre del producto',{exact:true}).fill(name);
     await staff.getByLabel('Horario 1',{exact:true}).fill('00:01');
-    await staff.getByRole('button',{name:'Guardar tratamiento',exact:true}).click();
+    await staff.getByRole('button',{name:"Guardar plan de medicación",exact:true}).click();
     const treatment = staff.locator('.medication-treatment-row').filter({hasText:name});
     await expect(treatment).toBeVisible();
     await expect(treatment).toContainText('Plan asignado'); // rojo: UI antigua no distingue el plan

@@ -128,7 +128,7 @@ export function NutritionPlansPage() {
     <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
       <PageHeader
         title={t("Planes de alimentación")}
-        description={t("Gestiona los planes nutricionales para tus pacientes")}
+        description={t("Gestiona los planes nutricionales de las personas a tu cargo")}
         icon={Apple}
         actions={
           can("Wellness.Manage") ? (
@@ -241,7 +241,7 @@ export function NutritionPlansPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>{t("Nombre")}</TableHead>
-                  <TableHead className="hidden md:table-cell">{t("Paciente")}</TableHead>
+                  <TableHead className="hidden md:table-cell">{t("Persona")}</TableHead>
                   <TableHead className="hidden md:table-cell">{t("Tipo")}</TableHead>
                   <TableHead className="hidden md:table-cell">
                     {t("Duración")}
@@ -326,7 +326,7 @@ export function NutritionPlansPage() {
                             variant="ghost"
                             size="icon"
                             className="size-8"
-                            title={t("Clonar a paciente")}
+                            title={t("Clonar para una persona")}
                             onClick={() => setCloning(plan)}
                           >
                             <Copy className="size-4" />
@@ -521,7 +521,7 @@ function PlansEmptyState({ onCreate }: { onCreate: () => void }) {
       <div>
         <p className="text-sm font-semibold">{t("No hay planes de alimentación")}</p>
         <p className="text-xs text-muted-foreground">
-          {t("Crea tu primer plan nutricional para asignarlo a tus pacientes.")}
+          {t("Crea tu primer plan nutricional para asignarlo a las personas a tu cargo.")}
         </p>
       </div>
       {can("Wellness.Manage") && (
@@ -583,14 +583,14 @@ function ClonePlanDialog({
     >
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{t("Clonar plan a paciente")}</AlertDialogTitle>
+          <AlertDialogTitle>{t("Clonar plan para una persona")}</AlertDialogTitle>
           <AlertDialogDescription>
-            {t('Se creará una copia del plan "{name}" asignada al paciente seleccionado. El plan original no se modifica.', { name: plan.name })}
+            {t("Se creará una copia del plan «{name}» asignada a la persona seleccionada. El plan original no se modifica.", { name: plan.name })}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="flex flex-col gap-3 py-2">
           <Input
-            placeholder={t("Buscar paciente por nombre...")}
+            placeholder={t("Buscar persona por nombre...")}
             value={patientSearch}
             onChange={(e) => {
               setPatientSearch(e.target.value);
@@ -626,7 +626,7 @@ function ClonePlanDialog({
             !loadingPatients &&
             patients.length === 0 && (
               <p className="text-xs text-muted-foreground">
-                {t("No se encontraron pacientes.")}
+                {t("No se encontraron personas.")}
               </p>
             )}
         </div>

@@ -160,11 +160,11 @@ export function CreateBatteryFields({
             <label className="flex items-center justify-between gap-4 rounded-xl border border-border px-4 py-3">
               <span className="flex flex-col gap-0.5">
                 <span className="text-[13px] font-medium">
-                  {t("Auto-asignación de pacientes nuevos")}
+                  {t("Asignación automática de personas nuevas")}
                 </span>
                 <span className="text-[11px] text-muted-foreground">
                   {t(
-                    "Los pacientes nuevos recibirán automáticamente los tests de esta batería.",
+                    "Las personas nuevas recibirán automáticamente las evaluaciones de esta batería.",
                   )}
                 </span>
               </span>

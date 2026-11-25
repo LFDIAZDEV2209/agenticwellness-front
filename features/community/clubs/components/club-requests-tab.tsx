@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { SectionHeader } from "@/components/layout/section-header";
 import { useT } from "@/providers/i18n-provider";
+import { CLUB_DEMO_JOIN_REASON } from "../mock/seeds";
 import {
   approveMembership,
   fetchClubRequests,
@@ -88,7 +89,7 @@ export function ClubRequestsTab({ clubId }: { clubId: string }) {
                     {request.displayName}
                   </span>
                   <span className="truncate text-xs text-muted-foreground">
-                    {request.reason}
+                    {request.reason === CLUB_DEMO_JOIN_REASON ? t(CLUB_DEMO_JOIN_REASON) : request.reason}
                   </span>
                 </div>
                 <div className="flex shrink-0 gap-2">

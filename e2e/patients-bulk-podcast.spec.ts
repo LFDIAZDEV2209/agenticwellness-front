@@ -220,7 +220,7 @@ test("1.24 · selección entre páginas y filtros, revisión sin escritura y res
   await selectFirst(page);
   await expect(
     page.getByRole("checkbox", {
-      name: "Seleccionar pacientes de esta página",
+      name: "Seleccionar personas de esta página",
       exact: true,
     }),
   ).toHaveAttribute("aria-checked", "mixed");
@@ -231,12 +231,12 @@ test("1.24 · selección entre páginas y filtros, revisión sin escritura y res
     .first()
     .check();
   await page
-    .getByLabel("Buscar pacientes", { exact: true })
+    .getByLabel("Buscar personas", { exact: true })
     .fill("sin coincidencia");
   await expect(page.getByRole("table")).toHaveCount(0);
   await expect(
-    page.getByRole("region", { name: "Acciones de pacientes seleccionados" }),
-  ).toContainText("2 pacientes seleccionados");
+    page.getByRole("region", { name: "Acciones de personas seleccionadas" }),
+  ).toContainText("2 personas seleccionadas");
   await page
     .getByRole("button", { name: "Asignar podcast", exact: true })
     .click();
@@ -258,7 +258,7 @@ test("1.24 · selección entre páginas y filtros, revisión sin escritura y res
   await page.getByRole("button", { name: "Cancelar", exact: true }).click();
   expect(http.state.calls).toHaveLength(0);
   await expect(
-    page.getByRole("region", { name: "Acciones de pacientes seleccionados" }),
+    page.getByRole("region", { name: "Acciones de personas seleccionadas" }),
   ).toBeVisible();
   await page
     .getByRole("button", { name: "Asignar podcast", exact: true })
@@ -312,7 +312,7 @@ test("1.24 · selección entre páginas y filtros, revisión sin escritura y res
   await capture(page, "1.24-result-desktop");
   await page.getByRole("button", { name: "Listo", exact: true }).click();
   await expect(
-    page.getByRole("region", { name: "Acciones de pacientes seleccionados" }),
+    page.getByRole("region", { name: "Acciones de personas seleccionadas" }),
   ).toHaveCount(0);
   expect(http.unknowns).toEqual([]);
 });
@@ -349,8 +349,8 @@ for (const error of [
       ).toBeEnabled();
     await dialog.getByRole("button", { name: "Cancelar", exact: true }).click();
     await expect(
-      page.getByRole("region", { name: "Acciones de pacientes seleccionados" }),
-    ).toContainText("1 paciente seleccionado");
+      page.getByRole("region", { name: "Acciones de personas seleccionadas" }),
+    ).toContainText("1 persona seleccionada");
     expect(http.state.calls).toHaveLength(1);
   });
 }
@@ -377,7 +377,7 @@ test("1.24 · máximo 100, selección de página y limpieza", async ({ page }) =
   await fixture(page, { many: true });
   await page.goto("/patients?tab=estado-clinico");
   const all = page.getByRole("checkbox", {
-    name: "Seleccionar pacientes de esta página",
+    name: "Seleccionar personas de esta página",
     exact: true,
   });
   for (let index = 1; index <= 10; index++) {
@@ -395,14 +395,14 @@ test("1.24 · máximo 100, selección de página y limpieza", async ({ page }) =
     page.getByRole("checkbox", { name: /^Seleccionar a / }),
   ).toBeDisabled();
   await expect(
-    page.getByRole("region", { name: "Acciones de pacientes seleccionados" }),
+    page.getByRole("region", { name: "Acciones de personas seleccionadas" }),
   ).toContainText("100 pacientes seleccionados");
   await page
     .getByRole("button", { name: "Limpiar selección", exact: true })
     .click();
   await expect(all).toBeEnabled();
   await expect(
-    page.getByRole("region", { name: "Acciones de pacientes seleccionados" }),
+    page.getByRole("region", { name: "Acciones de personas seleccionadas" }),
   ).toHaveCount(0);
 });
 

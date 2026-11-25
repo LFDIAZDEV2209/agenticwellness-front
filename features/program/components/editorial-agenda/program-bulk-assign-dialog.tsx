@@ -214,7 +214,7 @@ function PodcastBulkAssignDialog({
               </DialogTitle>
               <DialogDescription className="text-xs text-muted-foreground">
                 {isEnrollment
-                  ? t("Aplica un podcast a un rango de semanas del paciente")
+                  ? t("Aplica un podcast a un rango de semanas de la persona")
                   : t("Aplica un podcast a los días de la plantilla")}
                 {targetLabel ? ` · ${targetLabel}` : ""}
               </DialogDescription>
@@ -425,7 +425,7 @@ function PodcastBulkAssignDialog({
                   {frozenEstimate > 0 && !forceFrozen && (
                     <span className="text-warning-soft-foreground">
                       {t(
-                        "≈ {count} semanas congeladas (pasadas) se omitirán para preservar el historial del paciente.",
+                        "≈ {count} semanas congeladas (pasadas) se omitirán para preservar el historial de la persona.",
                         { count: String(frozenEstimate) },
                       )}
                     </span>

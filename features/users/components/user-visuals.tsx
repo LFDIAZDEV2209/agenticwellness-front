@@ -267,7 +267,7 @@ export function OpenPatientProfile({
       href={`/patients/${patient.id}`}
       className={buttonVariants({ variant: "outline", className: "w-fit" })}
     >
-      {t("Abrir ficha del paciente")}
+      {t("Abrir ficha de la persona")}
       <ArrowUpRight data-icon="inline-end" aria-hidden="true" />
     </Link>
   );

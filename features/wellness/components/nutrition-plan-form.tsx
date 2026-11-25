@@ -482,13 +482,13 @@ const handleSelectPatient = (p: PickerItem) => {
   return (
     <div className="flex flex-col gap-5 px-6 py-5">
       {!isTemplate ? <p role="status" className="rounded-lg border border-primary/20 bg-primary/5 p-3 text-sm">
-        {t("Ciclo de 30 días. El menú se repite desde el primer día del ciclo. Guardar cambios requiere una nueva aprobación antes de mostrarlos al paciente.")}
+        {t("Ciclo de 30 días. El menú se repite desde el primer día del ciclo. Guardar cambios requiere una nueva aprobación antes de mostrarlos a la persona.")}
       </p> : null}
       <div className="flex flex-col gap-4">
         {/* Paciente (opcional) + generación con IA */}
             <div className="flex flex-col gap-1.5">
               <Label>
-                {isEditing ? t("Paciente asociado") : t("Paciente (opcional)")}
+                {isEditing ? t("Persona asociada") : t("Persona (opcional)")}
               </Label>
               {isEditing ? (
                 // En edición: mostrar el paciente del plan (solo lectura)
@@ -503,7 +503,7 @@ const handleSelectPatient = (p: PickerItem) => {
                       type="button"
                       className="ml-auto text-muted-foreground hover:text-foreground"
                       onClick={handleClearPatient}
-                      aria-label="Quitar paciente"
+                      aria-label={t("Quitar persona")}
                     >
                       ×
                     </button>
@@ -532,7 +532,7 @@ const handleSelectPatient = (p: PickerItem) => {
                   <div className="relative">
                     <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
                     <Input
-                      placeholder={t("Buscar paciente por nombre...")}
+                      placeholder={t("Buscar persona por nombre...")}
                       value={patientSearch}
                       onChange={(e) => {
                         setPatientSearch(e.target.value);
@@ -569,7 +569,7 @@ const handleSelectPatient = (p: PickerItem) => {
                     !loadingPatients &&
                     patientResults.length === 0 && (
                       <p className="text-xs text-muted-foreground">
-                        {t("No se encontraron pacientes.")}
+                        {t("No se encontraron personas.")}
                       </p>
                     )}
                 </>
@@ -731,7 +731,7 @@ const handleSelectPatient = (p: PickerItem) => {
                         {t("Template (biblioteca)")}
                       </SelectItem>
                       <SelectItem value="custom">
-                        {t("Personalizado (paciente)")}
+                        {t("Personalizado (persona)")}
                       </SelectItem>
                     </SelectContent>
                   </Select>

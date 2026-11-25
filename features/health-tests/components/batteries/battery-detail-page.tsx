@@ -225,7 +225,7 @@ export function BatteryDetailPage({ batteryId }: { batteryId: string }) {
               onClick={() => setAssignOpen(true)}
             >
               <Users data-icon="inline-start" />
-              {t("Asignar pacientes")}
+              {t("Asignar personas")}
             </Button>
           ) : undefined
         }
@@ -252,7 +252,7 @@ export function BatteryDetailPage({ batteryId }: { batteryId: string }) {
         {battery.autoAssignOnPatientCreate && (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-info-soft px-2.5 py-1 text-[11px] font-medium text-info-soft-foreground">
             <PackageCheck className="size-3" />
-            {t("Auto-asignación de pacientes nuevos")}
+            {t("Asignación automática de personas nuevas")}
           </span>
         )}
       </div>
@@ -266,7 +266,7 @@ export function BatteryDetailPage({ batteryId }: { batteryId: string }) {
           context={`${requiredCount} ${t("obligatorios")} · ${optionalCount} ${t("opcionales")}`}
         />
         <StatCard
-          label={t("Pacientes con la batería")}
+          label={t("Personas con la batería")}
           value={master.data ? String(rowsWithBattery) : "—"}
           icon={Users}
           variant="info"
@@ -349,7 +349,7 @@ export function BatteryDetailPage({ batteryId }: { batteryId: string }) {
                       : t("Sin frecuencia")}
                   </span>
                   <span className="text-[11px] text-muted-foreground">
-                    {item.patientsWith} {t("pacientes")} · {item.completed}{" "}
+                    {item.patientsWith} {t("personas")} · {item.completed}{" "}
                     {t("completados")}
                   </span>
                   <span className="flex w-28 shrink-0 items-center gap-2">

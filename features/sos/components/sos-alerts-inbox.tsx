@@ -238,7 +238,7 @@ export function SosAlertsInbox() {
           value={String(counts.Cancelada)}
           icon={X}
           variant="info"
-          context={t("cerradas por el paciente")}
+          context={t("cerradas por la persona")}
         />
         <StatCard
           label={t("En la vista")}
@@ -262,7 +262,7 @@ export function SosAlertsInbox() {
             <Input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder={t("Buscar alerta por paciente…")}
+              placeholder={t("Buscar alerta por persona…")}
               className="pl-9 pr-9"
               aria-label={t("Buscar alertas SOS")}
             />
@@ -352,7 +352,7 @@ export function SosAlertsInbox() {
           <p className="max-w-sm text-[12.5px] text-muted-foreground">
             {hasFilters
               ? t("Prueba con otros filtros o limpia la búsqueda.")
-              : t("Las alertas de pánico de tus pacientes aparecerán aquí.")}
+              : t("Aquí aparecerán las alertas de pánico de las personas a tu cargo.")}
           </p>
           {hasFilters && (
             <Button
@@ -500,7 +500,7 @@ function SosAlertCard({
         <div className="flex min-w-0 flex-1 flex-col gap-1.5">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-[13.5px] font-semibold text-foreground">
-              {alert.patientName ?? t("Paciente")}
+              {alert.patientName ?? t("Persona")}
             </span>
             <span
               className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10.5px] font-semibold"
@@ -540,7 +540,7 @@ function SosAlertCard({
               disabled={busy}
               className="gap-1.5 bg-[var(--sidebar)] text-white shadow-sm hover:bg-[var(--sidebar)]/90"
               aria-label={t("Atender alerta de {name}", {
-                name: alert.patientName ?? t("el paciente"),
+                name: alert.patientName ?? t("la persona"),
               })}
             >
               <Siren className="size-3.5" aria-hidden />

@@ -87,7 +87,7 @@ export function PatientGeoView({
       <section className="patient-map-card flex flex-col overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-xs">
         <SectionHeader
           title={t("Distribución geográfica — EE. UU.")}
-          description={t("Pacientes por estado · total del alcance")}
+          description={t("Personas por estado · total del alcance")}
           icon={MapPin}
           variant="primary"
           accent="teal"
@@ -135,7 +135,7 @@ export function PatientGeoView({
             data-slot="chart-map"
             viewBox={USA_VIEWBOX}
             role="img"
-            aria-label={t("Mapa de pacientes por estado de EE. UU.")}
+            aria-label={t("Mapa de personas por estado de EE. UU.")}
             className="h-auto max-h-[430px] w-full"
           >
             {Object.entries(USA_STATE_PATHS).map(([abbr, d]) => {
@@ -150,8 +150,8 @@ export function PatientGeoView({
                   aria-pressed={isSelected}
                   aria-label={
                     state
-                      ? `${STATE_NAMES[abbr] ?? abbr}: ${state.count} ${t("pacientes")} (${state.percentage.toFixed(1)}%)`
-                      : `${STATE_NAMES[abbr] ?? abbr}: ${t("sin pacientes")}`
+                      ? `${STATE_NAMES[abbr] ?? abbr}: ${state.count} ${t("personas")} (${state.percentage.toFixed(1)}%)`
+                      : `${STATE_NAMES[abbr] ?? abbr}: ${t("sin personas")}`
                   }
                   className="cursor-pointer outline-none focus-visible:opacity-90"
                   onMouseEnter={(event) => {
@@ -195,8 +195,8 @@ export function PatientGeoView({
                   />
                   <title>
                     {state
-                      ? `${STATE_NAMES[abbr] ?? abbr} — ${state.count} ${t("pacientes")} (${state.percentage.toFixed(1)}%)`
-                      : `${STATE_NAMES[abbr] ?? abbr} — ${t("sin pacientes")}`}
+                      ? `${STATE_NAMES[abbr] ?? abbr} — ${state.count} ${t("personas")} (${state.percentage.toFixed(1)}%)`
+                      : `${STATE_NAMES[abbr] ?? abbr} — ${t("sin personas")}`}
                   </title>
                 </g>
               );
@@ -214,7 +214,7 @@ export function PatientGeoView({
               {byCode.get(hovered) ? (
                 <>
                   <p className="text-muted-foreground">
-                    {byCode.get(hovered)!.count} {t("pacientes")} ·{" "}
+                    {byCode.get(hovered)!.count} {t("personas")} ·{" "}
                     {byCode.get(hovered)!.percentage.toFixed(1)}%
                   </p>
                   <p className="text-[10.5px] text-muted-foreground">
@@ -222,7 +222,7 @@ export function PatientGeoView({
                   </p>
                 </>
               ) : (
-                <p className="text-muted-foreground">{t("Sin pacientes")}</p>
+                <p className="text-muted-foreground">{t("Sin personas")}</p>
               )}
             </div>
           )}
@@ -243,7 +243,7 @@ export function PatientGeoView({
                   />
                 ))}
               </span>
-              <span>{t("Más pacientes")}</span>
+              <span>{t("Más personas")}</span>
             </div>
             <span>{t("Haz clic en un estado para filtrar la vista")}</span>
           </div>
@@ -256,7 +256,7 @@ export function PatientGeoView({
       >
         <SectionHeader
           title={t("Top estados")}
-          description={t("Por volumen de pacientes")}
+          description={t("Por número de personas registradas")}
           icon={MapPin}
           variant="primary"
           accent="teal"
@@ -264,7 +264,7 @@ export function PatientGeoView({
         <div className="flex flex-col gap-1 p-4">
           {top.length === 0 ? (
             <p className="rounded-xl border border-dashed border-border px-4 py-8 text-center text-sm text-muted-foreground">
-              {t("Sin pacientes con estado registrado en el alcance.")}
+              {t("Sin personas con estado registrado en el alcance.")}
             </p>
           ) : (
             top.map((state) => (

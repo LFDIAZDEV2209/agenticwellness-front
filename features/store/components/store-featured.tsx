@@ -64,7 +64,7 @@ export function StoreFeaturedPage() {
     <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
       <PageHeader
         title={t('Productos destacados')}
-        description={t('Selecciona qué productos resaltar en la tienda del paciente')}
+        description={t("Selecciona qué productos resaltar en la tienda de la persona")}
         icon={Star}
         actions={
           <Button variant="outline" size="sm" onClick={() => setReload((v) => v + 1)} disabled={loading}>

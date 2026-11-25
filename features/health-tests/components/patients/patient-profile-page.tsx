@@ -266,9 +266,9 @@ export function PatientProfilePage({ patientId }: { patientId: string }) {
     return (
       <div className="p-4 sm:p-6">
         <ModuleEmptyState
-          title={t("No encontramos este paciente")}
+          title={t("No encontramos a esta persona")}
           description={t(
-            "El paciente no existe o no está dentro de tu alcance de datos.",
+            "La persona no existe o no está dentro de tu alcance de datos.",
           )}
         />
       </div>
@@ -287,9 +287,9 @@ export function PatientProfilePage({ patientId }: { patientId: string }) {
     return (
       <div className="p-4 sm:p-6">
         <ModuleEmptyState
-          title={t("No encontramos este paciente")}
+          title={t("No encontramos a esta persona")}
           description={t(
-            "El paciente no existe o no está dentro de tu alcance de datos.",
+            "La persona no existe o no está dentro de tu alcance de datos.",
           )}
         />
       </div>
@@ -376,7 +376,7 @@ export function PatientProfilePage({ patientId }: { patientId: string }) {
         className="flex flex-col overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-sm scroll-mt-6"
       >
         <SectionHeader
-          title={t("Ficha del paciente")}
+          title={t("Ficha de la persona")}
           description={t("Identidad, tipificación de riesgo y fechas clave")}
           icon={UserRound}
           variant="primary"
@@ -485,7 +485,7 @@ export function PatientProfilePage({ patientId }: { patientId: string }) {
               context={t("Guardados a medias")}
             />
             <StatCard
-              label={t("Alertas del paciente")}
+              label={t("Alertas de la persona")}
               value={String(patientAlerts.length)}
               icon={BellRing}
               variant={patientAlerts.length > 0 ? "destructive" : "primary"}
@@ -499,7 +499,7 @@ export function PatientProfilePage({ patientId }: { patientId: string }) {
         <ModuleEmptyState
           title={t("Análisis IA no disponible")}
           description={t(
-            "No hay un análisis IA guardado para este paciente. Consulta los resultados registrados y las respuestas de cada evaluación en el historial.",
+            "No hay un análisis IA guardado para esta persona. Consulta los resultados registrados y las respuestas de cada evaluación en el historial.",
           )}
         />
       </section>
@@ -641,7 +641,7 @@ export function PatientProfilePage({ patientId }: { patientId: string }) {
         <SectionHeader
           title={t("Historial de evaluaciones")}
           description={t(
-            "Todos los tests del paciente, sus resultados e intentos — filtra por batería, test, categoría y estado",
+            "Todas las pruebas de la persona, sus resultados e intentos. Filtra por batería, prueba, categoría y estado.",
           )}
           icon={Layers}
           variant="primary"
@@ -801,7 +801,7 @@ export function PatientProfilePage({ patientId }: { patientId: string }) {
             title={t("Sin evaluaciones que coincidan")}
             description={
               evaluations.length === 0
-                ? t("Este paciente no tiene tests aplicados todavía.")
+                ? t("Aún no se han aplicado evaluaciones a esta persona.")
                 : t("Prueba con otros filtros de búsqueda.")
             }
             onClear={
@@ -1020,7 +1020,7 @@ export function PatientProfilePage({ patientId }: { patientId: string }) {
         </div>
         {patient.results.length === 0 ? (
           <p className="px-5 py-8 text-center text-xs text-muted-foreground">
-            {t("Este paciente no tiene tests aplicados todavía.")}
+            {t("Aún no se han aplicado evaluaciones a esta persona.")}
           </p>
         ) : null}
       </section>
@@ -1031,7 +1031,7 @@ export function PatientProfilePage({ patientId }: { patientId: string }) {
         className="flex flex-col overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-sm scroll-mt-6"
       >
         <SectionHeader
-          title={t("Alertas del paciente")}
+          title={t("Alertas de la persona")}
           description={t("Resultados que requieren atención clínica")}
           icon={ShieldAlert}
           variant="primary"
@@ -1042,7 +1042,7 @@ export function PatientProfilePage({ patientId }: { patientId: string }) {
               <ShieldCheck className="size-5" />
             </span>
             <p className="text-xs font-medium text-muted-foreground">
-              {t("Sin alertas para este paciente — buen indicador")}
+              {t("No hay alertas registradas para esta persona.")}
             </p>
           </div>
         ) : (

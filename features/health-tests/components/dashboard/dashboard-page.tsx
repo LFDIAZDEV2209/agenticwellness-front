@@ -286,7 +286,7 @@ export function HealthTestsDashboard() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          label={t("Pacientes evaluados")}
+          label={t("Personas evaluadas")}
           value={String(stats.evaluated)}
           icon={Users}
           variant="primary"
@@ -345,7 +345,7 @@ export function HealthTestsDashboard() {
         >
           {coverageMetrics.total === 0 ? (
             <p className="py-10 text-center text-xs text-muted-foreground">
-              {t("Sin pacientes evaluados todavía")}
+              {t("Aún no hay personas evaluadas")}
             </p>
           ) : (
             <div className="flex flex-col items-center gap-5">
@@ -406,7 +406,7 @@ export function HealthTestsDashboard() {
                 <div className="mt-1 flex items-center justify-between border-t border-border pt-2.5 text-[12.5px]">
                   <span className="flex items-center gap-2 text-muted-foreground">
                     <TrendingUp className="size-3.5 text-success" />
-                    {t("Pacientes en la batería")}
+                    {t("Personas en la batería")}
                   </span>
                   <span className="font-semibold text-foreground">
                     {data.patients.length}
@@ -427,7 +427,7 @@ export function HealthTestsDashboard() {
         >
           {riskDistribution.total === 0 ? (
             <p className="py-10 text-center text-xs text-muted-foreground">
-              {t("Sin pacientes evaluados todavía")}
+              {t("Aún no hay personas evaluadas")}
             </p>
           ) : (
             <div className="flex flex-col items-center gap-5">
@@ -691,7 +691,7 @@ function HealthGeoMapRow({
         <SectionHeader
           title={t("Mapa de calor — Riesgo alto")}
           description={t(
-            "Distribución geográfica de pacientes con riesgo alto/crítico",
+            "Distribución geográfica de personas con riesgo alto/crítico",
           )}
           icon={MapPinned}
           variant="primary"
@@ -717,7 +717,7 @@ function HealthGeoMapRow({
         <div className="rounded-2xl border border-brand-blue-soft/40 bg-card p-5 shadow-xs">
           <SectionHeader
             title={t("Top ciudades")}
-            description={t("Por número de pacientes")}
+            description={t("Por número de personas")}
             icon={Users}
             variant="secondary"
           />
@@ -747,13 +747,13 @@ function HealthGeoMapRow({
           </div>
           <div className="mt-3 flex items-center justify-between border-t border-border pt-3 text-xs">
             <span className="text-muted-foreground">
-              {t("Total pacientes mapeados")}
+              {t("Total de personas en el mapa")}
             </span>
             <span className="font-semibold">{totalMapped}</span>
           </div>
           <div className="flex items-center justify-between text-xs">
             <span className="text-muted-foreground">
-              {t("Pacientes evaluados")}
+              {t("Personas evaluadas")}
             </span>
             <span className="font-semibold">{totalEvaluated}</span>
           </div>
@@ -785,7 +785,7 @@ function HealthGeoMapRow({
                   </Badge>
                 </div>
                 <p className="truncate text-[11px] text-muted-foreground">
-                  {t("Pacientes con riesgo alto/crítico")}
+                  {t("Personas con riesgo alto/crítico")}
                 </p>
               </div>
             </div>
@@ -796,7 +796,7 @@ function HealthGeoMapRow({
                 {t("Sin alertas geográficas")}
               </p>
               <p className="text-xs text-muted-foreground">
-                {t("Todos los pacientes dentro de rango.")}
+                {t("Todas las personas dentro de rango.")}
               </p>
             </div>
           ) : (
@@ -992,7 +992,7 @@ function CategoryCoverageChart({
   if (masterRows.length === 0)
     return (
       <p className="py-10 text-center text-xs text-muted-foreground">
-        {t("Sin pacientes evaluados todavía")}
+        {t("Aún no hay personas evaluadas")}
       </p>
     );
 

@@ -201,7 +201,7 @@ test("ciclos: agrupar versiones, abrir plan e historial y conservar bandeja", as
   ).toHaveCount(2);
   // La zona llega del workspace (§19): el "hoy" solo se representa dentro del período.
   await expect(
-    page.getByText("Zona del paciente pendiente: hoy no se representa.", {
+    page.getByText("Zona horaria de la persona sin confirmar: no se muestra el día actual.", {
       exact: true,
     }),
   ).toHaveCount(0);

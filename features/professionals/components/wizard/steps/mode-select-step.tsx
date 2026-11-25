@@ -56,8 +56,8 @@ const ALL_OPTIONS: ModeOption[] = [
     mode: "patient",
     permission: "Patients.Create",
     icon: Users,
-    title: "Paciente",
-    description: "Registra un nuevo paciente para seguimiento y citas.",
+    title: "Persona",
+    description: "Registra a una persona para hacer seguimiento y coordinar citas.",
   },
   {
     mode: "user",
@@ -65,7 +65,7 @@ const ALL_OPTIONS: ModeOption[] = [
     icon: KeyRound,
     title: "Usuario de plataforma",
     description:
-      "Crea credenciales de acceso con roles y permisos, sin perfil de empleado ni paciente.",
+      "Crea credenciales de acceso con roles y permisos, sin perfil de empleado ni persona.",
   },
 ];
 

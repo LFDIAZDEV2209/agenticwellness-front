@@ -98,7 +98,7 @@ export function DofaPage() {
       <PageHeader
         title={t("Análisis DOFA poblacional")}
         description={t(
-          "Diagnóstico de fortalezas, oportunidades, debilidades y amenazas construido con los resultados reales de la batería",
+          "Análisis de fortalezas, oportunidades, debilidades y amenazas a partir de los resultados de la batería",
         )}
         icon={TrendingUp}
       />
@@ -112,7 +112,7 @@ export function DofaPage() {
           context={t("Resultados de la batería")}
         />
         <StatCard
-          label={t("Pacientes en riesgo alto/crítico")}
+          label={t("Personas en riesgo alto/crítico")}
           value={String(totalAffected)}
           icon={HeartPulse}
           variant="destructive"
@@ -235,10 +235,10 @@ function buildDofa(aggregates: import("../../types").IndicatorAggregate[], t: Re
     const { indicator, average, distribution, evaluatedCount, affectedCount } = aggregate;
     if (!evaluatedCount) continue;
     const base = { id: indicator.id, title: indicator.name, metric: "%", indicatorId: indicator.id, value: average };
-    if (affectedCount > 0) amenazas.push({ ...base, quadrant: "amenazas", description: t("{count} pacientes con severidad alta/crítica registrada.", { count: String(affectedCount) }) });
+    if (affectedCount > 0) amenazas.push({ ...base, quadrant: "amenazas", description: t("{count} personas con severidad alta/crítica registrada.", { count: String(affectedCount) }) });
     else if (distribution["sin-evaluar"] === 0 || distribution.bajo > 0) fortalezas.push({ ...base, quadrant: "fortalezas", description: t("Sin resultados de severidad alta/crítica registrados en esta categoría.") });
-    if (distribution.moderado > 0) oportunidades.push({ ...base, quadrant: "oportunidades", description: t("{count} pacientes con severidad moderada registrada.", { count: String(distribution.moderado) }) });
-    if (distribution["sin-evaluar"] > 0) debilidades.push({ ...base, quadrant: "debilidades", value: distribution["sin-evaluar"], metric: "", description: t("{count} pacientes sin severidad disponible en esta categoría.", { count: String(distribution["sin-evaluar"]) }) });
+    if (distribution.moderado > 0) oportunidades.push({ ...base, quadrant: "oportunidades", description: t("{count} personas con severidad moderada registrada.", { count: String(distribution.moderado) }) });
+    if (distribution["sin-evaluar"] > 0) debilidades.push({ ...base, quadrant: "debilidades", value: distribution["sin-evaluar"], metric: "", description: t("{count} personas sin severidad disponible en esta categoría.", { count: String(distribution["sin-evaluar"]) }) });
   }
   return { fortalezas, oportunidades, debilidades, amenazas };
 }

@@ -514,7 +514,7 @@ export function PeopleWizard({
       }
       setError(
         mode === "patient"
-          ? "No se pudo crear el paciente. Intenta nuevamente."
+          ? "No se pudo crear el perfil de la persona. Intenta nuevamente."
           : "No se pudo crear el profesional. Intenta nuevamente.",
       );
     }
@@ -541,7 +541,7 @@ export function PeopleWizard({
         ? t("Nuevo empleado")
         : mode === "user"
           ? t("Nuevo usuario")
-          : t("Nuevo paciente");
+          : t("Nueva persona");
 
   const headerDescription = !mode
     ? t(
@@ -565,10 +565,10 @@ export function PeopleWizard({
             )
         : mode === "user"
           ? t(
-              "Crea credenciales de acceso con roles y permisos, sin perfil de empleado ni paciente.",
+              "Crea credenciales de acceso con roles y permisos, sin perfil de empleado ni persona.",
             )
           : t(
-              "Registra los datos básicos del paciente. Podrás completar la información clínica después.",
+              "Registra los datos básicos de la persona. Podrás completar la información clínica después.",
             );
 
   const headerIcon = !mode
@@ -606,7 +606,7 @@ export function PeopleWizard({
             <div>
               <h2 className="text-base font-bold">
                 {created.mode === "patient"
-                  ? t("Paciente creado correctamente")
+                  ? t("Persona creada correctamente")
                   : t("Profesional creado correctamente")}
               </h2>
               <p className="text-xs text-muted-foreground">
@@ -681,7 +681,7 @@ export function PeopleWizard({
                 }
               >
                 {created.mode === "patient"
-                  ? t("Ver paciente")
+                  ? t("Ver a la persona")
                   : t("Ver perfil")}
               </Button>
               <Button

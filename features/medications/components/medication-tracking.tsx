@@ -201,7 +201,7 @@ export function MedicationTracking({
                     )}
                   </div>
                   <Link href={"/medications/" + patientId}>
-                    {t("Ver paciente")}
+                    {t("Ver a la persona")}
                   </Link>
                 </div>
                 <Table

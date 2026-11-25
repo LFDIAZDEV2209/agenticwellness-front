@@ -192,7 +192,7 @@ export function PatientDistributionChart({
               <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
                 <span className="text-xl font-bold tabular-nums">{total}</span>
                 <span className="text-[10.5px] uppercase tracking-wider text-muted-foreground">
-                  {t("pacientes")}
+                  {t("personas")}
                 </span>
               </div>
             </div>
@@ -272,7 +272,7 @@ export function PatientDistributionChart({
                       ),
                     }}
                     role="img"
-                    aria-label={`${item.label}: ${item.value} ${t("pacientes")}`}
+                    aria-label={`${item.label}: ${item.value} ${t("personas")}`}
                   />
                 </div>
               </li>

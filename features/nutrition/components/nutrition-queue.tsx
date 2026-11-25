@@ -120,7 +120,7 @@ export function NutritionQueue({
     >
       <PageHeader
         title={t("Nutrición")}
-        description={t("Planes y seguimiento de tus pacientes.")}
+        description={t("Planes y seguimiento de las personas a tu cargo.")}
         icon={Stethoscope}
         className="nutrition-page-header"
         actions={
@@ -140,22 +140,22 @@ export function NutritionQueue({
       <div className="nutrition-workbench">
         <aside
           className="nutrition-patient-rail"
-          aria-label={t("Bandeja de pacientes")}
+          aria-label={t("Bandeja de personas")}
         >
           {selection && <SectionHeader
-            title={t("Pacientes")}
+            title={t("Personas")}
             icon={Users}
             variant="surface"
             description={
               data
-                ? t("{count} pacientes", { count: String(data.total) })
+                ? t("{count} personas", { count: String(data.total) })
                 : t("Bandeja de nutrición")
             }
           />}
           <div className="nutrition-rail-tools">
-            {!selection && <div className="nutrition-directory-heading"><Users aria-hidden="true" /><h2>{t("Pacientes")}</h2>{data && <span className="nutrition-measure">{format(data.total, 0)}</span>}</div>}
+            {!selection && <div className="nutrition-directory-heading"><Users aria-hidden="true" /><h2>{t("Personas")}</h2>{data && <span className="nutrition-measure">{format(data.total, 0)}</span>}</div>}
             <label htmlFor="nutrition-search" className="sr-only">
-              {t("Buscar paciente")}
+              {t("Buscar persona")}
             </label>
             <div className="relative">
               <Search
@@ -168,7 +168,7 @@ export function NutritionQueue({
                 maxLength={200}
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder={t("Buscar paciente")}
+                placeholder={t("Buscar persona")}
                 className="pl-9"
               />
             </div>
@@ -210,7 +210,7 @@ export function NutritionQueue({
         </nav>
       )}
           <div className="nutrition-directory-columns" aria-hidden="true">
-            <span>{t("Paciente")}</span><span>{t("Plan nutricional")}</span><span>{t("Vigencia")}</span><span />
+            <span>{t("Persona")}</span><span>{t("Plan nutricional")}</span><span>{t("Vigencia")}</span><span />
           </div>
           <NutritionIntakePendingCount />
           <div className="nutrition-patient-list" aria-busy={loading}>
@@ -219,7 +219,7 @@ export function NutritionQueue({
             ) : error ? (
               <NutritionError retry={retry} issue={error} />
             ) : data?.items.length ? (
-              <ul aria-label={t("Planes de pacientes")} ref={listRef}>
+              <ul aria-label={t("Planes de las personas")} ref={listRef}>
                 {data.items.map((patient) => (
                   <li
                     key={patient.patientId}
@@ -256,7 +256,7 @@ export function NutritionQueue({
                       </span>
                       <span className="nutrition-directory-validity">{patient.plan?.endDate ? date(patient.plan.endDate) : "—"}</span>
                       {selection?.patientId === patient.patientId
-                        ? <Check className="nutrition-selected-check nutrition-row-arrow" aria-label={t("Paciente seleccionado")} />
+                        ? <Check className="nutrition-selected-check nutrition-row-arrow" aria-label={t("Persona seleccionada")} />
                         : <ArrowRight className="nutrition-row-arrow" aria-hidden="true" />}
                     </Link>
                   </li>
@@ -265,7 +265,7 @@ export function NutritionQueue({
             ) : (
               <div className="nutrition-rail-empty">
                 <Search className="size-6" aria-hidden="true" />
-                <p>{t("No encontramos pacientes en esta vista")}</p>
+                <p>{t("No encontramos personas en esta vista")}</p>
                 <Button
                   variant="outline"
                   size="sm"
@@ -285,7 +285,7 @@ export function NutritionQueue({
           >
             <p role="status">
               {data
-                ? t("Página {page} de {pages} · {total} pacientes", {
+                ? t("Página {page} de {pages} · {total} personas", {
                     page: String(data.page),
                     pages: String(Math.max(1, data.totalPages)),
                     total: String(data.total),

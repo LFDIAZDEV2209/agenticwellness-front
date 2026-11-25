@@ -93,7 +93,7 @@ export function groupModes(
   const groups: ModeGroup[] = [];
 
   if (team.length > 0) groups.push({ label: "Equipo", modes: team });
-  if (patients.length > 0) groups.push({ label: "Pacientes", modes: patients });
+  if (patients.length > 0) groups.push({ label: "Personas", modes: patients });
   if (users.length > 0) groups.push({ label: "Accesos", modes: users });
 
   return groups;
@@ -282,7 +282,7 @@ export const PATIENT_STEPS: StepDef[] = [
   {
     key: "identity",
     label: "Datos básicos",
-    hint: "Identidad del paciente",
+    hint: "Identidad de la persona",
   },
   { key: "clinic", label: "Clínica", hint: "Asignación de clínica" },
   { key: "review", label: "Revisar y enviar", hint: "Confirmación final" },

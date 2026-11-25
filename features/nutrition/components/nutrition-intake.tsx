@@ -93,7 +93,7 @@ export function NutritionIntake(props: Props) {
     return (
       <p className="nutrition-intake-notice">
         {t(
-          "Falta la zona horaria del paciente para consultar sus días de registro.",
+          "Falta la zona horaria de la persona para consultar sus días de registro.",
         )}
       </p>
     );
@@ -356,7 +356,7 @@ function IntakeReader({
           <p>
             {t(
               denied
-                ? "El paciente no está disponible en tu alcance o no tienes permiso para sus registros."
+                ? "La persona está fuera de tu alcance o no tienes permiso para consultar sus registros."
                 : "No se pudieron consultar los registros. No se muestran días vacíos como sustituto de un error.",
             )}
           </p>

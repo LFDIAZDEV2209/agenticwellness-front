@@ -47,7 +47,7 @@ export function useScores(): UseScoresReturn {
         setError(
           err instanceof Error
             ? err.message
-            : "Error al calcular los scores del paciente.",
+            : "No se pudieron calcular las puntuaciones de la persona.",
         );
         setResult(null);
       } finally {

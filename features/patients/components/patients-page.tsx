@@ -107,7 +107,7 @@ export function PatientsPage() {
     return (
       <div className="p-6">
         <p className="rounded-xl bg-warning-soft px-4 py-3 text-sm text-warning-soft-foreground">
-          {t("No tienes permiso para ver el módulo de pacientes.")}
+          {t("No tienes permiso para ver el módulo de personas.")}
         </p>
       </div>
     );
@@ -116,7 +116,7 @@ export function PatientsPage() {
   return (
     <div className="flex min-w-0 flex-col gap-5 p-4 sm:p-6">
       <PageHeader
-        title={fullScope ? t("Pacientes") : t("Mis pacientes")}
+        title={fullScope ? t("Personas") : t("Personas a mi cargo")}
         description={t(
           "Gestión completa · seguimiento clínico · mapa geográfico EE. UU.",
         )}
@@ -139,7 +139,7 @@ export function PatientsPage() {
                 onClick={() => router.push("/people/new?context=patient")}
               >
                 <Plus data-icon="inline-start" />
-                {t("Nuevo paciente")}
+                {t("Nueva persona")}
               </Button>
             </div>
           ) : undefined
@@ -170,7 +170,7 @@ export function PatientsPage() {
       >
         <TabsList
           variant="line"
-          aria-label={t("Secciones de pacientes")}
+          aria-label={t("Secciones de personas")}
           className="h-auto w-full justify-start border-b border-border px-0 py-1"
         >
           {PATIENT_TABS.map((item) => {

@@ -192,6 +192,7 @@ function BiometriaKpis({
 }: {
   data: import("../types/erp").BiometriaCommunityDto;
 }) {
+  const t = useT();
   return (
     <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <StatCard
@@ -224,7 +225,7 @@ function BiometriaKpis({
         value={String(data.improving_count)}
         icon={TrendingUp}
         variant="success"
-        context="Pacientes con tendencia positiva"
+        context={t("Personas con tendencia positiva")}
       />
     </section>
   );
@@ -240,6 +241,7 @@ function BiometriaMapRow({
   onCitySelect: (cityId: string | null, cityName?: string) => void;
   onStateSelect: (stateAbbr: string | null, stateName?: string) => void;
 }) {
+  const t = useT();
   const top3 = [...data.cities].sort((a, b) => b.count - a.count).slice(0, 3);
 
   return (
@@ -248,7 +250,7 @@ function BiometriaMapRow({
       <div className="rounded-2xl border border-brand-blue-soft/40 bg-card overflow-hidden shadow-xs">
         <SectionHeader
           title="Mapa de calor IMC"
-          description="Distribución geográfica de pacientes"
+          description={t("Distribución geográfica de las personas")}
           icon={BarChart3}
           variant="primary"
         />
@@ -267,7 +269,7 @@ function BiometriaMapRow({
         <div className="rounded-2xl border border-brand-blue-soft/40 bg-card p-5 shadow-xs">
           <SectionHeader
             title="Top ciudades"
-            description="Por número de pacientes"
+            description="Por número de personas"
             icon={Users}
             variant="secondary"
           />
@@ -450,7 +452,7 @@ function BiometriaDistributionRow({
               </Pie>
               <Tooltip
                 {...CHART_TOOLTIP}
-                formatter={(value) => [String(value ?? 0), "Pacientes"]}
+                formatter={(value) => [String(value ?? 0), "Personas"]}
               />
               <Legend wrapperStyle={{ fontSize: 11 }} />
             </PieChart>
@@ -500,7 +502,7 @@ function BiometriaPatientListCard({
     <div className="rounded-2xl border border-brand-blue-soft/40 bg-card overflow-hidden shadow-xs">
       <SectionHeader
         title="Listado biometría"
-        description="Pacientes con indicadores de salud"
+        description={t("Personas con indicadores de salud")}
         icon={Users}
         variant="secondary"
         actions={
@@ -672,7 +674,7 @@ function BiometriaPatientListCard({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Paciente</TableHead>
+              <TableHead>{t("Persona")}</TableHead>
               <TableHead className="w-16 text-center">Sexo</TableHead>
               <TableHead className="w-16 text-right">IMC</TableHead>
               <TableHead className="hidden w-20 text-right sm:table-cell">
@@ -702,7 +704,7 @@ function BiometriaPatientListCard({
               <TableRow>
                 <TableCell colSpan={7} className="py-10 text-center">
                   <p className="text-sm text-muted-foreground">
-                    Sin pacientes con estos filtros.
+                    {t("No hay personas que coincidan con estos filtros.")}
                   </p>
                 </TableCell>
               </TableRow>
@@ -817,6 +819,7 @@ function AlertasCriticasCard({
 }: {
   alerts: import("../types/erp").BiometriaCommunityDto["alerts"];
 }) {
+  const t = useT();
   const PAGE_SIZE = 2;
   const totalPages = Math.max(1, Math.ceil(alerts.length / PAGE_SIZE));
   // local page state inside card — keeps map row stateless
@@ -849,7 +852,7 @@ function AlertasCriticasCard({
               </Badge>
             </div>
             <p className="truncate text-[11px] text-muted-foreground">
-              Pacientes que requieren atención
+              {t("Personas que requieren atención")}
             </p>
           </div>
         </div>
@@ -861,7 +864,7 @@ function AlertasCriticasCard({
           </div>
           <p className="text-sm font-medium">Sin alertas activas</p>
           <p className="text-xs text-muted-foreground">
-            Todos los pacientes dentro de rango saludable.
+            {t("Todas las personas están dentro del rango saludable.")}
           </p>
         </div>
       ) : (

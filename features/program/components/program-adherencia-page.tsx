@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/providers/i18n-provider";
 import { useState, useMemo } from "react";
 import {
   TrendingUp,
@@ -63,6 +64,7 @@ const SORT_OPTIONS = [
 // --- Componente principal ---
 
 export function ProgramAdherenciaPage() {
+  const t = useT();
   const {
     data,
     loading,
@@ -94,7 +96,7 @@ export function ProgramAdherenciaPage() {
   const handleExportCsv = () => {
     if (!data?.tabla.data) return;
     const headers = [
-      "Paciente",
+      "Persona",
       "Global %",
       ...MISSION_ORDER.map((c) => MISSION_LABELS[c]),
       "XP",
@@ -126,7 +128,7 @@ const totalPages = data?.tabla.totalPages ?? 1;
     <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
       <PageHeader
         title="Adherencia & Rachas"
-        description="Tendencia semanal, ranking de rachas y tabla detallada por paciente"
+        description={t("Tendencia semanal, ranking de rachas y tabla detallada por persona")}
         icon={TrendingUp}
         actions={
           <Button variant="outline" size="sm" onClick={retry} disabled={loading}>
@@ -250,6 +252,7 @@ function AdherenciaKpiCards({
 }: {
   data: import("../types/erp").ProgramErpAdherenciaDto;
 }) {
+  const t = useT();
   // Compute KPIs from available data
   const maxStreak = useMemo(() => {
     const rankingMax = data.ranking_rachas.length > 0
@@ -295,7 +298,7 @@ function AdherenciaKpiCards({
         value={globalPctAvg !== null ? `${globalPctAvg}%` : "—"}
         icon={BarChart3}
         variant="info"
-        context="Promedio global pacientes"
+        context={t("Promedio general de las personas")}
         trend={
           trendDelta !== null
             ? {
@@ -330,13 +333,14 @@ function AdherenciaRachasCard({
 }: {
   data: import("../types/erp").ProgramErpAdherenciaDto;
 }) {
+  const t = useT();
   const top10 = data.ranking_rachas.slice(0, 10);
 
   return (
     <div className="flex flex-col gap-0 overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-xs">
       <SectionHeader
         title="Rachas"
-        description="Top 10 pacientes por racha actual"
+        description={t("10 personas con las rachas más largas")}
         icon={Trophy}
         variant="secondary"
       />
@@ -427,6 +431,7 @@ function AdherenciaTablaSection({
   setPage: (p: number) => void;
   setPageSize: (s: number) => void;
 }) {
+  const t = useT();
   const totalPages = data.tabla.totalPages;
 
   return (
@@ -437,8 +442,14 @@ function AdherenciaTablaSection({
           <div>
             <h2 className="text-sm font-semibold">Tabla de adherencia</h2>
             <p className="text-xs text-muted-foreground">
-              {data.tabla.total} pacientes · Página {data.tabla.page} de{" "}
-              {data.tabla.totalPages}
+              {t(data.tabla.total === 1 ? "{count} persona" : "{count} personas", {
+                count: String(data.tabla.total),
+              })}
+              {" · "}
+              {t("Página {page} de {pages}", {
+                page: String(data.tabla.page),
+                pages: String(data.tabla.totalPages),
+              })}
             </p>
           </div>
           <div className="flex gap-2">
@@ -457,7 +468,7 @@ function AdherenciaTablaSection({
             <Search className="pointer-events-none absolute left-3 top-2.5 size-4 text-muted-foreground" />
             <Input
               className="pl-9"
-              placeholder="Buscar paciente..."
+              placeholder="Buscar persona..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
@@ -488,7 +499,7 @@ function AdherenciaTablaSection({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Paciente</TableHead>
+              <TableHead>{t("Persona")}</TableHead>
               <TableHead className="cursor-pointer select-none" onClick={() => handleSort("global_pct")}>
                 Global %
                 <ArrowUpDown className="ml-1 inline size-3" />
@@ -515,7 +526,7 @@ function AdherenciaTablaSection({
             {data.tabla.data.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={12} className="py-10 text-center text-sm text-muted-foreground">
-                  No se encontraron pacientes con los filtros aplicados.
+                  {t("No se encontraron personas con los filtros aplicados.")}
                 </TableCell>
               </TableRow>
             ) : (

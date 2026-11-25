@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/providers/i18n-provider";
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import {
@@ -61,6 +62,7 @@ import type {
 } from "@/features/wellness/types";
 
 export function ProgramContentPage() {
+  const t = useT();
   const { hasPermission } = useAuth();
   const canEdit = hasPermission("Program.Edit");
   const canEnroll = hasPermission("Program.Enroll");
@@ -196,13 +198,13 @@ export function ProgramContentPage() {
     <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
       <PageHeader
         title="Contenido del programa"
-        description="Configura el plan nutricional y la rutina de ejercicio de cada semana para una inscripción de paciente"
+        description={t("Configura el plan de alimentación y la rutina de ejercicio de cada semana para una persona inscrita.")}
         icon={CalendarDays}
         actions={
           canEnroll ? (
             <Button size="sm" onClick={() => setEnrollDialogOpen(true)}>
               <UserPlus data-icon="inline-start" />
-              Inscribir paciente
+              {t("Inscribir a una persona")}
             </Button>
           ) : undefined
         }
@@ -212,15 +214,14 @@ export function ProgramContentPage() {
       <div className="flex items-start gap-2.5 rounded-xl border border-info/35 bg-info-soft px-4 py-3 text-sm text-info-soft-foreground">
         <Info className="mt-0.5 size-4 shrink-0 text-blue-500" />
         <p>
-          Esta página se conserva por compatibilidad. La gestión de contenido
-          ahora se realiza desde{" "}
+          {t("Esta página se conserva por compatibilidad. Ahora puedes gestionar el contenido semanal desde")}{" "}
           <Link
             href="/program/gestion?view=perfil-360"
             className="font-semibold underline underline-offset-2 hover:text-blue-950"
           >
-            Perfil 360
+            {t("Perfil 360")}
           </Link>
-          , dentro de la pestaña Contenido semanal de cada paciente.
+          {t(", en la pestaña Contenido semanal de cada persona.")}
         </p>
       </div>
 
@@ -230,7 +231,7 @@ export function ProgramContentPage() {
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
             <div>
               <h2 className="text-base font-bold text-foreground">
-                Pacientes inscritos en programas
+                {t("Personas inscritas en programas")}
               </h2>
               <p className="text-xs text-muted-foreground">
                 Busca por nombre o número de documento para gestionar el
@@ -304,7 +305,7 @@ export function ProgramContentPage() {
             <div className="flex flex-col items-center gap-2 py-12 text-center border border-dashed border-border rounded-xl">
               <User className="size-8 text-muted-foreground/60" />
               <p className="text-sm font-semibold text-foreground">
-                No se encontraron pacientes inscritos
+                {t("No se encontraron personas inscritas")}
               </p>
               <p className="text-xs text-muted-foreground">
                 {searchQuery
@@ -318,7 +319,7 @@ export function ProgramContentPage() {
                 <Table>
                   <TableHeader className="[&_tr]:border-b-0">
                     <TableRow className="bg-slate-900 hover:bg-slate-900">
-                    <TableHead className="text-white font-semibold">Paciente</TableHead>
+                    <TableHead className="text-white font-semibold">{t("Persona")}</TableHead>
                     <TableHead className="text-white font-semibold">Programa</TableHead>
                     <TableHead className="text-white font-semibold">Progreso semanal</TableHead>
                     <TableHead className="text-white font-semibold">Estado</TableHead>
@@ -329,7 +330,7 @@ export function ProgramContentPage() {
                   {enrollmentsList.map((enrollment) => {
                     const patientName =
                       enrollment.patientFullName ||
-                      `Paciente (${enrollment.patientId.substring(0, 8)})`;
+                      t("Persona ({id})", { id: enrollment.patientId.substring(0, 8) });
                     const templateName =
                       enrollment.templateName || "Programa de Salud";
 
@@ -427,7 +428,7 @@ export function ProgramContentPage() {
                 className="gap-1.5 text-xs"
               >
                 <ArrowLeft className="size-4" />
-                Volver a la lista de pacientes
+                {t("Volver a la lista de personas")}
               </Button>
 
               <div className="h-6 w-px bg-border hidden sm:block" />
@@ -439,7 +440,7 @@ export function ProgramContentPage() {
                 <div className="flex flex-col">
                   <span className="font-bold text-sm text-foreground flex items-center gap-2">
                     {selectedEnrollment.patientFullName ||
-                      `Paciente (${selectedEnrollment.patientId.substring(0, 8)})`}
+                      t("Persona ({id})", { id: selectedEnrollment.patientId.substring(0, 8) })}
                     {selectedEnrollment.patientDocumentNumber && (
                       <span className="text-[10px] bg-muted px-1.5 py-0.2 rounded text-muted-foreground font-mono font-normal">
                         Doc: {selectedEnrollment.patientDocumentNumber}

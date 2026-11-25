@@ -378,7 +378,7 @@ export function ReviewStep({
             ) : (
               <GraduationCap data-icon="inline-start" />
             )}
-            {isPatient ? t("Crear paciente") : t("Crear e invitar")}
+            {isPatient ? t("Crear persona") : t("Crear e invitar")}
           </Button>
         </div>
       </div>

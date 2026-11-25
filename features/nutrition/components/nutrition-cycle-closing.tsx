@@ -267,7 +267,7 @@ function ClosingForm({
     {
       ok:
         !!fields.patientMessage.es.trim() && !!fields.patientMessage.en.trim(),
-      label: "Mensaje al paciente completo en español e inglés",
+      label: "Mensaje a la persona completo en español e inglés",
     },
     { ok: !!next, label: "Plan siguiente preparado y enviado a aprobación" },
     {
@@ -282,7 +282,7 @@ function ClosingForm({
     },
     {
       ok: !!props.period.endDate && props.period.endDate < props.today,
-      label: "Ciclo terminado en la fecha local del paciente",
+      label: "Ciclo terminado en la fecha local de la persona",
     },
     { ok: !!review && !dirty, label: "Últimos cambios guardados" },
   ];
@@ -319,7 +319,7 @@ function ClosingForm({
               {t("Evaluación interna (obligatoria para publicar)")}
             </label>
             <p id={`${id}-notes-help`}>
-              {t("Estas notas no aparecen en la app del paciente.")}
+              {t("Estas notas no aparecen en la app de la persona.")}
             </p>
             <Textarea
               id={`${id}-notes`}
@@ -415,7 +415,7 @@ function ClosingForm({
         5,
         <div className="nutrition-closing-fields">
           <fieldset disabled={!editable} className="nutrition-closing-message">
-            <legend>{t("Recomendaciones que verá el paciente")}</legend>
+            <legend>{t("Recomendaciones que verá la persona")}</legend>
             <p>
               {t(
                 "Escribe la versión final en ambos idiomas. Las notas internas y el borrador de IA no se copian automáticamente.",
@@ -427,8 +427,8 @@ function ClosingForm({
                   <span>
                     {t(
                       code === "es"
-                        ? "Mensaje al paciente · Español"
-                        : "Mensaje al paciente · English",
+                        ? "Mensaje a la persona · Español"
+                        : "Mensaje a la persona · English",
                     )}
                   </span>
                   <Textarea
@@ -527,7 +527,7 @@ function ClosingForm({
                       <span className="nutrition-closing-label">
                         {t(
                           a.kind === "image" && a.visibleToPatient
-                            ? "Visible para el paciente"
+                            ? "Visible para la persona"
                             : "Solo el equipo clínico",
                         )}
                       </span>
@@ -591,7 +591,7 @@ function ClosingForm({
                     />
                     <span>
                       {t(
-                        "Mostrar esta imagen y su pie al paciente al publicar",
+                        "Mostrar esta imagen y su pie a la persona al publicar",
                       )}
                     </span>
                   </label>
@@ -724,7 +724,7 @@ function ClosingForm({
           )}
           <div
             className="nutrition-closing-preview"
-            aria-label={t("Vista previa para el paciente")}
+            aria-label={t("Vista previa para la persona")}
           >
             <div className="nutrition-closing-actions">
               <h3>{t("Recomendaciones de tu nutricionista")}</h3>
@@ -755,7 +755,7 @@ function ClosingForm({
                 : t("El profesional y la fecha se registran al publicar.")}
             </p>
             <p className="nutrition-closing-caption" lang={previewLang}>
-              {message || t("El mensaje al paciente aún está vacío.")}
+              {message || t("El mensaje a la persona aún está vacío.")}
             </p>
             {visibleImages.length ? (
               <div className="nutrition-closing-visible-images">
@@ -770,7 +770,7 @@ function ClosingForm({
                 ))}
               </div>
             ) : (
-              <p>{t("Sin imágenes visibles para el paciente.")}</p>
+              <p>{t("Sin imágenes visibles para la persona.")}</p>
             )}
           </div>
           {published ? (
@@ -827,7 +827,7 @@ function ClosingForm({
             </DialogTitle>
             <DialogDescription>
               {t(
-                "El paciente verá el mensaje final y las imágenes visibles. Las notas internas y la IA no se publican. El cierre será de solo lectura.",
+                "La persona verá el mensaje final y las imágenes visibles. Las notas internas y la IA no se publican. El cierre será de solo lectura.",
               )}
             </DialogDescription>
           </DialogHeader>

@@ -71,7 +71,7 @@ export function StorePage() {
     <div className="flex flex-col gap-5 p-4 sm:p-6 min-w-0">
       <PageHeader
         title={t('Tienda de bienestar')}
-        description={t('Administra los productos que se muestran en el marketplace del paciente')}
+        description={t("Administra los productos que se muestran en el marketplace de la persona")}
         icon={Store}
         actions={
           can("Store.Manage") ? (
@@ -93,7 +93,7 @@ export function StorePage() {
           <div>
             <h2 className="text-sm font-semibold">{t('Catálogo de tienda')}</h2>
             <p className="mt-1 text-xs text-muted-foreground">
-              {t('Productos visibles para el paciente en la app móvil.')}
+              {t("Productos visibles para la persona en la app móvil.")}
             </p>
           </div>
           <Button variant="outline" size="sm" onClick={retry} disabled={loading}>
@@ -306,7 +306,7 @@ function AddToStoreDialog({
           </div>
           <div className="flex flex-col gap-1.5">
             <Label className="text-xs">{t('Descripción (opcional)')}</Label>
-            <Input value={desc} onChange={(e) => setDesc(e.target.value)} placeholder={t('Descripción para el paciente…')} />
+            <Input value={desc} onChange={(e) => setDesc(e.target.value)} placeholder={t("Descripción para la persona…")} />
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>{t('Cancelar')}</Button>

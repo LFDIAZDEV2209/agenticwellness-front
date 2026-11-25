@@ -345,7 +345,7 @@ export function UserDetail({ userId }: UserDetailProps) {
                   style={rainbowStyle("teal")}
                 >
                   <Smartphone aria-hidden="true" className="size-3.5" />
-                  {t("Paciente · App móvil")}
+                  {t("Persona · App móvil")}
                 </span>
               )}
               <UserStatusBadge isActive={user.isActive} />
@@ -446,7 +446,7 @@ export function UserDetail({ userId }: UserDetailProps) {
                 <>
                   <InfoItem label={t("Teléfono")} value={user.phoneNumber || t("Sin teléfono")} icon={Phone} />
                   <InfoItem label={t("Documento")} value={user.patient?.documentNumber || t("No disponible")} icon={IdCard} mono />
-                  <InfoItem label={t("Estado del paciente")} value={user.patient?.status ? t(user.patient.status) : t("No disponible")} />
+                  <InfoItem label={t("Estado de la persona")} value={user.patient?.status ? t(user.patient.status) : t("No disponible")} />
                 </>
               ) : <InfoItem
                 label={t("Último acceso")}
@@ -651,7 +651,7 @@ export function UserDetail({ userId }: UserDetailProps) {
                 {name}
               </strong>{" "}
               {isPatient
-                ? t("y su acceso a la app móvil. La ficha del paciente y su historial clínico se conservan. Esta acción no se puede deshacer.")
+                ? t("y su acceso a la app móvil. La ficha de la persona y su historial de salud se conservan. Esta acción es irreversible.")
                 : t(
                     "y todas sus asignaciones. El perfil del directorio y el historial clínico se conservan. Esta acción no se puede deshacer.",
                   )}

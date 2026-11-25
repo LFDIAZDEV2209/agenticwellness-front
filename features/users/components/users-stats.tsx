@@ -45,14 +45,14 @@ export function UsersStats({ stats, filters, onStatFilter }: UsersStatsProps) {
   const defs: StatDef[] = [
     {
       key: "total",
-      label: isPatient ? "Total pacientes" : filters.accountType === "all" ? "Total cuentas" : "Total usuarios",
+      label: isPatient ? "Total de personas" : filters.accountType === "all" ? "Total cuentas" : "Total usuarios",
       icon: Users,
       getValue: (s) => s.total,
       context: () =>
         isPatient
           ? t("Con acceso a la app")
           : filters.accountType === "all"
-            ? t("Personal y pacientes")
+            ? t("Personal y personas")
             : t("Con acceso al ERP"),
       isActive: () =>
         filters.status === "all" &&

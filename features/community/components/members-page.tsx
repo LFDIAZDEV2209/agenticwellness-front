@@ -93,11 +93,11 @@ export function MembersPage() {
           <Select value={diagFilter} onValueChange={(v) => { if (v !== null) { setDiagFilter(v); setCardsPage(1); setTablePage(1); } }}>
             <SelectTrigger className="h-8 w-auto min-w-[180px] text-xs">
               <span className="flex flex-1 truncate text-left text-xs">
-                {diagFilter === "all" ? t("Todos los diagnósticos") : diagFilter}
+                {diagFilter === "all" ? t("Todas las evaluaciones") : diagFilter}
               </span>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">{t("Todos los diagnósticos")}</SelectItem>
+              <SelectItem value="all">{t("Todas las evaluaciones")}</SelectItem>
               {mockDiagnostics.map((d) => (
                 <SelectItem key={d.diagnosis} value={d.diagnosis}>
                   {d.diagnosis}
@@ -240,7 +240,7 @@ export function MembersPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>{t("Miembro")}</TableHead>
-                <TableHead className="hidden md:table-cell">{t("Diagnóstico")}</TableHead>
+                <TableHead className="hidden md:table-cell">{t("Evaluación")}</TableHead>
                 <TableHead className="hidden md:table-cell">{t("Región")}</TableHead>
                 <TableHead className="text-right">{t("Posts")}</TableHead>
                 <TableHead className="text-right">{t("Reposts")}</TableHead>

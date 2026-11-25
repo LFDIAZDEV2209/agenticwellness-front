@@ -258,7 +258,7 @@ export function ContentTable({
             count: String(content.totalWeeks),
           })}
           description={t(
-            "Consulta las rutinas y los podcasts de cada semana del paciente.",
+            "Consulta las rutinas y los podcasts de cada semana de la persona.",
           )}
           icon={Layers}
           variant="secondary"

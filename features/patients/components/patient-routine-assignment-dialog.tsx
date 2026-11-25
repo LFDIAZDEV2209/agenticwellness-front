@@ -20,8 +20,8 @@ const weeks = Array.from({ length: ROUTINE_PROGRAM_WEEKS }, (_, i) => i + 1);
 type Failure = "routine" | "enrollment" | "range" | "permission" | "conflict" | "request";
 const errors: Record<Failure, string> = {
   routine: "La rutina ya no está activa o disponible. Elige otra rutina antes de continuar.",
-  enrollment: "Todos los pacientes de tu alcance deben tener un programa activo. Revisa la selección antes de continuar.",
-  range: "El rango supera la duración del programa de un paciente. Ajusta las semanas.",
+  enrollment: "Todas las personas seleccionadas deben tener un programa activo. Revisa la selección antes de continuar.",
+  range: "El rango supera la duración del programa de una persona. Ajusta las semanas.",
   permission: "No tienes permisos para realizar esta acción.",
   conflict: "El programa cambió durante la asignación. Revisa de nuevo antes de confirmar.",
   request: "No se pudo confirmar la asignación. Revisa el estado antes de reintentar.",
@@ -108,18 +108,18 @@ export function PatientRoutineAssignmentDialog({ patients, includesOtherPages, o
           {step === "result" ? <CheckCircle2 aria-hidden className="size-5 shrink-0 text-success" /> : <Dumbbell aria-hidden className="size-5 shrink-0 text-primary" />}
           {step === "edit" ? t("Asignar rutina en bloque") : step === "review" ? t("Revisar asignación") : t("Resultado de la asignación")}
         </DialogTitle>
-        <DialogDescription>{step === "result" ? t("Revisa las asignaciones aplicadas y las omisiones.") : t("Elige una rutina activa y las semanas. Nada se guarda hasta confirmar.")}</DialogDescription>
+        <DialogDescription>{step === "result" ? t("Revisa las asignaciones aplicadas y los casos omitidos.") : t("Elige una rutina activa y las semanas. Nada se guarda hasta confirmar.")}</DialogDescription>
       </DialogHeader>
       <DialogBody ref={bodyRef} className="flex flex-col gap-5" aria-busy={saving}>
         {!permitted ? <Alert variant="destructive"><AlertDescription>{t(errors.permission)}</AlertDescription></Alert> : result && step === "result" ? <>
           <p role="status" className="break-words font-semibold">{routine?.name} · {t("Semanas {from} a {to}", { from: String(from), to: String(to) })}</p>
           <dl className="flex flex-col gap-4">
-            <div className="flex items-start justify-between gap-4"><dt>{t("Pacientes con asignaciones aplicadas")}</dt><dd className="font-semibold tabular-nums">{count(result.aplicadas)}</dd></div>
-            <div className="flex items-start justify-between gap-4"><dt>{t("Pacientes con semanas iniciadas omitidas")}</dt><dd className="font-semibold tabular-nums">{count(result.omitidasSemanaIniciada)}</dd></div>
-            <div className="flex items-start justify-between gap-4"><dt>{t("Pacientes omitidos por alcance")}</dt><dd className="font-semibold tabular-nums">{count(result.omitidasSinAlcance.length)}</dd></div>
+            <div className="flex items-start justify-between gap-4"><dt>{t("Personas con asignaciones aplicadas")}</dt><dd className="font-semibold tabular-nums">{count(result.aplicadas)}</dd></div>
+            <div className="flex items-start justify-between gap-4"><dt>{t("Personas con semanas iniciadas omitidas")}</dt><dd className="font-semibold tabular-nums">{count(result.omitidasSemanaIniciada)}</dd></div>
+            <div className="flex items-start justify-between gap-4"><dt>{t("Personas omitidas por alcance")}</dt><dd className="font-semibold tabular-nums">{count(result.omitidasSinAlcance.length)}</dd></div>
           </dl>
-          <p className="text-sm text-muted-foreground">{t("Los conteos de aplicados y semanas iniciadas pueden incluir al mismo paciente.")}</p>
-          {result.omitidasSinAlcance.length > 0 && <section aria-label={t("Pacientes omitidos por alcance")} className="flex flex-col gap-2">
+          <p className="text-sm text-muted-foreground">{t("Los conteos de aplicados y semanas iniciadas pueden incluir a la misma persona.")}</p>
+          {result.omitidasSinAlcance.length > 0 && <section aria-label={t("Personas omitidas por alcance")} className="flex flex-col gap-2">
             <h3 className="font-semibold">{t("Fuera de tu alcance")}</h3>
             <p className="text-sm text-muted-foreground">{t("No se modificaron. Solo se muestran los identificadores enviados, sin nombres ni datos clínicos.")}</p>
             <ul className="flex max-h-40 flex-col gap-2 overflow-y-auto">{result.omitidasSinAlcance.map(id => <li key={id} className="break-all text-sm">{id}</li>)}</ul>
@@ -127,9 +127,9 @@ export function PatientRoutineAssignmentDialog({ patients, includesOtherPages, o
           <p className="text-sm text-muted-foreground">{t("Las asignaciones quedan personalizadas y las futuras publicaciones de plantilla las conservan.")}</p>
         </> : <>
           <section className="flex flex-col gap-2">
-            <h3 className="font-semibold">{t("{count} paciente{s} seleccionado{s}", { count: count(ids.length), s: ids.length === 1 ? "" : "s" })}</h3>
+            <h3 className="font-semibold">{ids.length === 1 ? t("1 persona seleccionada") : t("{count} personas seleccionadas", { count: count(ids.length) })}</h3>
             <ul className="flex max-h-24 flex-wrap gap-x-4 gap-y-2 overflow-y-auto">{patients.map(patient => <li key={patient.id} className="break-words">{patient.name}</li>)}</ul>
-            {includesOtherPages && <p className="text-xs text-muted-foreground">{t("La selección incluye pacientes de otras páginas o filtros.")}</p>}
+            {includesOtherPages && <p className="text-xs text-muted-foreground">{t("La selección incluye personas de otras páginas o filtros.")}</p>}
           </section>
           {step === "edit" ? <>
             <fieldset className="flex min-w-0 flex-col gap-3" disabled={saving}>
@@ -166,7 +166,7 @@ export function PatientRoutineAssignmentDialog({ patients, includesOtherPages, o
             <p>{t("Se sustituye el ejercicio y se retira el descanso en las semanas editables del rango. Podcasts y nutrición se conservan.")}</p>
             <p className="text-sm text-muted-foreground">{t("El resultado se calcula al confirmar. Las semanas iniciadas y el alcance se comprueban de nuevo en el servidor.")}</p>
           </section>}
-          <Alert><LockKeyhole aria-hidden /><AlertDescription>{t("Las semanas iniciadas se omiten y los pacientes fuera de tu alcance no se modifican.")}</AlertDescription></Alert>
+          <Alert><LockKeyhole aria-hidden /><AlertDescription>{t("Las semanas iniciadas se omiten y las personas fuera de tu alcance no se modifican.")}</AlertDescription></Alert>
           {failure && <Alert variant="destructive"><AlertDescription>{t(errors[failure])}</AlertDescription></Alert>}
         </>}
       </DialogBody>

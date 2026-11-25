@@ -99,7 +99,7 @@ function MedicationDirectoryContent({initialView}:{initialView:"overview"|"patie
           </span>
           <div>
             <h1>{t("Control de medicamentos")}</h1>
-            <p>{t("Tratamientos, tomas y seguimiento.")}</p>
+            <p>{t("Planes de medicación, tomas y seguimiento.")}</p>
           </div>
         </div>
         <div className="medication-home-header-actions">
@@ -129,7 +129,7 @@ function MedicationDirectoryContent({initialView}:{initialView:"overview"|"patie
           {capability.canManage && (
             <Button onClick={() => openPatients("create")}>
               <Plus aria-hidden />
-              {t("Nuevo tratamiento")}
+              {t("Nuevo plan de medicación")}
             </Button>
           )}
         </div>
@@ -176,19 +176,19 @@ function MedicationDirectoryContent({initialView}:{initialView:"overview"|"patie
                     intent === "history"
                       ? "Historial de tomas"
                       : intent === "create"
-                        ? "Registrar tratamiento"
+                        ? "Registrar plan de medicación"
                         : intent === "access"
                           ? "Gestionar accesos"
                           : "Seguimiento diario",
                   )}
                 </strong>
-                <p>{t("Selecciona un paciente")}</p>
+                <p>{t("Selecciona una persona")}</p>
               </div>
             </div>
           )}
           <section
             className="medication-directory"
-            aria-label={t("Pacientes en control de medicamentos")}
+            aria-label={t("Personas en control de medicamentos")}
           >
             <div className="medication-directory-toolbar">
               <div className="medication-section-heading">
@@ -196,10 +196,10 @@ function MedicationDirectoryContent({initialView}:{initialView:"overview"|"patie
                   <UserRound aria-hidden />
                 </span>
                 <div>
-                  <h2>{t("Pacientes")}</h2>
+                  <h2>{t("Personas")}</h2>
                   {data && (
                     <p>
-                      {t("{count} pacientes", { count: String(data.total) })}
+                      {t("{count} personas", { count: String(data.total) })}
                     </p>
                   )}
                 </div>
@@ -207,8 +207,8 @@ function MedicationDirectoryContent({initialView}:{initialView:"overview"|"patie
               <div className="medication-search">
                 <Search aria-hidden />
                 <Input
-                  aria-label={t("Buscar paciente")}
-                  placeholder={t("Buscar paciente")}
+                  aria-label={t("Buscar persona")}
+                  placeholder={t("Buscar persona")}
                   value={query}
                   onChange={(event) => {
                     setQuery(event.target.value);
@@ -218,9 +218,9 @@ function MedicationDirectoryContent({initialView}:{initialView:"overview"|"patie
               </div>
             </div>
             <div className="medication-directory-columns" aria-hidden>
-              <span>{t("Paciente")}</span>
+              <span>{t("Persona")}</span>
               <span>{t("Acceso en la app")}</span>
-              <span>{t("Tratamientos activos")}</span>
+              <span>{t("Planes de medicación activos")}</span>
               <span />
             </div>
             {loading ? (
@@ -270,7 +270,7 @@ function MedicationDirectoryContent({initialView}:{initialView:"overview"|"patie
                       <Pill aria-hidden />
                       {patient.activeTreatments}
                       <span className="sr-only">
-                        {t("Tratamientos activos")}
+                        {t("Planes de medicación activos")}
                       </span>
                     </span>
                     <ArrowRight className="medication-row-arrow" aria-hidden />

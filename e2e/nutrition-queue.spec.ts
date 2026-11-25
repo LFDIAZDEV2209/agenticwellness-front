@@ -72,9 +72,9 @@ test("bandeja HTTP: filtros, búsqueda, paginación y ausencia de N+1", async ({
   });
   await page.setViewportSize({ width: 1366, height: 768 });
   await page.goto("/nutrition");
-  const list = page.getByRole("list", { name: "Planes de pacientes" });
+  const list = page.getByRole("list", { name: "Planes de las personas" });
   await expect(list.getByRole("listitem")).toHaveCount(10);
-  await expect(page.getByRole("status")).toContainText("16 pacientes");
+  await expect(page.getByRole("status")).toContainText("16 personas");
   await expect(
     page.getByRole("link", {
       name: "Nutrición 3 planes por publicar",
@@ -119,12 +119,12 @@ test("bandeja HTTP: filtros, búsqueda, paginación y ausencia de N+1", async ({
   await filters.selectOption("en_aprobacion");
   await expect(list.getByRole("listitem")).toHaveCount(3);
   await expect(filters).toHaveValue("en_aprobacion");
-  await page.getByLabel("Buscar paciente", { exact: true }).fill("Maria");
+  await page.getByLabel("Buscar persona", { exact: true }).fill("Maria");
   await expect(list.getByRole("listitem")).toHaveCount(1);
   await expect(list).toContainText("María Demo");
-  await page.getByLabel("Buscar paciente", { exact: true }).fill("zzzz");
+  await page.getByLabel("Buscar persona", { exact: true }).fill("zzzz");
   await expect(
-    page.getByText("No encontramos pacientes en esta vista"),
+    page.getByText("No encontramos personas en esta vista"),
   ).toBeVisible();
   await page.getByRole("button", { name: "Limpiar filtros" }).click();
   await expect(list.getByRole("listitem")).toHaveCount(10);
@@ -169,7 +169,7 @@ test("endpoint ausente y contrato incompatible no producen datos demo", async ({
     ),
   ).toBeVisible();
   await expect(
-    page.getByRole("list", { name: "Planes de pacientes" }),
+    page.getByRole("list", { name: "Planes de las personas" }),
   ).toHaveCount(0);
   await expect(
     page.locator(".nutrition-module").getByRole("alert"),
@@ -298,7 +298,7 @@ test.describe("E1 sin plan provisional", () => {
         (await firstQueue).status(),
         "E1 requiere GET /api/v1/nutrition/inbox disponible en backend local",
       ).toBe(200);
-    await page.getByLabel("Buscar paciente", { exact: true }).fill(search);
+    await page.getByLabel("Buscar persona", { exact: true }).fill(search);
     await page
       .getByRole("combobox", { name: "Estado del plan", exact: true })
       .selectOption("sin_plan");
@@ -324,7 +324,7 @@ test.describe("E1 sin plan provisional", () => {
       .click();
     await expect(
       page.getByRole("heading", {
-        name: "Este paciente aún no tiene plan",
+        name: "Esta persona aún no tiene plan",
         exact: true,
       }),
     ).toBeVisible();
@@ -407,7 +407,7 @@ test.describe("E1 sin plan provisional", () => {
       .getByRole("tab", { name: "Resultados y ciclos", exact: true })
       .click();
     await expect(
-      page.getByText("Versión publicada: v1", { exact: true }),
+      page.getByRole("rowheader", { name: "C1 Versión 1" }),
     ).toBeVisible();
     if (fixture) {
       const generated = fixture.writes.find((write) =>
@@ -433,11 +433,12 @@ test("Nutrition.Approve basta y los textos cambian a inglés", async ({
   await session(page, ["Nutrition.Approve"], true);
   await page.goto("/nutrition");
   await expect(
-    page.getByRole("heading", { name: "Nutritionist", exact: true }),
+    page.getByRole("heading", { name: "Nutrition", exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("list", { name: "Patient plans" }).getByRole("listitem"),
+    page.getByRole("list", { name: "People’s plans" }).getByRole("listitem"),
   ).toHaveCount(10);
+  await expect(page.getByRole("searchbox", { name: "Search for a person" })).toBeVisible();
   const state = page.getByRole("combobox", {
     name: "Plan status",
     exact: true,
@@ -457,7 +458,7 @@ test("sin permisos Nutrition no hay bandeja, enlace ni peticiones de datos", asy
     page.getByText("Acceso denegado", { exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("list", { name: "Planes de pacientes" }),
+    page.getByRole("list", { name: "Planes de las personas" }),
   ).toHaveCount(0);
   await expect(page.locator('a[href="/nutrition"]')).toHaveCount(0);
 });

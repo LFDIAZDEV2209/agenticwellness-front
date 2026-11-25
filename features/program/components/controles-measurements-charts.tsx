@@ -128,7 +128,7 @@ export function ControlesMeasurementsCharts({
         tabs={metricTabs}
         value={selected}
         onChange={setTab}
-        title={t("Mediciones del paciente")}
+        title={t("Mediciones de la persona")}
         description={t(
           "Serie clínica por métrica; los puntos resaltados provienen de exámenes de laboratorio",
         )}
@@ -136,7 +136,7 @@ export function ControlesMeasurementsCharts({
       >
         {chartData.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            {t("Sin mediciones registradas para este paciente.")}
+            {t("Sin mediciones registradas para esta persona.")}
           </p>
         ) : (
           <>
