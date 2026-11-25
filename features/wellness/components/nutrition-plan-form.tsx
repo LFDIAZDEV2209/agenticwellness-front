@@ -503,7 +503,7 @@ const handleSelectPatient = (p: PickerItem) => {
                       type="button"
                       className="ml-auto text-muted-foreground hover:text-foreground"
                       onClick={handleClearPatient}
-                      aria-label="Quitar paciente"
+                      aria-label={t("Quitar persona")}
                     >
                       ×
                     </button>

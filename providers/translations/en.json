@@ -6339,5 +6339,11 @@
   "1 medicamento registrado": "1 medication on record",
   "{count} medicamentos registrados": "{count} medications on record",
   "1 profesional a cargo": "1 professional assigned",
-  "{count} profesionales a cargo": "{count} professionals assigned"
+  "{count} profesionales a cargo": "{count} professionals assigned",
+  "Acompañamiento funcional": "Functional support",
+  "Evita los planes de alimentación que prometen resultados rápidos.": "Avoid eating plans that promise quick results.",
+  "Consulta a un profesional de la salud para recibir orientación personal.": "Consult a health professional for individual guidance.",
+  "Comparte experiencias personales. Deja la orientación individual a profesionales de la salud.": "Share personal experiences. Leave individual guidance to health professionals.",
+  "Me interesa conocer los planes de alimentación.": "I'd like to learn about eating plans.",
+  "Quitar persona": "Remove person"
 }

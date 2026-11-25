@@ -8,6 +8,14 @@ import type {
   ModerationReport,
 } from "../types";
 
+export const CLUB_DEMO_RULES = {
+  food: "Evita los planes de alimentación que prometen resultados rápidos.",
+  guidance: "Consulta a un profesional de la salud para recibir orientación personal.",
+  support: "Comparte experiencias personales. Deja la orientación individual a profesionales de la salud.",
+};
+
+export const CLUB_DEMO_JOIN_REASON = "Me interesa conocer los planes de alimentación.";
+
 const BASE = new Date("2026-09-01T12:00:00Z");
 
 function iso(offsetMinutes: number): string {
@@ -353,7 +361,7 @@ export function createSeeds(): SeedClub[] {
         description:
           "Aprende a comer mejor con planes prácticos, recetas y respuestas de nutricionistas.",
         rules: [
-          "Nada de dietas milagro",
+          CLUB_DEMO_RULES.food,
           "Consulta siempre a tu nutricionista",
         ],
         objectives: ["Educación nutricional continua"],
@@ -374,7 +382,7 @@ export function createSeeds(): SeedClub[] {
         commonMembers[2],
       ],
       requests: [
-        { memberId: "m-12", reason: "Soy paciente interesada en planes" },
+        { memberId: "m-12", reason: CLUB_DEMO_JOIN_REASON },
         { memberId: "m-13", reason: "Quiero recetas para diabéticos" },
       ],
       posts: [
@@ -436,7 +444,7 @@ export function createSeeds(): SeedClub[] {
         name: "Embarazo Plena",
         description:
           "Acompañamiento para futuras mamás: información por trimestre, ejercicios seguros y comunidad.",
-        rules: ["No sustituir el consejo médico", "Empatía y cero juicios"],
+        rules: [CLUB_DEMO_RULES.guidance, "Empatía y cero juicios"],
         objectives: ["Acompañar cada trimestre", "Reducir ansiedad prenatal"],
         category: "Embarazo",
         tags: ["maternidad", "trimestres", "acompañamiento"],
@@ -711,7 +719,7 @@ export function createSeeds(): SeedClub[] {
         rules: [
           "Confidencialidad absoluta",
           "Sin juicios",
-          "No dar diagnósticos",
+          CLUB_DEMO_RULES.support,
         ],
         objectives: ["Desnormalizar pedir ayuda"],
         category: "Bienestar",

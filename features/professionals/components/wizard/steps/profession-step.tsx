@@ -167,7 +167,7 @@ export function ProfessionStep({
               {specialtiesByCategory.map((group) => (
                 <div key={group.category}>
                   <p className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
-                    {group.category}
+                    {group.category === "Terapia" ? t("Acompañamiento funcional") : group.category}
                   </p>
                   <div className="mt-1.5 flex flex-wrap gap-1.5">
                     {group.items.map((s) => {
