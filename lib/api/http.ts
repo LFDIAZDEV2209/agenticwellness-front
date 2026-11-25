@@ -120,6 +120,7 @@ interface ApiRequestOptions extends RequestInit {
   /** Reintentar con refresh en 401 (default true). Login/logout: false. */
   retry?: boolean;
   timeoutMs?: number;
+  responseType?: "blob";
 }
 
 export async function apiFetch<T>(
@@ -130,6 +131,7 @@ export async function apiFetch<T>(
     auth = true,
     retry = true,
     timeoutMs = DEFAULT_TIMEOUT_MS,
+    responseType,
     headers: extraHeaders,
     signal: externalSignal,
     ...fetchInit
@@ -204,7 +206,7 @@ export async function apiFetch<T>(
       }
     }
 
-    return await handleResponse<T>(response);
+    return await handleResponse<T>(response, responseType);
   } catch (error) {
     if (error instanceof ApiError) throw error;
     const isAbort =
@@ -230,13 +232,17 @@ export async function apiFetch<T>(
   }
 }
 
-async function handleResponse<T>(response: Response): Promise<T> {
+async function handleResponse<T>(response: Response, responseType?: "blob"): Promise<T> {
   if (!response.ok) {
     throw await toApiError(response);
   }
 
   if (response.status === 204) {
     return undefined as T;
+  }
+
+  if (responseType === "blob") {
+    return (await response.blob()) as T;
   }
 
   const contentType = response.headers.get("content-type") ?? "";
