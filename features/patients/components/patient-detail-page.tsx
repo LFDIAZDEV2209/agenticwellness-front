@@ -552,7 +552,7 @@ function DiagnosesSection({ patient }: { patient: Patient }) {
         </ul>
       ) : (
         <p className="p-4 text-xs text-muted-foreground sm:p-5">
-          Sin diagnósticos registrados.
+          {t("Sin resultados registrados.")}
         </p>
       )}
     </section>
@@ -568,7 +568,9 @@ function MedicationsSection({ patient }: { patient: Patient }) {
     >
       <SectionHeader
         title={t("Medicamentos")}
-        description={`${patient.medications.length} prescritos`}
+        description={t(patient.medications.length === 1 ? "1 medicamento registrado" : "{count} medicamentos registrados", {
+          count: String(patient.medications.length),
+        })}
         icon={ClipboardPenLine}
         variant="primary"
       />

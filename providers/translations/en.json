@@ -6335,5 +6335,9 @@
   "Esta página se conserva por compatibilidad. Ahora puedes gestionar el contenido semanal desde": "This page is kept for compatibility. You can now manage weekly content from",
   ", en la pestaña Contenido semanal de cada persona.": ", in each person's Weekly Content tab.",
   "Esta página se conserva por compatibilidad. Ahora puedes consultar las puntuaciones de cada persona desde": "This page is kept for compatibility. You can now view each person's scores from",
-  "{count} de {total} en el programa": "{count} out of {total} in the program"
+  "{count} de {total} en el programa": "{count} out of {total} in the program",
+  "1 medicamento registrado": "1 medication on record",
+  "{count} medicamentos registrados": "{count} medications on record",
+  "1 profesional a cargo": "1 professional assigned",
+  "{count} profesionales a cargo": "{count} professionals assigned"
 }

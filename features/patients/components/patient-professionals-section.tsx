@@ -164,7 +164,9 @@ export function PatientProfessionalsSection({
     >
       <SectionHeader
         title={t("Profesionales asignados")}
-        description={`${active.length} atienden a este paciente`}
+        description={t(active.length === 1 ? "1 profesional a cargo" : "{count} profesionales a cargo", {
+          count: String(active.length),
+        })}
         icon={Stethoscope}
         variant="primary"
       />

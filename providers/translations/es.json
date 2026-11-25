@@ -6335,5 +6335,9 @@
   "Esta página se conserva por compatibilidad. Ahora puedes gestionar el contenido semanal desde": "Esta página se conserva por compatibilidad. Ahora puedes gestionar el contenido semanal desde",
   ", en la pestaña Contenido semanal de cada persona.": ", en la pestaña Contenido semanal de cada persona.",
   "Esta página se conserva por compatibilidad. Ahora puedes consultar las puntuaciones de cada persona desde": "Esta página se conserva por compatibilidad. Ahora puedes consultar las puntuaciones de cada persona desde",
-  "{count} de {total} en el programa": "{count} de {total} en el programa"
+  "{count} de {total} en el programa": "{count} de {total} en el programa",
+  "1 medicamento registrado": "1 medicamento registrado",
+  "{count} medicamentos registrados": "{count} medicamentos registrados",
+  "1 profesional a cargo": "1 profesional a cargo",
+  "{count} profesionales a cargo": "{count} profesionales a cargo"
 }
