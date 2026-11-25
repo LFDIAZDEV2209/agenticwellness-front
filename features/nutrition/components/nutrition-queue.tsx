@@ -140,7 +140,7 @@ export function NutritionQueue({
       <div className="nutrition-workbench">
         <aside
           className="nutrition-patient-rail"
-          aria-label={t("Bandeja de pacientes")}
+          aria-label={t("Bandeja de personas")}
         >
           {selection && <SectionHeader
             title={t("Personas")}
@@ -219,7 +219,7 @@ export function NutritionQueue({
             ) : error ? (
               <NutritionError retry={retry} issue={error} />
             ) : data?.items.length ? (
-              <ul aria-label={t("Planes de pacientes")} ref={listRef}>
+              <ul aria-label={t("Planes de las personas")} ref={listRef}>
                 {data.items.map((patient) => (
                   <li
                     key={patient.patientId}
@@ -265,7 +265,7 @@ export function NutritionQueue({
             ) : (
               <div className="nutrition-rail-empty">
                 <Search className="size-6" aria-hidden="true" />
-                <p>{t("No encontramos pacientes en esta vista")}</p>
+                <p>{t("No encontramos personas en esta vista")}</p>
                 <Button
                   variant="outline"
                   size="sm"

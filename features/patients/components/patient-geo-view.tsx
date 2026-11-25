@@ -135,7 +135,7 @@ export function PatientGeoView({
             data-slot="chart-map"
             viewBox={USA_VIEWBOX}
             role="img"
-            aria-label={t("Mapa de pacientes por estado de EE. UU.")}
+            aria-label={t("Mapa de personas por estado de EE. UU.")}
             className="h-auto max-h-[430px] w-full"
           >
             {Object.entries(USA_STATE_PATHS).map(([abbr, d]) => {
@@ -150,7 +150,7 @@ export function PatientGeoView({
                   aria-pressed={isSelected}
                   aria-label={
                     state
-                      ? `${STATE_NAMES[abbr] ?? abbr}: ${state.count} ${t("pacientes")} (${state.percentage.toFixed(1)}%)`
+                      ? `${STATE_NAMES[abbr] ?? abbr}: ${state.count} ${t("personas")} (${state.percentage.toFixed(1)}%)`
                       : `${STATE_NAMES[abbr] ?? abbr}: ${t("sin personas")}`
                   }
                   className="cursor-pointer outline-none focus-visible:opacity-90"
@@ -195,7 +195,7 @@ export function PatientGeoView({
                   />
                   <title>
                     {state
-                      ? `${STATE_NAMES[abbr] ?? abbr} — ${state.count} ${t("pacientes")} (${state.percentage.toFixed(1)}%)`
+                      ? `${STATE_NAMES[abbr] ?? abbr} — ${state.count} ${t("personas")} (${state.percentage.toFixed(1)}%)`
                       : `${STATE_NAMES[abbr] ?? abbr} — ${t("sin personas")}`}
                   </title>
                 </g>
@@ -214,7 +214,7 @@ export function PatientGeoView({
               {byCode.get(hovered) ? (
                 <>
                   <p className="text-muted-foreground">
-                    {byCode.get(hovered)!.count} {t("pacientes")} ·{" "}
+                    {byCode.get(hovered)!.count} {t("personas")} ·{" "}
                     {byCode.get(hovered)!.percentage.toFixed(1)}%
                   </p>
                   <p className="text-[10.5px] text-muted-foreground">

@@ -94,7 +94,7 @@ export function ProgramAdherenciaPage() {
   const handleExportCsv = () => {
     if (!data?.tabla.data) return;
     const headers = [
-      "Paciente",
+      "Persona",
       "Global %",
       ...MISSION_ORDER.map((c) => MISSION_LABELS[c]),
       "XP",

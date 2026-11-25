@@ -67,7 +67,7 @@ test("3.14 · 30 días, continuidad, menú histórico, orígenes y foto ampliabl
     exact: true,
   });
   await expect(day).toContainText("versión 2");
-  await expect(day).toContainText("Confirmado por el paciente");
+  await expect(day).toContainText("Confirmado por la persona");
   await expect(day).toContainText("Estimación original por IA");
   await expect(day).toContainText("890 kcal");
   await expect(day).toContainText("800 kcal");
@@ -75,7 +75,7 @@ test("3.14 · 30 días, continuidad, menú histórico, orígenes y foto ampliabl
   await day.getByRole("button", { name: /^Desayuno/ }).click();
   await expect(
     page.getByRole("complementary", { name: "Detalle de la comida" }),
-  ).toContainText("Confirmado por el paciente");
+  ).toContainText("Confirmado por la persona");
   await expect(
     page.getByRole("complementary", { name: "Detalle de la comida" }),
   ).toContainText("Sin dato");

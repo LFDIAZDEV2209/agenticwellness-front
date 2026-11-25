@@ -185,7 +185,7 @@ export function WeekAgendaCellPanel({
                     {!editor.restEnabled && (
                       <p className="text-xs text-muted-foreground">
                         {t(
-                          "Disponible cuando la app de los pacientes lo soporte.",
+                          "Disponible cuando la app de las personas lo soporte.",
                         )}
                       </p>
                     )}

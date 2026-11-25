@@ -345,7 +345,7 @@ export function UserDetail({ userId }: UserDetailProps) {
                   style={rainbowStyle("teal")}
                 >
                   <Smartphone aria-hidden="true" className="size-3.5" />
-                  {t("Paciente · App móvil")}
+                  {t("Persona · App móvil")}
                 </span>
               )}
               <UserStatusBadge isActive={user.isActive} />

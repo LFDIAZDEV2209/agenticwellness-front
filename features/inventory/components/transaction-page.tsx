@@ -285,7 +285,7 @@ export function TransactionPage({ mode }: { mode: TransactionMode }) {
               />
             </Field>
           ) : (
-            <Field label={t("Paciente (opcional)")}>
+            <Field label={t("Persona (opcional)")}>
               <Input
                 value={patientName}
                 onChange={(event) => setPatientName(event.target.value)}

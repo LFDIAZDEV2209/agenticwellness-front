@@ -18,10 +18,10 @@ for (const usage of [undefined, null, -1, 1.5, "4"]) test(`2.22 · dato ausente/
 for (const usage of [0, 1, 27]) test(`2.22 · usageCount sintético ${usage} muestra cifra sin enviar PUT al revisar`, async ({ page }) => {
   const qa = await mockRoutineEdit(page, { usage });
   const review = await reviewRoutineEdit(page);
-  await expect(review.getByText(usage === 1 ? "Usada en 1 paciente con semanas activas" : `Usada en ${usage} pacientes con semanas activas`, { exact: true })).toBeVisible();
+  await expect(review.getByText(usage === 1 ? "Usada por 1 persona con semanas activas" : `Usada en ${usage} personas con semanas activas`, { exact: true })).toBeVisible();
   await expect(review.getByText("Uso no disponible", { exact: true })).toHaveCount(0);
   await expect(review.getByText("El detalle registrado de las sesiones completadas se conserva.")).toBeVisible();
-  await expect(review.getByText("El conteo incluye solo pacientes de tu alcance, no el total global.")).toBeVisible();
+  await expect(review.getByText("El conteo incluye solo a las personas de tu alcance.")).toBeVisible();
   expect(qa.usageCalls).toEqual([{ path: `/api/v1/program/routines/${qa.routine.id}/usage`, status: 200 }]);
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toHaveCount(0);
@@ -57,7 +57,7 @@ for (const status of ["403", "409", "503"]) test(`2.22 · fallo ${status} conser
 for (const english of [false, true]) test(`2.22 · ${english ? "EN" : "ES"}, teclado y 320/390/1440 sin overflow`, async ({ page }) => {
   const qa = await mockRoutineEdit(page, { usage: 1234, english });
   const review = await reviewRoutineEdit(page, english);
-  await expect(review.getByText(english ? "Used by 1,234 patients with active weeks" : "Usada en 1.234 pacientes con semanas activas", { exact: true })).toBeVisible();
+  await expect(review.getByText(english ? "Used by 1,234 people with active weeks" : "Usada en 1.234 personas con semanas activas", { exact: true })).toBeVisible();
   for (const width of [320, 390, 1440]) {
     await page.setViewportSize({ width, height: 844 });
     expect(await review.evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true);
@@ -84,7 +84,7 @@ for (const usageStatus of [403, 404, 503]) test(`2.22 · GET uso ${usageStatus}:
   expect(qa.calls).toHaveLength(0);
   qa.setUsage(3);
   await review.getByRole("button", { name: "Reintentar", exact: true }).click();
-  await expect(review.getByText("Usada en 3 pacientes con semanas activas", { exact: true })).toBeVisible();
+  await expect(review.getByText("Usada en 3 personas con semanas activas", { exact: true })).toBeVisible();
   await review.getByRole("button", { name: "Volver a editar", exact: true }).click();
   await expect(page.locator("#routine-name")).toHaveValue("Rutina revisada QA");
   expect(qa.usageCalls).toHaveLength(2); expect(qa.calls).toHaveLength(0);
@@ -106,9 +106,9 @@ test("2.22 · carga de uso pendiente no muestra fallback ni permite guardar; can
   await review.getByRole("button", { name: "Volver a editar", exact: true }).click();
   qa.setUsage(1);
   await page.getByRole("button", { name: "Guardar cambios", exact: true }).click();
-  await expect(review.getByText("Usada en 1 paciente con semanas activas", { exact: true })).toBeVisible();
+  await expect(review.getByText("Usada por 1 persona con semanas activas", { exact: true })).toBeVisible();
   expect(qa.calls).toHaveLength(0); expect(qa.usageCalls).toHaveLength(2);
   // El puente HTTP de QA termina la lectura anterior aunque el fetch del producto ya se canceló.
   await expect.poll(() => qa.usageCalls.every(call => call.status === 200)).toBe(true);
-  await expect(review.getByText("Usada en 1 paciente con semanas activas", { exact: true })).toBeVisible();
+  await expect(review.getByText("Usada por 1 persona con semanas activas", { exact: true })).toBeVisible();
 });

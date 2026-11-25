@@ -112,7 +112,7 @@ export function DiagnosticsPage() {
               <Table>
                   <TableHeader>
                     <TableRow className="h-8">
-                      <TableHead className="px-2 text-[11px]">{t("Diagnóstico")}</TableHead>
+                      <TableHead className="px-2 text-[11px]">{t("Evaluación")}</TableHead>
                       <TableHead className="px-2 text-right text-[11px]">{t("Miembros")}</TableHead>
                       <TableHead className="px-2 text-right text-[11px]">{t("Posts sem")}</TableHead>
                       <TableHead className="px-2 text-right text-[11px]">{t("Racha")}</TableHead>

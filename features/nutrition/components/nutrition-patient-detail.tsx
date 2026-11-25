@@ -768,7 +768,7 @@ function PatientWorkspace({
             ) : (
               <section className="nutrition-section">
                 <SectionHeader
-                  title={t("Este paciente aún no tiene plan")}
+                  title={t("Esta persona aún no tiene plan")}
                   icon={BookOpen}
                   variant="tertiary"
                 />

@@ -131,7 +131,7 @@ export function useSosAlerts(options: {
     } catch {
       // Mensaje genérico sin filtrar 404 vs 403 (anti-IDOR, REQ-SOS-05).
       setAttendError(
-        "No se pudo atender la alerta. Verificá que siga activa y que tu alcance clínico cubra al paciente.",
+        "No se pudo atender la alerta. Verifica que siga activa y que tengas acceso a la persona.",
       );
       return false;
     } finally {

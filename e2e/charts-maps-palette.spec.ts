@@ -121,7 +121,7 @@ test("patient volume map uses the shared scale and still filters by keyboard", a
   await mockChartsMapsHttp(page);
   await page.goto("/patients?tab=mapa");
   const map = page.getByRole("img", {
-    name: "Mapa de pacientes por estado de EE. UU.",
+    name: "Mapa de personas por estado de EE. UU.",
     exact: true,
   });
   const state = map.locator('g[aria-label^="California:"]');

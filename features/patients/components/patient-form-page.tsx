@@ -975,11 +975,11 @@ export function PatientFormPage({ patientId }: { patientId?: string }) {
   return (
     <div className="flex flex-col gap-8 p-4 sm:p-6 min-w-0">
       <PageHeader
-        title={isEdit ? "Editar paciente" : "Nueva persona"}
+        title={t(isEdit ? "Editar persona" : "Nueva persona")}
         description={
-          isEdit
-            ? "Actualiza la información clínica y de contacto del paciente"
-            : "Registra la información clínica y de contacto del paciente"
+          t(isEdit
+            ? "Actualiza los datos de salud y de contacto de la persona."
+            : "Registra los datos de salud y de contacto de la persona.")
         }
         icon={UserRound}
         actions={
@@ -999,7 +999,7 @@ export function PatientFormPage({ patientId }: { patientId?: string }) {
       ) : notFound ? (
         <div className="flex flex-col items-center gap-3 rounded-2xl border border-destructive/20 bg-destructive-soft/40 py-14 text-center">
           <p className="text-sm font-semibold text-destructive">
-            Paciente no encontrado
+            {t("Persona no encontrada")}
           </p>
           <p className="max-w-sm text-xs text-muted-foreground">
             Es posible que el registro haya sido eliminado o que la dirección
@@ -1444,7 +1444,7 @@ export function PatientFormPage({ patientId }: { patientId?: string }) {
           </FormSection>
 
           {/* ── Diagnósticos ── */}
-          <FormSection legend="Diagnósticos" icon={Stethoscope} layout="stack">
+          <FormSection legend={t("Evaluaciones")} icon={Stethoscope} layout="stack">
             {form.diagnoses.length === 0 && (
               <EmptyHint
                 icon={Stethoscope}
@@ -1461,7 +1461,7 @@ export function PatientFormPage({ patientId }: { patientId?: string }) {
                     <span className="flex size-7 items-center justify-center rounded-lg bg-primary-soft text-primary-soft-foreground">
                       <Stethoscope className="size-4" />
                     </span>
-                    Diagnóstico {index + 1}
+                    {t("Evaluación {n}", { n: String(index + 1) })}
                   </span>
                   <div className="flex items-center gap-3">
                     <label className="flex items-center gap-2 text-sm font-medium">
@@ -1562,7 +1562,7 @@ export function PatientFormPage({ patientId }: { patientId?: string }) {
               }
             >
               <Plus data-icon="inline-start" />
-              Agregar diagnóstico
+              {t("Agregar evaluación")}
             </Button>
           </FormSection>
 
@@ -2058,7 +2058,7 @@ export function PatientFormPage({ patientId }: { patientId?: string }) {
                 ? "Guardando..."
                 : isEdit
                   ? "Guardar cambios"
-                  : "Crear paciente"}
+                  : "Crear persona"}
             </Button>
           </div>
         </form>

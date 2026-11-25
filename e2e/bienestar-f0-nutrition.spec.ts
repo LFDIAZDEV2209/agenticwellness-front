@@ -165,7 +165,7 @@ test("0.8 · sin plan vigente muestra un estado vacío con acceso a la ficha", a
     exact: true,
   });
   await expect(card).toContainText(
-    "Este paciente no tiene un plan nutricional publicado vigente.",
+    "Esta persona no tiene un plan nutricional publicado vigente.",
   );
   await expect(card.getByRole("definition")).toHaveCount(0);
   await expect(card.getByRole("link")).toHaveAttribute(
@@ -181,7 +181,7 @@ test("0.8 · sin lectura de nutrición no consulta el workspace ni ofrece el enl
   await http.open();
   const panel = page.getByRole("tabpanel", { name: "Nutrición", exact: true });
   await expect(panel).toContainText(
-    "No tienes permiso para consultar la nutrición de este paciente.",
+    "No tienes permiso para consultar la nutrición de esta persona.",
   );
   await expect(panel.getByRole("link")).toHaveCount(0);
   expect(http.requests).toHaveLength(0);

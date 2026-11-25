@@ -301,7 +301,7 @@ test("HTML completo: inventario APP → tomas/stock → semana ERP → efectos/a
       .click();
     await expect(
       staff.getByRole("table", {
-        name: "Inventario de pacientes",
+        name: "Inventario de personas",
         exact: true,
       }),
     ).toContainText(name);
@@ -501,7 +501,7 @@ test("Solo lectura, alertas temporales y bitácora inalterable por la aplicació
     await staffLogin(page, "reader");
     await page.goto(erp + "/medications/inventory");
     await expect(
-      page.getByRole("table", { name: "Inventario de pacientes", exact: true }),
+      page.getByRole("table", { name: "Inventario de personas", exact: true }),
     ).toBeVisible();
     await expect(
       page.getByRole("button", { name: "Registrar movimiento", exact: true }),

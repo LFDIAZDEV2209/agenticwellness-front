@@ -106,7 +106,7 @@ export function PatientAccountEditor({ user }: { user: User }) {
   return (
     <div className="flex min-w-0 flex-col gap-5 p-4 sm:p-6">
       <PageHeader
-        title={t("Editar cuenta de paciente")}
+        title={t("Editar cuenta de la persona")}
         description={t("Edita el nombre y el estado de acceso a la app móvil.")}
         icon={HeartPulse}
         actions={

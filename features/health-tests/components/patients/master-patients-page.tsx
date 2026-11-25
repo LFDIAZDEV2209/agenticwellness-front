@@ -438,7 +438,7 @@ export function MasterPatientsPage() {
                   setExpandedId(null);
                 }}
                 placeholder={t("Buscar persona o documento...")}
-                aria-label={t("Buscar pacientes")}
+                aria-label={t("Buscar personas")}
               />
             </div>
 

@@ -349,7 +349,7 @@ export function BatteryDetailPage({ batteryId }: { batteryId: string }) {
                       : t("Sin frecuencia")}
                   </span>
                   <span className="text-[11px] text-muted-foreground">
-                    {item.patientsWith} {t("pacientes")} · {item.completed}{" "}
+                    {item.patientsWith} {t("personas")} · {item.completed}{" "}
                     {t("completados")}
                   </span>
                   <span className="flex w-28 shrink-0 items-center gap-2">

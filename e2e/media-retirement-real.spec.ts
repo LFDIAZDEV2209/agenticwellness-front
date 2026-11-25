@@ -60,7 +60,7 @@ test("1.23 · DELETE 409, sustituto válido obligatorio y retiro conserva histor
     const unpublish = page.getByRole("dialog", { name: `${t("Despublicar")} «${f.run} original»`, exact: true });
     await unpublish.getByRole("button", { name: t("Despublicar y reemplazar"), exact: true }).click();
     const done = page.getByRole("dialog", { name: t("Cambios guardados"), exact: true });
-    await expect(done).toContainText(t("Impacto confirmado: {patients} pacientes y {templates} plantillas.", { patients: "2", templates: "1" }));
+    await expect(done).toContainText(t("Impacto confirmado: {patients} personas y {templates} plantillas.", { patients: "2", templates: "1" }));
     const after: State = db("state", fixturePath);
     expect(after.media.find(m => m[0] === f.original)?.[1]).toBe("Draft");
     expect(after.media.find(m => m[0] === f.replacement)?.[1]).toBe("Published");

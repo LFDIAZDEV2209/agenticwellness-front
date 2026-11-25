@@ -376,7 +376,7 @@ export function PatientProfilePage({ patientId }: { patientId: string }) {
         className="flex flex-col overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-sm scroll-mt-6"
       >
         <SectionHeader
-          title={t("Ficha del paciente")}
+          title={t("Ficha de la persona")}
           description={t("Identidad, tipificación de riesgo y fechas clave")}
           icon={UserRound}
           variant="primary"

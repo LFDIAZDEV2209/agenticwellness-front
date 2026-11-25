@@ -609,8 +609,8 @@ export function UsersPageContent() {
                 · {result.total}{" "}
                 {segment === "patient"
                   ? result.total === 1
-                    ? t("paciente")
-                    : t("pacientes")
+                    ? t("persona")
+                    : t("personas")
                   : segment === "all"
                     ? result.total === 1
                       ? t("cuenta")

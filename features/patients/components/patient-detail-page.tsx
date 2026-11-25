@@ -107,10 +107,10 @@ export function PatientDetailPage({ id }: { id: string }) {
     return (
       <div className="flex flex-col items-center gap-3 rounded-2xl border border-destructive/20 bg-destructive-soft/40 py-14 text-center">
         <p className="text-sm font-semibold text-destructive">
-          No pudimos cargar el paciente
+          {t("No pudimos cargar el perfil")}
         </p>
         <p className="max-w-sm text-xs text-muted-foreground">
-          {error ?? "El paciente no existe o fue eliminado."}
+          {error ?? t("La persona no existe o fue eliminada.")}
         </p>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={reload}>
@@ -514,11 +514,11 @@ function DiagnosesSection({ patient }: { patient: Patient }) {
   return (
     <section
       className="flex flex-col overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-xs"
-      aria-label={t("Diagnósticos")}
+      aria-label={t("Evaluaciones")}
     >
       <SectionHeader
-        title={t("Diagnósticos")}
-        description={`${patient.diagnoses.length} registrados`}
+        title={t("Evaluaciones")}
+        description={t("{count} evaluaciones registradas", { count: String(patient.diagnoses.length) })}
         icon={Stethoscope}
         variant="primary"
       />

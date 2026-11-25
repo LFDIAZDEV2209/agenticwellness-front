@@ -163,7 +163,7 @@ export function ProgramPatientProfile360({
     return (
       <TabError
         message={t(
-          "Este paciente no está disponible o no tienes acceso a su perfil.",
+          "Esta persona no está disponible o no tienes acceso a su perfil.",
         )}
         onRetry={retry}
       />

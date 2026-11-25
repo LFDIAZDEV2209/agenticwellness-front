@@ -129,7 +129,7 @@ test("dark clinical badges, menus, confirmation and patient form keep readable t
   await page.getByRole("button", { name: "Nueva persona", exact: true }).click();
   await expect(page).toHaveURL(/\/people\/new\?context=patient$/);
   const form = page.locator("main");
-  await readable(form.getByRole("heading", { name: "Identidad del paciente", exact: true }));
+  await readable(form.getByRole("heading", { name: "Identidad de la persona", exact: true }));
   const name = form.getByPlaceholder("Ej. María", { exact: true });
   await name.fill("QA contraste");
   await readable(name);

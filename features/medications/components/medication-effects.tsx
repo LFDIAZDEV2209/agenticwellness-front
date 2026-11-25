@@ -81,7 +81,7 @@ export function MedicationEffects({ patientId }: { patientId: string }) {
       {selected && (
         <form className="medication-monitoring-form" onSubmit={review}>
           <h3>{selected.symptom}</h3>
-          <p>{t("Visible para el paciente")}</p>
+          <p>{t("Visible para la persona")}</p>
           <NativeSelect
             ariaLabel={t("Estado del reporte")}
             value={status}

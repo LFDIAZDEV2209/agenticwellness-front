@@ -671,7 +671,7 @@ export function getBreadcrumbSegments(
 
   if (pathname.startsWith("/medications/")) {
     segments.push({ label: "Control de medicamentos", href: "/medications" });
-    segments.push({ label: "Ficha del paciente" });
+    segments.push({ label: "Ficha de la persona" });
     return segments;
   }
 

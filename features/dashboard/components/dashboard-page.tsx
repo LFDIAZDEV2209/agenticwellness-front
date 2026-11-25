@@ -268,7 +268,7 @@ export function DashboardPage() {
             <dl className="mt-3 grid grid-cols-1 gap-2 @min-[600px]/dashboard:grid-cols-3">
               {[
                 {
-                  label: t("Pacientes nuevos (6 meses)"),
+                  label: t("Personas nuevas (6 meses)"),
                   value: growthData.reduce(
                     (sum, point) => sum + point.value,
                     0,

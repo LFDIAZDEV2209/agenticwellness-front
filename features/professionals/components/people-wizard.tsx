@@ -514,7 +514,7 @@ export function PeopleWizard({
       }
       setError(
         mode === "patient"
-          ? "No se pudo crear el paciente. Intenta nuevamente."
+          ? "No se pudo crear el perfil de la persona. Intenta nuevamente."
           : "No se pudo crear el profesional. Intenta nuevamente.",
       );
     }

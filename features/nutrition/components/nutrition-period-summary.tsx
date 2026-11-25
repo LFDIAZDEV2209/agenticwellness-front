@@ -177,7 +177,7 @@ export function NutritionPeriodSummary({
                 {t(
                   origin === "ai_estimated"
                     ? "Estimado por IA"
-                    : "Confirmado por el paciente",
+                    : "Confirmado por la persona",
                 )}
               </strong>
               <p>
@@ -347,7 +347,7 @@ export function NutritionPeriodComparison({
           </div>
         ))}
       </div>
-      {table(t("Comparación conjunta · IA y paciente"), rows)}
+      {table(t("Comparación conjunta · IA y persona"), rows)}
       <details className="nutrition-review-origin-details">
         <summary>{t("Ver comparación separada por origen")}</summary>
         {(["ai_estimated", "patient_confirmed"] as const).map((origin) => (
@@ -356,7 +356,7 @@ export function NutritionPeriodComparison({
               t(
                 origin === "ai_estimated"
                   ? "Solo registros estimados por IA"
-                  : "Solo registros confirmados por el paciente",
+                  : "Solo registros confirmados por la persona",
               ),
               sourceRows(origin),
             )}

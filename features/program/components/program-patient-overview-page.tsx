@@ -1510,7 +1510,7 @@ function PatientNotFound() {
         <UserRound className="size-6 text-muted-foreground" />
       </div>
       <div>
-        <p className="text-sm font-semibold">Paciente no encontrado</p>
+        <p className="text-sm font-semibold">Persona no encontrada</p>
         <p className="text-xs text-muted-foreground">
           El paciente no existe o no está dentro de tu alcance de datos.
         </p>

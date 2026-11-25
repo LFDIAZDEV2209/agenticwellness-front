@@ -240,7 +240,7 @@ export function MembersPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>{t("Miembro")}</TableHead>
-                <TableHead className="hidden md:table-cell">{t("Diagnóstico")}</TableHead>
+                <TableHead className="hidden md:table-cell">{t("Evaluación")}</TableHead>
                 <TableHead className="hidden md:table-cell">{t("Región")}</TableHead>
                 <TableHead className="text-right">{t("Posts")}</TableHead>
                 <TableHead className="text-right">{t("Reposts")}</TableHead>

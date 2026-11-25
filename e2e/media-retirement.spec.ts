@@ -330,7 +330,7 @@ test("1.23 · despublicar exige sustituto, filtra candidatos y muestra impacto c
     .click();
   await expect(
     page.getByRole("dialog", { name: "Cambios guardados", exact: true }),
-  ).toContainText("Impacto confirmado: 48 pacientes y 2 plantillas.");
+  ).toContainText("Impacto confirmado: 48 personas y 2 plantillas.");
   expect(http.state.calls).toEqual([
     {
       method: "POST",

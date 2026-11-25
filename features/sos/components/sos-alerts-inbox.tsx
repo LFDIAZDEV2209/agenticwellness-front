@@ -540,7 +540,7 @@ function SosAlertCard({
               disabled={busy}
               className="gap-1.5 bg-[var(--sidebar)] text-white shadow-sm hover:bg-[var(--sidebar)]/90"
               aria-label={t("Atender alerta de {name}", {
-                name: alert.patientName ?? t("el paciente"),
+                name: alert.patientName ?? t("la persona"),
               })}
             >
               <Siren className="size-3.5" aria-hidden />

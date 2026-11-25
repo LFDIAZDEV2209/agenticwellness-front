@@ -40,7 +40,7 @@ export function IntakeOrigin({ origin }: { origin: IntakeRecord["origin"] }) {
       {t(
         origin === "ai_estimated"
           ? "Estimado por IA"
-          : "Confirmado por el paciente",
+          : "Confirmado por la persona",
       )}
     </span>
   );

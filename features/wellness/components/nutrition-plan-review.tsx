@@ -42,7 +42,7 @@ export function NutritionPlanReview({ plan, onApproved }: { plan: NutritionPlan;
         <div>
           <h3 className="font-semibold">{t("Revisión nutricional")}</h3>
           <p className="text-sm text-muted-foreground">{plan.reviewStatus === "approved"
-            ? t("Plan aprobado. El paciente puede consultar su ciclo de 30 días.")
+            ? t("Plan aprobado. La persona puede consultar su ciclo de 30 días.")
             : t("La persona solo verá este plan después de la aprobación nutricional.")}</p>
           <p className="mt-1 text-xs text-muted-foreground">{t("Versión {revision}", { revision: String(plan.revision ?? 1) })}</p>
         </div>

@@ -68,7 +68,7 @@ test("desktop: Copp colours, one work surface and stable chrome", async ({
     name: "Directorio clínico",
     exact: true,
   });
-  await expect(workspace.getByLabel("Buscar pacientes")).toBeVisible();
+  await expect(workspace.getByLabel("Buscar personas")).toBeVisible();
   await expect(workspace.getByRole("table")).toBeVisible();
   expect(
     await page
@@ -128,16 +128,16 @@ test("filters, pagination and geographic context survive shell changes", async (
   await page.locator("aside").hover();
   await expect(page.locator("aside")).toHaveCSS("width", "256px");
   await page.goto("/patients?tab=estado-clinico&state=CA");
-  await page.getByLabel("Buscar pacientes").fill("María Fernanda");
+  await page.getByLabel("Buscar personas").fill("María Fernanda");
   await expect(page.getByRole("table").locator("tbody tr")).toHaveCount(1);
   await page.mouse.move(700, 200);
   await expect(page.locator("aside")).toHaveCSS("width", "80px");
-  await expect(page.getByLabel("Buscar pacientes")).toHaveValue(
+  await expect(page.getByLabel("Buscar personas")).toHaveValue(
     "María Fernanda",
   );
   await expect(page).toHaveURL(/tab=estado-clinico&state=CA/);
   await page.getByRole("button", { name: "Limpiar", exact: true }).click();
-  await expect(page.getByLabel("Buscar pacientes")).toHaveValue("");
+  await expect(page.getByLabel("Buscar personas")).toHaveValue("");
   await expect(page).toHaveURL(/tab=estado-clinico$/);
   const summary = page.getByRole("region", { name: "Resumen clínico" });
   await summary.getByRole("button", { name: /Riesgo alto/ }).click();
@@ -227,7 +227,7 @@ test("empty and recoverable error states keep filters usable", async ({
   api.recoverBoard();
   await page.getByRole("button", { name: "Reintentar", exact: true }).click();
   await expect(page.getByRole("table")).toBeVisible();
-  await page.getByLabel("Buscar pacientes").fill("sin-resultados-qa");
+  await page.getByLabel("Buscar personas").fill("sin-resultados-qa");
   await expect(
     page.getByText("Sin resultados con los filtros", { exact: true }),
   ).toBeVisible();
@@ -246,7 +246,7 @@ test("own-patient permissions keep management actions hidden", async ({
   });
   await page.goto("/patients?tab=estado-clinico");
   await expect(
-    page.getByRole("heading", { name: "Mis pacientes", exact: true }),
+    page.getByRole("heading", { name: "Personas a mi cargo", exact: true }),
   ).toBeVisible();
   await expect(page.getByRole("table")).toBeVisible();
   await expect(
@@ -269,7 +269,7 @@ test("loading and denied access remain explicit", async ({ page }) => {
   await mockPatientsHttp(page, { initialBoardDelayMs: 1800 });
   await page.goto("/patients?tab=estado-clinico");
   await expect(
-    page.getByLabel("Cargando pacientes", { exact: true }),
+    page.getByLabel("Cargando personas", { exact: true }),
   ).toBeVisible();
   await expect(page.getByRole("table")).toBeVisible();
   await page.unroute("**/api/**");
@@ -293,12 +293,12 @@ test("narrow phone and tablet keep navigation and filters readable", async ({
   for (const width of [320, 768]) {
     await page.setViewportSize({ width, height: 900 });
     await noPageOverflow(page);
-    const tabs = page.getByRole("tablist", { name: "Secciones de pacientes" });
+    const tabs = page.getByRole("tablist", { name: "Secciones de personas" });
     expect(await tabs.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(
       true,
     );
     for (const label of [
-      "Buscar pacientes",
+      "Buscar personas",
       "Filtrar por riesgo",
       "Filtrar por aseguradora",
     ]) {
@@ -388,7 +388,7 @@ test("keyboard focus and the account menu keep automatic navigation open", async
   expect(
     await rail.evaluate((node) => node.contains(document.activeElement)),
   ).toBe(true);
-  await page.getByLabel("Buscar pacientes", { exact: true }).focus();
+  await page.getByLabel("Buscar personas", { exact: true }).focus();
   await expect(rail).toHaveCSS("width", "80px");
   await rail.hover();
   await rail.getByRole("button", { name: "Mi perfil", exact: true }).click();
@@ -398,7 +398,7 @@ test("keyboard focus and the account menu keep automatic navigation open", async
   await expect(rail).toHaveCSS("width", "256px");
   await page.keyboard.press("Escape");
   await expect(menu).toBeHidden();
-  await page.getByLabel("Buscar pacientes", { exact: true }).focus();
+  await page.getByLabel("Buscar personas", { exact: true }).focus();
   await page.mouse.move(700, 200);
   await expect(rail).toHaveCSS("width", "80px");
 });
@@ -477,7 +477,7 @@ test("hybrid desktop supports touch opening and outside dismissal", async ({
     await expect(
       rail.getByRole("link", { name: "Personas", exact: true }),
     ).toBeVisible();
-    await page.getByLabel("Buscar pacientes", { exact: true }).tap();
+    await page.getByLabel("Buscar personas", { exact: true }).tap();
     await expect(rail).toHaveCSS("width", "80px");
   } finally {
     await context.close();

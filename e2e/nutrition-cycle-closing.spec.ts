@@ -13,12 +13,12 @@ const notes = (p: Page) =>
   });
 const spanish = (p: Page) =>
   p.getByRole("textbox", {
-    name: "Mensaje al paciente · Español",
+    name: "Mensaje a la persona · Español",
     exact: true,
   });
 const english = (p: Page) =>
   p.getByRole("textbox", {
-    name: "Mensaje al paciente · English",
+    name: "Mensaje a la persona · English",
     exact: true,
   });
 const save = (p: Page) =>
@@ -26,7 +26,7 @@ const save = (p: Page) =>
 const publish = (p: Page) =>
   p.getByRole("button", { name: "Publicar plan y mensaje", exact: true });
 const preview = (p: Page) =>
-  p.getByLabel("Vista previa para el paciente", { exact: true });
+  p.getByLabel("Vista previa para la persona", { exact: true });
 async function open(p: Page) {
   await p.goto(`/nutrition/${intakePatient}?tab=cierre`);
   await expect(notes(p)).toBeVisible();
@@ -195,7 +195,7 @@ test("3.17 · adjuntos multipart privados, imagen visible con pie y borrado con 
     .fill("Plato que verá el paciente");
   await page
     .getByRole("checkbox", {
-      name: "Mostrar esta imagen y su pie al paciente al publicar",
+      name: "Mostrar esta imagen y su pie a la persona al publicar",
       exact: true,
     })
     .check();
@@ -257,7 +257,7 @@ test("3.17 · PDF interno y archivo inválido no se publican como imágenes", as
   });
   await expect(
     page.getByRole("checkbox", {
-      name: "Mostrar esta imagen y su pie al paciente al publicar",
+      name: "Mostrar esta imagen y su pie a la persona al publicar",
       exact: true,
     }),
   ).toBeDisabled();
@@ -536,7 +536,7 @@ test("3.17 · cancelar IA comprueba estado y conserva la revisión manual", asyn
     .click();
   await expect(
     page.getByText(
-      "La consulta está en curso. No se ha copiado contenido al mensaje del paciente.",
+      "La consulta está en curso. No se ha copiado contenido al mensaje de la persona.",
       { exact: true },
     ),
   ).toBeVisible();

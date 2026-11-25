@@ -30,8 +30,8 @@ for (const zero of [false, true]) test(`2.22 · UI consume agregado ${zero ? "ce
   const http = await mockRoutineEdit(page, { liveUsage: { routineId: qa.routineId, url: qa.url, token: zero ? qa.zeroToken : qa.adminToken } });
   const review = await reviewRoutineEdit(page);
   const count = zero ? 0 : qa.expected.patientCount;
-  await expect(review.getByText(count === 1 ? "Usada en 1 paciente con semanas activas" : `Usada en ${count.toLocaleString("es-CO")} pacientes con semanas activas`, { exact: true })).toBeVisible();
-  await expect(review.getByText("El conteo incluye solo pacientes de tu alcance, no el total global.")).toBeVisible();
+  await expect(review.getByText(count === 1 ? "Usada por 1 persona con semanas activas" : `Usada en ${count.toLocaleString("es-CO")} personas con semanas activas`, { exact: true })).toBeVisible();
+  await expect(review.getByText("El conteo incluye solo a las personas de tu alcance.")).toBeVisible();
   expect(http.usageCalls).toEqual([{ path, status: 200 }]); expect(http.calls).toHaveLength(0);
   await page.screenshot({ path: `qa-reports/routine-usage-final/real-${zero ? "zero" : "positive"}.png`, animations: "disabled" });
   await page.keyboard.press("Escape"); expect(http.calls).toHaveLength(0);

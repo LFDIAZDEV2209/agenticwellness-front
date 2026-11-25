@@ -330,7 +330,7 @@ export function MediaRetirementDialog({
                 {completed.impact && (
                   <p>
                     {t(
-                      "Impacto confirmado: {patients} pacientes y {templates} plantillas.",
+                      "Impacto confirmado: {patients} personas y {templates} plantillas.",
                       {
                         patients: number(completed.impact.pacientes),
                         templates: number(completed.impact.plantillas),

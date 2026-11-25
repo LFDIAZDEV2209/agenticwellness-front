@@ -414,7 +414,7 @@ function BatteryCard({
         </span>
         <span className="flex items-center gap-1.5 text-muted-foreground">
           <Users className="size-3.5 text-info" />
-          {assignedCount} {t("pacientes")}
+          {assignedCount} {t("personas")}
         </span>
       </div>
 

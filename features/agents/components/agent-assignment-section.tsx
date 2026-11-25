@@ -48,14 +48,14 @@ function AssignmentForm({ agent }: { agent: AgentType }) {
   const userId = typeof patient?.userId === "string" ? patient.userId.trim() : "";
   return (
     <fieldset className="flex min-w-0 flex-col gap-3 rounded-2xl border border-border bg-card p-4" disabled={busy || agent.status !== "Activo"}>
-      <legend className="px-2 text-sm font-semibold">{t("Asignar agente a un paciente")}</legend>
+      <legend className="px-2 text-sm font-semibold">{t("Asignar agente a una persona")}</legend>
       <p className="text-xs text-muted-foreground">{t("Selecciona una persona y confirma la asignación a su cuenta vinculada. La disponibilidad en Vita requiere versión activa, sincronización y consentimiento.")}</p>
       {agent.status !== "Activo" && <p role="status" className="text-sm text-muted-foreground">{t("Activa el tipo de agente antes de asignarlo.")}</p>}
-      <CatalogSearchSelect search={search} placeholder={t("Buscar paciente para asignar")} onSelect={(item) => setPatient(item as PatientOption)} />
+      <CatalogSearchSelect search={search} placeholder={t("Buscar persona para asignar")} onSelect={(item) => setPatient(item as PatientOption)} />
       {searchError && <p role="alert" className="text-sm text-destructive">{t("No se pudieron buscar personas. Reintenta la búsqueda.")}</p>}
       {patient && (!userId ? (
         <>
-          <p role="status" className="text-sm text-muted-foreground">{t("Este paciente no tiene una cuenta de usuario vinculada. Vincula su cuenta antes de asignar el agente.")}</p>
+          <p role="status" className="text-sm text-muted-foreground">{t("Esta persona no tiene una cuenta de usuario vinculada. Vincula su cuenta antes de asignar el agente.")}</p>
           <Button type="button" disabled className="self-start">{t("Asignar agente")}</Button>
         </>
       ) : (
@@ -125,7 +125,7 @@ function PatientAssignment({ agent, userId, onBusyChange }: { agent: AgentType; 
         <p role="alert" className="text-sm text-destructive">{t("No se pudo consultar la asignación. Reintenta antes de asignar.")}</p>
         <Button type="button" variant="outline" className="self-start" onClick={() => { setLookup({ status: "loading" }); setRevision((value) => value + 1); }}>{t("Reintentar")}</Button>
       </>}
-      {lookup.status === "ready" && lookup.instance && <p role="status" className="text-sm">{saved ? t("Agente asignado a la cuenta vinculada del paciente.") : t("Este paciente ya tiene una asignación de este agente.")} {t("Estado")}: {t(lookup.instance.status)}</p>}
+      {lookup.status === "ready" && lookup.instance && <p role="status" className="text-sm">{saved ? t("Agente asignado a la cuenta vinculada de la persona.") : t("Esta persona ya tiene una asignación de este agente.")} {t("Estado")}: {t(lookup.instance.status)}</p>}
       {message && <p role="alert" className="text-sm text-destructive">{message}</p>}
       <Button type="button" className="self-start" disabled={lookup.status !== "ready" || Boolean(lookup.instance)} onClick={assign}>{t("Asignar agente")}</Button>
     </div>

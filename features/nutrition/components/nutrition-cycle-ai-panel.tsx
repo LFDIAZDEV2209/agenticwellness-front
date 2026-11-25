@@ -86,7 +86,7 @@ export function NutritionCycleAiPanel({
       {busy && (
         <p role="status">
           {t(
-            "La consulta está en curso. No se ha copiado contenido al mensaje del paciente.",
+            "La consulta está en curso. No se ha copiado contenido al mensaje de la persona.",
           )}
         </p>
       )}

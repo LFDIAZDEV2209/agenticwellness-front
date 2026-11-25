@@ -427,8 +427,8 @@ function ClosingForm({
                   <span>
                     {t(
                       code === "es"
-                        ? "Mensaje al paciente · Español"
-                        : "Mensaje al paciente · English",
+                        ? "Mensaje a la persona · Español"
+                        : "Mensaje a la persona · English",
                     )}
                   </span>
                   <Textarea
@@ -527,7 +527,7 @@ function ClosingForm({
                       <span className="nutrition-closing-label">
                         {t(
                           a.kind === "image" && a.visibleToPatient
-                            ? "Visible para el paciente"
+                            ? "Visible para la persona"
                             : "Solo el equipo clínico",
                         )}
                       </span>
@@ -591,7 +591,7 @@ function ClosingForm({
                     />
                     <span>
                       {t(
-                        "Mostrar esta imagen y su pie al paciente al publicar",
+                        "Mostrar esta imagen y su pie a la persona al publicar",
                       )}
                     </span>
                   </label>
@@ -724,7 +724,7 @@ function ClosingForm({
           )}
           <div
             className="nutrition-closing-preview"
-            aria-label={t("Vista previa para el paciente")}
+            aria-label={t("Vista previa para la persona")}
           >
             <div className="nutrition-closing-actions">
               <h3>{t("Recomendaciones de tu nutricionista")}</h3>

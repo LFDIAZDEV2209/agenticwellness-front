@@ -116,7 +116,7 @@ export function PatientsPage() {
   return (
     <div className="flex min-w-0 flex-col gap-5 p-4 sm:p-6">
       <PageHeader
-        title={fullScope ? t("Personas") : t("Mis pacientes")}
+        title={fullScope ? t("Personas") : t("Personas a mi cargo")}
         description={t(
           "Gestión completa · seguimiento clínico · mapa geográfico EE. UU.",
         )}
@@ -170,7 +170,7 @@ export function PatientsPage() {
       >
         <TabsList
           variant="line"
-          aria-label={t("Secciones de pacientes")}
+          aria-label={t("Secciones de personas")}
           className="h-auto w-full justify-start border-b border-border px-0 py-1"
         >
           {PATIENT_TABS.map((item) => {

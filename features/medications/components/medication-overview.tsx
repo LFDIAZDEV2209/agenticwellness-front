@@ -109,7 +109,7 @@ export function MedicationOverviewPanel({
       ? [
           {
             label: "Registrar plan de medicación",
-            subtitle: "Añadir a un paciente",
+            subtitle: "Añadir a una persona",
             icon: Plus,
             tone: "amber",
             intent: "create" as const,
@@ -296,7 +296,7 @@ export function MedicationOverviewPanel({
             className="medication-home-access-button"
             onClick={() => onOpen("access")}
           >
-            {t(canManageAccess ? "Gestionar accesos" : "Ver pacientes")}
+            {t(canManageAccess ? "Gestionar accesos" : "Ver personas")}
             <ArrowRight aria-hidden />
           </Button>
         </section>

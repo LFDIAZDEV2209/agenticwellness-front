@@ -334,7 +334,7 @@ export function PeopleBulkImport({
     if (empFailed || patFailed || usrFailed) {
       const failedGroups: string[] = [];
       if (empFailed) failedGroups.push(t("profesionales/empleados"));
-      if (patFailed) failedGroups.push(t("pacientes"));
+      if (patFailed) failedGroups.push(t("personas"));
       if (usrFailed) failedGroups.push(t("usuarios"));
       setBulkError(
         t(
@@ -812,7 +812,9 @@ export function PeopleBulkImport({
                                 ) : (
                                   <AlertTriangle className="size-3" />
                                 )}
-                                {error}
+                                {error === "El paciente lleva un solo código de clínica y sin rol"
+                                  ? t(error)
+                                  : error}
                               </span>
                             ))}
                           </span>

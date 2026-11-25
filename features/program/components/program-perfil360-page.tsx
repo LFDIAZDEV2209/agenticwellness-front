@@ -211,7 +211,7 @@ export function ProgramPerfil360Page({
           setTotalCount(0);
           setTotalPages(1);
           setError(
-            e instanceof Error ? e.message : "No se pudo buscar pacientes.",
+            e instanceof Error ? e.message : "No se pudo buscar personas.",
           );
         }
       } finally {

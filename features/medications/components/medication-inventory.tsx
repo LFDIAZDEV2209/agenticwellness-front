@@ -65,7 +65,7 @@ export function MedicationInventory({ patientId }: { patientId?: string }) {
       <div className="medication-monitoring-toolbar">
         <h2>
           <Package aria-hidden />
-          {t(patientId ? "Inventario del paciente" : "Existencias")}
+          {t(patientId ? "Inventario de la persona" : "Existencias")}
         </h2>
         <div className="medication-inline-actions">
           {!patientId && (
@@ -110,11 +110,11 @@ export function MedicationInventory({ patientId }: { patientId?: string }) {
         />
       ) : (
         <>
-          <Table aria-label={t("Inventario de pacientes")}>
+          <Table aria-label={t("Inventario de personas")}>
             <TableHeader>
               <TableRow>
                 {[
-                  ...(!patientId ? ["Paciente"] : []),
+                  ...(!patientId ? ["Persona"] : []),
                   "Medicamento",
                   "Existencias",
                   "Días restantes",

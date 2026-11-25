@@ -356,7 +356,7 @@ function IntakeReader({
           <p>
             {t(
               denied
-                ? "El paciente no está disponible en tu alcance o no tienes permiso para sus registros."
+                ? "La persona está fuera de tu alcance o no tienes permiso para consultar sus registros."
                 : "No se pudieron consultar los registros. No se muestran días vacíos como sustituto de un error.",
             )}
           </p>

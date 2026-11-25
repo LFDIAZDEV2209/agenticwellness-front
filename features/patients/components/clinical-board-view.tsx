@@ -470,7 +470,7 @@ export function ClinicalBoardView({
               value={filters.search}
               onChange={(event) => setFilters({ search: event.target.value })}
               placeholder={t("Buscar por nombre, MRN o documento...")}
-              aria-label={t("Buscar pacientes")}
+              aria-label={t("Buscar personas")}
               className="pl-9"
             />
           </div>
@@ -618,7 +618,7 @@ export function ClinicalBoardView({
           </div>
         ) : loading && !result ? (
           <div
-            aria-label={t("Cargando pacientes")}
+            aria-label={t("Cargando personas")}
             aria-busy="true"
             className="bg-card p-5"
           >
@@ -678,7 +678,7 @@ export function ClinicalBoardView({
               containerProps={{
                 tabIndex: 0,
                 role: "region",
-                "aria-label": t("Tabla de pacientes"),
+                "aria-label": t("Tabla de personas"),
                 className:
                   "outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
               }}
@@ -689,7 +689,7 @@ export function ClinicalBoardView({
                     <TableHead className="w-12 px-2">
                       <label className="flex size-11 cursor-pointer items-center justify-center">
                         <Checkbox
-                          aria-label={t("Seleccionar pacientes de esta página")}
+                          aria-label={t("Seleccionar personas de esta página")}
                           checked={allPageSelected}
                           indeterminate={selectedOnPage > 0 && !allPageSelected}
                           disabled={
@@ -704,7 +704,7 @@ export function ClinicalBoardView({
                   )}
                   <TableHead>{t("Persona")}</TableHead>
                   <TableHead className="hidden @min-[1300px]/clinical-board:table-cell">
-                    {t("Diagnóstico")}
+                    {t("Evaluación")}
                   </TableHead>
                   <TableHead className="hidden @min-[1300px]/clinical-board:table-cell">
                     {t("Ubicación")}
@@ -1038,15 +1038,14 @@ export function ClinicalBoardView({
       {canAssign && selected.size > 0 && (
         <div
           role="region"
-          aria-label={t("Acciones de pacientes seleccionados")}
+          aria-label={t("Acciones de personas seleccionadas")}
           className="sticky bottom-3 z-20 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-primary/20 bg-background p-4 shadow-lg"
         >
           <div className="min-w-0">
             <p role="status" className="font-semibold">
-              {t("{count} paciente{s} seleccionado{s}", {
-                count: String(selected.size),
-                s: selected.size === 1 ? "" : "s",
-              })}
+              {selected.size === 1
+                ? t("1 persona seleccionada")
+                : t("{count} personas seleccionadas", { count: String(selected.size) })}
             </p>
             <p className="text-xs text-muted-foreground">
               {t("{count} en esta página. Máximo {max} por asignación.", {

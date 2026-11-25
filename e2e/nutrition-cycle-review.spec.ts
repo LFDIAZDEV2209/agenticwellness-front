@@ -85,7 +85,7 @@ test("3.16 · comparación con fechas, cobertura, desglose y navegación accesib
     comparison(page).getByRole("heading", { level: 2 }),
   ).toBeFocused();
   const table = comparison(page).getByRole("table", {
-    name: "Comparación conjunta · IA y paciente",
+    name: "Comparación conjunta · IA y persona",
     exact: true,
   });
   await expect(table).toBeVisible();
@@ -137,7 +137,7 @@ test("3.16 · fallo del anterior conserva resumen actual y permite reintentar", 
     .click();
   await expect(
     comparison(page).getByRole("table", {
-      name: "Comparación conjunta · IA y paciente",
+      name: "Comparación conjunta · IA y persona",
       exact: true,
     }),
   ).toBeVisible();

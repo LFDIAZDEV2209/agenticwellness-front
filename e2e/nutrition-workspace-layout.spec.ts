@@ -5,7 +5,7 @@ test("la entrada usa el ancho para pacientes y conserva la navegación lista-fic
   const { writes } = await mockNutritionHttp(page);
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/nutrition");
-  const rail = page.getByRole("complementary", { name: "Bandeja de pacientes" });
+  const rail = page.getByRole("complementary", { name: "Bandeja de personas" });
   await expect(page.getByRole("link", { name: "Carlos Demo", exact: true })).toBeVisible();
   expect((await rail.boundingBox())!.width).toBeGreaterThan(1000);
   await expect(page.locator(".nutrition-directory-columns")).toContainText("Vigencia");
@@ -135,7 +135,7 @@ test("el escritorio ajusta el espacio y no permite desplazarse a un fondo vacío
 test("la bandeja muestra primero los planes publicados antes de paginar", async ({ page }) => {
   const { writes } = await mockNutritionHttp(page);
   await page.goto("/nutrition");
-  const list = page.getByRole("list", { name: "Planes de pacientes" });
+  const list = page.getByRole("list", { name: "Planes de las personas" });
   await expect(list.getByRole("listitem").first().locator('.nutrition-chip')).toHaveText("Publicado");
   await expect(list.getByRole("link", { name: "Samuel Demo", exact: true })).toBeVisible();
   const firstPage = await list.getByRole("link").evaluateAll(links => links.map(link => link.getAttribute("href")));
@@ -161,7 +161,7 @@ test("publicados primero funciona con el API antiguo, sin perder pacientes al pa
     store.set(patient.patientId, patient);
   }
   await page.goto("/nutrition");
-  const list = page.getByRole("list", { name: "Planes de pacientes" });
+  const list = page.getByRole("list", { name: "Planes de las personas" });
   await expect(list.getByRole("listitem").first().locator(".nutrition-chip")).toHaveText("Publicado");
   await expect(list.getByRole("link", { name: "Samuel Demo", exact: true })).toBeVisible();
   const identities: string[] = [];

@@ -205,7 +205,7 @@ export function ProgramEnrollDialog({
           <div className="flex flex-col gap-4 py-2">
             {/* Picker de paciente */}
             <div className="flex flex-col gap-1.5">
-              <Label>Paciente *</Label>
+              <Label>Persona *</Label>
               {patientId && patientLabel ? (
                 <div className="flex h-9 items-center rounded-md border border-input bg-muted px-3 text-sm">
                   {patientLabel}

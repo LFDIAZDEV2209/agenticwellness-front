@@ -316,7 +316,7 @@ function MedicationWorkspaceContent({
                   )}
                 </Badge>
               )}
-              {capability.canExport && <><NativeSelect ariaLabel={t("Finalidad de exportación")} value={exportPurpose} onChange={setExportPurpose} options={[{value:"Seguimiento clínico",label:t("Seguimiento clínico")},{value:"Entrega al paciente",label:t("Entrega al paciente")}]} /><Button variant="outline" disabled={exporting} onClick={()=>void exportTracking()}>{t("Exportar seguimiento")}</Button></>}
+              {capability.canExport && <><NativeSelect ariaLabel={t("Finalidad de exportación")} value={exportPurpose} onChange={setExportPurpose} options={[{value:"Seguimiento clínico",label:t("Seguimiento clínico")},{value:"Entrega al paciente",label:t("Entrega a la persona")}]} /><Button variant="outline" disabled={exporting} onClick={()=>void exportTracking()}>{t("Exportar seguimiento")}</Button></>}
               {capability.canManage && (
                 <Button
                   onClick={() => {
@@ -593,7 +593,7 @@ function MedicationWorkspaceContent({
                         <span>
                           {t(
                             treatment.origin === "patient_reported"
-                              ? "Registrado por paciente"
+                              ? "Registrado por la persona"
                               : treatment.origin === "legacy_import"
                                 ? "Registro anterior"
                                 : "Registrado por personal",
@@ -688,7 +688,7 @@ function MedicationWorkspaceContent({
                         <p>
                           {t(
                             event.channel ? medicationChannelLabels[event.channel] : event.origin === "patient_reported"
-                              ? "Registrado por paciente"
+                              ? "Registrado por la persona"
                               : "Registrado por personal",
                           )}
                         </p>

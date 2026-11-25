@@ -186,7 +186,7 @@ export function PrescriptionsPage() {
                   </div>
                 </div>
                 <span className="rounded-full bg-info-soft px-3 py-1 text-xs font-semibold text-info-soft-foreground">
-                  {history.length} {t('receta')}{history.length !== 1 ? t("s") : ""}{" "}
+                  {history.length} {t(history.length === 1 ? "indicación" : "indicaciones")}{" "}
                   {t('registrada')}{history.length !== 1 ? t("s") : ""}
                 </span>
               </div>

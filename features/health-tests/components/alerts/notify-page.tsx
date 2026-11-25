@@ -217,7 +217,7 @@ export function NotifyPage() {
 
   function downloadCsv() {
     const rows: string[][] = [
-      ["Paciente", "Canal", "Idioma", "Estado", "Motivo", "Mensaje"],
+      ["Persona", "Canal", "Idioma", "Estado", "Motivo", "Mensaje"],
     ];
     for (const item of results ?? []) {
       rows.push([
@@ -347,7 +347,7 @@ export function NotifyPage() {
           <div className="sticky bottom-4 z-10 mt-auto flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-card px-4 py-3 shadow-sm">
             <div className="flex flex-wrap items-center gap-2 text-[11.5px] text-muted-foreground">
               <span className="font-semibold text-foreground">
-                {alertIds.length} {t("pacientes")}
+                {alertIds.length} {t("personas")}
               </span>
               <span aria-hidden>·</span>
               <span>
@@ -503,7 +503,7 @@ export function NotifyPage() {
           <section className="flex flex-col overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card shadow-sm">
             <SectionHeader
               title={t("Alertas incluidas")}
-              description={`${selectedAlerts.length} ${t("pacientes")}`}
+              description={`${selectedAlerts.length} ${t("personas")}`}
               icon={ShieldAlert}
               variant="primary"
             />
@@ -1105,7 +1105,7 @@ function StepReview({
                     {t("Vista previa por persona")}
                   </span>
                   <span className="text-[11.5px] text-muted-foreground">
-                    {previewItems.length} {t("pacientes")}
+                    {previewItems.length} {t("personas")}
                   </span>
                 </div>
                 <div className="overflow-x-auto rounded-xl border border-border">
