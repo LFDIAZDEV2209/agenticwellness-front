@@ -34,6 +34,7 @@ import { NutritionPatientSummary } from "@/features/nutrition/components/nutriti
 import { PatientAiSummaryPanel, patientSummarySectionLabels } from "./patient-ai-summary";
 import { formatSummaryDate } from "../services/patient-ai-summary-service";
 import type { PatientSummarySource } from "../types/patient-ai-summary";
+import { MotorPlanDayCard } from "@/features/wellness/components/motor-plan-day-card";
 import { MedicationPatientLink } from "@/features/medications/components/medication-shared";
 
 interface ProgramPatientProfile360Props {
@@ -251,6 +252,7 @@ export function ProgramPatientProfile360({
       </p>}
 
       <TabsContent value="resumen" className="flex flex-col gap-5">
+        {data && !loading && !error && <MotorPlanDayCard patientId={patientId} />}
         {/* Biometría: figura + zonas + mediciones exactas en el mismo box */}
         {biometriaLoading ? (
           <BiometriaPerfilSkeleton />
