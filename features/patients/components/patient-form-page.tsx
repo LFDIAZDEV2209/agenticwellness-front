@@ -1448,7 +1448,7 @@ export function PatientFormPage({ patientId }: { patientId?: string }) {
             {form.diagnoses.length === 0 && (
               <EmptyHint
                 icon={Stethoscope}
-                text="Sin diagnósticos registrados."
+                text="Sin resultados registrados."
               />
             )}
             {form.diagnoses.map((diagnosis, index) => (
@@ -1488,7 +1488,7 @@ export function PatientFormPage({ patientId }: { patientId?: string }) {
                       Principal
                     </label>
                     <RemoveButton
-                      label={t("Eliminar diagnóstico")}
+                      label={t("Eliminar resultado")}
                       onClick={() =>
                         update(
                           "diagnoses",

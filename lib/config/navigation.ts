@@ -598,7 +598,7 @@ export const navModules: NavModule[] = [
         permission: "Community.Profiles",
       },
       {
-        label: "Por diagnóstico",
+        label: "Por evaluación",
         href: "/community/diagnostics",
         icon: Sparkles,
         hidden: true,

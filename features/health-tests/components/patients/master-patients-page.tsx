@@ -287,7 +287,7 @@ export function MasterPatientsPage() {
 
   const header = (
     <PageHeader
-      title={t("Bandeja de pacientes — Tests & Diagnóstico")}
+      title={t("Bandeja de personas · Evaluaciones y resultados")}
       description={t(
         "Todas las personas, su riesgo y sus alertas en un solo listado",
       )}

@@ -98,7 +98,7 @@ export function DofaPage() {
       <PageHeader
         title={t("Análisis DOFA poblacional")}
         description={t(
-          "Diagnóstico de fortalezas, oportunidades, debilidades y amenazas construido con los resultados reales de la batería",
+          "Análisis de fortalezas, oportunidades, debilidades y amenazas a partir de los resultados de la batería",
         )}
         icon={TrendingUp}
       />

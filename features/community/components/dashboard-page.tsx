@@ -139,8 +139,8 @@ export function DashboardPage() {
         <div className="flex flex-col gap-0 overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card transition-all hover:shadow-lg hover:shadow-black/5">
           <SectionHeader
             accent="violet"
-            title={t("Diagnóstico vs Participación")}
-            description={t("Nivel de participación por diagnóstico")}
+            title={t("Evaluación y participación")}
+            description={t("Nivel de participación por evaluación")}
             icon={Radar}
             variant="primary"
           />

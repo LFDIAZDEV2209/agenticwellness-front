@@ -814,7 +814,7 @@ export function ClinicalBoardView({
                       >
                         {item.primaryDiagnosisDescription ??
                           item.primaryDiagnosisCode ??
-                          t("Sin diagnóstico")}
+                          t("Sin resultado")}
                       </span>
                     </TableCell>
                     <TableCell className="hidden @min-[1300px]/clinical-board:table-cell">

@@ -623,11 +623,11 @@ export function PatientSummaryView({
 
         <PatientDistributionChart
           accent="amber"
-          title={t("Diagnósticos principales")}
+          title={t("Resultados principales")}
           icon={HeartPulse}
           items={diagnosisItems}
           colors={DIAGNOSIS_COLORS}
-          emptyLabel={t("Sin diagnósticos registrados.")}
+          emptyLabel={t("Sin resultados registrados.")}
         />
 
         <PatientDistributionChart

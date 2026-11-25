@@ -42,7 +42,7 @@ export function DiagnosticsPage() {
   return (
     <div className="flex flex-col gap-4 p-4 sm:p-6 min-w-0">
       <PageHeader
-        title={t("Por diagnóstico")}
+        title={t("Por evaluación")}
         description={t("Participación y adherencia por condición clínica")}
         icon={Stethoscope}
       />
@@ -66,7 +66,7 @@ export function DiagnosticsPage() {
         {/* Participación vs Adherencia — 2/3, gráfico ocupa todo el alto */}
         <div className="flex flex-col gap-0 overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card transition-all hover:shadow-lg hover:shadow-black/5 lg:col-span-2">
           <SectionHeader
-            title={t("Participación vs Adherencia por diagnóstico")}
+            title={t("Participación y adherencia por evaluación")}
             icon={TrendingUp}
             variant="primary"
           />
@@ -138,7 +138,7 @@ export function DiagnosticsPage() {
 
           {/* Adherencia por diagnóstico — detalle por condición, llena el hueco */}
           <div className="flex flex-1 flex-col gap-0 overflow-hidden rounded-2xl border border-brand-blue-soft/40 bg-card transition-all hover:shadow-lg hover:shadow-black/5">
-            <SectionHeader title={t("Adherencia por diagnóstico")} icon={TrendingUp} variant="secondary" />
+            <SectionHeader title={t("Adherencia por evaluación")} icon={TrendingUp} variant="secondary" />
             <div className="flex flex-1 flex-col gap-3 p-4">
               {(diagnosticsLoading ? [] : diagnostics).map((d) => (
                 <div key={d.diagnosis} className="flex flex-col gap-1.5">
