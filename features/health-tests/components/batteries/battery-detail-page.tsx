@@ -252,7 +252,7 @@ export function BatteryDetailPage({ batteryId }: { batteryId: string }) {
         {battery.autoAssignOnPatientCreate && (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-info-soft px-2.5 py-1 text-[11px] font-medium text-info-soft-foreground">
             <PackageCheck className="size-3" />
-            {t("Auto-asignación de pacientes nuevos")}
+            {t("Asignación automática de personas nuevas")}
           </span>
         )}
       </div>

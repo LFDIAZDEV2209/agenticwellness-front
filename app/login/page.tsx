@@ -448,7 +448,7 @@ export default function LoginPage() {
                   12.8K
                 </span>
                 <span className="text-[10.5px] text-white/70">
-                  {t("Pacientes")}
+                  {t("Personas")}
                 </span>
               </span>
             </div>
@@ -487,7 +487,7 @@ export default function LoginPage() {
         <div className="relative z-10 px-12 pb-9">
           <div className="mx-auto grid max-w-[480px] grid-cols-4 divide-x divide-white/8 rounded-2xl border border-white/10 bg-white/6 backdrop-blur-sm">
             {[
-              { icon: UsersRound, label: t("Pacientes") },
+              { icon: UsersRound, label: t("Personas") },
               { icon: CalendarDays, label: t("Agenda") },
               { icon: Bot, label: t("Agentes IA") },
               { icon: MessageCircle, label: t("Chat") },

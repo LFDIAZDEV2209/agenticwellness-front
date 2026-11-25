@@ -202,7 +202,7 @@ function IndicatorCard({ aggregate }: { aggregate: IndicatorAggregate }) {
           </div>
         ) : (
           <p className="text-[11.5px] text-muted-foreground">
-            {t("Sin pacientes evaluados todavía")}
+            {t("Aún no hay personas evaluadas")}
           </p>
         )}
 

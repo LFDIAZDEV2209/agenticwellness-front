@@ -116,10 +116,10 @@ export function PatientRoutineAssignmentDialog({ patients, includesOtherPages, o
           <dl className="flex flex-col gap-4">
             <div className="flex items-start justify-between gap-4"><dt>{t("Pacientes con asignaciones aplicadas")}</dt><dd className="font-semibold tabular-nums">{count(result.aplicadas)}</dd></div>
             <div className="flex items-start justify-between gap-4"><dt>{t("Pacientes con semanas iniciadas omitidas")}</dt><dd className="font-semibold tabular-nums">{count(result.omitidasSemanaIniciada)}</dd></div>
-            <div className="flex items-start justify-between gap-4"><dt>{t("Pacientes omitidos por alcance")}</dt><dd className="font-semibold tabular-nums">{count(result.omitidasSinAlcance.length)}</dd></div>
+            <div className="flex items-start justify-between gap-4"><dt>{t("Personas omitidas por alcance")}</dt><dd className="font-semibold tabular-nums">{count(result.omitidasSinAlcance.length)}</dd></div>
           </dl>
           <p className="text-sm text-muted-foreground">{t("Los conteos de aplicados y semanas iniciadas pueden incluir al mismo paciente.")}</p>
-          {result.omitidasSinAlcance.length > 0 && <section aria-label={t("Pacientes omitidos por alcance")} className="flex flex-col gap-2">
+          {result.omitidasSinAlcance.length > 0 && <section aria-label={t("Personas omitidas por alcance")} className="flex flex-col gap-2">
             <h3 className="font-semibold">{t("Fuera de tu alcance")}</h3>
             <p className="text-sm text-muted-foreground">{t("No se modificaron. Solo se muestran los identificadores enviados, sin nombres ni datos clínicos.")}</p>
             <ul className="flex max-h-40 flex-col gap-2 overflow-y-auto">{result.omitidasSinAlcance.map(id => <li key={id} className="break-all text-sm">{id}</li>)}</ul>

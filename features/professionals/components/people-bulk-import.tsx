@@ -1123,7 +1123,7 @@ export function PeopleBulkImport({
                 ? t("Ir a usuarios")
                 : backHref === "/employees"
                   ? t("Ir a profesionales")
-                  : t("Ir a pacientes")}
+                  : t("Ir a personas")}
             </Button>
             <Button variant="outline" onClick={reset}>
               <FileUp data-icon="inline-start" />

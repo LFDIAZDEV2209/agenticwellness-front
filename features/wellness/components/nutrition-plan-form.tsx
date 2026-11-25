@@ -488,7 +488,7 @@ const handleSelectPatient = (p: PickerItem) => {
         {/* Paciente (opcional) + generación con IA */}
             <div className="flex flex-col gap-1.5">
               <Label>
-                {isEditing ? t("Paciente asociado") : t("Paciente (opcional)")}
+                {isEditing ? t("Persona asociada") : t("Paciente (opcional)")}
               </Label>
               {isEditing ? (
                 // En edición: mostrar el paciente del plan (solo lectura)

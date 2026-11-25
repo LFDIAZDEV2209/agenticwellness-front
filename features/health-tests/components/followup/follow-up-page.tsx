@@ -219,7 +219,7 @@ export function FollowUpPage() {
             title={t("Sin pacientes pendientes")}
             description={
               isFiltered
-                ? t("Ningún paciente coincide con los filtros aplicados.")
+                ? t("Ninguna persona coincide con los filtros aplicados.")
                 : t(
                     "Todos los pacientes han completado su batería de evaluación.",
                   )

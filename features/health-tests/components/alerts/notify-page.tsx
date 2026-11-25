@@ -911,7 +911,7 @@ function StepCompose({
           {realPreview && !realPreview.isReachable && (
             <p className="flex items-start gap-1.5 text-[11px] text-warning">
               <TriangleAlert className="mt-0.5 size-3.5 shrink-0" />
-              {realPreview.skipReason ?? t("El paciente no tiene el contacto de este canal.")}
+              {realPreview.skipReason ?? t("La persona no tiene un contacto registrado para este canal.")}
             </p>
           )}
 
@@ -988,7 +988,7 @@ function StepReview({
       />
       <div className="flex flex-col gap-4 p-4">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <SummaryTile label={t("Pacientes")} value={String(alerts.length)} />
+          <SummaryTile label={t("Personas")} value={String(alerts.length)} />
           <SummaryTile label={t("Canales")} value={String(channels.length)} />
           <SummaryTile label={t("Enviadas")} value={String(sent)} />
           <SummaryTile label={t("Omitidas")} value={String(skipped)} />

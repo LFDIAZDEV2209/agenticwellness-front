@@ -22,7 +22,7 @@ export function AccountTypeTabs({ stats }: { stats: UserStats | null }) {
       icon: ShieldCheck,
     },
     patient: {
-      label: t("Pacientes"),
+      label: t("Personas"),
       count: stats?.patientTotal,
       icon: HeartPulse,
     },

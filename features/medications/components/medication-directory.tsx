@@ -196,7 +196,7 @@ function MedicationDirectoryContent({initialView}:{initialView:"overview"|"patie
                   <UserRound aria-hidden />
                 </span>
                 <div>
-                  <h2>{t("Pacientes")}</h2>
+                  <h2>{t("Personas")}</h2>
                   {data && (
                     <p>
                       {t("{count} pacientes", { count: String(data.total) })}

@@ -840,7 +840,7 @@ export function TemplateStudio() {
               <p className="mb-2 flex items-start gap-1.5 text-[11px] text-warning">
                 <TriangleAlert className="mt-0.5 size-3.5 shrink-0" />
                 {activeRealPreview.skipReason ??
-                  t("El paciente no tiene el contacto de este canal.")}
+                  t("La persona no tiene un contacto registrado para este canal.")}
               </p>
             )}
 

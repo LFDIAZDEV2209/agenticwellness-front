@@ -975,7 +975,7 @@ export function PatientFormPage({ patientId }: { patientId?: string }) {
   return (
     <div className="flex flex-col gap-8 p-4 sm:p-6 min-w-0">
       <PageHeader
-        title={isEdit ? "Editar paciente" : "Nuevo paciente"}
+        title={isEdit ? "Editar paciente" : "Nueva persona"}
         description={
           isEdit
             ? "Actualiza la información clínica y de contacto del paciente"

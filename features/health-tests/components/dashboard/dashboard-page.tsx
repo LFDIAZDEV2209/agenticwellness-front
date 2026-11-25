@@ -286,7 +286,7 @@ export function HealthTestsDashboard() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          label={t("Pacientes evaluados")}
+          label={t("Personas evaluadas")}
           value={String(stats.evaluated)}
           icon={Users}
           variant="primary"
@@ -345,7 +345,7 @@ export function HealthTestsDashboard() {
         >
           {coverageMetrics.total === 0 ? (
             <p className="py-10 text-center text-xs text-muted-foreground">
-              {t("Sin pacientes evaluados todavía")}
+              {t("Aún no hay personas evaluadas")}
             </p>
           ) : (
             <div className="flex flex-col items-center gap-5">
@@ -427,7 +427,7 @@ export function HealthTestsDashboard() {
         >
           {riskDistribution.total === 0 ? (
             <p className="py-10 text-center text-xs text-muted-foreground">
-              {t("Sin pacientes evaluados todavía")}
+              {t("Aún no hay personas evaluadas")}
             </p>
           ) : (
             <div className="flex flex-col items-center gap-5">
@@ -747,13 +747,13 @@ function HealthGeoMapRow({
           </div>
           <div className="mt-3 flex items-center justify-between border-t border-border pt-3 text-xs">
             <span className="text-muted-foreground">
-              {t("Total pacientes mapeados")}
+              {t("Total de personas en el mapa")}
             </span>
             <span className="font-semibold">{totalMapped}</span>
           </div>
           <div className="flex items-center justify-between text-xs">
             <span className="text-muted-foreground">
-              {t("Pacientes evaluados")}
+              {t("Personas evaluadas")}
             </span>
             <span className="font-semibold">{totalEvaluated}</span>
           </div>
@@ -992,7 +992,7 @@ function CategoryCoverageChart({
   if (masterRows.length === 0)
     return (
       <p className="py-10 text-center text-xs text-muted-foreground">
-        {t("Sin pacientes evaluados todavía")}
+        {t("Aún no hay personas evaluadas")}
       </p>
     );
 

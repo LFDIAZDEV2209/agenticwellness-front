@@ -44,7 +44,7 @@ test("desktop: Copp colours, one work surface and stable chrome", async ({
   );
   const selected = nav.locator('a[aria-current="page"]');
   const brandGradient = await page
-    .getByRole("heading", { name: "Pacientes", exact: true })
+    .getByRole("heading", { name: "Personas", exact: true })
     .evaluate(
       (el) =>
         getComputedStyle(el.parentElement!.parentElement!).backgroundImage,
@@ -52,7 +52,7 @@ test("desktop: Copp colours, one work surface and stable chrome", async ({
   expect(brandGradient).toContain("linear-gradient");
   await expect(selected).toHaveCSS("background-image", brandGradient);
   const create = page.getByRole("button", {
-    name: "Nuevo paciente",
+    name: "Nueva persona",
     exact: true,
   });
   await expect(create).not.toHaveCSS("background-color", "rgb(255, 255, 255)");
@@ -72,7 +72,7 @@ test("desktop: Copp colours, one work surface and stable chrome", async ({
   await expect(workspace.getByRole("table")).toBeVisible();
   expect(
     await page
-      .getByRole("heading", { name: "Pacientes", exact: true })
+      .getByRole("heading", { name: "Personas", exact: true })
       .evaluate((el) => parseFloat(getComputedStyle(el).fontSize)),
   ).toBeGreaterThanOrEqual(24);
   const topbar = page.locator("header").first();
@@ -250,7 +250,7 @@ test("own-patient permissions keep management actions hidden", async ({
   ).toBeVisible();
   await expect(page.getByRole("table")).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "Nuevo paciente", exact: true }),
+    page.getByRole("button", { name: "Nueva persona", exact: true }),
   ).toHaveCount(0);
   await page
     .getByRole("button", { name: /Acciones para / })
@@ -475,7 +475,7 @@ test("hybrid desktop supports touch opening and outside dismissal", async ({
     await rail.getByRole("button", { name: "Gestión", exact: true }).tap();
     await expect(rail).toHaveCSS("width", "256px");
     await expect(
-      rail.getByRole("link", { name: "Pacientes", exact: true }),
+      rail.getByRole("link", { name: "Personas", exact: true }),
     ).toBeVisible();
     await page.getByLabel("Buscar pacientes", { exact: true }).tap();
     await expect(rail).toHaveCSS("width", "80px");

@@ -59,7 +59,7 @@ export function MedicationOverviewPanel({
   );
   const metrics = [
     {
-      label: "Pacientes",
+      label: "Personas",
       value: data.totalPatients,
       icon: UsersRound,
       tone: "blue",
@@ -85,7 +85,7 @@ export function MedicationOverviewPanel({
   ];
   const actions = [
     {
-      label: "Pacientes",
+      label: "Personas",
       subtitle: "Tu directorio de seguimiento",
       icon: UsersRound,
       tone: "blue",
@@ -311,7 +311,7 @@ export function MedicationOverviewPanel({
             <span className="medication-home-eyebrow">
               {t("Directorio clínico")}
             </span>
-            <h2 id="medication-preview-title">{t("Pacientes")}</h2>
+            <h2 id="medication-preview-title">{t("Personas")}</h2>
           </div>
           <Button variant="ghost" size="sm" onClick={() => onOpen("patients")}>
             {t("Ver todos")}

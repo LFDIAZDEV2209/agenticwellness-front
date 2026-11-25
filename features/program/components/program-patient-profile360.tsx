@@ -182,7 +182,7 @@ export function ProgramPatientProfile360({
         className="inline-flex min-h-11 items-center gap-2 self-start rounded-lg px-2 text-sm font-medium focus-visible:outline-2 focus-visible:outline-ring"
       >
         <ArrowLeft aria-hidden className="size-4" />
-        {t("Pacientes")}
+        {t("Personas")}
       </Link>
       {/* Hero azul — reemplaza al PageHeader "Perfil 360" cuando se ve un paciente específico */}
       {loading ? (

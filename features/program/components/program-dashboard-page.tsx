@@ -450,7 +450,7 @@ function BiometriaDistributionRow({
               </Pie>
               <Tooltip
                 {...CHART_TOOLTIP}
-                formatter={(value) => [String(value ?? 0), "Pacientes"]}
+                formatter={(value) => [String(value ?? 0), "Personas"]}
               />
               <Legend wrapperStyle={{ fontSize: 11 }} />
             </PieChart>

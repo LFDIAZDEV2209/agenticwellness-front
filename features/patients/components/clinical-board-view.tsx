@@ -647,7 +647,7 @@ export function ClinicalBoardView({
             <p className="mt-1 text-sm text-muted-foreground">
               {hasFilters
                 ? t("Prueba con otros términos o quita algún filtro.")
-                : t("No hay pacientes para mostrar todavía.")}
+                : t("Todavía no hay personas para mostrar.")}
             </p>
             {hasFilters ? (
               <Button variant="outline" className="mt-4" onClick={clearAll}>

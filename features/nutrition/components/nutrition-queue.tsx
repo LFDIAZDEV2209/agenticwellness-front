@@ -143,7 +143,7 @@ export function NutritionQueue({
           aria-label={t("Bandeja de pacientes")}
         >
           {selection && <SectionHeader
-            title={t("Pacientes")}
+            title={t("Personas")}
             icon={Users}
             variant="surface"
             description={
@@ -153,7 +153,7 @@ export function NutritionQueue({
             }
           />}
           <div className="nutrition-rail-tools">
-            {!selection && <div className="nutrition-directory-heading"><Users aria-hidden="true" /><h2>{t("Pacientes")}</h2>{data && <span className="nutrition-measure">{format(data.total, 0)}</span>}</div>}
+            {!selection && <div className="nutrition-directory-heading"><Users aria-hidden="true" /><h2>{t("Personas")}</h2>{data && <span className="nutrition-measure">{format(data.total, 0)}</span>}</div>}
             <label htmlFor="nutrition-search" className="sr-only">
               {t("Buscar paciente")}
             </label>
@@ -256,7 +256,7 @@ export function NutritionQueue({
                       </span>
                       <span className="nutrition-directory-validity">{patient.plan?.endDate ? date(patient.plan.endDate) : "—"}</span>
                       {selection?.patientId === patient.patientId
-                        ? <Check className="nutrition-selected-check nutrition-row-arrow" aria-label={t("Paciente seleccionado")} />
+                        ? <Check className="nutrition-selected-check nutrition-row-arrow" aria-label={t("Persona seleccionada")} />
                         : <ArrowRight className="nutrition-row-arrow" aria-hidden="true" />}
                     </Link>
                   </li>

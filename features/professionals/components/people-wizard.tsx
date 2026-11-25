@@ -541,7 +541,7 @@ export function PeopleWizard({
         ? t("Nuevo empleado")
         : mode === "user"
           ? t("Nuevo usuario")
-          : t("Nuevo paciente");
+          : t("Nueva persona");
 
   const headerDescription = !mode
     ? t(
@@ -606,7 +606,7 @@ export function PeopleWizard({
             <div>
               <h2 className="text-base font-bold">
                 {created.mode === "patient"
-                  ? t("Paciente creado correctamente")
+                  ? t("Persona creada correctamente")
                   : t("Profesional creado correctamente")}
               </h2>
               <p className="text-xs text-muted-foreground">

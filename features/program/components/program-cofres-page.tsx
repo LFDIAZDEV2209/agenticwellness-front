@@ -167,7 +167,7 @@ function CofresContent({
       {/* KPIs */}
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <StatCard
-          label="Pacientes activos"
+          label="Personas activas"
           value={String(totalPatients)}
           icon={Gift}
           variant="info"

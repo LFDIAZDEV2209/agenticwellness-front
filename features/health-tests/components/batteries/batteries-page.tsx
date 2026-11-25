@@ -218,7 +218,7 @@ export function BatteriesPage() {
           context={t("En todas las baterías")}
         />
         <StatCard
-          label={t("Pacientes asignados")}
+          label={t("Personas asignadas")}
           value={master.data ? String(assigned) : "—"}
           icon={Users}
           variant="success"

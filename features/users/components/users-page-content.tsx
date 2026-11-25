@@ -87,8 +87,8 @@ const segmentCopy = {
   },
   patient: {
     description: "Cuentas de pacientes que usan la app móvil.",
-    one: "{count} paciente encontrado",
-    many: "{count} pacientes encontrados",
+    one: "{count} persona encontrada",
+    many: "{count} personas encontradas",
     icon: HeartPulse,
   },
   all: {
@@ -825,7 +825,7 @@ function EmptyState({
   const isFilterIssue = hasFilters;
   const segmentName = {
     erp: t("Usuarios ERP"),
-    patient: t("Pacientes"),
+    patient: t("Personas"),
     all: t("Todas las cuentas"),
   }[segment];
 

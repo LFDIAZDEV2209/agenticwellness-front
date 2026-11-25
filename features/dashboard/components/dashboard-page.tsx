@@ -182,7 +182,7 @@ export function DashboardPage() {
           tone="blue"
         />
         <DashboardMetric
-          label={t("Pacientes nuevos (30 días)")}
+          label={t("Personas nuevas (30 días)")}
           value={kpis ? formatCount(kpis.newPatients30d) : "—"}
           icon={UserPlus}
           tone="teal"

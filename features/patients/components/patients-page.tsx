@@ -116,7 +116,7 @@ export function PatientsPage() {
   return (
     <div className="flex min-w-0 flex-col gap-5 p-4 sm:p-6">
       <PageHeader
-        title={fullScope ? t("Pacientes") : t("Mis pacientes")}
+        title={fullScope ? t("Personas") : t("Mis pacientes")}
         description={t(
           "Gestión completa · seguimiento clínico · mapa geográfico EE. UU.",
         )}
@@ -139,7 +139,7 @@ export function PatientsPage() {
                 onClick={() => router.push("/people/new?context=patient")}
               >
                 <Plus data-icon="inline-start" />
-                {t("Nuevo paciente")}
+                {t("Nueva persona")}
               </Button>
             </div>
           ) : undefined

@@ -144,7 +144,7 @@ export function AssignPatientsDialog({
         <DialogHeader className="shrink-0 border-b border-border bg-primary-soft px-6 py-5">
           <DialogTitle>{t("Asignar pacientes")}</DialogTitle>
           <DialogDescription>
-            {t("Asigna la batería {name} a los pacientes seleccionados.", {
+            {t("Asigna la batería {name} a las personas seleccionadas.", {
               name: batteryName,
             })}
           </DialogDescription>
@@ -245,7 +245,7 @@ export function AssignPatientsDialog({
                 })}
                 {filtered.length === 0 && (
                   <p className="px-3 py-8 text-center text-[12px] text-muted-foreground">
-                    {t("Sin pacientes para el filtro actual")}
+                    {t("No hay personas que coincidan con el filtro actual")}
                   </p>
                 )}
                 </div>

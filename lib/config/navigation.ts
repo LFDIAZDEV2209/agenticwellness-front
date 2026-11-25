@@ -176,7 +176,7 @@ export const navModules: NavModule[] = [
         permission: "Professionals.View",
       },
       {
-        label: "Pacientes",
+        label: "Personas",
         href: "/patients",
         icon: UserRound,
         color: "#0E7490",
@@ -267,7 +267,7 @@ export const navModules: NavModule[] = [
         color: "#123B63",
       },
       {
-        label: "Pacientes",
+        label: "Personas",
         href: "/health-tests/pacientes",
         icon: UserRound,
         color: "#2563EB",

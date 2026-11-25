@@ -209,7 +209,7 @@ export function PatientPodcastAssignmentDialog({
                     </dd>
                   </div>
                   <div className="flex items-start justify-between gap-4 py-3">
-                    <dt>{t("Pacientes omitidos por alcance")}</dt>
+                    <dt>{t("Personas omitidas por alcance")}</dt>
                     <dd className="text-xl font-semibold tabular-nums">
                       {count(result.omitidasSinAlcance.length)}
                     </dd>
@@ -222,7 +222,7 @@ export function PatientPodcastAssignmentDialog({
                 </p>
                 {result.omitidasSinAlcance.length > 0 && (
                   <section
-                    aria-label={t("Pacientes omitidos por alcance")}
+                    aria-label={t("Personas omitidas por alcance")}
                     className="flex flex-col gap-2 rounded-xl border border-border bg-muted/30 p-4"
                   >
                     <h3 className="flex items-center gap-2 font-semibold">

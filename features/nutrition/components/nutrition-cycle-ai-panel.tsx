@@ -211,7 +211,7 @@ export function NutritionCycleAiPanel({
             </dl>
             <p>
               {t(
-                "La muestra es acotada. Los días sin datos no se rellenan con cero y la cobertura no es una valoración clínica.",
+                "La muestra es acotada. Los días sin datos quedan vacíos y la cobertura describe solo los registros disponibles.",
               )}
             </p>
           </details>

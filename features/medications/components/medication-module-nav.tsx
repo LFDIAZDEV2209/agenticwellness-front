@@ -33,7 +33,7 @@ export function MedicationModuleNav({
     {
       key: "patients",
       href: "/medications?view=patients",
-      label: "Pacientes",
+      label: "Personas",
       icon: UsersRound,
       click: onPatients,
     },
