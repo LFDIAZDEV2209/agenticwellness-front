@@ -96,7 +96,7 @@ test("bandeja HTTP: filtros, búsqueda, paginación y ausencia de N+1", async ({
   const sidebar = page
     .locator("aside")
     .filter({
-      has: page.getByRole("link", { name: "Copp Adresd", exact: true }),
+      has: page.getByRole("link", { name: "Agentic Wellness IA", exact: true }),
     });
   await page.mouse.move(700, 200);
   await expect(sidebar).toHaveCSS("width", "80px");
@@ -106,7 +106,7 @@ test("bandeja HTTP: filtros, búsqueda, paginación y ausencia de N+1", async ({
       exact: true,
     }),
   ).toBeVisible();
-  await sidebar.getByRole("link", { name: "Copp Adresd", exact: true }).focus();
+  await sidebar.getByRole("link", { name: "Agentic Wellness IA", exact: true }).focus();
   await page.keyboard.press("Tab");
   await expect(sidebar).toHaveCSS("width", "256px");
   const filters = page.getByRole("combobox", {
