@@ -8,7 +8,7 @@ import { ApiError } from "@/lib/api/http";
 import { useAppContext } from "@/providers/context-provider";
 import { useAuth } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";
-import { readMotorPlanDay, type MotorPlanDay } from "../services/motor-plan-service";
+import { readMotorPlanDay, readMotorWeeklyEvents, type MotorPlanDay, type MotorWeeklyEvent } from "../services/motor-plan-service";
 
 const STATE = {
   active: "Plan activo",
@@ -19,6 +19,48 @@ const STATE = {
 type PlanResult = { plan: MotorPlanDay; syncedAt: string; stale?: boolean }
   | { status: "missing" | "locked" | "error" };
 
+type WeeklyResult = MotorWeeklyEvent[] | "unavailable";
+
+function MotorWeeklyHistory({ result }: { result?: WeeklyResult }) {
+  const title = useId();
+  const { t, lang } = useI18n();
+  const number = new Intl.NumberFormat(lang === "en" ? "en-US" : "es-CO");
+  const percent = new Intl.NumberFormat(lang === "en" ? "en-US" : "es-CO", {
+    style: "percent", maximumFractionDigits: 2, signDisplay: "exceptZero",
+  });
+
+  return (
+    <section aria-labelledby={title} className="mt-4 border-t pt-3 text-sm">
+      <h3 id={title} className="font-medium">{t("Ajustes semanales")}</h3>
+      {!result ? <Skeleton className="mt-2 h-5 w-40" aria-label={t("Consultando ajustes semanales…")} /> :
+        result === "unavailable" ? (
+          <p role="status" className="mt-1 text-muted-foreground">{t("No se pudo consultar el historial semanal.")}</p>
+        ) : result.length === 0 ? (
+          <p className="mt-1 text-muted-foreground">{t("Aún no hay decisiones semanales.")}</p>
+        ) : (
+          <ul role="list" className="mt-1 divide-y">
+            {result.toSorted((a, b) => b.d - a.d).map(event => (
+              <li key={event.d} className="grid gap-1 py-2">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                  <span className="font-medium">{t("Día {day}", { day: number.format(event.d) })}</span>
+                  <Badge variant="outline" className="tabular-nums">
+                    {event.k === "sin" ? t("Sin ajuste") : t("{delta} kcal", {
+                      delta: (event.delta < 0 ? "−" : "+") + number.format(Math.abs(event.delta)),
+                    })}
+                  </Badge>
+                  {event.rate !== null && <span className="text-muted-foreground tabular-nums">
+                    {t("Cambio de peso: {rate}", { rate: percent.format(event.rate / 100) })}
+                  </span>}
+                </div>
+                <p className="text-muted-foreground">{lang === "en" ? event.en : event.es}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+    </section>
+  );
+}
+
 export function MotorPlanDayCard({ patientId, refresh }: { patientId: string; refresh: number }) {
   const { user } = useAuth();
   const { can, activeClinicId, context, loading } = useAppContext();
@@ -27,6 +69,7 @@ export function MotorPlanDayCard({ patientId, refresh }: { patientId: string; re
   const allowed = !loading && user && can("Program.Profile360View");
   const key = allowed ? `${user.id}:${context?.organization?.id}:${activeClinicId}:${patientId}` : null;
   const [loaded, setLoaded] = useState<{ key: string; result: PlanResult }>();
+  const [weekly, setWeekly] = useState<{ key: string; result: WeeklyResult }>();
 
   useEffect(() => {
     if (!key) return;
@@ -35,6 +78,10 @@ export function MotorPlanDayCard({ patientId, refresh }: { patientId: string; re
       request?.abort();
       const current = new AbortController();
       request = current;
+      void readMotorWeeklyEvents(patientId, current.signal).then(
+        result => { if (!current.signal.aborted) setWeekly({ key, result }); },
+        () => { if (!current.signal.aborted) setWeekly({ key, result: "unavailable" }); },
+      );
       void readMotorPlanDay(patientId, current.signal).then(
         plan => {
           if (!current.signal.aborted) setLoaded({ key, result: { plan, syncedAt: new Date().toISOString() } });
@@ -113,6 +160,7 @@ export function MotorPlanDayCard({ patientId, refresh }: { patientId: string; re
               <p>{t("Meta de agua: {water} ml", { water: number.format(targets.waterMl) })}</p>
             </div>
           )}
+          {result && "plan" in result && <MotorWeeklyHistory result={weekly?.key === key ? weekly.result : undefined} />}
         </CardContent>
       </Card>
     </section>

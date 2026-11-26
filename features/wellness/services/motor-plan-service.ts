@@ -34,3 +34,26 @@ export async function readMotorPlanDay(patientId: string, signal: AbortSignal) {
     throw new Error("Invalid Motor 365 day");
   return day;
 }
+
+export interface MotorWeeklyEvent {
+  d: number;
+  k: "ajuste" | "sin";
+  delta: number;
+  rate: number | null;
+  es: string;
+  en: string;
+}
+
+export async function readMotorWeeklyEvents(patientId: string, signal: AbortSignal) {
+  const events = await apiFetch<MotorWeeklyEvent[]>(
+    `${env.apiUrl}/api/v1/people/${encodeURIComponent(patientId)}/weekly-events`,
+    { signal, cache: "no-store" },
+  );
+  if (!Array.isArray(events) || events.some(event =>
+    !event || !Number.isInteger(event.d) || event.d < 14 || event.d > 364 || event.d % 7 !== 0 ||
+    !["ajuste", "sin"].includes(event.k) || !Number.isFinite(event.delta) ||
+    !(event.rate === null || Number.isFinite(event.rate)) ||
+    typeof event.es !== "string" || typeof event.en !== "string"))
+    throw new Error("Invalid Motor 365 weekly events");
+  return events;
+}
