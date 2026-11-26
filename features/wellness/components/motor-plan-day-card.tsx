@@ -60,6 +60,9 @@ export function MotorPlanDayCard({ patientId }: { patientId: string }) {
   const result = loaded?.key === key ? loaded.result : undefined;
   if (result && "status" in result && result.status === "missing") return null;
 
+  const targets = result && "plan" in result ? result.plan.nutrition : undefined;
+  const number = new Intl.NumberFormat(lang === "en" ? "en-US" : "es-CO");
+
   return (
     <section aria-labelledby={title}>
       <Card>
@@ -77,6 +80,18 @@ export function MotorPlanDayCard({ patientId }: { patientId: string }) {
                   : new Intl.NumberFormat(lang, { style: "unit", unit: "kilogram" }).format(result.plan.measuredWeightKg)}</span>
               </div>
             ) : <p className="text-sm text-muted-foreground">{t(result.status === "locked" ? "Plan bloqueado" : "Día del plan no disponible")}</p>}
+          {targets && (
+            <div className="mt-4 grid gap-1 border-t pt-3 text-sm">
+              <p className="font-medium">{t("Meta diaria: {kcal} kcal", { kcal: number.format(targets.kcal) })}</p>
+              <p>{t("{protein} g proteína · {carbs} g carbohidratos · {fat} g grasas", {
+                protein: number.format(targets.proteinG),
+                carbs: number.format(targets.carbsG),
+                fat: number.format(targets.fatG),
+              })}</p>
+              <p>{t("Meta de fibra: {fiber} g", { fiber: number.format(targets.fiberG) })}</p>
+              <p>{t("Meta de agua: {water} ml", { water: number.format(targets.waterMl) })}</p>
+            </div>
+          )}
         </CardContent>
       </Card>
     </section>
