@@ -6374,5 +6374,12 @@
   "Meta de agua: {water} ml": "Meta de agua: {water} ml",
   "Última sincronización: {time}": "Última sincronización: {time}",
   "Motor {engine} · Parámetros {params}": "Motor {engine} · Parámetros {params}",
-  "No se pudo actualizar el plan.": "No se pudo actualizar el plan."
+  "No se pudo actualizar el plan.": "No se pudo actualizar el plan.",
+  "Ajustes semanales": "Ajustes semanales",
+  "Consultando ajustes semanales…": "Consultando ajustes semanales…",
+  "No se pudo consultar el historial semanal.": "No se pudo consultar el historial semanal.",
+  "Aún no hay decisiones semanales.": "Aún no hay decisiones semanales.",
+  "Sin ajuste": "Sin ajuste",
+  "{delta} kcal": "{delta} kcal",
+  "Cambio de peso: {rate}": "Cambio de peso: {rate}"
 }
