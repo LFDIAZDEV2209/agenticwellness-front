@@ -6359,5 +6359,13 @@
   "ID del recibo": "Receipt ID",
   "No hay aceptaciones para los filtros seleccionados.": "No acceptances match the selected filters.",
   "Página {page} de {pages} · {count} aceptaciones": "Page {page} of {pages} · {count} acceptances",
-  "Documentos legales": "Legal documents"
+  "Documentos legales": "Legal documents",
+  "Motor 365": "Motor 365",
+  "Plan activo": "Active plan",
+  "Plan en pausa": "Plan paused",
+  "Plan en mantenimiento": "Maintenance plan",
+  "Plan bloqueado": "Plan locked",
+  "Consultando el plan…": "Loading the plan…",
+  "Día del plan no disponible": "Plan day unavailable",
+  "Sin pesaje": "No weigh-in"
 }
