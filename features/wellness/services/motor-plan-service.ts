@@ -1,7 +1,17 @@
 import { apiFetch } from "@/lib/api/http";
 import { env } from "@/lib/config/env";
 
+export interface MotorNutritionTargets {
+  kcal: number;
+  proteinG: number;
+  carbsG: number;
+  fatG: number;
+  fiberG: number;
+  waterMl: number;
+}
+
 export interface MotorPlanDay {
+  nutrition?: MotorNutritionTargets;
   today: number;
   todayLocalDate: string;
   status: { state: "active" | "paused" | "maint" };

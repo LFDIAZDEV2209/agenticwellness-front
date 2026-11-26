@@ -6392,5 +6392,9 @@
   "Plan bloqueado": "Plan locked",
   "Consultando el plan…": "Loading the plan…",
   "Día del plan no disponible": "Plan day unavailable",
-  "Sin pesaje": "No weigh-in"
+  "Sin pesaje": "No weigh-in",
+  "Meta diaria: {kcal} kcal": "Daily goal: {kcal} kcal",
+  "{protein} g proteína · {carbs} g carbohidratos · {fat} g grasas": "{protein} g protein · {carbs} g carbohydrates · {fat} g fat",
+  "Meta de fibra: {fiber} g": "Fiber goal: {fiber} g",
+  "Meta de agua: {water} ml": "Water goal: {water} ml"
 }
