@@ -19,8 +19,8 @@ env:
   AWS_REGION: us-east-2
   ECR_REGISTRY: 933629770820.dkr.ecr.us-east-2.amazonaws.com
   ECR_REPOSITORY: cooppadresd-frontend
-  ECS_CLUSTER: cooppadresd-cluster
-  ECS_SERVICE: cooppadresd-frontend
+  ECS_CLUSTER: agenticwellness-cluster
+  ECS_SERVICE: agenticwellness-frontend
   NEXT_PUBLIC_GATEWAY_URL: https://erp.agenticwellness.ai
   NEXT_PUBLIC_COMMUNITY_API_URL: https://erp.agenticwellness.ai
   NEXT_PUBLIC_APPLICATION_CODE: erp
