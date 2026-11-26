@@ -149,3 +149,40 @@ test("Actualizar vuelve a consultar el mes abierto después de un registro nuevo
   await expect(view.locator('[data-date="2028-02-01"]')).toContainText("Registrado");
   await expect(month).toHaveValue("2028-02");
 });
+
+test("el resumen distingue pausas sin dato, cero días y días registrados", async ({ page }) => {
+  await mockProfile360Http(page);
+  await page.route(year365Route, (route) => {
+    const month = new URL(route.request().url()).searchParams.get("month");
+    const report = month === "2028-02"
+      ? {
+        ...january,
+        month,
+        days: [],
+        summary: {
+          ...january.summary,
+          recordedDays: 0,
+          adherencePercent: null,
+          weight: null,
+          streakDays: null,
+          scheduledPauseDays: 0,
+          safetyExercisePauseDays: 2,
+        },
+        events: [],
+      } satisfies Year365Report
+      : january;
+    return route.fulfill({ json: { report } });
+  });
+
+  await page.goto(`/patients/${profilePatientId}/360`);
+  await page.getByRole("tab", { name: "Año 365" }).click();
+  const view = page.getByRole("region", { name: "Año 365", exact: true });
+  const scheduled = view.getByText("Pausas programadas (días)", { exact: true }).locator("..").locator("dd");
+  const safety = view.getByText("Pausas de ejercicio (días)", { exact: true }).locator("..").locator("dd");
+  await expect(scheduled).toHaveText("Sin dato");
+  await expect(safety).toHaveText("Sin dato");
+
+  await view.getByRole("combobox", { name: "Mes" }).selectOption("2028-02");
+  await expect(scheduled).toHaveText("0");
+  await expect(safety).toHaveText("2");
+});
