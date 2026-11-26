@@ -6396,5 +6396,8 @@
   "Meta diaria: {kcal} kcal": "Daily goal: {kcal} kcal",
   "{protein} g proteína · {carbs} g carbohidratos · {fat} g grasas": "{protein} g protein · {carbs} g carbohydrates · {fat} g fat",
   "Meta de fibra: {fiber} g": "Fiber goal: {fiber} g",
-  "Meta de agua: {water} ml": "Water goal: {water} ml"
+  "Meta de agua: {water} ml": "Water goal: {water} ml",
+  "Última sincronización: {time}": "Last synced: {time}",
+  "Motor {engine} · Parámetros {params}": "Engine {engine} · Parameters {params}",
+  "No se pudo actualizar el plan.": "Couldn't refresh the plan."
 }

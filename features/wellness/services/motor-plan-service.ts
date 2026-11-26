@@ -18,6 +18,8 @@ export interface MotorPlanDay {
   logStatus: "open" | "recorded" | "missing";
   measuredWeightKg: number | null;
   timeZoneId: string;
+  engine_ver?: string;
+  params_version?: number;
 }
 
 export async function readMotorPlanDay(patientId: string, signal: AbortSignal) {
@@ -26,6 +28,7 @@ export async function readMotorPlanDay(patientId: string, signal: AbortSignal) {
     { signal, cache: "no-store" },
   );
   if (!day || !Number.isInteger(day.today) || day.today < 1 || day.today > 365 ||
+    !/^\d{4}-\d{2}-\d{2}$/.test(day.todayLocalDate) || !Number.isFinite(Date.parse(day.todayLocalDate)) ||
     !day.status || !["active", "paused", "maint"].includes(day.status.state) ||
     !(day.measuredWeightKg === null || Number.isFinite(day.measuredWeightKg)))
     throw new Error("Invalid Motor 365 day");
