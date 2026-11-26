@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, RefreshCw, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 import { usePatientOverview } from "../hooks/use-patient-overview";
 import { useEnrollmentSnapshot } from "../hooks/use-enrollment-snapshot";
 import { useI18n, useT } from "@/providers/i18n-provider";
@@ -67,6 +68,7 @@ export function ProgramPatientProfile360({
     "resumen",
   );
   const { data, loading, error, retry } = usePatientOverview(patientId);
+  const clinicalMetrics = data?.mediciones_clinicas ?? null;
   const {
     data: biometriaData,
     loading: biometriaLoading,
@@ -315,10 +317,17 @@ export function ProgramPatientProfile360({
         ) : data ? (
           <>
             <PatientClinicaTop data={data} />
-            <div className="grid gap-4 lg:grid-cols-[1.35fr_1fr] items-start">
-              <div className="min-w-0">
-                <ClinicalEvolutionCard metrics={data.mediciones_clinicas} />
-              </div>
+            <div
+              className={cn(
+                "grid items-start gap-4",
+                clinicalMetrics && "lg:grid-cols-[1.35fr_1fr]",
+              )}
+            >
+              {clinicalMetrics && (
+                <div className="min-w-0">
+                  <ClinicalEvolutionCard metrics={clinicalMetrics} />
+                </div>
+              )}
               <div className="min-w-0">
                 <EnrollmentDetailTabWrapper
                   enrollmentId={enrollmentId}
@@ -337,7 +346,7 @@ export function ProgramPatientProfile360({
 
         <ProgramControlesTab
           patientId={patientId}
-          clinicalMetrics={data?.mediciones_clinicas ?? null}
+          clinicalMetrics={clinicalMetrics}
         />
       </TabsContent>
       <TabsContent value="progreso" className="flex flex-col gap-5">
