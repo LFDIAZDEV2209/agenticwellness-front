@@ -6371,5 +6371,8 @@
   "Meta diaria: {kcal} kcal": "Meta diaria: {kcal} kcal",
   "{protein} g proteína · {carbs} g carbohidratos · {fat} g grasas": "{protein} g proteína · {carbs} g carbohidratos · {fat} g grasas",
   "Meta de fibra: {fiber} g": "Meta de fibra: {fiber} g",
-  "Meta de agua: {water} ml": "Meta de agua: {water} ml"
+  "Meta de agua: {water} ml": "Meta de agua: {water} ml",
+  "Última sincronización: {time}": "Última sincronización: {time}",
+  "Motor {engine} · Parámetros {params}": "Motor {engine} · Parámetros {params}",
+  "No se pudo actualizar el plan.": "No se pudo actualizar el plan."
 }

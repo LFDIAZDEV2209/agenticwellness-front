@@ -60,7 +60,7 @@ export function ProgramPatientProfile360({
   const { activeClinicId, can } = useAppContext();
   const { user } = useAuth();
   const mayViewYear365 = Boolean(user) && can("Program.Profile360View");
-  const [year365Refresh, setYear365Refresh] = useState(0);
+  const [profileRefresh, setProfileRefresh] = useState(0);
   const profileTabs = useRef<HTMLDivElement>(null);
   const [summarySource, setSummarySource] = useState<{ patientId: string; tab: string; source: PatientSummarySource } | null>(null);
   const [activeTab, setActiveTab] = usePersistedTab(
@@ -246,8 +246,8 @@ export function ProgramPatientProfile360({
             variant="outline"
             size="sm"
             onClick={() => {
-              if (safeTab === "year-365") setYear365Refresh((value) => value + 1);
-              else retry();
+              setProfileRefresh((value) => value + 1);
+              if (safeTab !== "year-365") retry();
             }}
             disabled={loading}
           >
@@ -265,7 +265,7 @@ export function ProgramPatientProfile360({
       </p>}
 
       <TabsContent value="resumen" className="flex flex-col gap-5">
-        {data && !loading && !error && <MotorPlanDayCard patientId={patientId} />}
+        {data && <MotorPlanDayCard patientId={patientId} refresh={profileRefresh} />}
         {/* Biometría: figura + zonas + mediciones exactas en el mismo box */}
         {biometriaLoading ? (
           <BiometriaPerfilSkeleton />
@@ -377,7 +377,7 @@ export function ProgramPatientProfile360({
             key={`${user?.id}:${activeClinicId ?? ""}:${patientId}`}
             patientId={patientId}
             mayExport={can("Program.Export")}
-            refresh={year365Refresh}
+            refresh={profileRefresh}
           />
         </TabsContent>
       )}
