@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, RefreshCw, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 import { usePatientOverview } from "../hooks/use-patient-overview";
 import { useEnrollmentSnapshot } from "../hooks/use-enrollment-snapshot";
 import { useI18n, useT } from "@/providers/i18n-provider";
@@ -36,6 +37,9 @@ import { formatSummaryDate } from "../services/patient-ai-summary-service";
 import type { PatientSummarySource } from "../types/patient-ai-summary";
 import { MotorPlanDayCard } from "@/features/wellness/components/motor-plan-day-card";
 import { MedicationPatientLink } from "@/features/medications/components/medication-shared";
+import { useAppContext } from "@/providers/context-provider";
+import { useAuth } from "@/providers/auth-provider";
+import { ProgramYear365Tab } from "./program-year-365-tab";
 
 interface ProgramPatientProfile360Props {
   patientId: string;
@@ -53,6 +57,10 @@ export function ProgramPatientProfile360({
   void _onBack;
   const t = useT();
   const { lang } = useI18n();
+  const { activeClinicId, can } = useAppContext();
+  const { user } = useAuth();
+  const mayViewYear365 = Boolean(user) && can("Program.Profile360View");
+  const [year365Refresh, setYear365Refresh] = useState(0);
   const profileTabs = useRef<HTMLDivElement>(null);
   const [summarySource, setSummarySource] = useState<{ patientId: string; tab: string; source: PatientSummarySource } | null>(null);
   const [activeTab, setActiveTab] = usePersistedTab(
@@ -60,6 +68,7 @@ export function ProgramPatientProfile360({
     "resumen",
   );
   const { data, loading, error, retry } = usePatientOverview(patientId);
+  const clinicalMetrics = data?.mediciones_clinicas ?? null;
   const {
     data: biometriaData,
     loading: biometriaLoading,
@@ -72,6 +81,7 @@ export function ProgramPatientProfile360({
     { key: "nutricion", label: t("Nutrición") },
     { key: "seguimiento", label: t("Seguimiento") },
     { key: "progreso", label: t("Progreso") },
+    ...(mayViewYear365 ? [{ key: "year-365", label: t("Año 365") }] : []),
   ];
 
   // Conservar la selección de sesiones anteriores al reorganizar las pestañas.
@@ -235,7 +245,10 @@ export function ProgramPatientProfile360({
           <Button
             variant="outline"
             size="sm"
-            onClick={retry}
+            onClick={() => {
+              if (safeTab === "year-365") setYear365Refresh((value) => value + 1);
+              else retry();
+            }}
             disabled={loading}
           >
             <RefreshCw
@@ -304,10 +317,17 @@ export function ProgramPatientProfile360({
         ) : data ? (
           <>
             <PatientClinicaTop data={data} />
-            <div className="grid gap-4 lg:grid-cols-[1.35fr_1fr] items-start">
-              <div className="min-w-0">
-                <ClinicalEvolutionCard metrics={data.mediciones_clinicas} />
-              </div>
+            <div
+              className={cn(
+                "grid items-start gap-4",
+                clinicalMetrics && "lg:grid-cols-[1.35fr_1fr]",
+              )}
+            >
+              {clinicalMetrics && (
+                <div className="min-w-0">
+                  <ClinicalEvolutionCard metrics={clinicalMetrics} />
+                </div>
+              )}
               <div className="min-w-0">
                 <EnrollmentDetailTabWrapper
                   enrollmentId={enrollmentId}
@@ -326,7 +346,7 @@ export function ProgramPatientProfile360({
 
         <ProgramControlesTab
           patientId={patientId}
-          clinicalMetrics={data?.mediciones_clinicas ?? null}
+          clinicalMetrics={clinicalMetrics}
         />
       </TabsContent>
       <TabsContent value="progreso" className="flex flex-col gap-5">
@@ -351,6 +371,16 @@ export function ProgramPatientProfile360({
           {(enr) => <EnrollmentXpLedgerTab enrollment={enr} />}
         </EnrollmentDetailTabWrapper>
       </TabsContent>
+      {mayViewYear365 && safeTab === "year-365" && (
+        <TabsContent value="year-365">
+          <ProgramYear365Tab
+            key={`${user?.id}:${activeClinicId ?? ""}:${patientId}`}
+            patientId={patientId}
+            mayExport={can("Program.Export")}
+            refresh={year365Refresh}
+          />
+        </TabsContent>
+      )}
     </Tabs>
   );
 }
