@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   Settings as SettingsIcon,
   Palette,
@@ -10,6 +11,7 @@ import {
   FileText,
   Sparkles,
   Check,
+  History,
   type LucideIcon,
 } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
@@ -18,11 +20,13 @@ import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useTheme } from "@/providers/theme-provider";
 import { useAccent } from "@/providers/accent-provider";
+import { useAuth } from "@/providers/auth-provider";
 import { useAppContext } from "@/providers/context-provider";
 import { useT, useI18n } from "@/providers/i18n-provider";
 import { cn } from "@/lib/utils";
 import { ACCENT_COLORS } from "@/lib/config/accent-colors";
 import { useState } from "react";
+import { parameterHistoryPath, parameterHistoryRole } from "./motor-parameter-history-page";
 import { LegalSettingsSection } from "./legal-acceptances-section";
 
 interface SettingsNavItem {
@@ -99,6 +103,7 @@ export function SettingsPageContent() {
   const { accent, setAccent } = useAccent();
   const { lang, setLang } = useI18n();
   const { can } = useAppContext();
+  const { hasRole } = useAuth();
   const t = useT();
   const [activeSection, setActiveSection] = useState("Apariencia");
   const [density, setDensity] = useState("comodo");
@@ -128,6 +133,11 @@ export function SettingsPageContent() {
         title={t("Configuración")}
         description={t("Personaliza tu experiencia en la plataforma")}
         icon={SettingsIcon}
+        actions={hasRole(parameterHistoryRole) ? <Link href={parameterHistoryPath}
+          className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-white/40 px-3 text-sm font-medium text-white hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white">
+          <History className="size-4" aria-hidden />
+          {t("Historial de parámetros del Motor 365")}
+        </Link> : undefined}
       />
 
       <div className="flex gap-6">
