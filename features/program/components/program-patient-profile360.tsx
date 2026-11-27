@@ -265,7 +265,11 @@ export function ProgramPatientProfile360({
       </p>}
 
       <TabsContent value="resumen" className="flex flex-col gap-5">
-        {data && <MotorPlanDayCard patientId={patientId} refresh={profileRefresh} />}
+        {data && <MotorPlanDayCard patientId={patientId} refresh={profileRefresh} onOpenCalendar={() => {
+          setSummarySource(null);
+          setActiveTab("year-365");
+          profileTabs.current?.querySelector<HTMLButtonElement>('[data-profile-tab="year-365"]')?.focus();
+        }} />}
         {/* Biometría: figura + zonas + mediciones exactas en el mismo box */}
         {biometriaLoading ? (
           <BiometriaPerfilSkeleton />

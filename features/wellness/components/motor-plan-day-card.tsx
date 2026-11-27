@@ -8,7 +8,8 @@ import { ApiError } from "@/lib/api/http";
 import { useAppContext } from "@/providers/context-provider";
 import { useAuth } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";
-import { readMotorPlanDay, readMotorWeeklyEvents, type MotorPlanDay, type MotorWeeklyEvent } from "../services/motor-plan-service";
+import { motorPlanBlockReason, readMotorPlanDay, readMotorWeeklyEvents, type MotorPlanDay, type MotorText, type MotorWeeklyEvent } from "../services/motor-plan-service";
+import { MotorPlanOverviewSections } from "./motor-plan-overview-sections";
 
 const STATE = {
   active: "Plan activo",
@@ -17,7 +18,7 @@ const STATE = {
 } as const;
 
 type PlanResult = { plan: MotorPlanDay; syncedAt: string; stale?: boolean }
-  | { status: "missing" | "locked" | "error" };
+  | { status: "missing" | "locked" | "error"; reason?: MotorText };
 
 type WeeklyResult = MotorWeeklyEvent[] | "unavailable";
 
@@ -61,7 +62,11 @@ function MotorWeeklyHistory({ result }: { result?: WeeklyResult }) {
   );
 }
 
-export function MotorPlanDayCard({ patientId, refresh }: { patientId: string; refresh: number }) {
+export function MotorPlanDayCard({ patientId, refresh, onOpenCalendar }: {
+  patientId: string;
+  refresh: number;
+  onOpenCalendar: () => void;
+}) {
   const { user } = useAuth();
   const { can, activeClinicId, context, loading } = useAppContext();
   const { t, lang } = useI18n();
@@ -89,10 +94,12 @@ export function MotorPlanDayCard({ patientId, refresh }: { patientId: string; re
         (error: unknown) => {
           if (current.signal.aborted) return;
           const status = error instanceof ApiError && [401, 403, 404].includes(error.status)
-            ? "missing" : error instanceof ApiError && error.status === 409 ? "locked" : "error";
+            ? "missing" : error instanceof ApiError && error.status === 409 &&
+              error.extensions?.error === "plan_locked" ? "locked" : "error";
+          const reason = status === "locked" && error instanceof ApiError ? motorPlanBlockReason(error) : undefined;
           setLoaded(previous => status === "error" && previous?.key === key && "plan" in previous.result
             ? { key, result: { ...previous.result, stale: true } }
-            : { key, result: { status } });
+            : { key, result: { status, reason } });
         },
       );
     };
@@ -129,9 +136,9 @@ export function MotorPlanDayCard({ patientId, refresh }: { patientId: string; re
                     {new Intl.DateTimeFormat(lang, { dateStyle: "medium", timeZone: "UTC" }).format(new Date(result.plan.todayLocalDate))}
                   </time>
                   <Badge variant="outline">{t(STATE[result.plan.status.state])}</Badge>
-                  <span className="text-sm text-muted-foreground">{result.plan.measuredWeightKg === null
+                  {!result.plan.overview && <span className="text-sm text-muted-foreground">{result.plan.measuredWeightKg === null
                     ? t("Sin pesaje")
-                    : new Intl.NumberFormat(lang, { style: "unit", unit: "kilogram" }).format(result.plan.measuredWeightKg)}</span>
+                    : new Intl.NumberFormat(lang, { style: "unit", unit: "kilogram" }).format(result.plan.measuredWeightKg)}</span>}
                 </div>
                 <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
                   <time dateTime={result.syncedAt}>
@@ -147,7 +154,12 @@ export function MotorPlanDayCard({ patientId, refresh }: { patientId: string; re
                 </div>
                 {result.stale && <p className="text-sm" role="status">{t("No se pudo actualizar el plan.")}</p>}
               </div>
-            ) : <p className="text-sm text-muted-foreground">{t(result.status === "locked" ? "Plan bloqueado" : "Día del plan no disponible")}</p>}
+            ) : result.status === "locked" ? (
+              <div role="status" className="rounded-lg border px-3 py-2">
+                <p className="font-medium">{t("Plan bloqueado")}</p>
+                {result.reason && <p className="mt-1 text-muted-foreground">{result.reason[lang]}</p>}
+              </div>
+            ) : <p className="text-sm text-muted-foreground">{t("Día del plan no disponible")}</p>}
           {targets && (
             <div className="mt-4 grid gap-1 border-t pt-3 text-sm">
               <p className="font-medium">{t("Meta diaria: {kcal} kcal", { kcal: number.format(targets.kcal) })}</p>
@@ -159,6 +171,9 @@ export function MotorPlanDayCard({ patientId, refresh }: { patientId: string; re
               <p>{t("Meta de fibra: {fiber} g", { fiber: number.format(targets.fiberG) })}</p>
               <p>{t("Meta de agua: {water} ml", { water: number.format(targets.waterMl) })}</p>
             </div>
+          )}
+          {result && "plan" in result && result.plan.overview && (
+            <MotorPlanOverviewSections plan={result.plan} overview={result.plan.overview} onOpenCalendar={onOpenCalendar} />
           )}
           {result && "plan" in result && <MotorWeeklyHistory result={weekly?.key === key ? weekly.result : undefined} />}
         </CardContent>
